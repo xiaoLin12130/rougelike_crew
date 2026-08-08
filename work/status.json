@@ -1,0 +1,12 @@
+{
+  "phase": "0-requirements",
+  "updated": "2026-08-08",
+  "tasks": {
+    "assets_inventory": {"status": "done", "note": "五套免费素材包已定位，详见 requirements 草案"},
+    "godot_setup": {"status": "done", "note": "Godot 4.7.1 编辑器 + 官方文档 1596 rst 已就绪"},
+    "rag_system": {"status": "done", "note": "BM25: 25609 chunks, 含官方文档+数值书籍+项目docs"},
+    "game_analysis": {"status": "done", "note": "docs/research/game-build-analysis.md"},
+    "godot_pitfalls": {"status": "done", "note": "docs/research/godot-pitfalls.md"},
+    "requirements_draft": {"status": "in_progress", "note": "docs/requirements.md v0.1，等待用户逐条确认"}
+  }
+}

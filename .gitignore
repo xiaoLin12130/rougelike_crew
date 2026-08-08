@@ -1,0 +1,28 @@
+# Godot
+.godot/
+*.import
+.import/
+export/
+build/
+
+# Local tools & caches (Godot binary, docs corpus, RAG index)
+.tools/
+.cache/
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+
+# OS / editor
+Thumbs.db
+.DS_Store
+.idea/
+.vscode/
+*.suo
+*.user
+
+# Secrets - NEVER commit tokens
+*.token
+.env
+secrets/
