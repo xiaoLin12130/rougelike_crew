@@ -1,0 +1,12 @@
+{
+  "kill_drops": [
+    {"type": "gold", "prob": 0.66},
+    {"type": "item", "prob": 0.08},
+    {"type": "spell_part", "prob": 0.07},
+    {"type": "trinket", "prob": 0.05},
+    {"type": "heal", "prob": 0.14}
+  ],
+  "pity_threshold": 8,
+  "boss_drops": {"legendary": 1, "rare": 2, "gold_mult": 5},
+  "item_rarity_weights": {"common": 0.7, "rare": 0.24, "legendary": 0.06}
+}

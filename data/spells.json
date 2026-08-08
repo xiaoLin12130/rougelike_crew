@@ -1,0 +1,20 @@
+{
+  "cores": [
+    {"id": "fireball", "name": "火球", "element": "fire", "base_damage": 12, "cooldown": 1.2, "range": 360, "speed": 320, "aoe": 18, "icon": "res://assets/icons/fire.svg"},
+    {"id": "ice_shard", "name": "冰锥", "element": "ice", "base_damage": 10, "cooldown": 1.0, "range": 320, "speed": 380, "aoe": 14, "slow": 0.5, "icon": "res://assets/icons/ice.svg"},
+    {"id": "lightning", "name": "闪电", "element": "lightning", "base_damage": 18, "cooldown": 1.6, "range": 260, "speed": 0, "aoe": 26, "chain": 2, "icon": "res://assets/icons/lightning.svg"},
+    {"id": "poison_cloud", "name": "毒雾", "element": "poison", "base_damage": 6, "cooldown": 2.0, "range": 200, "speed": 0, "aoe": 48, "dot": true, "icon": "res://assets/icons/poison.svg"},
+    {"id": "summon_bat", "name": "召唤蝙蝠", "element": "summon", "base_damage": 6, "cooldown": 3.0, "range": 0, "speed": 0, "aoe": 0, "summon": "enemy_bat", "icon": "res://assets/icons/bat.svg"},
+    {"id": "whirl_blade", "name": "旋风刃", "element": "blade", "base_damage": 8, "cooldown": 1.4, "range": 90, "speed": 0, "aoe": 40, "pierce": true, "icon": "res://assets/icons/sword.svg"}
+  ],
+  "shells": [
+    {"id": "rapid", "name": "连发", "mods": {"shots": 3, "cooldown_mult": 1.5, "damage_mult": 0.8}},
+    {"id": "spread", "name": "齐射", "mods": {"shots": 5, "spread_angle": 24, "damage_mult": 0.7}},
+    {"id": "homing", "name": "追踪", "mods": {"homing": true, "damage_mult": 0.9, "speed_mult": 0.85}},
+    {"id": "pierce", "name": "穿透", "mods": {"pierce": 2, "damage_mult": 0.85}},
+    {"id": "bounce", "name": "弹射", "mods": {"bounce": 2, "damage_mult": 0.8}},
+    {"id": "orbit", "name": "环绕", "mods": {"orbit": 2, "damage_mult": 0.75}},
+    {"id": "burst", "name": "爆发", "mods": {"explode": true, "aoe_mult": 2.0, "damage_mult": 1.2, "cooldown_mult": 1.3}},
+    {"id": "delay", "name": "延时", "mods": {"delay": 0.8, "damage_mult": 1.3}}
+  ]
+}

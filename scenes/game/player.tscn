@@ -1,0 +1,28 @@
+[gd_scene load_steps=12 format=3]
+
+[ext_resource type="Script" path="res://scripts/player/player.gd" id="1_player"]
+[ext_resource type="Script" path="res://scripts/combat/spell_caster.gd" id="2_caster"]
+[ext_resource type="Texture2D" path="res://assets/sprites/gen/player_down_1.png" id="3_d1"]
+[ext_resource type="Texture2D" path="res://assets/sprites/gen/player_down_2.png" id="4_d2"]
+[ext_resource type="Texture2D" path="res://assets/sprites/gen/player_up_1.png" id="5_u1"]
+[ext_resource type="Texture2D" path="res://assets/sprites/gen/player_up_2.png" id="6_u2"]
+[ext_resource type="Texture2D" path="res://assets/sprites/gen/player_left_1.png" id="7_l1"]
+[ext_resource type="Texture2D" path="res://assets/sprites/gen/player_left_2.png" id="8_l2"]
+[ext_resource type="Texture2D" path="res://assets/sprites/gen/player_right_1.png" id="9_r1"]
+[ext_resource type="Texture2D" path="res://assets/sprites/gen/player_right_2.png" id="10_r2"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_body"]
+radius = 8.0
+
+[node name="Player" type="CharacterBody2D" groups=["player"]]
+collision_layer = 1
+collision_mask = 4
+script = ExtResource("1_player")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_body")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+
+[node name="SpellCaster" type="Node" parent="."]
+script = ExtResource("2_caster")
