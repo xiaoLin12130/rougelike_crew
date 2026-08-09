@@ -8,6 +8,7 @@ build/
 # Local tools & caches (Godot binary, docs corpus, RAG index)
 .tools/
 .cache/
+.tmp/
 
 # Python
 __pycache__/
