@@ -104,7 +104,7 @@ func _build_wave(root: Control) -> void:
 	# 右上：临时提示（波次），位于 Boss 血条下方，互不遮挡
 	_wave_label = UiTheme.label("", 12, UiTheme.GOLD)
 	_wave_label.set_anchors_preset(Control.PRESET_TOP_RIGHT)
-	_wave_label.position = Vector2(-8, 28)
+	_wave_label.position = Vector2(-308, 28)
 	_wave_label.custom_minimum_size = Vector2(300, 20)
 	_wave_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 	_wave_label.add_theme_stylebox_override("normal", UiTheme.style_compact(Color(0.1, 0.08, 0.16, 0.8), UiTheme.BORDER_DIM, 1, 4, 4))
@@ -116,8 +116,8 @@ func _build_pickup_label(root: Control) -> void:
 	# 屏幕中下方：获得道具反馈（不遮挡构筑条）
 	_pickup_label = UiTheme.label("", 12, UiTheme.GOLD)
 	_pickup_label.set_anchors_preset(Control.PRESET_CENTER_BOTTOM)
-	_pickup_label.position = Vector2(0, -84)
-	_pickup_label.custom_minimum_size = Vector2(360, 22)
+	_pickup_label.position = Vector2(0, -104)
+	_pickup_label.custom_minimum_size = Vector2(300, 22)
 	_pickup_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_pickup_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_pickup_label.visible = false
@@ -126,7 +126,7 @@ func _build_pickup_label(root: Control) -> void:
 func _build_dps(root: Control) -> void:
 	_dps_label = UiTheme.label("DPS 0", 10, Color("#9d8fc4"), true)
 	_dps_label.set_anchors_preset(Control.PRESET_BOTTOM_RIGHT)
-	_dps_label.position = Vector2(-140, -26)
+	_dps_label.position = Vector2(-140, -56)
 	_dps_label.custom_minimum_size = Vector2(130, 16)
 	_dps_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 	_dps_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -173,13 +173,13 @@ func _build_bar_ui(root: Control) -> void:
 	# 左下角可折叠构筑条：半透明贴边，折叠后仅剩一个小标签
 	_tab_btn = UiTheme.button("<<", Vector2(20, 32))
 	_tab_btn.set_anchors_preset(Control.PRESET_BOTTOM_LEFT)
-	_tab_btn.position = Vector2(4, -38)
+	_tab_btn.position = Vector2(4, -50)
 	_tab_btn.tooltip_text = "收起构筑条（腾出战斗视野）"
 	_tab_btn.pressed.connect(_toggle_bar)
 	root.add_child(_tab_btn)
 	_bar_root = PanelContainer.new()
 	_bar_root.set_anchors_preset(Control.PRESET_BOTTOM_LEFT)
-	_bar_root.position = Vector2(27, -38)
+	_bar_root.position = Vector2(27, -50)
 	_bar_root.add_theme_stylebox_override("panel", UiTheme.style_compact(Color(0.09, 0.07, 0.15, 0.78), Color(0.30, 0.22, 0.52, 0.9), 1, 4, 4))
 	root.add_child(_bar_root)
 	_bar_box = HBoxContainer.new()
@@ -233,6 +233,9 @@ func _toggle_build() -> void:
 		panel.visible = not panel.visible
 		if panel.visible and panel.has_method("refresh"):
 			panel.refresh()
+			# 打开构筑面板时收起底部常驻条，避免遮挡
+			if _bar_open:
+				_toggle_bar()
 
 func _toggle_pause() -> void:
 	_hide_detail()
@@ -309,6 +312,7 @@ func _rebuild_grid(grid: Array) -> void:
 				var tr := TextureRect.new()
 				tr.texture = icon
 				tr.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+				tr.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 				tr.custom_minimum_size = Vector2(16, 16)
 				tr.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 				tr.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -358,6 +362,7 @@ func _rebuild_items(items: Dictionary) -> void:
 		var tex := TextureRect.new()
 		tex.texture = UiTheme.icon_texture(str(def.get("icon", "")))
 		tex.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+		tex.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 		tex.custom_minimum_size = Vector2(16, 16)
 		tex.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 		tex.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -463,8 +468,8 @@ func _build_detail(root: Control) -> void:
 	_detail_dim.visible = false
 	root.add_child(_detail_dim)
 	_detail_panel = PanelContainer.new()
-	_detail_panel.set_anchors_preset(Control.PRESET_CENTER_BOTTOM)
-	_detail_panel.position = Vector2(-150, -110)
+	_detail_panel.set_anchors_preset(Control.PRESET_CENTER)
+	_detail_panel.position = Vector2(-150, -55)
 	_detail_panel.custom_minimum_size = Vector2(300, 0)
 	_detail_panel.add_theme_stylebox_override("panel", UiTheme.style(UiTheme.PANEL, UiTheme.BORDER, 2, 6))
 	_detail_panel.visible = false
@@ -478,6 +483,7 @@ func _build_detail(root: Control) -> void:
 	_detail_icon = TextureRect.new()
 	_detail_icon.custom_minimum_size = Vector2(22, 22)
 	_detail_icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	_detail_icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	head.add_child(_detail_icon)
 	var vb := VBoxContainer.new()
 	vb.add_theme_constant_override("separation", 0)

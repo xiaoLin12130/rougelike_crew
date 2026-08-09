@@ -67,7 +67,9 @@ func _item_row(parent: Node, def: Dictionary, count: int) -> void:
 	var tex := TextureRect.new()
 	tex.texture = UiTheme.icon_texture(str(def.get("icon", "")))
 	tex.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	tex.expand_mode = TextureRect.EXPAND_IGNORE_SIZE  # 关键：忽略 SVG 原生 512x512 尺寸
 	tex.custom_minimum_size = Vector2(18, 18)
+	tex.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	row.add_child(tex)
 	var l := UiTheme.label("%s ×%d　%s" % [
 		def.get("name", "?"), count, def.get("description", "")], 11,

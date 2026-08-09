@@ -71,8 +71,14 @@ func _assert_layout() -> void:
 	var bar_rect := _rect(_hud._bar_root)
 	if bar_rect.size.x > 640.0:
 		fail("构筑条超屏宽: %.0f > 640" % bar_rect.size.x)
+	if bar_rect.size.y > 60.0:
+		fail("构筑条过高: %.0f > 60" % bar_rect.size.y)
+	if bar_rect.end.y > 360.0:
+		fail("构筑条超出屏幕底部")
 	if _rect(_hud._bar_root).intersects(_rect(_hud._dps_label)):
 		fail("构筑条与 DPS 重叠")
+	if _rect(_hud._bar_root).intersects(_rect(_hud._pickup_label)):
+		fail("构筑条与拾取提示重叠")
 	# Boss 血条 vs 左上资源 / 右上波次横幅
 	_bus.boss_spawned.emit("暗影魔像", 500)
 	_hud._on_wave("波次 3 来袭")
@@ -119,6 +125,10 @@ func _assert_detail() -> void:
 		fail("物品详情标题错误: " + _hud._detail_title.text)
 	elif not ("攻击" in _hud._detail_desc.text):
 		fail("物品详情描述缺失")
+	if _rect(_hud._detail_panel).intersects(_rect(_hud._bar_root)):
+		fail("详情弹窗与构筑条重叠")
+	if _rect(_hud._detail_panel).intersects(_rect(_hud._boss_root)):
+		fail("详情弹窗与 Boss 血条重叠")
 	_hud._hide_detail()
 	_hud._on_grid_slot_clicked(0)
 	if not _hud._detail_panel.visible:
