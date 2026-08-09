@@ -105,3 +105,23 @@ python tools/rag/query.py "关键词" --src godot-docs
 2. 手机端适配（待办 3）：虚拟摇杆+技能/闪避按钮（InputRouter 已抽象）、HUD 响应式、微信移植评估
 3. M4 流派成型（进化合成/成型检测/爽感档位）、M5 Web 体积优化（wasm 39MB）
 4. Retro Bosses.png 中 Boss 接入（素材已裁剪备用）
+
+## 交接给并行线程清单（2026-08-09 深夜，本线程停止开发避免冲突）
+
+> 本线程（UI v2 + 素材替换）已提交完毕（700fd3b），剩余工作全部移交并行线程/主线程。
+> 并行线程已提交 f87aec9（UI 设计系统 v2 文档）与 1adda17（Magicraft 风格 HUD：中央法术网格 + 右侧物品栏），
+> 工作区另有其未提交改动（平衡/流派/血包等），本线程未触碰。
+
+### 剩余待办（按优先级）
+1. **恢复自动通关基线**：autoplay 当前随机 DEFEAT（28-48s 早期围殴死亡 / level1 Boss 6HP 卡死），基线交接时即红（DEFEAT@level4）。需在平衡调参（drops/items/game_state 已在进行）后重验 VICTORY
+2. **手机端适配（用户待办 3）**：虚拟摇杆 + 技能/闪避按钮（InputRouter 已抽象 move_vector/aim_override，触屏实现直接接入）、HUD 响应式（390px 视口无横向滚动、触控 ≥44px）、微信小游戏移植评估（M5）
+3. **M4 流派成型**：进化合成、成型检测、爽感档位（全屏粒子/慢动作/数字放大）——并行线程已开始（scripts/items/、流派与Boss扩展方案.md）
+4. **M5 Web 体积优化**：wasm 39MB 压缩、分包；微信移植评估报告
+5. **Retro Bosses 中 Boss 接入**：assets/sprites/retro/boss_1..4.png 已裁剪备用（96x55 等原生尺寸，单帧）
+
+### 需并行线程注意
+- **auto_play.gd 未提交改动**（工作区）：我加的"贴墙切向移动"（mv 指墙外时削法线分量，修墙角被围殴卡死）+ dist/player/enemy/mv/aim 诊断日志，与并行线程自己的 auto_play.gd 改动混叠——请自行决定保留/回退；贴墙修复建议保留（实测消除围角死亡）
+- **我的测试与新 HUD 布局的兼容性**：hud_layout_test.gd（引用 _res_box/_bar_root/_detail_panel 等成员）与 web_hud_visual_test.py（物品格/折叠标签坐标）基于旧 HUD 结构编写；1adda17 改为 Magicraft 中央法术网格后，这两个测试需同步更新断言与坐标，否则会红
+- **新敌人数值**（700fd3b）：crystal_sentry/spider/mimic_block/specter 已接入 level2-5 波次各 1 只，数值可在平衡调参中微调；毒蛛已去掉 dive 行为（曾致 DEFEAT）
+- **enemy_sprite_test.gd**：新增敌人精灵加载回归，若并行线程再裁剪新素材请把文件放入 assets/sprites/ 并同步该测试
+- 提交时刻基线：test_curves 15 enemies 全绿、smoke OK、hud_layout OK、enemy_sprite OK；并行线程后续改动后需重跑全量
