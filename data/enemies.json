@@ -2,28 +2,28 @@
   "affixes": {
     "flame": {
       "name": "烈焰",
-      "hp_mult": 4.0,
+      "hp_mult": 2.8,
       "atk_mult": 1.5,
       "size_mult": 1.4,
       "element": "fire"
     },
     "lightning": {
       "name": "迅捷",
-      "hp_mult": 3.5,
+      "hp_mult": 2.5,
       "atk_mult": 1.4,
       "size_mult": 1.3,
       "speed_mult": 1.5
     },
     "frost": {
       "name": "霜甲",
-      "hp_mult": 5.0,
+      "hp_mult": 3.2,
       "atk_mult": 1.3,
       "size_mult": 1.4,
       "armor": 0.3
     },
     "stone": {
       "name": "磐石",
-      "hp_mult": 6.0,
+      "hp_mult": 3.5,
       "atk_mult": 1.2,
       "size_mult": 1.6,
       "armor": 0.5
@@ -40,8 +40,8 @@
       "touch": true,
       "xp": 8,
       "gold": 3,
-      "sprite": "res://assets/sprites/gen/enemy_slime_1.png",
-      "frames": 2,
+      "sprite": "res://assets/sprites/kenney/slime_1.png",
+      "frames": 3,
       "affix_pool": [
         "flame",
         "lightning"
@@ -229,6 +229,82 @@
       "affix_pool": [
         "lightning"
       ]
+    },
+    {
+      "id": "crystal_sentry",
+      "name": "水晶哨兵",
+      "hp": 60,
+      "attack": 9,
+      "speed": 48,
+      "size": 0.5,
+      "range": 230,
+      "projectile": true,
+      "fire_interval": 4.0,
+      "bullet_speed": 160,
+      "xp": 13,
+      "gold": 5,
+      "sprite": "res://assets/sprites/retro/crystal_1.png",
+      "frames": 1,
+      "affix_pool": [
+        "frost",
+        "lightning"
+      ]
+    },
+    {
+      "id": "spider",
+      "name": "毒蛛",
+      "hp": 50,
+      "attack": 7,
+      "speed": 95,
+      "size": 0.5,
+      "touch": true,
+      "xp": 10,
+      "gold": 4,
+      "sprite": "res://assets/sprites/retro/spider_1.png",
+      "frames": 2,
+      "affix_pool": [
+        "lightning",
+        "flame"
+      ]
+    },
+    {
+      "id": "mimic_block",
+      "name": "魔像方块",
+      "hp": 130,
+      "attack": 13,
+      "speed": 40,
+      "size": 1.0,
+      "touch": true,
+      "xp": 16,
+      "gold": 6,
+      "sprite": "res://assets/sprites/retro/mimic_1.png",
+      "frames": 4,
+      "affix_pool": [
+        "stone",
+        "frost"
+      ],
+      "behavior": "shield"
+    },
+    {
+      "id": "specter",
+      "name": "幽魂法师",
+      "hp": 55,
+      "attack": 10,
+      "speed": 58,
+      "size": 1.0,
+      "range": 230,
+      "projectile": true,
+      "fire_interval": 4.2,
+      "bullet_speed": 150,
+      "xp": 14,
+      "gold": 5,
+      "sprite": "res://assets/sprites/retro/specter_1.png",
+      "frames": 2,
+      "affix_pool": [
+        "frost",
+        "flame"
+      ],
+      "behavior": "cast"
     }
   ],
   "bosses": [

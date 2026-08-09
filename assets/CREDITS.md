@@ -26,6 +26,17 @@
 - 许可：CC0
 - 用途：各关卡地面（grass/dirt/stone/water 图集，16x16 实心瓦片）
 
+## Kenney Pixel Platformer（assets/sprites/kenney/slime_*.png）
+- 来源：.tools/kenney_pixel-platformer（Tiles/Characters/tile_0018..0020）
+- 许可：CC0
+- 用途：史莱姆敌人替换（蓝色生物 3 帧，24x24 补边到 32x32）
+
+## Retro-Lines 16x16 v3.4.3（assets/sprites/retro/*.png）
+- 来源：.tools/user_assets/Retro-Lines-v3.4.3（作者 v3x3d）
+- 许可：CC0（包内 LICENSE.txt）
+- 用途：4 种新敌人（crystal_1 水晶哨兵 / spider_1..2 毒蛛 / mimic_1..4 魔像方块 / specter_1..2 幽魂法师），
+  裁剪自 Enemies.png（16px 网格 2x 放大）；boss_1..4 裁剪自 Bosses.png 备用
+
 ## itch.io 免费包（.tools/user_assets，2026-08-09 下载，许可已核实页面声明）
 
 | 包 | 作者 | 许可（页面声明） |

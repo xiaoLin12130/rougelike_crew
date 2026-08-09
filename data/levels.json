@@ -22,6 +22,7 @@
       "bat": 2
      },
      "interval": 2.2,
+     "elite_chance": 0.08,
      "duration": 35
     },
     {
@@ -33,6 +34,7 @@
       "wizard": 1
      },
      "interval": 1.6,
+     "elite_chance": 0.12,
      "duration": 40
     }
    ],
@@ -62,6 +64,7 @@
       "charger": 1
      },
      "interval": 1.8,
+     "elite_chance": 0.18,
      "duration": 40
     },
     {
@@ -70,9 +73,11 @@
       "goblin": 5,
       "goblin_archer": 3,
       "slime": 4,
-      "charger": 2
+      "charger": 2,
+      "specter": 1
      },
      "interval": 1.5,
+     "elite_chance": 0.25,
      "duration": 45
     }
    ],
@@ -102,6 +107,7 @@
       "wizard": 1
      },
      "interval": 1.6,
+     "elite_chance": 0.12,
      "duration": 40
     },
     {
@@ -110,9 +116,11 @@
       "skeleton": 6,
       "ghost": 4,
       "goblin_archer": 3,
-      "wizard": 2
+      "wizard": 2,
+      "mimic_block": 1
      },
      "interval": 1.4000000000000001,
+     "elite_chance": 0.18,
      "duration": 45
     }
    ],
@@ -142,6 +150,7 @@
       "bomber": 1
      },
      "interval": 1.4000000000000001,
+     "elite_chance": 0.15,
      "duration": 40
     },
     {
@@ -150,9 +159,11 @@
       "imp": 4,
       "goblin_archer": 3,
       "skeleton": 4,
-      "bomber": 2
+      "bomber": 2,
+      "spider": 1
      },
      "interval": 1.6,
+     "elite_chance": 0.2,
      "duration": 38
     }
    ],
@@ -183,6 +194,7 @@
       "healer": 1
      },
      "interval": 1.3,
+     "elite_chance": 0.15,
      "duration": 40
     },
     {
@@ -193,7 +205,8 @@
       "goblin_archer": 4,
       "ghost": 4,
       "healer": 1,
-      "bomber": 2
+      "bomber": 2,
+      "crystal_sentry": 1
      },
      "interval": 1.2,
      "duration": 45,

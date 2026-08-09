@@ -78,3 +78,30 @@ python tools/scripts/run_autoplay.py 30
 python tools/tests/test_curves.py
 python tools/rag/query.py "关键词" --src godot-docs
 ```
+
+## 新线程续接更新（2026-08-09 晚，UI 重设计 + 素材替换）
+
+### 已完成
+| 任务 | 内容 | 验证 |
+|---|---|---|
+| **UI 重设计 v2** | 物品栏格子=图标+名称+层数+稀有度描边；点击查看详情弹窗（物品/法术格均可，点击外部/Esc/×关闭）；获得反馈=浮动提示+新物品脉冲高亮；构筑条半透明、可折叠（`<<`/`>>` 标签）、贴左下角；鼠标点击穿透 HUD 到战斗区；Boss 血条顶部居中，波次横幅移至右上（互不重叠）；触屏按钮逻辑 ≥22px（2x 窗口=44 物理 px） | `hud_layout_test.gd`（无重叠/超宽/交互断言）ALL PASS；`web_hud_visual_test.py` 截屏像素断言 ALL PASS；已导出 Web |
+| **Boss 图标 512px 溢出修复** | SVG 图标 TextureRect 未设 EXPAND_IGNORE_SIZE → 图标 512x512 溢出遮挡（旧 HUD"挡视野"元凶之一）；hud/build_panel 全部修复 | 视觉测试通过 |
+| **素材替换（待办 2）** | slime → Kenney pixel-platformer 蓝色生物 3 帧（tile_0018-20，32x32 画布贴底）；新增 4 种敌人：水晶哨兵 crystal_sentry（Retro 列10-12 菱形 2x）/ 毒蛛 spider（底部 32x16 两帧 2x）/ 魔像方块 mimic_block（列5-8 行6 弹跳 4 帧 2x）/ 幽魂法师 specter（列7-8 行1 两帧 2x）；Retro Bosses.png 4 大精灵裁剪备用（assets/sprites/retro/boss_1..4.png）；导入脚本 `tools/scripts/import_new_enemies.py`（幂等） | test_curves 15 enemies 全绿；`enemy_sprite_test.gd` 21 实体精灵加载 ALL PASS |
+| **关卡波次引入新敌人** | level2 幽魂法师（wave3）/ level3 魔像方块（wave3）/ level4 毒蛛（wave3）/ level5 水晶哨兵（wave3），每波 1 只控量；毒蛛去 dive 行为（曾致 DEFEAT） | 数值测试全绿 |
+| **CREDITS 更新** | Kenney Pixel Platformer（CC0）+ Retro-Lines 裁剪用途记录 | — |
+
+### 自动通关基线状态（重要，如实记录）
+- 交接时基线即红：`autoplay_verify: in_progress, 上次 DEFEAT@level4`（PROGRESS 08-09 快照）
+- 本轮多次运行：随机性大 —— level 1 早期 DEFEAT（28-48s，玩家被分裂史莱姆围殴）/ TIMEOUT（level 1 boss 6HP 卡死 1500s，分裂怪挡弹道，真人走位可解）/ level 3-4 围角死亡
+- 已为 `auto_play.gd` 加**贴墙切向移动**（mv 指向墙外时削法线分量，沿墙绕行），修掉"墙角被围殴卡死"；另加位置/距离诊断日志（dist/player/enemy/mv/aim，供后续调参）
+- **结论**：基线未恢复全绿，需要整体平衡调参（并行线程正在改 drops/items/game_state/敌人 AI）；我未提交 auto_play.gd（与并行线程改动混叠，交给主线程合并）
+
+### 并行线程提醒
+- 本会话期间检测到并行线程活跃（12:01/12:10 两次提交把我与它的 HUD 工作合并入库，其后又有大量未提交改动：drops/items/game_state/boss/enemy/spawner/fx/hud/脚本等 + 未跟踪的 `scripts/items/`、`health_pack.tscn`、`docs/design/流派与Boss扩展方案.md`）
+- 我未触碰这些文件；我的新文件（sprites/kenney、sprites/retro、import_new_enemies.py、enemy_sprite_test.gd、CREDITS）与 data/enemies.json、data/levels.json 改动独立可提交
+
+### 下一步（待办）
+1. 平衡调参恢复自动通关 VICTORY（先于 M4 爽感档位）
+2. 手机端适配（待办 3）：虚拟摇杆+技能/闪避按钮（InputRouter 已抽象）、HUD 响应式、微信移植评估
+3. M4 流派成型（进化合成/成型检测/爽感档位）、M5 Web 体积优化（wasm 39MB）
+4. Retro Bosses.png 中 Boss 接入（素材已裁剪备用）
