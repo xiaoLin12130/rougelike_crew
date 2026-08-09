@@ -23,6 +23,7 @@ var _bar_root: PanelContainer
 var _bar_box: HBoxContainer
 var _items_box: HBoxContainer
 var _grid_box: HBoxContainer
+var _grid_bar: PanelContainer
 var _tab_btn: Button
 var _bar_open := true
 var _items_sig := ""
@@ -125,8 +126,8 @@ func _build_pickup_label(root: Control) -> void:
 
 func _build_dps(root: Control) -> void:
 	_dps_label = UiTheme.label("DPS 0", 10, Color("#9d8fc4"), true)
-	_dps_label.set_anchors_preset(Control.PRESET_BOTTOM_RIGHT)
-	_dps_label.position = Vector2(-140, -56)
+	_dps_label.set_anchors_preset(Control.PRESET_TOP_RIGHT)
+	_dps_label.position = Vector2(-140, 50)
 	_dps_label.custom_minimum_size = Vector2(130, 16)
 	_dps_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 	_dps_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -170,47 +171,59 @@ func _on_boss_died() -> void:
 	_boss_root.visible = false
 
 func _build_bar_ui(root: Control) -> void:
-	# 左下角可折叠构筑条：半透明贴边，折叠后仅剩一个小标签
-	_tab_btn = UiTheme.button("<<", Vector2(20, 32))
+	# ?????????????????????????+ ?????? + ??????
+	_tab_btn = UiTheme.button("<<", Vector2(20, 30))
 	_tab_btn.set_anchors_preset(Control.PRESET_BOTTOM_LEFT)
-	_tab_btn.position = Vector2(4, -50)
-	_tab_btn.tooltip_text = "收起构筑条（腾出战斗视野）"
+	_tab_btn.position = Vector2(4, -108)
+	_tab_btn.tooltip_text = "??/?????"
 	_tab_btn.pressed.connect(_toggle_bar)
 	root.add_child(_tab_btn)
+	var build_btn := UiTheme.button("??", Vector2(52, 30))
+	build_btn.set_anchors_preset(Control.PRESET_BOTTOM_LEFT)
+	build_btn.position = Vector2(4, -74)
+	build_btn.tooltip_text = "???????????/??/???"
+	build_btn.pressed.connect(_toggle_build)
+	root.add_child(build_btn)
+	var pause_btn := UiTheme.button("??", Vector2(52, 30))
+	pause_btn.set_anchors_preset(Control.PRESET_BOTTOM_LEFT)
+	pause_btn.position = Vector2(4, -40)
+	pause_btn.tooltip_text = "?????Esc?"
+	pause_btn.pressed.connect(_toggle_pause)
+	root.add_child(pause_btn)
+	# ???????????????????
+	_grid_bar = PanelContainer.new()
+	_grid_bar.set_anchors_preset(Control.PRESET_CENTER_BOTTOM)
+	_grid_bar.position = Vector2(-131, -48)
+	_grid_bar.add_theme_stylebox_override("panel", UiTheme.style_compact(Color(0.09, 0.07, 0.15, 0.78), Color(0.30, 0.22, 0.52, 0.9), 1, 4, 4))
+	root.add_child(_grid_bar)
+	_grid_box = HBoxContainer.new()
+	_grid_box.add_theme_constant_override("separation", 3)
+	_grid_bar.add_child(_grid_box)
+	# ???????????????
 	_bar_root = PanelContainer.new()
-	_bar_root.set_anchors_preset(Control.PRESET_BOTTOM_LEFT)
-	_bar_root.position = Vector2(27, -50)
+	_bar_root.set_anchors_preset(Control.PRESET_BOTTOM_RIGHT)
+	_bar_root.position = Vector2(-201, -48)
 	_bar_root.add_theme_stylebox_override("panel", UiTheme.style_compact(Color(0.09, 0.07, 0.15, 0.78), Color(0.30, 0.22, 0.52, 0.9), 1, 4, 4))
 	root.add_child(_bar_root)
 	_bar_box = HBoxContainer.new()
-	_bar_box.add_theme_constant_override("separation", 5)
+	_bar_box.add_theme_constant_override("separation", 3)
 	_bar_root.add_child(_bar_box)
-	_grid_box = HBoxContainer.new()
-	_grid_box.add_theme_constant_override("separation", 2)
-	_bar_box.add_child(_grid_box)
-	var sep := UiTheme.label("|", 16, Color(0.35, 0.28, 0.55, 0.9))
-	sep.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	_bar_box.add_child(sep)
 	_items_box = HBoxContainer.new()
-	_items_box.add_theme_constant_override("separation", 2)
+	_items_box.add_theme_constant_override("separation", 3)
 	_bar_box.add_child(_items_box)
-	var build_btn := UiTheme.button("构筑", Vector2(48, 32))
-	build_btn.tooltip_text = "打开构筑面板（完整物品/法术/技能）"
-	build_btn.pressed.connect(_toggle_build)
-	_bar_box.add_child(build_btn)
-	var pause_btn := UiTheme.button("暂停", Vector2(48, 32))
-	pause_btn.tooltip_text = "暂停游戏（Esc）"
-	pause_btn.pressed.connect(_toggle_pause)
-	_bar_box.add_child(pause_btn)
+	_bar_root.visible = _bar_open
+	_grid_bar.visible = _bar_open
 
 func _toggle_bar() -> void:
 	_bar_open = not _bar_open
 	if _bar_open:
 		_bar_root.visible = true
+		_grid_bar.visible = true
 		_tab_btn.text = "<<"
 		_tab_btn.tooltip_text = "收起构筑条（腾出战斗视野）"
 	else:
 		_bar_root.visible = false
+		_grid_bar.visible = false
 		_tab_btn.text = ">>"
 		_tab_btn.tooltip_text = "展开构筑条"
 	_hide_detail()
@@ -455,6 +468,17 @@ func _hide_detail() -> void:
 	_detail_dim.visible = false
 	_detail_panel.visible = false
 
+func _dump_layout() -> void:
+	# F8 ??????????????????? CDP ????????
+	for pair in [
+		["res", _res_box], ["wave", _wave_label], ["boss", _boss_root],
+		["gridbar", _grid_bar], ["itembar", _bar_root], ["tab", _tab_btn],
+		["dps", _dps_label], ["pickup", _pickup_label], ["detail", _detail_panel],
+	]:
+		var c := pair[1] as Control
+		if c != null and c.is_inside_tree():
+			print("[LAYOUT] %s rect=%s visible=%s" % [pair[0], c.get_global_rect(), c.visible])
+
 func _build_detail(root: Control) -> void:
 	# 详情弹窗：点击任意处/Esc/× 关闭
 	_detail_dim = Button.new()
@@ -500,6 +524,8 @@ func _build_detail(root: Control) -> void:
 	main.add_child(_detail_desc)
 
 func _unhandled_input(event: InputEvent) -> void:
+	if event is InputEventKey and event.pressed and event.keycode == KEY_F8:
+		_dump_layout()
 	if _detail_panel.visible and event.is_action_pressed("pause"):
 		_hide_detail()
 		get_viewport().set_input_as_handled()

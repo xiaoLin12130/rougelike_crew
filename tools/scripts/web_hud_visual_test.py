@@ -19,6 +19,7 @@ import urllib.parse
 import urllib.request
 
 import websocket
+from PIL import ImageChops
 from PIL import Image
 
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
@@ -125,11 +126,19 @@ def main():
                 return True
             return False
 
+        def key(code):
+            send("Input.dispatchKeyEvent", {"type": "keyDown", "code": code, "windowsVirtualKeyCode": 0, "nativeVirtualKeyCode": 0})
+            send("Input.dispatchKeyEvent", {"type": "keyUp", "code": code, "windowsVirtualKeyCode": 0, "nativeVirtualKeyCode": 0})
+
+        layout_lines = []
+
         def click(x, y):
             send("Input.dispatchMouseEvent", {"type": "mousePressed", "x": x, "y": y, "button": "left", "clickCount": 1})
             send("Input.dispatchMouseEvent", {"type": "mouseReleased", "x": x, "y": y, "button": "left", "clickCount": 1})
 
+        send("Runtime.enable")
         send("Page.enable")
+        send("Emulation.setDeviceMetricsOverride", {"width": 1280, "height": 720, "deviceScaleFactor": 1, "mobile": False})
         send("Page.navigate", {"url": url})
 
         # 等待 Godot 引导完成（canvas 出现且可交互）
@@ -170,8 +179,11 @@ def main():
             s = (maxx - minx + 4) / 640.0
             return minx, miny, s
 
-        gx, gy, s = game_area()
-        print("game area:", gx, gy, "scale:", s)
+        gx, gy = int(canvas["x"]), int(canvas["y"])
+        s = canvas["w"] / 640.0
+        if canvas["w"] != 1280:  # ????????????
+            gx, gy, s = game_area()
+        print("game area:", gx, gy, "scale:", s, "canvas:", canvas)
 
         # 主菜单 → 开始游戏（按钮逻辑中心 320,144）
         click(gx + 320 * s, gy + 144 * s)
@@ -184,7 +196,7 @@ def main():
                              lambda p: p[2] > 120 and p[0] < 100)
         check(hp_blue > 0.05, "左上 HP 条渲染 (blue=%.1f%%)" % (hp_blue * 100))
         # 2) 底部构筑条：半透明暗面板（与亮色地面区分）
-        bar_dark = crop_ratio(im, (gx + 27 * s, gy + 310 * s, gx + 590 * s, gy + 350 * s),
+        bar_dark = crop_ratio(im, (gx + 185 * s, gy + 310 * s, gx + 635 * s, gy + 350 * s),
                               lambda p: p[0] + p[1] + p[2] < 180)
         check(bar_dark > 0.15, "构筑条面板渲染 (dark=%.1f%%)" % (bar_dark * 100))
         # 3) 顶部中央无 Boss 血条（红像素 < 2%）
@@ -193,7 +205,7 @@ def main():
         check(boss_red < 0.02, "顶部中央无 Boss 血条遮挡 (red=%.2f%%)" % (boss_red * 100))
 
         # 4) 点击第一个物品格 → 详情弹窗
-        click(gx + 188 * s, gy + 330 * s)
+        click(gx + 469 * s, gy + 336 * s)
         time.sleep(1)
         check(screenshot(os.path.join(SHOT_DIR, "v2_detail.png")), "详情弹窗截屏")
         im2 = Image.open(os.path.join(SHOT_DIR, "v2_detail.png")).convert("RGB")
@@ -203,14 +215,16 @@ def main():
 
         # 5) 点击弹窗外空白处关闭详情（左上角）
         click(gx + 60 * s, gy + 60 * s)
+        time.sleep(1.2)
+        click(gx + 60 * s, gy + 60 * s)
         time.sleep(0.8)
 
         # 6) 折叠构筑条：暗色面板占比应显著下降
-        click(gx + 22 * s, gy + 326 * s)
+        click(gx + 14 * s, gy + 267 * s)
         time.sleep(0.8)
         check(screenshot(os.path.join(SHOT_DIR, "v2_collapsed.png")), "折叠后截屏")
         im3 = Image.open(os.path.join(SHOT_DIR, "v2_collapsed.png")).convert("RGB")
-        bar_dark2 = crop_ratio(im3, (gx + 27 * s, gy + 310 * s, gx + 590 * s, gy + 350 * s),
+        bar_dark2 = crop_ratio(im3, (gx + 185 * s, gy + 310 * s, gx + 635 * s, gy + 350 * s),
                                lambda p: p[0] + p[1] + p[2] < 180)
         check(bar_dark2 < bar_dark * 0.6, "折叠后构筑条隐藏 (dark %.1f%% -> %.1f%%)" %
               (bar_dark * 100, bar_dark2 * 100))
