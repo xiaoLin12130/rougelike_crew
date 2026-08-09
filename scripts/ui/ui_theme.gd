@@ -53,6 +53,19 @@ static func style(bg: Color, border: Color = BORDER, width: int = 2, corner: int
 	sb.content_margin_bottom = 6
 	return sb
 
+static func style_compact(bg: Color, border: Color = BORDER, width: int = 1, corner: int = 3, pad: int = 2) -> StyleBoxFlat:
+	## 紧凑面板样式：小内边距，用于常驻 HUD 槽位/半透明条（不挤占战斗视野）
+	var sb := StyleBoxFlat.new()
+	sb.bg_color = bg
+	sb.border_color = border
+	sb.set_border_width_all(width)
+	sb.set_corner_radius_all(corner)
+	sb.content_margin_left = pad
+	sb.content_margin_right = pad
+	sb.content_margin_top = pad
+	sb.content_margin_bottom = pad
+	return sb
+
 static func label(text: String, size: int = 12, color: Color = WHITE, num: bool = false) -> Label:
 	var l := Label.new()
 	l.add_theme_font_override("font", font_num() if num else font_cn())
