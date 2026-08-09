@@ -8,11 +8,12 @@
     "dash_speed": 520,
     "invuln_time": 0.35
   },
-  "xp": {"base": 60, "per_level": 35},
+  "xp": {"base": 50, "per_level": 30, "quad": 5},
   "enemy_scaling": {
     "level_hp": 1.18,
     "level_atk": 0.12,
     "level_num": 0.22,
+    "level_xp": 0.12,
     "loop_hp": 1.30,
     "loop_dmg": 1.18,
     "loop_num": 1.25,

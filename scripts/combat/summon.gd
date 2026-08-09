@@ -2,12 +2,12 @@ extends Node2D
 ## 召唤蝙蝠：跟随玩家移动，每 1s 攻击最近敌人（base_damage），存活 30s。
 ## 上限 = GameState.total_stacks("summon_book") + 1，超限销毁最旧召唤物。
 
-const BAT_TEXTURE := "res://assets/sprites/gen/enemy_bat_1.png"
+const BAT_TEXTURE := "res://assets/sprites/gen/summon_bat_1.png"  # 蓝色友军蝙蝠，与敌方紫色区分
 const LIFETIME := 30.0
 const ATTACK_INTERVAL := 1.0
-const ATTACK_RANGE := 48.0
+const ATTACK_RANGE := 220.0
 const FOLLOW_RANGE := 64.0
-const MOVE_SPEED := 170.0
+const MOVE_SPEED := 200.0
 
 static var _spawn_counter := 0
 
@@ -64,18 +64,23 @@ func _physics_process(delta: float) -> void:
 		queue_free()
 		return
 	var to_player := _player.global_position - global_position
-	if to_player.length() > FOLLOW_RANGE:
+	var target := _nearest_enemy()
+	if target != null:
+		# 有敌人：主动接近攻击目标（玩家风筝时召唤物也去战斗）
+		var to_target: Vector2 = target.global_position - global_position
+		if to_target.length() > 30.0:
+			global_position += to_target.normalized() * MOVE_SPEED * delta
+	elif to_player.length() > FOLLOW_RANGE:
+		# 无敌人：跟随玩家
 		global_position += to_player.normalized() * MOVE_SPEED * delta
 	_atk_timer += delta
 	if _atk_timer >= ATTACK_INTERVAL:
 		_atk_timer = 0.0
-		_attack()
+		if target != null:
+			_attack_target(target)
 
 
-func _attack() -> void:
-	var target := _nearest_enemy()
-	if target == null:
-		return
+func _attack_target(target: Node) -> void:
 	var final_dmg := roundi(_damage)
 	if target.has_method("take_damage"):
 		target.take_damage(final_dmg, _element, false)

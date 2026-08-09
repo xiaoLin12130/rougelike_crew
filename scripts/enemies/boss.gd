@@ -112,7 +112,7 @@ func _die() -> void:
 	_dead = true
 	EventBus.boss_died.emit()
 	var gold: int = int(conf.get("gold", 100))
-	var xp: int = int(conf.get("xp", 200))
+	var xp: int = GameState.enemy_xp(float(conf.get("xp", 200)), GameState.run.level, GameState.run.loop)
 	if _is_final:
 		gold *= 3
 		xp *= 3

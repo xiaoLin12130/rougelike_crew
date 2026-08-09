@@ -71,7 +71,11 @@ func add_xp(n: int) -> void:
 	EventBus.player_stats_changed.emit()
 
 func xp_to_next(level: int) -> int:
-	return 60 + 35 * level
+	# 平滑升级曲线：L1≈50(约6只怪) → L5≈220 → L10≈455，增幅逐级微增
+	var l := maxi(level, 1)
+	var xp: Dictionary = balance().get("xp", {})
+	return int(xp.get("base", 50)) + int(xp.get("per_level", 30)) * (l - 1) \
+		+ int(xp.get("quad", 5)) * (l - 1) * (l - 1)
 
 func level_factor(level: int) -> float:
 	return pow(1.18, level - 1)
@@ -90,6 +94,11 @@ func enemy_hp(base: float, level: int, loop: int) -> float:
 
 func enemy_atk(base: float, level: int, loop: int) -> float:
 	return base * (1.0 + 0.12 * (level - 1)) * loop_factor_dmg(loop)
+
+func enemy_xp(base: float, level: int, loop: int) -> int:
+	# 经验随关卡递增（与敌人强度同节奏），保证后期升级不至于过慢
+	var lx: float = tables.get("balance", {}).get("enemy_scaling", {}).get("level_xp", 0.12)
+	return int(base * (1.0 + lx * (level - 1)) * pow(1.35, loop - 1))
 
 func item_value(item: Dictionary, stacks: int) -> float:
 	## 道具曲线求值（契约：linear/exp_proc/threshold/multiplicative）

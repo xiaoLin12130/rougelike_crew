@@ -2,6 +2,8 @@
 
 > 下次会话请先读本文件 + docs/PLAYBOOK.md + work/status.json 续接。
 
+> 2026-08-09 下午交接更新：本会话上下文将尽，新线程按 multi-agent-dev 流程接手。交接要点见文末「新线程交接清单」。
+
 ## 已完成
 
 | 日期 | 任务 | 状态 |
@@ -21,6 +23,9 @@
 | 08-09 | **Boss 无敌根因修复**：投射物命中判定按敌人体型放大（大 Boss 中心判定 9px→体型半径），召唤物同理；自动通关 VICTORY 重验通过（1617 杀/591s/古神击杀） | ✅ |
 | 08-09 | **素材升级**：webgamer.io 确认是网页游戏平台非素材站；改用 Kenney CC0 包（rpg-urban-pack 16x16 实心地面瓦片 4 类图集 grass/dirt/stone/water，按关卡主题随机铺地）+ CREDITS 更新 | ✅ |
 | 08-09 | git 提交推送（0fee9f0 + 6aa8c54，.tmp 误提交已清理）；GitHub issues #1-#4 closed，#5-#6 open | ✅ |
+| 08-09 | **升级节奏平滑**：经验曲线 50+30(L-1)+5(L-1)²（L1≈50 约 6 只怪 ~20 秒升级），第一关前两波减量防堆怪；新增敌人经验随关卡递增（level_xp 0.12）；完整自动通关 VICTORY 重验（1271 杀/627s） | ✅ |
+| 08-09 | **Bug 修复**：切关玩家残留（_start_level 复用同一玩家，不再产生"第二个玩家"）；召唤物只跟不攻击（主动接近目标 + 攻击半径 220） | ✅ |
+| 08-09 | 素材落地：五色树冠背景按主题切换 + 背景缩放 bug 修复、Gandalf 血条纹理替换 HUD（v8 已导出） | ✅ |
 
 ## 未完成 / 待验证（下次会话第一优先）
 
@@ -28,6 +33,32 @@
 2. **M4 流派成型**：6 流派成型检测 + 进化合成 + 爽感档位（全屏粒子/慢动作/数字放大）。
 3. **M5**：Web 体积优化（wasm 39MB 压缩）+ 微信小游戏移植评估报告。
 4. 玩家/怪物程序化精灵后续可继续用 Kenney/itch CC0 素材替换升级。
+
+## 新线程交接清单（2026-08-09，按 multi-agent-dev 流程）
+
+### 用户待办反馈（按优先级）
+1. **UI 重设计**（用户明确要求先读 UI 文档再改）：
+   - 底部物品栏"不知道作用 + 挡视野"：依据 H:\ai-playbook\ui-rag 检索结论（`python H:\ai-playbook\ui-rag\search_ui.py "游戏HUD 物品栏 反馈" -k 3`）——道具格子须图标+名称+层数、可查看详情、数量变化有反馈、UI 不遮挡战斗区（放屏幕边缘/角部、可折叠或半透明）
+   - Boss 血条遮挡其他 UI：调整位置/层级（顶部血条与会话横幅/物品栏重叠）
+   - 验收：战斗 3 秒内可读状态；触屏按钮 ≥44px 不误触
+   - 现状：物品栏已文字化（名称+×N）+ 获得提示飘字；HUD 布局见 scripts/ui/game/hud.gd
+2. **精致素材替换**：蝙蝠/史莱姆太简陋 → 用已下载素材：pixel-platformer 蓝色大生物 3 帧替换 slime（assets-user-kenney-char 报告方案）、Retro-Lines Enemies.png 裁剪 4 种新敌人（水晶哨兵列10-12/蜘蛛底部32x16/魔像列5-8/幽灵列7-8，2x 放大，方案见 docs/research/assets-user-characters.md §6）；Bosses.png 5 大精灵可做中 Boss
+3. **手机端适配**：虚拟摇杆+技能/闪避按钮（InputRouter 已抽象 aim_override/move_vector，触屏实现接入即可）、HUD 响应式、微信小游戏移植评估（M5）
+4. 剩余 M4（流派成型/进化合成/爽感档位）与 M5（Web 体积优化 wasm 39MB、微信评估）
+
+### 已验证基线（新线程开工前提）
+- 数值测试全绿：`python tools/tests/test_curves.py`
+- 冒烟全绿：`godot --headless --path . -s res://scripts/tests/smoke_test.gd`（需提权）
+- 自动通关 VICTORY：`python tools/scripts/run_autoplay.py 30`（需提权）
+- Web 导出：`godot --headless --path . --export-release "Web" export/web/index.html`
+- 静态服务：8125 端口（services.json 登记）；CDP 测试端口 9222-9224
+
+### 关键文件
+- 需求/设计：docs/requirements.md（v1.0）、docs/design/数值设计.md、ui-design.md、data-schema.md、contracts.md
+- 踩坑：docs/PLAYBOOK.md、docs/research/godot-pitfalls.md、共享手册 H:\ai-playbook
+- 素材报告：docs/research/assets-rpg-urban.md / assets-kenney-char.md / assets-user-scene.md / assets-user-characters.md
+- 下载工具：tools/scripts/fetch_assets.py（Kenney 自动 + user_assets 盘点）、fetch_itch.py（itch 尝试器）
+- 待导入素材：.tools/user_assets/（8 个 itch 包已解压，许可已核实）
 
 ## 下一步计划（优先级排序）
 

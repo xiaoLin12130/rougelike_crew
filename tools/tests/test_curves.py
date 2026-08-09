@@ -125,10 +125,17 @@ def main():
     atk_l5 = slime["attack"] * (1 + 0.12 * 4)
     check(abs(atk_l5 / atk_l1 - (1 + 0.48)) < 1e-9, "atk scaling level factor")
 
-    # --- xp curve ---
+    # --- xp curve (GameState.xp_to_next 公式一致性) ---
     xp = balance["xp"]
-    check(xp["base"] + xp["per_level"] * 1 == 95, "xp to next at L1 = 95")
-    check(xp["base"] + xp["per_level"] * 4 == 200, "xp to next at L4 = 200")
+    check(xp["base"] + xp["per_level"] * 0 == 50, "xp L1 = 50")
+    check(xp["base"] + xp["per_level"] * 3 + xp["quad"] * 9 == 185, "xp L4 = 185")
+    check(xp["base"] + xp["per_level"] * 4 + xp["quad"] * 16 == 250, "xp L5 = 250")
+    # 增幅逐级增加 → 曲线平滑且单调
+    prev_gain = 0
+    for l in range(1, 15):
+        need = xp["base"] + xp["per_level"] * (l - 1) + xp["quad"] * (l - 1) ** 2
+        check(need > prev_gain, f"xp need monotonic at L{l}")
+        prev_gain = need
 
     # --- crit ---
     crit = balance["crit"]

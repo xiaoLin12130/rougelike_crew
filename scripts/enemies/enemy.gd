@@ -266,7 +266,9 @@ func _flash() -> void:
 
 func _die() -> void:
 	_dead = true
-	EventBus.enemy_died.emit(enemy_id, global_position, int(conf.get("xp", 8)), int(conf.get("gold", 3)))
+	EventBus.enemy_died.emit(enemy_id, global_position,
+		GameState.enemy_xp(float(conf.get("xp", 8)), GameState.run.level, GameState.run.loop),
+		int(conf.get("gold", 3)))
 	EventBus.fx_explosion.emit(global_position, "blade")
 	if behavior == "split":
 		# 史莱姆分裂：两只小史莱姆（分裂产物不再分裂，防无限循环）

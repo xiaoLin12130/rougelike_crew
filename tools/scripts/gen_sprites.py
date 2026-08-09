@@ -29,6 +29,8 @@ PAL = {
     "slime_king_dark": (36, 110, 160, 255),
     "bat": (120, 78, 170, 255),
     "bat_dark": (84, 52, 124, 255),
+    "bat_ally": (92, 170, 235, 255),
+    "bat_ally_dark": (56, 118, 180, 255),
     "ghost": (215, 225, 240, 235),
     "ghost_dark": (150, 165, 195, 200),
     "goblin": (110, 170, 80, 255),
@@ -205,6 +207,28 @@ def bat(frame):
     # eyes
     c.rect(13, 15, 2, 2, PAL["eye"])
     c.rect(18, 15, 2, 2, PAL["eye"])
+    return c
+
+
+def bat_ally(frame):
+    """友军蝙蝠：蓝色系，与敌方紫色蝙蝠区分（敌我辨识）"""
+    c = Canvas()
+    up = frame == 1
+    if up:
+        c.rect(2, 12, 10, 3, PAL["bat_ally"])
+        c.rect(2, 9, 4, 3, PAL["bat_ally_dark"])
+        c.rect(20, 12, 10, 3, PAL["bat_ally"])
+        c.rect(26, 9, 4, 3, PAL["bat_ally_dark"])
+    else:
+        c.rect(2, 16, 12, 3, PAL["bat_ally"])
+        c.rect(2, 19, 4, 3, PAL["bat_ally_dark"])
+        c.rect(18, 16, 12, 3, PAL["bat_ally"])
+        c.rect(26, 19, 4, 3, PAL["bat_ally_dark"])
+    c.ellipse(16, 17, 6, 7, PAL["bat_ally"])
+    c.rect(12, 9, 2, 4, PAL["bat_ally_dark"])
+    c.rect(18, 9, 2, 4, PAL["bat_ally_dark"])
+    c.rect(13, 15, 2, 2, PAL["white"])
+    c.rect(18, 15, 2, 2, PAL["white"])
     return c
 
 
@@ -416,6 +440,8 @@ def main():
     save(slime(2), "enemy_slime_2")
     save(bat(1), "enemy_bat_1")
     save(bat(2), "enemy_bat_2")
+    save(bat_ally(1), "summon_bat_1")
+    save(bat_ally(2), "summon_bat_2")
     save(ghost(1), "enemy_ghost_1")
     save(ghost(2), "enemy_ghost_2")
     save(goblin(1), "enemy_goblin_1")

@@ -95,9 +95,10 @@ func _spawn_camera() -> void:
 func _start_level() -> void:
 	if level_node:
 		level_node.queue_free()
-	player = load(PLAYER_SCENE).instantiate()
-	player.position = GameState.MAP_SIZE / 2.0
-	add_child(player)
+	if player == null or not is_instance_valid(player):
+		player = load(PLAYER_SCENE).instantiate()
+		add_child(player)
+	player.position = GameState.MAP_SIZE / 2.0  # 复用同一玩家，切关不再产生"第二个玩家"
 	if camera:
 		camera.global_position = player.position  # 开局瞬间对准，避免从角落滑入
 	level_node = load(LEVEL_SCENE).instantiate()
