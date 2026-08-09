@@ -47,9 +47,12 @@ func _style_bar(bar: ProgressBar, fill: Color, h: int = 10) -> void:
 	bar.show_percentage = false
 	bar.custom_minimum_size = Vector2(140, h)
 	bar.add_theme_stylebox_override("background", UiTheme.style(Color("#0d0a16"), UiTheme.BORDER_DIM, 2, 2))
-	var sb := StyleBoxFlat.new()
-	sb.bg_color = fill
-	sb.set_corner_radius_all(2)
+	var sb := StyleBoxTexture.new()
+	sb.texture = load("res://assets/ui/hpbar_blue.png")
+	sb.texture_margin_left = 2
+	sb.texture_margin_right = 2
+	sb.texture_margin_top = 2
+	sb.texture_margin_bottom = 2
 	bar.add_theme_stylebox_override("fill", sb)
 
 func _build_resources(root: Control) -> void:
@@ -115,9 +118,12 @@ func _build_boss_bar(root: Control) -> void:
 	_boss_bar.show_percentage = false
 	_boss_bar.custom_minimum_size = Vector2(320, 14)
 	_boss_bar.add_theme_stylebox_override("background", UiTheme.style(Color("#120a14"), Color("#5a2a44"), 2, 3))
-	var fill := StyleBoxFlat.new()
-	fill.bg_color = Color(1.0, 0.32, 0.28)
-	fill.set_corner_radius_all(3)
+	var fill := StyleBoxTexture.new()
+	fill.texture = load("res://assets/ui/hpbar_red.png")
+	fill.texture_margin_left = 2
+	fill.texture_margin_right = 2
+	fill.texture_margin_top = 2
+	fill.texture_margin_bottom = 2
 	_boss_bar.add_theme_stylebox_override("fill", fill)
 	_boss_root.add_child(_boss_bar)
 

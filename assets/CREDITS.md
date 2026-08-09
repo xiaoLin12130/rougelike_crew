@@ -25,3 +25,15 @@
 - 来源：https://kenney.nl/assets/rpg-urban-pack（RPG Urban Pack）
 - 许可：CC0
 - 用途：各关卡地面（grass/dirt/stone/water 图集，16x16 实心瓦片）
+
+## itch.io 免费包（.tools/user_assets，2026-08-09 下载，许可已核实页面声明）
+
+| 包 | 作者 | 许可（页面声明） |
+|---|---|---|
+| FREE Mana Seed Character Base Demo 2.0 | seliel-the-shaper | 免费 Demo 版，readme 说明见包内（商用需确认正式版条款） |
+| GandalfHardcore FREE Character Asset Pack | gandalfhardcore | 允许商业与非商业游戏使用（页面 LICENSE） |
+| GandalfHardcore FREE Platformer Assets | gandalfhardcore | 同上 |
+| GandalfHardcore Hp bar | gandalfhardcore | 同上 |
+| Legacy Fantasy - Debug Map / High Forest 2.0 | anokolisa | 完全免费商用，署名可选（页面声明） |
+| Pixel Crawler - Free Pack 2.11 | anokolisa | 同上（同作者系列声明） |
+| Retro-Lines 16x16 v3.4.3 | v3x3d | CC0（包内 LICENSE.txt） |

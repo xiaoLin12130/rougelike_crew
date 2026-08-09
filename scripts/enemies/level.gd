@@ -66,13 +66,27 @@ func _build_floor(theme: String) -> void:
 	add_child(tml)
 
 func _build_background() -> void:
+	# 远景树冠（High Forest 系列，1344 宽原生接近 1280 视口，按主题选色）
+	var theme := str(_find_level(level_id).get("theme", "grass"))
+	var canopy := "res://assets/env/canopy_green.png"
+	match theme:
+		"stone", "temple":
+			canopy = "res://assets/env/canopy_dark.png"
+		"lava":
+			canopy = "res://assets/env/canopy_red.png"
+		"desert":
+			canopy = "res://assets/env/canopy_golden.png"
+	var tex := load(canopy)
 	var bg := Sprite2D.new()
 	bg.name = "Background"
-	bg.texture = load("res://assets/env/back_forest.png")
+	bg.texture = tex
 	bg.centered = false
-	bg.modulate = Color(0.5, 0.5, 0.6, 0.55)
 	bg.position = Vector2.ZERO
-	bg.scale = Vector2(VIEW.x / 288.0, VIEW.y / 160.0)
+	# 按实际纹理尺寸适配视口（修复旧版按错误尺寸缩放导致的溢出）
+	var w := float(tex.get_width())
+	var h := float(tex.get_height())
+	bg.scale = Vector2(VIEW.x / w, VIEW.y / h)
+	bg.modulate = Color(1, 1, 1, 0.7)
 	bg.z_index = -10
 	add_child(bg)
 
