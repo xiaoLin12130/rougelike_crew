@@ -9,12 +9,9 @@ func _ready() -> void:
 	_build_title()
 	_style_buttons()
 	continue_button.disabled = not SaveStore.has_save()
-	continue_button.disabled = false  # DEMO：始终可继续（无存档时等同新局）
 	start_button.pressed.connect(_on_start)
 	continue_button.pressed.connect(_on_continue)
 	$QuitButton.pressed.connect(_on_quit)
-	# 解锁音频（浏览器自动播放策略）
-	SfxBus.play("res://assets/audio/sfx_two_tone.ogg", -30.0)
 
 func _build_background() -> void:
 	var grad := GradientTexture2D.new()
@@ -24,10 +21,12 @@ func _build_background() -> void:
 	grad.fill_to = Vector2(0, 1)
 	var bg := TextureRect.new()
 	bg.texture = grad
+	bg.z_index = -10  # 背景必须垫底，否则盖住 tscn 预置的按钮
 	bg.set_anchors_preset(Control.PRESET_FULL_RECT)
 	bg.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(bg)
 	var stars := CPUParticles2D.new()
+	stars.z_index = -10
 	stars.amount = 90
 	stars.lifetime = 4.0
 	stars.explosiveness = 0.0

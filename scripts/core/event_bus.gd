@@ -19,3 +19,6 @@ signal screen_shake(power: float)
 signal slow_mo(factor: float, duration: float)
 signal wave_state_changed(state: String)
 signal run_ended(victory: bool, stats: Dictionary)
+signal boss_spawned(boss_name: String, max_hp: int)
+signal boss_hp_changed(hp: int, max_hp: int)
+signal boss_died

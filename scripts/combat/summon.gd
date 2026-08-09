@@ -89,7 +89,7 @@ func _nearest_enemy() -> Node:
 	for e in get_tree().get_nodes_in_group("enemy"):
 		if not is_instance_valid(e):
 			continue
-		var d := global_position.distance_to(e.global_position)
+		var d: float = global_position.distance_to(e.global_position) - e.scale.x * 8.0
 		if d <= best_d:
 			best_d = d
 			best = e

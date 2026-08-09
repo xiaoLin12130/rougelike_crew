@@ -2,7 +2,7 @@ extends Node
 ## 波次生成器：按 levels.json 时间线刷怪，全清后通知关卡
 
 const ENEMY_SCENE := preload("res://scenes/game/enemy.tscn")
-const ARENA := Rect2(24, 24, 592, 312)
+const ARENA := Rect2(40, 40, 1200, 640)
 const MAX_CONCURRENT := 32
 
 var _waves: Array = []
@@ -11,10 +11,12 @@ var _wave_elapsed := 0.0
 var _spawn_timer := 0.0
 var _done := false
 var _level_start_time := 0.0
+var _waves_done_since := -1.0
 
 func setup(waves: Array) -> void:
 	_waves = waves
-	_level_start_time = GameState.run.time  # 波次时间表按"关卡内时间"计
+	# 波次时间基准：支持存档继续（恢复时从存档的关卡内时间续上）
+	_level_start_time = GameState.run.time - GameState.run.get("level_elapsed", 0.0)
 	print("[SPAWNER] setup at run.time=%.1f waves=%d" % [_level_start_time, _waves.size()])
 
 func _physics_process(delta: float) -> void:
@@ -36,10 +38,18 @@ func _physics_process(delta: float) -> void:
 			_spawn_timer = 0.0
 			_spawn_group(wave)
 	if _active_wave >= 0 and _wave_elapsed > float(_waves[_active_wave].get("duration", 30)):
-		if _active_wave + 1 >= _waves.size() and _enemies_alive() == 0:
-			_done = true
-			EventBus.wave_state_changed.emit("全清！Boss 降临！")
-			EventBus.wave_state_changed.emit("clear")
+		var all_waves_done: bool = _active_wave + 1 >= _waves.size()
+		if all_waves_done:
+			if _waves_done_since < 0.0:
+				_waves_done_since = GameState.run.time
+			# 全波完成且场上清空；或全波完成 15 秒兜底（防分裂/残留怪卡场）
+			var timeout_passed: bool = GameState.run.time - _waves_done_since > 15.0
+			if _enemies_alive() == 0 or timeout_passed:
+				_done = true
+				EventBus.wave_state_changed.emit("全清！Boss 降临！")
+				EventBus.wave_state_changed.emit("clear")
+	else:
+		_waves_done_since = -1.0
 
 func _spawn_group(wave: Dictionary) -> void:
 	var spawns: Dictionary = wave.get("spawn", {})

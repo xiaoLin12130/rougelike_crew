@@ -41,10 +41,20 @@ func _ready() -> void:
 	EventBus.enemy_died.connect(_on_enemy_died)
 	EventBus.level_cleared.connect(_on_level_cleared)
 	EventBus.loop_choice.connect(_on_loop_choice)
+	# 自动存档：每 10 秒 + 切关时（中途退出可在暂停菜单保存后回主菜单）
+	var save_timer := Timer.new()
+	save_timer.wait_time = 10.0
+	save_timer.timeout.connect(_autosave)
+	add_child(save_timer)
+	save_timer.start()
+
+func _autosave() -> void:
+	SaveStore.save_run(GameState.run)
 
 func _process(delta: float) -> void:
 	if not get_tree().paused:
 		GameState.run.time += delta
+		GameState.run.level_elapsed = GameState.run.get("level_elapsed", 0.0) + delta
 	_hit_protect = maxf(_hit_protect - delta, 0.0)
 	_check_levelup()
 	if Input.is_action_just_pressed("pause"):
@@ -86,8 +96,10 @@ func _start_level() -> void:
 	if level_node:
 		level_node.queue_free()
 	player = load(PLAYER_SCENE).instantiate()
-	player.position = Vector2(320, 180)
+	player.position = GameState.MAP_SIZE / 2.0
 	add_child(player)
+	if camera:
+		camera.global_position = player.position  # 开局瞬间对准，避免从角落滑入
 	level_node = load(LEVEL_SCENE).instantiate()
 	var levels: Array = GameState.tables.get("levels", {}).get("levels", [])
 	var idx: int = clampi(GameState.run.level - 1, 0, levels.size() - 1)
@@ -95,6 +107,7 @@ func _start_level() -> void:
 	level_node.init_level(level_id)
 	add_child(level_node)
 	GameState.run.hp = GameState.run.max_hp
+	GameState.run.level_elapsed = 0.0
 	EventBus.player_stats_changed.emit()
 
 func _check_levelup() -> void:
@@ -243,6 +256,7 @@ func _on_player_died() -> void:
 	game_over.show()
 
 func _on_level_cleared(_level_id: String) -> void:
+	SaveStore.save_run(GameState.run)  # 切关即存档
 	if GameState.run.get("final_boss_mode", false):
 		get_tree().paused = true
 		game_over.show_result(true, GameState.run.duplicate())

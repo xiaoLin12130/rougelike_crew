@@ -34,6 +34,6 @@ func _resume() -> void:
 	hide()
 
 func _back() -> void:
+	SaveStore.save_run(GameState.run)  # 返回主菜单前保存进度
 	get_tree().paused = false
-	GameState.new_run()
 	get_tree().change_scene_to_file("res://scenes/main_menu.tscn")

@@ -69,10 +69,21 @@ func _process(_delta: float) -> void:
 			if is_instance_valid(e) and e.has_method("get_enemy_id"):
 				var kid: String = e.get_enemy_id()
 				kinds[kid] = kinds.get(kid, 0) + 1
+				if kid == "slime_king" or kid == "final_god" or kid.ends_with("_king"):
+					kinds[kid + "_hp"] = "%d/%d" % [int(e.hp), int(e.max_hp)]
+		var hud := scene.get_node_or_null("HUD")
+		var item_slots := -1
+		var grid_slots := -1
+		if hud:
+			if hud.get("_items_box") != null:
+				item_slots = hud._items_box.get_child_count()
+			if hud.get("_grid_box") != null:
+				grid_slots = hud._grid_box.get_child_count()
 		_log_line("[AUTOPLAY] t=%d hp=%d lv=%d kills=%d enemies=%d dps=%d grid=%d items=%d" % [
 			int(GameState.run.time), GameState.run.hp, GameState.run.player_level,
 			GameState.run.kills, enemies.size(), int(GameState.estimate_dps()),
 			GameState.run.grid.size(), GameState.run.items.size()])
+		_log_line("[HUD] item_slots=%d grid_slots=%d" % [item_slots, grid_slots])
 		_log_line("[KINDS] " + str(kinds))
 
 func _handle_overlays(scene: Node) -> bool:
@@ -161,7 +172,7 @@ func _drive_player() -> void:
 	var aim := Vector2.RIGHT
 	var aim_target := ranged_target if ranged_target != null else nearest
 	if nearest == null:
-		mv = (Vector2(320, 180) - player.global_position).normalized() * 0.5
+		mv = (GameState.MAP_SIZE / 2.0 - player.global_position).normalized() * 0.5
 	else:
 		if aim_target != null:
 			aim = (aim_target.global_position - player.global_position).normalized()
@@ -216,7 +227,8 @@ func _drive_player() -> void:
 		_dash_pressed = false
 
 func _safe_corner(player_pos: Vector2, centroid: Vector2, count: int) -> Vector2:
-	var corners := [Vector2(30, 30), Vector2(610, 30), Vector2(30, 330), Vector2(610, 330)]
+	var m := GameState.MAP_SIZE
+	var corners := [Vector2(40, 40), Vector2(m.x - 40, 40), Vector2(40, m.y - 40), Vector2(m.x - 40, m.y - 40)]
 	var best := Vector2(30, 30)
 	var best_d := -INF
 	var ref := centroid / maxi(count, 1)

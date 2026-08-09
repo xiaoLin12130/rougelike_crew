@@ -45,6 +45,16 @@ PAL = {
     "poison_dark": (90, 150, 60, 255),
     "blade": (210, 215, 230, 255),
     "blade_dark": (120, 128, 150, 255),
+    "wizard_robe": (138, 74, 200, 255),
+    "wizard_dark": (92, 46, 140, 255),
+    "bomber": (214, 74, 74, 255),
+    "bomber_dark": (150, 44, 44, 255),
+    "fuse": (240, 200, 80, 255),
+    "charger": (168, 118, 70, 255),
+    "charger_dark": (118, 80, 46, 255),
+    "healer_robe": (226, 226, 236, 255),
+    "healer_dark": (170, 170, 190, 255),
+    "cross": (90, 200, 120, 255),
     "grass1": (88, 158, 74, 255),
     "grass2": (76, 142, 64, 255),
     "grass3": (104, 176, 88, 255),
@@ -284,6 +294,66 @@ def imp(frame):
     return c
 
 
+def wizard(frame):
+    c = humanoid(PAL["wizard_robe"], PAL["wizard_dark"], frame)
+    # 尖帽
+    c.rect(12, 2, 8, 6, PAL["wizard_dark"])
+    c.rect(14, 0, 4, 3, PAL["wizard_dark"])
+    c.rect(12, 5, 8, 2, PAL["fuse"])
+    # 法杖
+    c.rect(23, 8, 2, 20, PAL["bone_dark"])
+    c.circle(24, 7, 3, PAL["fire_hi"])
+    return c
+
+
+def bomber(frame):
+    c = Canvas()
+    # 圆球身体
+    c.ellipse(16, 18, 11, 10, PAL["bomber"])
+    c.ellipse(10, 14, 6, 5, PAL["bomber_dark"])
+    c.ellipse(22, 14, 6, 5, PAL["bomber_dark"])
+    # 眼睛
+    c.rect(12, 16, 3, 3, PAL["eye"])
+    c.rect(19, 16, 3, 3, PAL["eye"])
+    # 引线（闪烁）
+    c.rect(15, 5, 3, 3, PAL["fuse"])
+    if frame == 2:
+        c.set(15, 4, PAL["fire_hi"])
+        c.set(17, 4, PAL["fire_hi"])
+        c.set(16, 3, PAL["fire_hi"])
+    return c
+
+
+def charger(frame):
+    c = Canvas()
+    bob = 1 if frame == 2 else 0
+    # 身体
+    c.ellipse(16, 19 + bob, 12, 9, PAL["charger"])
+    c.ellipse(7, 17 + bob, 7, 7, PAL["charger"])
+    # 腿
+    c.rect(9, 26 + bob, 4, 5, PAL["charger_dark"])
+    c.rect(15, 26 + bob, 4, 5, PAL["charger_dark"])
+    c.rect(21, 26 + bob, 4, 5, PAL["charger_dark"])
+    # 眼睛 + 獠牙
+    c.rect(6, 14 + bob, 3, 3, PAL["eye"])
+    c.rect(4, 18 + bob, 2, 2, PAL["bone"])
+    c.rect(8, 19 + bob, 2, 2, PAL["bone"])
+    # 背毛
+    c.rect(14, 10 + bob, 2, 3, PAL["charger_dark"])
+    c.rect(18, 10 + bob, 2, 3, PAL["charger_dark"])
+    return c
+
+
+def healer(frame):
+    c = humanoid(PAL["healer_robe"], PAL["healer_dark"], frame)
+    # 头巾 + 十字
+    c.rect(12, 4, 9, 4, PAL["healer_dark"])
+    c.rect(13, 20, 7, 7, PAL["cross"])
+    c.rect(15, 17, 3, 13, PAL["cross"])
+    c.rect(12, 22, 9, 3, PAL["cross"])
+    return c
+
+
 def projectile(kind):
     c = Canvas(12, 12)
     if kind == "fireball":
@@ -356,6 +426,14 @@ def main():
     save(skeleton(2), "enemy_skeleton_2")
     save(imp(1), "enemy_imp_1")
     save(imp(2), "enemy_imp_2")
+    save(wizard(1), "enemy_wizard_1")
+    save(wizard(2), "enemy_wizard_2")
+    save(bomber(1), "enemy_bomber_1")
+    save(bomber(2), "enemy_bomber_2")
+    save(charger(1), "enemy_charger_1")
+    save(charger(2), "enemy_charger_2")
+    save(healer(1), "enemy_healer_1")
+    save(healer(2), "enemy_healer_2")
     save(slime_king(), "boss_slime_king")
     save(skeleton_king(), "boss_skeleton_king")
     save(golem(), "boss_tree_golem")

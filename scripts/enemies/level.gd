@@ -4,7 +4,7 @@ extends Node2D
 const BOSS_SCENE := preload("res://scenes/game/boss.tscn")
 const SPAWNER_SCRIPT := preload("res://scripts/enemies/spawner.gd")
 const TILE_SIZE := 16
-const VIEW := Vector2(640, 360)
+const VIEW := Vector2(1280, 720)
 
 var level_id := ""
 var _boss_id := ""
@@ -15,7 +15,7 @@ func init_level(id: String) -> void:
 	level_id = id
 	var lv: Dictionary = _find_level(id)
 	_boss_id = str(lv.get("boss", ""))
-	_build_floor(str(lv.get("tile", "res://assets/sprites/gen/tile_grass.png")))
+	_build_floor(str(lv.get("theme", "grass")))
 	_build_background()
 	_build_walls()
 	var spawner := SPAWNER_SCRIPT.new()
@@ -31,20 +31,36 @@ func _find_level(id: String) -> Dictionary:
 			return l
 	return {}
 
-func _build_floor(tile_path: String) -> void:
+func _build_floor(theme: String) -> void:
 	var tml := TileMapLayer.new()
 	tml.name = "Floor"
 	var ts := TileSet.new()
 	ts.tile_size = Vector2i(TILE_SIZE, TILE_SIZE)
 	var src := TileSetAtlasSource.new()
-	src.texture = load(tile_path)
+	# Kenney 16x16 实心地面图集（CC0），按关卡主题选择；缺失时回退程序化瓦片
+	var prefix := "grass"
+	match theme:
+		"stone", "temple":
+			prefix = "stone"
+		"lava":
+			prefix = "dirt"
+	var atlas_path := "res://assets/env/kenney_tiles/%s_atlas.png" % prefix
+	if not ResourceLoader.exists(atlas_path):
+		atlas_path = "res://assets/sprites/gen/tile_grass.png"
+	src.texture = load(atlas_path)
 	src.texture_region_size = Vector2i(TILE_SIZE, TILE_SIZE)
 	ts.add_source(src, 0)
-	src.create_tile(Vector2i(0, 0))
+	var n_tiles := 1
+	if src.texture != null:
+		n_tiles = maxi(src.texture.get_width() / TILE_SIZE, 1)
+	for i in n_tiles:
+		src.create_tile(Vector2i(i, 0))
 	tml.tile_set = ts
 	for y in int(VIEW.y / TILE_SIZE):
 		for x in int(VIEW.x / TILE_SIZE):
-			tml.set_cell(Vector2i(x, y), 0, Vector2i(0, 0))
+			# 随机混合铺砖，地面更自然
+			var pick := randi() % n_tiles if n_tiles > 1 else 0
+			tml.set_cell(Vector2i(x, y), 0, Vector2i(pick, 0))
 	add_child(tml)
 
 func _build_background() -> void:
@@ -61,6 +77,7 @@ func _build_background() -> void:
 func _build_walls() -> void:
 	var wall := StaticBody2D.new()
 	wall.name = "Walls"
+	wall.collision_layer = 4  # prop 层：玩家/敌人 mask 均含 4，撞墙不可穿出
 	var thickness := 16.0
 	var rects := [
 		Rect2(-thickness, -thickness, VIEW.x + thickness * 2, thickness),
@@ -89,7 +106,7 @@ func _spawn_boss() -> void:
 	if final_boss:
 		boss_id = str(GameState.tables.get("levels", {}).get("final_boss", "final_god"))
 	boss.setup_boss(boss_id, GameState.run.level, GameState.run.loop, final_boss)
-	boss.global_position = Vector2(VIEW.x / 2.0, 60.0)
+	boss.global_position = Vector2(VIEW.x / 2.0, 120.0)
 	add_child(boss)
 	var boss_name := _boss_name(boss_id)
 	EventBus.wave_state_changed.emit("Boss：%s" % boss_name)

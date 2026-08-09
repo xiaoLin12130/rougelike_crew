@@ -19,3 +19,9 @@
 ## 字体
 - kenvector_future.ttf：Kenney（CC0）
 - NotoSansSC：Google（SIL OFL 1.1，免费商用）
+- LXGWWenKai（霞鹜文楷）子集：落霞孤鹜（SIL OFL 1.1）
+
+## Kenney 地面瓦片（assets/env/kenney_tiles）
+- 来源：https://kenney.nl/assets/rpg-urban-pack（RPG Urban Pack）
+- 许可：CC0
+- 用途：各关卡地面（grass/dirt/stone/water 图集，16x16 实心瓦片）

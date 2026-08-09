@@ -33,6 +33,30 @@ func setup_boss(boss_id: String, level: int, loop: int, final_boss: bool = false
 			_summon_enemy = "goblin_archer"
 		_:
 			_summon_enemy = "bat"
+	EventBus.boss_spawned.emit(str(conf.get("name", boss_id)), int(max_hp))
+	queue_redraw()
+
+func _take_raw(dmg: int) -> void:
+	if _dead or dmg <= 0:
+		return
+	hp -= dmg
+	_flash()
+	EventBus.boss_hp_changed.emit(int(maxf(hp, 0.0)), int(max_hp))
+	queue_redraw()
+	if hp <= 0.0:
+		_die()
+
+func _draw() -> void:
+	# Boss 头顶血条（局部坐标，随 Boss 缩放）
+	var w := 90.0
+	var h := 7.0
+	var y := -34.0
+	draw_rect(Rect2(-w / 2.0, y, w, h), Color(0.08, 0.05, 0.12, 0.9))
+	draw_rect(Rect2(-w / 2.0, y, w, h), Color(0.4, 0.3, 0.55, 1.0), false, 1.5)
+	if max_hp > 0.0:
+		var ratio := clampf(hp / max_hp, 0.0, 1.0)
+		var fill := Color(1.0, 0.32, 0.28) if ratio > 0.33 else Color(1.0, 0.75, 0.2)
+		draw_rect(Rect2(-w / 2.0 + 1.0, y + 1.0, (w - 2.0) * ratio, h - 2.0), fill)
 
 func _find_boss_conf(boss_id: String) -> Dictionary:
 	for b in GameState.tables.get("enemies", {}).get("bosses", []):
@@ -86,6 +110,7 @@ func _spawn_minions(n: int) -> void:
 
 func _die() -> void:
 	_dead = true
+	EventBus.boss_died.emit()
 	var gold: int = int(conf.get("gold", 100))
 	var xp: int = int(conf.get("xp", 200))
 	if _is_final:

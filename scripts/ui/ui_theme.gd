@@ -1,7 +1,7 @@
 class_name UiTheme
 ## 像素 UI 主题工具：统一颜色/字体/组件样式（所有 UI 脚本调用）
 
-const FONT_CN := "res://assets/fonts/NotoSansSC_subset.ttf"
+const FONT_CN := "res://assets/fonts/LXGWWenKai_subset.ttf"
 const FONT_NUM := "res://assets/fonts/kenvector_future.ttf"
 
 const BG := Color("#14111f")

@@ -4,7 +4,7 @@ extends Area2D
 ## 支持 homing / pierce / bounce / orbit / delay / explode / 毒雾 / 冰锥 / 暴击。
 
 const ARENA_MIN := Vector2(16.0, 16.0)
-const ARENA_MAX := Vector2(624.0, 344.0)
+const ARENA_MAX := Vector2(1264.0, 704.0)
 const CONTACT_RADIUS := 9.0
 const ORBIT_RADIUS := 28.0
 const ORBIT_SPEED := 4.5
@@ -199,8 +199,10 @@ func _enemies_in_radius(center: Vector2, radius: float) -> Array:
 	for e in _all_enemies():
 		if not is_instance_valid(e):
 			continue
+		# 命中判定按敌人实际体型放大（大体积 Boss 的碰撞圈远大于中心 9px）
+		var hit_r: float = radius + e.scale.x * 8.0
 		var d: float = center.distance_to(e.global_position)
-		if d <= radius:
+		if d <= hit_r:
 			result.append(e)
 	return result
 

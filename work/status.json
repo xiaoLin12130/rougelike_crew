@@ -1,12 +1,17 @@
 {
-  "phase": "0-requirements",
-  "updated": "2026-08-08",
+  "phase": "demo-polish",
+  "updated": "2026-08-08-session-end",
   "tasks": {
-    "assets_inventory": {"status": "done", "note": "五套免费素材包已定位，详见 requirements 草案"},
-    "godot_setup": {"status": "done", "note": "Godot 4.7.1 编辑器 + 官方文档 1596 rst 已就绪"},
-    "rag_system": {"status": "done", "note": "BM25: 25609 chunks, 含官方文档+数值书籍+项目docs"},
-    "game_analysis": {"status": "done", "note": "docs/research/game-build-analysis.md"},
-    "godot_pitfalls": {"status": "done", "note": "docs/research/godot-pitfalls.md"},
-    "requirements_draft": {"status": "in_progress", "note": "docs/requirements.md v0.1，等待用户逐条确认"}
+    "core_gameplay": {"status": "done", "note": "5关+Boss+抉择循环+最终Boss，旧配置自动通关VICTORY"},
+    "save_system": {"status": "done", "note": "10s自动存档+继续恢复+波次续接，headless已验证"},
+    "camera_and_map": {"status": "done", "note": "地图1280x720+相机跟随+墙碰撞（角色不可出屏）"},
+    "boss_hpbar": {"status": "done", "note": "HUD大血条+头顶血条，test_boss全绿"},
+    "enemy_skills": {"status": "done", "note": "4新怪+7技能+防重叠+分裂防循环+清场兜底"},
+    "hud_item_bar": {"status": "done", "note": "物品栏文字化(名称+×N)+获得提示飘字，已改未导出"},
+    "balance_retune": {"status": "done", "note": "远程怪回调（imp/弓手攻速数量↓、受击保护0.6s），待autoplay验证"},
+    "autoplay_verify": {"status": "in_progress", "note": "回调后完整通关验证未跑完，上次DEFEAT@level4"},
+    "export_v6": {"status": "pending", "note": "待导出并打开给用户复测"},
+    "git_push": {"status": "pending", "note": "本轮改动未提交"},
+    "issues_update": {"status": "pending", "note": "issues #1-#6 状态待更新"}
   }
 }

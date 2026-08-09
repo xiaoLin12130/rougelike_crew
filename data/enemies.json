@@ -1,25 +1,340 @@
 {
   "affixes": {
-    "flame": {"name": "烈焰", "hp_mult": 4.0, "atk_mult": 1.5, "size_mult": 1.4, "element": "fire"},
-    "lightning": {"name": "迅捷", "hp_mult": 3.5, "atk_mult": 1.4, "size_mult": 1.3, "speed_mult": 1.5},
-    "frost": {"name": "霜甲", "hp_mult": 5.0, "atk_mult": 1.3, "size_mult": 1.4, "armor": 0.3},
-    "stone": {"name": "磐石", "hp_mult": 6.0, "atk_mult": 1.2, "size_mult": 1.6, "armor": 0.5}
+    "flame": {
+      "name": "烈焰",
+      "hp_mult": 4.0,
+      "atk_mult": 1.5,
+      "size_mult": 1.4,
+      "element": "fire"
+    },
+    "lightning": {
+      "name": "迅捷",
+      "hp_mult": 3.5,
+      "atk_mult": 1.4,
+      "size_mult": 1.3,
+      "speed_mult": 1.5
+    },
+    "frost": {
+      "name": "霜甲",
+      "hp_mult": 5.0,
+      "atk_mult": 1.3,
+      "size_mult": 1.4,
+      "armor": 0.3
+    },
+    "stone": {
+      "name": "磐石",
+      "hp_mult": 6.0,
+      "atk_mult": 1.2,
+      "size_mult": 1.6,
+      "armor": 0.5
+    }
   },
   "enemies": [
-    {"id": "slime", "name": "史莱姆", "hp": 45, "attack": 7, "speed": 55, "size": 1.0, "touch": true, "xp": 8, "gold": 3, "sprite": "res://assets/sprites/gen/enemy_slime_1.png", "frames": 2, "affix_pool": ["flame", "lightning"]},
-    {"id": "bat", "name": "蝙蝠", "hp": 30, "attack": 5, "speed": 120, "size": 0.9, "touch": true, "xp": 6, "gold": 2, "sprite": "res://assets/sprites/gen/enemy_bat_1.png", "frames": 2, "affix_pool": ["lightning"]},
-    {"id": "ghost", "name": "幽灵", "hp": 60, "attack": 8, "speed": 70, "size": 1.0, "touch": true, "phase": true, "xp": 10, "gold": 4, "sprite": "res://assets/sprites/gen/enemy_ghost_1.png", "frames": 2, "affix_pool": ["frost"]},
-    {"id": "goblin", "name": "哥布林", "hp": 70, "attack": 10, "speed": 80, "size": 1.0, "touch": true, "xp": 12, "gold": 4, "sprite": "res://assets/sprites/gen/enemy_goblin_1.png", "frames": 2, "affix_pool": ["flame", "stone"]},
-    {"id": "goblin_archer", "name": "哥布林弓手", "hp": 50, "attack": 8, "speed": 60, "size": 1.0, "range": 240, "projectile": true, "fire_interval": 4.0, "bullet_speed": 150, "xp": 12, "gold": 5, "sprite": "res://assets/sprites/gen/enemy_archer_1.png", "frames": 2, "affix_pool": ["lightning"]},
-    {"id": "skeleton", "name": "骷髅", "hp": 90, "attack": 12, "speed": 60, "size": 1.0, "touch": true, "xp": 14, "gold": 5, "sprite": "res://assets/sprites/gen/enemy_skeleton_1.png", "frames": 2, "affix_pool": ["stone", "frost"]},
-    {"id": "imp", "name": "小恶魔", "hp": 55, "attack": 10, "speed": 95, "size": 0.9, "range": 200, "projectile": true, "fire_interval": 3.2, "bullet_speed": 150, "xp": 12, "gold": 5, "sprite": "res://assets/sprites/gen/enemy_imp_1.png", "frames": 2, "affix_pool": ["flame"]}
+    {
+      "id": "slime",
+      "name": "史莱姆",
+      "hp": 45,
+      "attack": 7,
+      "speed": 55,
+      "size": 1.0,
+      "touch": true,
+      "xp": 8,
+      "gold": 3,
+      "sprite": "res://assets/sprites/gen/enemy_slime_1.png",
+      "frames": 2,
+      "affix_pool": [
+        "flame",
+        "lightning"
+      ],
+      "behavior": "split"
+    },
+    {
+      "id": "bat",
+      "name": "蝙蝠",
+      "hp": 30,
+      "attack": 5,
+      "speed": 120,
+      "size": 0.9,
+      "touch": true,
+      "xp": 6,
+      "gold": 2,
+      "sprite": "res://assets/sprites/gen/enemy_bat_1.png",
+      "frames": 2,
+      "affix_pool": [
+        "lightning"
+      ],
+      "behavior": "dive"
+    },
+    {
+      "id": "ghost",
+      "name": "幽灵",
+      "hp": 60,
+      "attack": 8,
+      "speed": 70,
+      "size": 1.0,
+      "touch": true,
+      "phase": true,
+      "xp": 10,
+      "gold": 4,
+      "sprite": "res://assets/sprites/gen/enemy_ghost_1.png",
+      "frames": 2,
+      "affix_pool": [
+        "frost"
+      ],
+      "behavior": "phase"
+    },
+    {
+      "id": "goblin",
+      "name": "哥布林",
+      "hp": 70,
+      "attack": 10,
+      "speed": 80,
+      "size": 1.0,
+      "touch": true,
+      "xp": 12,
+      "gold": 4,
+      "sprite": "res://assets/sprites/gen/enemy_goblin_1.png",
+      "frames": 2,
+      "affix_pool": [
+        "flame",
+        "stone"
+      ],
+      "behavior": "rage"
+    },
+    {
+      "id": "goblin_archer",
+      "name": "哥布林弓手",
+      "hp": 50,
+      "attack": 7,
+      "speed": 60,
+      "size": 1.0,
+      "range": 240,
+      "projectile": true,
+      "fire_interval": 4.5,
+      "bullet_speed": 150,
+      "xp": 12,
+      "gold": 5,
+      "sprite": "res://assets/sprites/gen/enemy_archer_1.png",
+      "frames": 2,
+      "affix_pool": [
+        "lightning"
+      ],
+      "behavior": "triple"
+    },
+    {
+      "id": "skeleton",
+      "name": "骷髅",
+      "hp": 90,
+      "attack": 12,
+      "speed": 60,
+      "size": 1.0,
+      "touch": true,
+      "xp": 14,
+      "gold": 5,
+      "sprite": "res://assets/sprites/gen/enemy_skeleton_1.png",
+      "frames": 2,
+      "affix_pool": [
+        "stone",
+        "frost"
+      ],
+      "behavior": "shield"
+    },
+    {
+      "id": "imp",
+      "name": "小恶魔",
+      "hp": 55,
+      "attack": 8,
+      "speed": 95,
+      "size": 0.9,
+      "range": 200,
+      "projectile": true,
+      "fire_interval": 4.5,
+      "bullet_speed": 150,
+      "xp": 12,
+      "gold": 5,
+      "sprite": "res://assets/sprites/gen/enemy_imp_1.png",
+      "frames": 2,
+      "affix_pool": [
+        "flame"
+      ],
+      "behavior": "burn"
+    },
+    {
+      "id": "wizard",
+      "name": "????",
+      "hp": 45,
+      "attack": 14,
+      "speed": 55,
+      "size": 1.0,
+      "range": 260,
+      "projectile": true,
+      "fire_interval": 3.6,
+      "bullet_speed": 130,
+      "behavior": "cast",
+      "xp": 15,
+      "gold": 6,
+      "sprite": "res://assets/sprites/gen/enemy_wizard_1.png",
+      "frames": 2,
+      "affix_pool": [
+        "frost"
+      ]
+    },
+    {
+      "id": "bomber",
+      "name": "???",
+      "hp": 40,
+      "attack": 10,
+      "speed": 85,
+      "size": 1.0,
+      "touch": true,
+      "behavior": "bomb",
+      "xp": 12,
+      "gold": 5,
+      "sprite": "res://assets/sprites/gen/enemy_bomber_1.png",
+      "frames": 2,
+      "affix_pool": [
+        "flame"
+      ]
+    },
+    {
+      "id": "charger",
+      "name": "???",
+      "hp": 80,
+      "attack": 14,
+      "speed": 90,
+      "size": 1.1,
+      "touch": true,
+      "behavior": "charge",
+      "xp": 14,
+      "gold": 5,
+      "sprite": "res://assets/sprites/gen/enemy_charger_1.png",
+      "frames": 2,
+      "affix_pool": [
+        "stone"
+      ]
+    },
+    {
+      "id": "healer",
+      "name": "????",
+      "hp": 70,
+      "attack": 6,
+      "speed": 55,
+      "size": 1.0,
+      "touch": true,
+      "behavior": "heal",
+      "xp": 16,
+      "gold": 6,
+      "sprite": "res://assets/sprites/gen/enemy_healer_1.png",
+      "frames": 2,
+      "affix_pool": [
+        "lightning"
+      ]
+    }
   ],
   "bosses": [
-    {"id": "slime_king", "name": "史莱姆王", "hp": 600, "attack": 15, "speed": 50, "size": 1.6, "touch": true, "xp": 100, "gold": 60, "sprite": "res://assets/sprites/gen/boss_slime_king.png", "frames": 1, "phases": [0.66, 0.33]},
-    {"id": "tree_golem", "name": "树精守卫", "hp": 800, "attack": 17, "speed": 40, "size": 1.8, "touch": true, "xp": 120, "gold": 80, "sprite": "res://assets/sprites/gen/boss_tree_golem.png", "frames": 1, "phases": [0.66, 0.33]},
-    {"id": "skeleton_king", "name": "骷髅王", "hp": 1000, "attack": 20, "speed": 60, "size": 1.7, "touch": true, "xp": 150, "gold": 100, "sprite": "res://assets/sprites/gen/boss_skeleton_king.png", "frames": 1, "phases": [0.66, 0.33]},
-    {"id": "imp_king", "name": "熔岩魔王", "hp": 1200, "attack": 24, "speed": 70, "size": 1.8, "range": 260, "projectile": true, "xp": 180, "gold": 120, "sprite": "res://assets/sprites/gen/boss_imp_king.png", "frames": 1, "phases": [0.66, 0.33]},
-    {"id": "ancient_guardian", "name": "远古守卫", "hp": 1500, "attack": 27, "speed": 55, "size": 2.0, "touch": true, "xp": 220, "gold": 150, "sprite": "res://assets/sprites/gen/boss_ancient_guardian.png", "frames": 1, "phases": [0.66, 0.33]},
-    {"id": "final_god", "name": "古神", "hp": 3000, "attack": 34, "speed": 60, "size": 2.4, "touch": true, "xp": 500, "gold": 500, "sprite": "res://assets/sprites/gen/boss_lava_golem.png", "frames": 1, "phases": [0.8, 0.5, 0.25]}
+    {
+      "id": "slime_king",
+      "name": "史莱姆王",
+      "hp": 600,
+      "attack": 15,
+      "speed": 50,
+      "size": 1.6,
+      "touch": true,
+      "xp": 100,
+      "gold": 60,
+      "sprite": "res://assets/sprites/gen/boss_slime_king.png",
+      "frames": 1,
+      "phases": [
+        0.66,
+        0.33
+      ]
+    },
+    {
+      "id": "tree_golem",
+      "name": "树精守卫",
+      "hp": 800,
+      "attack": 17,
+      "speed": 40,
+      "size": 1.8,
+      "touch": true,
+      "xp": 120,
+      "gold": 80,
+      "sprite": "res://assets/sprites/gen/boss_tree_golem.png",
+      "frames": 1,
+      "phases": [
+        0.66,
+        0.33
+      ]
+    },
+    {
+      "id": "skeleton_king",
+      "name": "骷髅王",
+      "hp": 1000,
+      "attack": 20,
+      "speed": 60,
+      "size": 1.7,
+      "touch": true,
+      "xp": 150,
+      "gold": 100,
+      "sprite": "res://assets/sprites/gen/boss_skeleton_king.png",
+      "frames": 1,
+      "phases": [
+        0.66,
+        0.33
+      ]
+    },
+    {
+      "id": "imp_king",
+      "name": "熔岩魔王",
+      "hp": 1200,
+      "attack": 24,
+      "speed": 70,
+      "size": 1.8,
+      "range": 260,
+      "projectile": true,
+      "xp": 180,
+      "gold": 120,
+      "sprite": "res://assets/sprites/gen/boss_imp_king.png",
+      "frames": 1,
+      "phases": [
+        0.66,
+        0.33
+      ]
+    },
+    {
+      "id": "ancient_guardian",
+      "name": "远古守卫",
+      "hp": 1500,
+      "attack": 27,
+      "speed": 55,
+      "size": 2.0,
+      "touch": true,
+      "xp": 220,
+      "gold": 150,
+      "sprite": "res://assets/sprites/gen/boss_ancient_guardian.png",
+      "frames": 1,
+      "phases": [
+        0.66,
+        0.33
+      ]
+    },
+    {
+      "id": "final_god",
+      "name": "古神",
+      "hp": 3000,
+      "attack": 34,
+      "speed": 60,
+      "size": 2.4,
+      "touch": true,
+      "xp": 500,
+      "gold": 500,
+      "sprite": "res://assets/sprites/gen/boss_lava_golem.png",
+      "frames": 1,
+      "phases": [
+        0.8,
+        0.5,
+        0.25
+      ]
+    }
   ]
 }

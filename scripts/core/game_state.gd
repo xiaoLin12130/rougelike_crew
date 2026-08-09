@@ -2,6 +2,7 @@ extends Node
 ## 全局游戏状态：跨场景共享的唯一数据源（数据驱动，勿硬编码数值）
 
 const DATA_DIR := "res://data/"
+const MAP_SIZE := Vector2(1280, 720)  # 关卡地图尺寸（视口 640x360，相机跟随）
 
 var run: Dictionary = {}
 var tables: Dictionary = {}  # items/spells/enemies/levels/drops/balance
@@ -41,6 +42,7 @@ func new_run() -> void:
 		"kills": 0,
 		"time": 0.0,
 		"pity": 0,
+		"level_elapsed": 0.0,  # 本关已过时间（存档续波次用）
 	}
 	# 初始构筑：保证开局可战（DEMO 数值：两格法术 + 一件道具）
 	run.grid = [
@@ -51,6 +53,7 @@ func new_run() -> void:
 
 func add_item(item_id: String) -> void:
 	run.items[item_id] = run.items.get(item_id, 0) + 1
+	run.last_picked = item_id  # 物品栏"最近获得"高亮
 	EventBus.item_picked.emit(item_id, run.items[item_id])
 	EventBus.player_stats_changed.emit()
 
@@ -113,9 +116,10 @@ func item_value(item: Dictionary, stacks: int) -> float:
 	return v
 
 func item_def(item_id: String) -> Dictionary:
-	return tables.get("items", {}).get("items", []).filter(
-		func(it): return it.get("id", "") == item_id
-	).pop_front() if not tables.get("items", {}).get("items", []).is_empty() else {}
+	for it in tables.get("items", {}).get("items", []):
+		if str(it.get("id", "")) == item_id:
+			return it
+	return {}
 
 func roll_item_choices(count: int = 3) -> Array:
 	## 升级三选一：按稀有度权重从掉落池取样（不重复）

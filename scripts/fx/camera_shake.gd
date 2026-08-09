@@ -5,18 +5,20 @@ extends Camera2D
 const SHAKE_DURATION := 0.15
 const MAX_SHAKE_POWER := 20.0
 const SMOOTHING_SPEED := 7.0
-const ARENA_SIZE := Vector2i(640, 360)
+var _arena_size := Vector2i(640, 360)
 
 var _shake_tween: Tween
 
 func _ready() -> void:
 	add_to_group("camera")
+	make_current()  # 激活本相机：否则视口不跟随，角色会跑出屏幕
 	position_smoothing_enabled = true
 	position_smoothing_speed = SMOOTHING_SPEED
+	_arena_size = Vector2i(GameState.MAP_SIZE)
 	limit_left = 0
 	limit_top = 0
-	limit_right = ARENA_SIZE.x
-	limit_bottom = ARENA_SIZE.y
+	limit_right = _arena_size.x
+	limit_bottom = _arena_size.y
 
 func _process(_delta: float) -> void:
 	var player := get_tree().get_first_node_in_group("player")

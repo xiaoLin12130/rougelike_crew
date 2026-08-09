@@ -3,6 +3,7 @@
 [ext_resource type="Script" path="res://scripts/fx/camera_shake.gd" id="1_camera"]
 
 [node name="Camera" type="Camera2D" groups=["camera"]]
+current = true
 position_smoothing_enabled = true
 position_smoothing_speed = 7.0
 script = ExtResource("1_camera")
