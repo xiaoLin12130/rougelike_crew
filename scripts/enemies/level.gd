@@ -43,7 +43,9 @@ func _build_floor(theme: String) -> void:
 		"stone", "temple":
 			prefix = "stone"
 		"lava":
-			prefix = "dirt"
+			prefix = "brick"  # 红砖：熔岩地貌暖色感
+		"desert":
+			prefix = "sand"
 	var atlas_path := "res://assets/env/kenney_tiles/%s_atlas.png" % prefix
 	if not ResourceLoader.exists(atlas_path):
 		atlas_path = "res://assets/sprites/gen/tile_grass.png"

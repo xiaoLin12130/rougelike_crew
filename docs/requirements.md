@@ -155,6 +155,8 @@ export/      Web 导出产物
 
 ## 6.1 外部免费素材获取方案（用户确认新增）
 
+> 2026-08-09 实测更新：itch.io / OpenGameArt / CraftPix / Pixlab24 / Pixilart 五站可达性与下载机制见 `docs/design/素材下载指南.md`；用户协助流程与批量导入方式（`user_assets\`）见该文档。
+
 当本地素材不足时，按以下渠道与流程补充（**许可合规第一**）：
 
 | 渠道 | 内容 | 许可注意 |
