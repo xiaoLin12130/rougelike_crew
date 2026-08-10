@@ -1,416 +1,717 @@
 {
-  "affixes": {
-    "flame": {
-      "name": "烈焰",
-      "hp_mult": 2.8,
-      "atk_mult": 1.5,
-      "size_mult": 1.4,
-      "element": "fire"
-    },
-    "lightning": {
-      "name": "迅捷",
-      "hp_mult": 2.5,
-      "atk_mult": 1.4,
-      "size_mult": 1.3,
-      "speed_mult": 1.5
-    },
-    "frost": {
-      "name": "霜甲",
-      "hp_mult": 3.2,
-      "atk_mult": 1.3,
-      "size_mult": 1.4,
-      "armor": 0.3
-    },
-    "stone": {
-      "name": "磐石",
-      "hp_mult": 3.5,
-      "atk_mult": 1.2,
-      "size_mult": 1.6,
-      "armor": 0.5
-    }
+ "affixes": {
+  "flame": {
+   "name": "烈焰",
+   "hp_mult": 2.8,
+   "atk_mult": 1.5,
+   "size_mult": 1.4,
+   "element": "fire"
   },
-  "enemies": [
+  "lightning": {
+   "name": "迅捷",
+   "hp_mult": 2.5,
+   "atk_mult": 1.4,
+   "size_mult": 1.3,
+   "speed_mult": 1.5
+  },
+  "frost": {
+   "name": "霜甲",
+   "hp_mult": 3.2,
+   "atk_mult": 1.3,
+   "size_mult": 1.4,
+   "armor": 0.3
+  },
+  "stone": {
+   "name": "磐石",
+   "hp_mult": 3.5,
+   "atk_mult": 1.2,
+   "size_mult": 1.6,
+   "armor": 0.5
+  }
+ },
+ "enemies": [
+  {
+   "id": "slime",
+   "name": "史莱姆",
+   "hp": 45,
+   "attack": 7,
+   "speed": 55,
+   "size": 1.0,
+   "touch": true,
+   "xp": 8,
+   "gold": 1,
+   "sprite": "res://assets/sprites/kenney/slime_1.png",
+   "frames": 3,
+   "affix_pool": [
+    "flame",
+    "lightning"
+   ],
+   "behavior": "split"
+  },
+  {
+   "id": "bat",
+   "name": "蝙蝠",
+   "hp": 30,
+   "attack": 5,
+   "speed": 120,
+   "size": 0.9,
+   "touch": true,
+   "xp": 6,
+   "gold": 1,
+   "sprite": "res://assets/sprites/retro/bat_1.png",
+   "frames": 2,
+   "affix_pool": [
+    "lightning"
+   ],
+   "behavior": "swarm"
+  },
+  {
+   "id": "ghost",
+   "name": "幽灵",
+   "hp": 60,
+   "attack": 8,
+   "speed": 70,
+   "size": 1.0,
+   "touch": true,
+   "phase": true,
+   "xp": 10,
+   "gold": 2,
+   "sprite": "res://assets/sprites/retro/ghost_1.png",
+   "frames": 2,
+   "affix_pool": [
+    "frost"
+   ],
+   "behavior": "vanish"
+  },
+  {
+   "id": "goblin",
+   "name": "哥布林",
+   "hp": 70,
+   "attack": 10,
+   "speed": 80,
+   "size": 1.0,
+   "touch": true,
+   "xp": 12,
+   "gold": 2,
+   "sprite": "res://assets/sprites/retro/goblin_1.png",
+   "frames": 2,
+   "affix_pool": [
+    "flame",
+    "stone"
+   ],
+   "behavior": "rage"
+  },
+  {
+   "id": "goblin_archer",
+   "name": "哥布林弓手",
+   "hp": 50,
+   "attack": 7,
+   "speed": 60,
+   "size": 1.0,
+   "range": 240,
+   "projectile": true,
+   "fire_interval": 4.5,
+   "bullet_speed": 150,
+   "xp": 12,
+   "gold": 3,
+   "sprite": "res://assets/sprites/retro/goblin_archer_1.png",
+   "frames": 2,
+   "affix_pool": [
+    "lightning"
+   ],
+   "behavior": "sniper"
+  },
+  {
+   "id": "skeleton",
+   "name": "骷髅",
+   "hp": 90,
+   "attack": 12,
+   "speed": 60,
+   "size": 1.0,
+   "touch": true,
+   "xp": 14,
+   "gold": 3,
+   "sprite": "res://assets/sprites/retro/skeleton_1.png",
+   "frames": 2,
+   "affix_pool": [
+    "stone",
+    "frost"
+   ],
+   "behavior": "leech"
+  },
+  {
+   "id": "imp",
+   "name": "小恶魔",
+   "hp": 55,
+   "attack": 8,
+   "speed": 95,
+   "size": 0.9,
+   "range": 200,
+   "projectile": true,
+   "fire_interval": 4.5,
+   "bullet_speed": 150,
+   "xp": 12,
+   "gold": 3,
+   "sprite": "res://assets/sprites/retro/imp_1.png",
+   "frames": 2,
+   "affix_pool": [
+    "flame"
+   ],
+   "behavior": "burn"
+  },
+  {
+   "id": "wizard",
+   "name": "秘法巫师",
+   "hp": 45,
+   "attack": 14,
+   "speed": 55,
+   "size": 1.0,
+   "range": 260,
+   "projectile": true,
+   "fire_interval": 3.6,
+   "bullet_speed": 130,
+   "behavior": "cast",
+   "xp": 15,
+   "gold": 4,
+   "sprite": "res://assets/sprites/retro/wizard_1.png",
+   "frames": 2,
+   "affix_pool": [
+    "frost"
+   ]
+  },
+  {
+   "id": "bomber",
+   "name": "爆裂者",
+   "hp": 40,
+   "attack": 10,
+   "speed": 85,
+   "size": 1.0,
+   "touch": true,
+   "behavior": "bomb",
+   "xp": 12,
+   "gold": 3,
+   "sprite": "res://assets/sprites/retro/bomber_1.png",
+   "frames": 2,
+   "affix_pool": [
+    "flame"
+   ]
+  },
+  {
+   "id": "charger",
+   "name": "冲锋兽",
+   "hp": 80,
+   "attack": 14,
+   "speed": 90,
+   "size": 1.1,
+   "touch": true,
+   "behavior": "charge",
+   "xp": 14,
+   "gold": 3,
+   "sprite": "res://assets/sprites/retro/charger_1.png",
+   "frames": 2,
+   "affix_pool": [
+    "stone"
+   ]
+  },
+  {
+   "id": "healer",
+   "name": "幽暗巫医",
+   "hp": 70,
+   "attack": 6,
+   "speed": 55,
+   "size": 1.0,
+   "touch": true,
+   "behavior": "totem",
+   "xp": 16,
+   "gold": 4,
+   "sprite": "res://assets/sprites/retro/healer_1.png",
+   "frames": 2,
+   "affix_pool": [
+    "lightning"
+   ]
+  },
+  {
+   "id": "crystal_sentry",
+   "name": "水晶哨兵",
+   "hp": 60,
+   "attack": 9,
+   "speed": 48,
+   "size": 0.5,
+   "range": 230,
+   "projectile": true,
+   "fire_interval": 4.0,
+   "bullet_speed": 160,
+   "xp": 13,
+   "gold": 3,
+   "sprite": "res://assets/sprites/retro/crystal_1.png",
+   "frames": 1,
+   "affix_pool": [
+    "frost",
+    "lightning"
+   ]
+  },
+  {
+   "id": "spider",
+   "name": "毒蛛",
+   "hp": 50,
+   "attack": 7,
+   "speed": 95,
+   "size": 0.5,
+   "touch": true,
+   "xp": 10,
+   "gold": 2,
+   "sprite": "res://assets/sprites/retro/spider_1.png",
+   "frames": 2,
+   "affix_pool": [
+    "lightning",
+    "flame"
+   ],
+   "behavior": "burrow"
+  },
+  {
+   "id": "mimic_block",
+   "name": "魔像方块",
+   "hp": 130,
+   "attack": 13,
+   "speed": 40,
+   "size": 1.0,
+   "touch": true,
+   "xp": 16,
+   "gold": 4,
+   "sprite": "res://assets/sprites/retro/mimic_1.png",
+   "frames": 4,
+   "affix_pool": [
+    "stone",
+    "frost"
+   ],
+   "behavior": "camouflage"
+  },
+  {
+   "id": "specter",
+   "name": "幽魂法师",
+   "hp": 55,
+   "attack": 10,
+   "speed": 58,
+   "size": 1.0,
+   "range": 230,
+   "projectile": true,
+   "fire_interval": 4.2,
+   "bullet_speed": 150,
+   "xp": 14,
+   "gold": 3,
+   "sprite": "res://assets/sprites/retro/specter_1.png",
+   "frames": 2,
+   "affix_pool": [
+    "frost",
+    "flame"
+   ],
+   "behavior": "cast"
+  }
+ ],
+ "bosses": [
+  {
+   "id": "slime_king",
+   "name": "史莱姆王",
+   "hp": 600,
+   "attack": 15,
+   "speed": 50,
+   "size": 0.55,
+   "touch": true,
+   "xp": 100,
+   "gold": 40,
+   "sprite": "res://assets/sprites/retro/boss_1.png",
+   "frames": 1,
+   "phases": [
+    0.66,
+    0.33
+   ],
+   "skills": [
     {
-      "id": "slime",
-      "name": "史莱姆",
-      "hp": 45,
-      "attack": 7,
-      "speed": 55,
-      "size": 1.0,
-      "touch": true,
-      "xp": 8,
-      "gold": 3,
-      "sprite": "res://assets/sprites/kenney/slime_1.png",
-      "frames": 3,
-      "affix_pool": [
-        "flame",
-        "lightning"
-      ],
-      "behavior": "split"
+     "id": "split_shot",
+     "name": "???",
+     "type": "projectile_spread",
+     "shots": 5,
+     "bullet_speed": 190,
+     "cooldown": 5.0,
+     "windup": 0.6,
+     "min_phase": 1
     },
     {
-      "id": "bat",
-      "name": "蝙蝠",
-      "hp": 30,
-      "attack": 5,
-      "speed": 120,
-      "size": 0.9,
-      "touch": true,
-      "xp": 6,
-      "gold": 2,
-      "sprite": "res://assets/sprites/gen/enemy_bat_1.png",
-      "frames": 2,
-      "affix_pool": [
-        "lightning"
-      ],
-      "behavior": "dive"
+     "id": "slime_ring",
+     "name": "??????",
+     "type": "ring_barrage",
+     "shots": 18,
+     "waves": 2,
+     "bullet_speed": 170,
+     "cooldown": 6.5,
+     "windup": 0.8,
+     "telegraph": "dot",
+     "min_phase": 1
     },
     {
-      "id": "ghost",
-      "name": "幽灵",
-      "hp": 60,
-      "attack": 8,
-      "speed": 70,
-      "size": 1.0,
-      "touch": true,
-      "phase": true,
-      "xp": 10,
-      "gold": 4,
-      "sprite": "res://assets/sprites/gen/enemy_ghost_1.png",
-      "frames": 2,
-      "affix_pool": [
-        "frost"
-      ],
-      "behavior": "phase"
+     "id": "leap",
+     "name": "????",
+     "type": "leap",
+     "radius": 120,
+     "damage_mult": 1.5,
+     "cooldown": 8.0,
+     "windup": 0.9,
+     "telegraph": "circle",
+     "min_phase": 1
     },
     {
-      "id": "goblin",
-      "name": "哥布林",
-      "hp": 70,
-      "attack": 10,
-      "speed": 80,
-      "size": 1.0,
-      "touch": true,
-      "xp": 12,
-      "gold": 4,
-      "sprite": "res://assets/sprites/gen/enemy_goblin_1.png",
-      "frames": 2,
-      "affix_pool": [
-        "flame",
-        "stone"
-      ],
-      "behavior": "rage"
-    },
-    {
-      "id": "goblin_archer",
-      "name": "哥布林弓手",
-      "hp": 50,
-      "attack": 7,
-      "speed": 60,
-      "size": 1.0,
-      "range": 240,
-      "projectile": true,
-      "fire_interval": 4.5,
-      "bullet_speed": 150,
-      "xp": 12,
-      "gold": 5,
-      "sprite": "res://assets/sprites/gen/enemy_archer_1.png",
-      "frames": 2,
-      "affix_pool": [
-        "lightning"
-      ],
-      "behavior": "triple"
-    },
-    {
-      "id": "skeleton",
-      "name": "骷髅",
-      "hp": 90,
-      "attack": 12,
-      "speed": 60,
-      "size": 1.0,
-      "touch": true,
-      "xp": 14,
-      "gold": 5,
-      "sprite": "res://assets/sprites/gen/enemy_skeleton_1.png",
-      "frames": 2,
-      "affix_pool": [
-        "stone",
-        "frost"
-      ],
-      "behavior": "shield"
-    },
-    {
-      "id": "imp",
-      "name": "小恶魔",
-      "hp": 55,
-      "attack": 8,
-      "speed": 95,
-      "size": 0.9,
-      "range": 200,
-      "projectile": true,
-      "fire_interval": 4.5,
-      "bullet_speed": 150,
-      "xp": 12,
-      "gold": 5,
-      "sprite": "res://assets/sprites/gen/enemy_imp_1.png",
-      "frames": 2,
-      "affix_pool": [
-        "flame"
-      ],
-      "behavior": "burn"
-    },
-    {
-      "id": "wizard",
-      "name": "????",
-      "hp": 45,
-      "attack": 14,
-      "speed": 55,
-      "size": 1.0,
-      "range": 260,
-      "projectile": true,
-      "fire_interval": 3.6,
-      "bullet_speed": 130,
-      "behavior": "cast",
-      "xp": 15,
-      "gold": 6,
-      "sprite": "res://assets/sprites/gen/enemy_wizard_1.png",
-      "frames": 2,
-      "affix_pool": [
-        "frost"
-      ]
-    },
-    {
-      "id": "bomber",
-      "name": "???",
-      "hp": 40,
-      "attack": 10,
-      "speed": 85,
-      "size": 1.0,
-      "touch": true,
-      "behavior": "bomb",
-      "xp": 12,
-      "gold": 5,
-      "sprite": "res://assets/sprites/gen/enemy_bomber_1.png",
-      "frames": 2,
-      "affix_pool": [
-        "flame"
-      ]
-    },
-    {
-      "id": "charger",
-      "name": "???",
-      "hp": 80,
-      "attack": 14,
-      "speed": 90,
-      "size": 1.1,
-      "touch": true,
-      "behavior": "charge",
-      "xp": 14,
-      "gold": 5,
-      "sprite": "res://assets/sprites/gen/enemy_charger_1.png",
-      "frames": 2,
-      "affix_pool": [
-        "stone"
-      ]
-    },
-    {
-      "id": "healer",
-      "name": "????",
-      "hp": 70,
-      "attack": 6,
-      "speed": 55,
-      "size": 1.0,
-      "touch": true,
-      "behavior": "heal",
-      "xp": 16,
-      "gold": 6,
-      "sprite": "res://assets/sprites/gen/enemy_healer_1.png",
-      "frames": 2,
-      "affix_pool": [
-        "lightning"
-      ]
-    },
-    {
-      "id": "crystal_sentry",
-      "name": "水晶哨兵",
-      "hp": 60,
-      "attack": 9,
-      "speed": 48,
-      "size": 0.5,
-      "range": 230,
-      "projectile": true,
-      "fire_interval": 4.0,
-      "bullet_speed": 160,
-      "xp": 13,
-      "gold": 5,
-      "sprite": "res://assets/sprites/retro/crystal_1.png",
-      "frames": 1,
-      "affix_pool": [
-        "frost",
-        "lightning"
-      ]
-    },
-    {
-      "id": "spider",
-      "name": "毒蛛",
-      "hp": 50,
-      "attack": 7,
-      "speed": 95,
-      "size": 0.5,
-      "touch": true,
-      "xp": 10,
-      "gold": 4,
-      "sprite": "res://assets/sprites/retro/spider_1.png",
-      "frames": 2,
-      "affix_pool": [
-        "lightning",
-        "flame"
-      ]
-    },
-    {
-      "id": "mimic_block",
-      "name": "魔像方块",
-      "hp": 130,
-      "attack": 13,
-      "speed": 40,
-      "size": 1.0,
-      "touch": true,
-      "xp": 16,
-      "gold": 6,
-      "sprite": "res://assets/sprites/retro/mimic_1.png",
-      "frames": 4,
-      "affix_pool": [
-        "stone",
-        "frost"
-      ],
-      "behavior": "shield"
-    },
-    {
-      "id": "specter",
-      "name": "幽魂法师",
-      "hp": 55,
-      "attack": 10,
-      "speed": 58,
-      "size": 1.0,
-      "range": 230,
-      "projectile": true,
-      "fire_interval": 4.2,
-      "bullet_speed": 150,
-      "xp": 14,
-      "gold": 5,
-      "sprite": "res://assets/sprites/retro/specter_1.png",
-      "frames": 2,
-      "affix_pool": [
-        "frost",
-        "flame"
-      ],
-      "behavior": "cast"
+     "id": "split_frenzy",
+     "name": "????",
+     "type": "summon_minions",
+     "count": 4,
+     "cooldown": 9.0,
+     "windup": 0.7,
+     "min_phase": 2
     }
-  ],
-  "bosses": [
+   ]
+  },
+  {
+   "id": "tree_golem",
+   "name": "树精守卫",
+   "hp": 800,
+   "attack": 17,
+   "speed": 40,
+   "size": 1.8,
+   "touch": true,
+   "xp": 120,
+   "gold": 55,
+   "sprite": "res://assets/sprites/gen/boss_tree_golem.png",
+   "frames": 1,
+   "phases": [
+    0.66,
+    0.33
+   ],
+   "skills": [
     {
-      "id": "slime_king",
-      "name": "史莱姆王",
-      "hp": 600,
-      "attack": 15,
-      "speed": 50,
-      "size": 1.6,
-      "touch": true,
-      "xp": 100,
-      "gold": 60,
-      "sprite": "res://assets/sprites/gen/boss_slime_king.png",
-      "frames": 1,
-      "phases": [
-        0.66,
-        0.33
-      ]
+     "id": "root_vine",
+     "name": "????",
+     "type": "root_zone",
+     "radius": 90,
+     "duration": 2.0,
+     "cooldown": 6.5,
+     "windup": 0.8,
+     "telegraph": "circle",
+     "min_phase": 1
     },
     {
-      "id": "tree_golem",
-      "name": "树精守卫",
-      "hp": 800,
-      "attack": 17,
-      "speed": 40,
-      "size": 1.8,
-      "touch": true,
-      "xp": 120,
-      "gold": 80,
-      "sprite": "res://assets/sprites/gen/boss_tree_golem.png",
-      "frames": 1,
-      "phases": [
-        0.66,
-        0.33
-      ]
+     "id": "seed_barrage",
+     "name": "????",
+     "type": "projectile_spread",
+     "shots": 10,
+     "bullet_speed": 160,
+     "cooldown": 5.5,
+     "windup": 0.7,
+     "min_phase": 1
     },
     {
-      "id": "skeleton_king",
-      "name": "骷髅王",
-      "hp": 1000,
-      "attack": 20,
-      "speed": 60,
-      "size": 1.7,
-      "touch": true,
-      "xp": 150,
-      "gold": 100,
-      "sprite": "res://assets/sprites/gen/boss_skeleton_king.png",
-      "frames": 1,
-      "phases": [
-        0.66,
-        0.33
-      ]
+     "id": "seed_ring",
+     "name": "????",
+     "type": "ring_barrage",
+     "shots": 16,
+     "waves": 1,
+     "bullet_speed": 150,
+     "cooldown": 7.0,
+     "windup": 0.9,
+     "telegraph": "dot",
+     "min_phase": 1
     },
     {
-      "id": "imp_king",
-      "name": "熔岩魔王",
-      "hp": 1200,
-      "attack": 24,
-      "speed": 70,
-      "size": 1.8,
-      "range": 260,
-      "projectile": true,
-      "xp": 180,
-      "gold": 120,
-      "sprite": "res://assets/sprites/gen/boss_imp_king.png",
-      "frames": 1,
-      "phases": [
-        0.66,
-        0.33
-      ]
+     "id": "bark_armor",
+     "name": "????",
+     "type": "self_buff",
+     "armor": 0.7,
+     "duration": 4.0,
+     "cooldown": 12.0,
+     "windup": 0.5,
+     "min_phase": 2
     },
     {
-      "id": "ancient_guardian",
-      "name": "远古守卫",
-      "hp": 1500,
-      "attack": 27,
-      "speed": 55,
-      "size": 2.0,
-      "touch": true,
-      "xp": 220,
-      "gold": 150,
-      "sprite": "res://assets/sprites/gen/boss_ancient_guardian.png",
-      "frames": 1,
-      "phases": [
-        0.66,
-        0.33
-      ]
-    },
-    {
-      "id": "final_god",
-      "name": "古神",
-      "hp": 3000,
-      "attack": 34,
-      "speed": 60,
-      "size": 2.4,
-      "touch": true,
-      "xp": 500,
-      "gold": 500,
-      "sprite": "res://assets/sprites/gen/boss_lava_golem.png",
-      "frames": 1,
-      "phases": [
-        0.8,
-        0.5,
-        0.25
-      ]
+     "id": "vine_thralls",
+     "name": "????",
+     "type": "summon_wave",
+     "count": 3,
+     "elite_count": 1,
+     "cooldown": 12.0,
+     "windup": 0.8,
+     "min_phase": 2
     }
-  ]
+   ]
+  },
+  {
+   "id": "skeleton_king",
+   "name": "骷髅王",
+   "hp": 1000,
+   "attack": 20,
+   "speed": 60,
+   "size": 0.6,
+   "touch": true,
+   "xp": 150,
+   "gold": 70,
+   "sprite": "res://assets/sprites/retro/boss_2.png",
+   "frames": 1,
+   "phases": [
+    0.66,
+    0.33
+   ],
+   "skills": [
+    {
+     "id": "bone_volley",
+     "name": "????",
+     "type": "projectile_spread",
+     "shots": 7,
+     "spread": 30,
+     "bullet_speed": 200,
+     "cooldown": 4.5,
+     "windup": 0.6,
+     "min_phase": 1
+    },
+    {
+     "id": "raise_dead",
+     "name": "????",
+     "type": "summon_minions",
+     "count": 4,
+     "cooldown": 8.0,
+     "windup": 0.8,
+     "min_phase": 1
+    },
+    {
+     "id": "bone_ring",
+     "name": "????",
+     "type": "ring_barrage",
+     "shots": 16,
+     "waves": 2,
+     "bullet_speed": 200,
+     "cooldown": 6.0,
+     "windup": 0.7,
+     "telegraph": "dot",
+     "min_phase": 1
+    },
+    {
+     "id": "death_zone",
+     "name": "????",
+     "type": "root_zone",
+     "radius": 120,
+     "duration": 3.0,
+     "dps_mult": 0.1,
+     "cooldown": 10.0,
+     "windup": 0.9,
+     "telegraph": "circle",
+     "min_phase": 2
+    }
+   ]
+  },
+  {
+   "id": "imp_king",
+   "name": "熔岩魔王",
+   "hp": 1200,
+   "attack": 24,
+   "speed": 70,
+   "size": 0.65,
+   "range": 260,
+   "projectile": true,
+   "xp": 180,
+   "gold": 85,
+   "sprite": "res://assets/sprites/retro/boss_3.png",
+   "frames": 1,
+   "phases": [
+    0.66,
+    0.33
+   ],
+   "skills": [
+    {
+     "id": "fire_triple",
+     "name": "????",
+     "type": "projectile_spread",
+     "shots": 5,
+     "spread": 24,
+     "bullet_speed": 220,
+     "cooldown": 4.5,
+     "windup": 0.5,
+     "min_phase": 1
+    },
+    {
+     "id": "flame_ring",
+     "name": "????",
+     "type": "ring_barrage",
+     "shots": 20,
+     "waves": 2,
+     "bullet_speed": 200,
+     "cooldown": 5.5,
+     "windup": 0.7,
+     "telegraph": "dot",
+     "min_phase": 1
+    },
+    {
+     "id": "lava_eruption",
+     "name": "????",
+     "type": "lava_eruption",
+     "count": 5,
+     "radius": 58,
+     "cooldown": 6.5,
+     "windup": 0.9,
+     "telegraph": "circle",
+     "min_phase": 1
+    },
+    {
+     "id": "lava_charge",
+     "name": "????",
+     "type": "charge",
+     "speed_mult": 4.0,
+     "trail": "fire",
+     "cooldown": 8.0,
+     "windup": 0.8,
+     "telegraph": "line",
+     "min_phase": 2
+    },
+    {
+     "id": "fire_imps",
+     "name": "????",
+     "type": "summon_wave",
+     "count": 3,
+     "elite_count": 1,
+     "cooldown": 12.0,
+     "windup": 0.8,
+     "min_phase": 2
+    }
+   ]
+  },
+  {
+   "id": "ancient_guardian",
+   "name": "远古守卫",
+   "hp": 1500,
+   "attack": 27,
+   "speed": 55,
+   "size": 0.65,
+   "touch": true,
+   "xp": 220,
+   "gold": 105,
+   "sprite": "res://assets/sprites/retro/boss_4.png",
+   "frames": 1,
+   "phases": [
+    0.66,
+    0.33
+   ],
+   "skills": [
+    {
+     "id": "light_beam",
+     "name": "????",
+     "type": "beam",
+     "duration": 1.5,
+     "cooldown": 6.5,
+     "windup": 1.0,
+     "telegraph": "line",
+     "min_phase": 1
+    },
+    {
+     "id": "holy_ring",
+     "name": "????",
+     "type": "ring_barrage",
+     "shots": 24,
+     "waves": 2,
+     "bullet_speed": 180,
+     "cooldown": 7.0,
+     "windup": 1.0,
+     "telegraph": "dot",
+     "min_phase": 1
+    },
+    {
+     "id": "shield_ring",
+     "name": "???",
+     "type": "shield_ring",
+     "duration": 5.0,
+     "cooldown": 9.0,
+     "windup": 0.6,
+     "min_phase": 1
+    },
+    {
+     "id": "summon_elite",
+     "name": "????",
+     "type": "summon_minions",
+     "count": 4,
+     "elite": true,
+     "cooldown": 11.0,
+     "windup": 0.8,
+     "min_phase": 2
+    }
+   ]
+  },
+  {
+   "id": "final_god",
+   "name": "古神",
+   "hp": 3000,
+   "attack": 34,
+   "speed": 60,
+   "size": 2.4,
+   "touch": true,
+   "xp": 500,
+   "gold": 300,
+   "sprite": "res://assets/sprites/gen/boss_lava_golem.png",
+   "frames": 1,
+   "phases": [
+    0.8,
+    0.5,
+    0.25
+   ],
+   "skills": [
+    {
+     "id": "void_barrage",
+     "name": "????",
+     "type": "projectile_spread",
+     "shots": 14,
+     "bullet_speed": 180,
+     "cooldown": 3.8,
+     "windup": 0.6,
+     "min_phase": 1
+    },
+    {
+     "id": "void_ring",
+     "name": "????",
+     "type": "ring_barrage",
+     "shots": 24,
+     "waves": 2,
+     "bullet_speed": 210,
+     "cooldown": 6.0,
+     "windup": 1.0,
+     "telegraph": "dot",
+     "min_phase": 1
+    },
+    {
+     "id": "whirl_laser",
+     "name": "????",
+     "type": "whirl_laser",
+     "duration": 2.5,
+     "cooldown": 10.0,
+     "windup": 1.0,
+     "telegraph": "line",
+     "min_phase": 2
+    },
+    {
+     "id": "void_minions",
+     "name": "????",
+     "type": "summon_wave",
+     "count": 4,
+     "elite_count": 1,
+     "cooldown": 13.0,
+     "windup": 0.9,
+     "min_phase": 2
+    },
+    {
+     "id": "meteor_storm",
+     "name": "???",
+     "type": "meteor",
+     "count": 10,
+     "radius": 70,
+     "cooldown": 8.5,
+     "windup": 1.2,
+     "telegraph": "circle",
+     "min_phase": 3
+    }
+   ]
+  }
+ ]
 }

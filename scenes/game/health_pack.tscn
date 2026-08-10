@@ -1,0 +1,19 @@
+[gd_scene load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://scripts/items/health_pack.gd" id="1_hp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/gen/pickup_heart.png" id="2_tex"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_pickup"]
+radius = 18.0
+
+[node name="HealthPack" type="Area2D"]
+collision_layer = 2
+collision_mask = 1
+z_index = 2
+script = ExtResource("1_hp")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("2_tex")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_pickup")

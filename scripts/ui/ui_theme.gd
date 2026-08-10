@@ -1,7 +1,7 @@
 class_name UiTheme
 ## 像素 UI 主题工具：统一颜色/字体/组件样式（所有 UI 脚本调用）
 
-const FONT_CN := "res://assets/fonts/LXGWWenKai_subset.ttf"
+const FONT_CN := "res://assets/fonts/LXGWWenKai_full.ttf"
 const FONT_NUM := "res://assets/fonts/kenvector_future.ttf"
 
 const BG := Color("#14111f")
@@ -29,17 +29,31 @@ const ELEMENT := {
 
 static var _font_cn: Font
 static var _font_num: Font
+static var _fallback_set := false
 
 static func font_cn() -> Font:
 	if _font_cn == null:
 		_font_cn = load(FONT_CN)
 		print("[FONT] cn loaded=", _font_cn != null, " path=", FONT_CN)
+	if not _fallback_set and _font_cn != null:
+		# 全局 fallback 字体：tooltip/未显式设字体的控件默认无中文字形（会显示码点），
+		# 统一回退到中文字体，解决悬停提示等位置的码点
+		_fallback_set = true
+		ThemeDB.fallback_font = _font_cn
+		ThemeDB.fallback_font_size = 14
 	return _font_cn
 
 static func font_num() -> Font:
 	if _font_num == null:
 		_font_num = load(FONT_NUM)
 	return _font_num
+
+static func apply_font(control: Control, size: int) -> void:
+	## 给直接 Button.new()/Label.new() 创建的控件显式设置中文字体：
+	## 显式默认字体的控件不受 ThemeDB.fallback_font 影响，中文会显示码点，
+	## 必须显式 add_theme_font_override（供 UiTheme.button() 之外的直建控件复用）
+	control.add_theme_font_override("font", font_cn())
+	control.add_theme_font_size_override("font_size", size)
 
 static func style(bg: Color, border: Color = BORDER, width: int = 2, corner: int = 4) -> StyleBoxFlat:
 	var sb := StyleBoxFlat.new()

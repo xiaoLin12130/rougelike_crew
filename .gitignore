@@ -9,6 +9,7 @@ build/
 .tools/
 .cache/
 .tmp/
+Godot/
 
 # Python
 __pycache__/

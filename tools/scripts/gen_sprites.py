@@ -429,6 +429,42 @@ def tile(kind, seed):
     return c
 
 
+def heart():
+    """16x16 心形血包（32x32 画布，黑描边 + 高光）。"""
+    c = Canvas()
+    rows = [
+        "..XXXX..XXXX..",
+        ".XXXXXXXXXXXX.",
+        "XXXXXXXXXXXXXX",
+        "XXXXXXXXXXXXXX",
+        "XXXXXXXXXXXXXX",
+        ".XXXXXXXXXXXX.",
+        "..XXXXXXXXXX..",
+        "...XXXXXXXX...",
+        "....XXXXXX....",
+        ".....XXXX.....",
+        "......XX......",
+    ]
+    ox, oy = 8, 10
+    main_col = (232, 64, 92, 255)
+    hi_col = (255, 170, 190, 255)
+    outline = (24, 20, 32, 255)
+    for y, row in enumerate(rows):
+        for x, ch in enumerate(row):
+            if ch != "X":
+                continue
+            for dx in (-1, 0, 1):
+                for dy in (-1, 0, 1):
+                    c.set(ox + x + dx, oy + y + dy, outline)
+    for y, row in enumerate(rows):
+        for x, ch in enumerate(row):
+            if ch == "X":
+                c.set(ox + x, oy + y, main_col)
+    for hx, hy in [(ox + 3, oy + 3), (ox + 4, oy + 2), (ox + 11, oy + 3), (ox + 10, oy + 2)]:
+        c.set(hx, hy, hi_col)
+    return c
+
+
 def main():
     os.makedirs(OUT, exist_ok=True)
     n = 0
@@ -473,7 +509,180 @@ def main():
     for k, s in [("grass", 7), ("dirt", 13), ("stone", 29), ("water", 55)]:
         save(tile(k, s), f"tile_{k}")
         n += 1
+    save(heart(), "pickup_heart")
+    n += 1
+    generate_summons()
     print(f"generated {n} sprites -> {OUT}")
+
+
+SUMMON_OUT = os.path.join(os.path.dirname(__file__), "..", "..", "assets", "sprites", "summons")
+
+# 友军蓝配色（与 gen/summon_bat_1.png 的 bat_ally 一致：玩家可辨识，与敌方紫/红区分）
+ALLY = {
+    "outline": (24, 20, 32, 255),
+    "blue": (92, 170, 235, 255),
+    "blue_dark": (56, 118, 180, 255),
+    "blue_deep": (36, 84, 140, 255),
+    "blue_hi": (185, 220, 255, 255),
+    "white": (235, 240, 250, 255),
+    "bone": (226, 222, 208, 255),
+    "bone_dark": (150, 155, 160, 255),
+    "gold": (240, 200, 70, 255),
+    "blade": (210, 215, 230, 255),
+    "blade_dark": (120, 128, 150, 255),
+}
+
+
+def save_summon(c: Canvas, name: str) -> None:
+    """保存到 assets/sprites/summons/（与 summons.json 的 sprite 路径一致）。"""
+    outline_canvas(c)
+    img = c.image()
+    img.save(os.path.join(SUMMON_OUT, name + ".png"))
+
+
+def summon_spirit(frame):
+    """元素精灵：蓝雾团 + 波浪底 + 亮白眼瞳（友军辨识）。"""
+    c = Canvas()
+    bob = 1 if frame == 2 else 0
+    c.ellipse(16, 14 + bob, 7, 9, ALLY["blue"])
+    c.rect(9, 15 + bob, 14, 8, ALLY["blue"])
+    c.rect(9, 23 + bob, 4, 2, ALLY["blue"])
+    c.rect(17, 23 + bob, 3, 2, ALLY["blue"])
+    c.rect(13, 25 + bob, 4, 2, ALLY["blue_dark"])
+    c.rect(12, 13 + bob, 3, 4, ALLY["white"])
+    c.rect(18, 13 + bob, 3, 4, ALLY["white"])
+    c.rect(13, 10 + bob, 3, 2, ALLY["blue_hi"])
+    return c
+
+
+def summon_skeleton(frame):
+    """骷髅兵：骨色人形 + 蓝色眼瞳 + 蓝肩甲。"""
+    c = humanoid(ALLY["bone"], ALLY["bone_dark"], frame)
+    c.rect(14, 10, 2, 2, ALLY["blue"])
+    c.rect(19, 10, 2, 2, ALLY["blue"])
+    c.rect(9, 14, 4, 2, ALLY["blue_dark"])
+    c.rect(20, 14, 4, 2, ALLY["blue_dark"])
+    return c
+
+
+def summon_knight(frame):
+    """骑士守卫：蓝甲 + 头盔 + 佩剑。"""
+    c = humanoid(ALLY["blue"], ALLY["blue_dark"], frame)
+    c.rect(10, 3, 12, 5, ALLY["blue_dark"])
+    c.rect(11, 5, 10, 3, ALLY["blue"])
+    c.rect(12, 9, 2, 2, ALLY["blue_hi"])
+    c.rect(19, 9, 2, 2, ALLY["blue_hi"])
+    c.rect(12, 16, 9, 2, ALLY["blue_hi"])
+    c.rect(24, 7, 2, 12, ALLY["blade"])
+    c.rect(24, 19, 2, 2, ALLY["gold"])
+    return c
+
+
+def summon_mage(frame):
+    """法师学徒：蓝袍 + 尖帽 + 法杖（蓝宝珠）。"""
+    c = humanoid(ALLY["blue"], ALLY["blue_dark"], frame)
+    c.rect(13, 2, 7, 5, ALLY["blue_dark"])
+    c.rect(15, 0, 3, 3, ALLY["blue_dark"])
+    c.rect(13, 5, 7, 2, ALLY["gold"])
+    c.rect(23, 9, 2, 18, ALLY["bone_dark"])
+    c.circle(24, 8, 3, ALLY["blue_hi"])
+    return c
+
+
+def summon_rogue(frame):
+    """盗贼刺客：蓝兜帽蒙面 + 匕首。"""
+    c = humanoid(ALLY["blue"], ALLY["blue_dark"], frame)
+    c.rect(11, 3, 11, 7, ALLY["blue_deep"])
+    c.rect(11, 9, 11, 3, ALLY["blue_dark"])
+    c.rect(13, 10, 2, 2, ALLY["white"])
+    c.rect(18, 10, 2, 2, ALLY["white"])
+    c.rect(25, 13, 2, 8, ALLY["blade"])
+    c.rect(25, 11, 2, 2, ALLY["gold"])
+    return c
+
+
+def summon_flying_sword():
+    """飞剑：直剑 + 金色剑格 + 蓝光尾缀（单帧）。"""
+    c = Canvas()
+    c.rect(15, 2, 3, 17, ALLY["blade"])
+    c.rect(15, 2, 1, 17, ALLY["blue_hi"])
+    c.rect(15, 0, 1, 2, ALLY["blade"])
+    c.rect(12, 19, 9, 2, ALLY["gold"])
+    c.rect(15, 21, 3, 4, ALLY["blue_dark"])
+    c.rect(15, 25, 3, 2, ALLY["blue_hi"])
+    c.set(13, 9, ALLY["blue_hi"])
+    c.set(20, 9, ALLY["blue_hi"])
+    c.set(13, 15, ALLY["blue_hi"])
+    c.set(20, 15, ALLY["blue_hi"])
+    return c
+
+
+def summon_orb(frame):
+    """浮游法球：蓝球 + 亮核，帧 2 脉动放大。"""
+    c = Canvas()
+    r = 9 if frame == 1 else 10
+    c.circle(16, 16, r, ALLY["blue"])
+    c.circle(16, 16, r - 3, ALLY["blue_dark"])
+    c.circle(16, 16, r - 5, ALLY["blue_hi"])
+    c.set(13, 12, ALLY["white"])
+    c.set(14, 11, ALLY["white"])
+    return c
+
+
+def summon_shieldbearer(frame):
+    """盾卫：蓝甲 + 头盔 + 巨盾（金盾徽）。"""
+    c = humanoid(ALLY["blue"], ALLY["blue_dark"], frame)
+    c.rect(10, 3, 12, 6, ALLY["blue_dark"])
+    c.rect(13, 9, 7, 2, ALLY["blue"])
+    c.rect(13, 14, 9, 12, ALLY["blue_hi"])
+    c.rect(13, 14, 2, 12, ALLY["blue_dark"])
+    c.rect(19, 14, 2, 12, ALLY["blue_dark"])
+    c.rect(13, 22, 9, 2, ALLY["blue_dark"])
+    c.rect(16, 17, 3, 3, ALLY["gold"])
+    return c
+
+
+def summon_fire_spirit(frame):
+    """火焰精灵：蓝色火苗（与敌方橙色区分），帧 2 摇曳。"""
+    c = Canvas()
+    if frame == 1:
+        c.ellipse(16, 20, 7, 8, ALLY["blue"])
+        c.ellipse(16, 15, 5, 6, ALLY["blue_hi"])
+        c.circle(16, 11, 3, ALLY["white"])
+        c.ellipse(10, 17, 3, 4, ALLY["blue_dark"])
+        c.ellipse(22, 17, 3, 4, ALLY["blue_dark"])
+    else:
+        c.ellipse(16, 21, 7, 7, ALLY["blue"])
+        c.ellipse(15, 16, 5, 5, ALLY["blue_hi"])
+        c.circle(15, 12, 3, ALLY["white"])
+        c.ellipse(10, 18, 3, 3, ALLY["blue_dark"])
+        c.ellipse(22, 18, 3, 3, ALLY["blue_dark"])
+    c.rect(13, 16, 2, 3, ALLY["outline"])
+    c.rect(19, 16, 2, 3, ALLY["outline"])
+    return c
+
+
+def generate_summons() -> int:
+    """生成 9 种召唤物精灵（蝙蝠复用 gen/summon_bat_*，与 summons.json 路径一致）。"""
+    os.makedirs(SUMMON_OUT, exist_ok=True)
+    specs = [
+        ("spirit", 2, summon_spirit),
+        ("skeleton", 2, summon_skeleton),
+        ("knight", 2, summon_knight),
+        ("mage", 2, summon_mage),
+        ("rogue", 2, summon_rogue),
+        ("flying_sword", 1, summon_flying_sword),
+        ("orb", 2, summon_orb),
+        ("shieldbearer", 2, summon_shieldbearer),
+        ("fire_spirit", 2, summon_fire_spirit),
+    ]
+    n = 0
+    for sid, frames, fn in specs:
+        for f in range(1, frames + 1):
+            save_summon(fn() if frames == 1 else fn(f), f"{sid}_{f}")
+            n += 1
+    print(f"generated {n} summon sprites -> {SUMMON_OUT}")
+    return n
 
 
 if __name__ == "__main__":

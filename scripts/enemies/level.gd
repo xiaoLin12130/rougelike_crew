@@ -15,8 +15,7 @@ func init_level(id: String) -> void:
 	level_id = id
 	var lv: Dictionary = _find_level(id)
 	_boss_id = str(lv.get("boss", ""))
-	_build_floor(str(lv.get("theme", "grass")))
-	_build_background()
+	_build_scene_background(str(lv.get("theme", "grass")))
 	_build_walls()
 	var spawner := SPAWNER_SCRIPT.new()
 	spawner.name = "Spawner"
@@ -31,63 +30,39 @@ func _find_level(id: String) -> Dictionary:
 			return l
 	return {}
 
-func _build_floor(theme: String) -> void:
-	var tml := TileMapLayer.new()
-	tml.name = "Floor"
-	var ts := TileSet.new()
-	ts.tile_size = Vector2i(TILE_SIZE, TILE_SIZE)
-	var src := TileSetAtlasSource.new()
-	# Kenney 16x16 实心地面图集（CC0），按关卡主题选择；缺失时回退程序化瓦片
-	var prefix := "grass"
+func _build_scene_background(theme: String) -> void:
+	## 草地背景（2026-08-10 v5）：世界空间平铺——背景跟随世界滚动（与怪物/地形一致），
+	## 玩家移动时草地滚动、怪物相对静止，视觉正常（同吸血鬼幸存者做法）。
+	## 相机 limit 限制在地图 0..1280x720 内，1280x1280 草地图覆盖整个地图，任何位置都是草地。
+	var path := "res://assets/env/scene_grass.png"
 	match theme:
-		"stone", "temple":
-			prefix = "stone"
+		"forest":
+			path = "res://assets/env/scene_forest.png"
+		"stone":
+			path = "res://assets/env/scene_stone.png"
+		"temple":
+			path = "res://assets/env/scene_temple.png"
 		"lava":
-			prefix = "brick"  # 红砖：熔岩地貌暖色感
-		"desert":
-			prefix = "sand"
-	var atlas_path := "res://assets/env/kenney_tiles/%s_atlas.png" % prefix
-	if not ResourceLoader.exists(atlas_path):
-		atlas_path = "res://assets/sprites/gen/tile_grass.png"
-	src.texture = load(atlas_path)
-	src.texture_region_size = Vector2i(TILE_SIZE, TILE_SIZE)
-	ts.add_source(src, 0)
-	var n_tiles := 1
-	if src.texture != null:
-		n_tiles = maxi(src.texture.get_width() / TILE_SIZE, 1)
-	for i in n_tiles:
-		src.create_tile(Vector2i(i, 0))
-	tml.tile_set = ts
-	for y in int(VIEW.y / TILE_SIZE):
-		for x in int(VIEW.x / TILE_SIZE):
-			# 随机混合铺砖，地面更自然
-			var pick := randi() % n_tiles if n_tiles > 1 else 0
-			tml.set_cell(Vector2i(x, y), 0, Vector2i(pick, 0))
-	add_child(tml)
-
-func _build_background() -> void:
-	# 远景树冠（High Forest 系列，1344 宽原生接近 1280 视口，按主题选色）
-	var theme := str(_find_level(level_id).get("theme", "grass"))
-	var canopy := "res://assets/env/canopy_green.png"
-	match theme:
-		"stone", "temple":
-			canopy = "res://assets/env/canopy_dark.png"
-		"lava":
-			canopy = "res://assets/env/canopy_red.png"
-		"desert":
-			canopy = "res://assets/env/canopy_golden.png"
-	var tex := load(canopy)
+			path = "res://assets/env/scene_lava.png"
+	if not ResourceLoader.exists(path):
+		path = "res://assets/env/scene_grass.png"
+	# 草地正方形纹理（草地段 y 201..720 垂直无缝拼接成 1280x1280，跳过 200 行分界线防黑线）
+	var src_img := (load(path) as Texture2D).get_image()
+	var square_tex: Texture2D = load(path)
+	if src_img != null:
+		var square := Image.create(1280, 1280, false, Image.FORMAT_RGBA8)
+		for y in 1280:
+			var src_y := 201 + (y % 519)
+			for x in 1280:
+				square.set_pixel(x, y, src_img.get_pixel(x, src_y))
+		square_tex = ImageTexture.create_from_image(square)
+	# 世界空间背景：覆盖整个地图（0,0 起 1280x1280），跟随世界滚动
 	var bg := Sprite2D.new()
-	bg.name = "Background"
-	bg.texture = tex
+	bg.name = "SceneBackground"
+	bg.texture = square_tex
 	bg.centered = false
 	bg.position = Vector2.ZERO
-	# 按实际纹理尺寸适配视口（修复旧版按错误尺寸缩放导致的溢出）
-	var w := float(tex.get_width())
-	var h := float(tex.get_height())
-	bg.scale = Vector2(VIEW.x / w, VIEW.y / h)
-	bg.modulate = Color(1, 1, 1, 0.7)
-	bg.z_index = -10
+	bg.z_index = -5
 	add_child(bg)
 
 func _build_walls() -> void:
@@ -95,6 +70,7 @@ func _build_walls() -> void:
 	wall.name = "Walls"
 	wall.collision_layer = 4  # prop 层：玩家/敌人 mask 均含 4，撞墙不可穿出
 	var thickness := 16.0
+	# 草地铺满全屏后顶部不再设墙：整张地图可走（四边围墙贴地图边界）
 	var rects := [
 		Rect2(-thickness, -thickness, VIEW.x + thickness * 2, thickness),
 		Rect2(-thickness, VIEW.y, VIEW.x + thickness * 2, thickness),
@@ -122,7 +98,7 @@ func _spawn_boss() -> void:
 	if final_boss:
 		boss_id = str(GameState.tables.get("levels", {}).get("final_boss", "final_god"))
 	boss.setup_boss(boss_id, GameState.run.level, GameState.run.loop, final_boss)
-	boss.global_position = Vector2(VIEW.x / 2.0, 120.0)
+	boss.global_position = Vector2(VIEW.x / 2.0, 320.0)  # 地面区（顶部墙 y=200 之下）
 	add_child(boss)
 	var boss_name := _boss_name(boss_id)
 	EventBus.wave_state_changed.emit("Boss：%s" % boss_name)
@@ -133,7 +109,7 @@ func _boss_name(boss_id: String) -> String:
 			return str(b.get("name", boss_id))
 	return boss_id
 
-func _on_enemy_died(enemy_id: String, _pos: Vector2, _xp: int, _gold: int) -> void:
+func _on_enemy_died(enemy_id: String, _pos: Vector2, _xp: int, _gold: int, _is_elite: bool = false) -> void:
 	if _clear_emitted or not _boss_spawned:
 		return
 	if enemy_id == _boss_id or (GameState.run.get("final_boss_mode", false) and enemy_id == "final_god"):

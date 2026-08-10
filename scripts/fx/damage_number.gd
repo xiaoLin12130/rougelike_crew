@@ -9,13 +9,17 @@ const FADE_DURATION := 0.35
 
 @onready var _label: Label = $Label
 
-func play(value: int, is_crit: bool) -> void:
+func play(value: int, is_crit: bool, heal: bool = false, dot_color: Color = Color(1, 1, 1, 1)) -> void:
 	_label.text = str(value)
 	var font_size: int = BASE_FONT_SIZE
 	var font_color := Color.WHITE
 	if is_crit:
 		font_size = roundi(float(BASE_FONT_SIZE) * 1.6)
 		font_color = Color(1.0, 0.84, 0.2)
+	elif heal:
+		font_color = Color(0.45, 1.0, 0.55)
+	elif dot_color != Color(1, 1, 1, 1):
+		font_color = dot_color
 	_label.add_theme_font_size_override("font_size", font_size)
 	_label.add_theme_color_override("font_color", font_color)
 	_label.add_theme_color_override("font_outline_color", Color(0.0, 0.0, 0.0, 1.0))

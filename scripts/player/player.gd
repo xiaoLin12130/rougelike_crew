@@ -35,6 +35,22 @@ func _ready() -> void:
 	_anim.sprite_frames = _build_frames()
 	_anim.animation = facing
 	_anim.play(facing)
+	_mount_aura()
+	_mount_melee()
+
+
+## 构筑光环（Agent C）：程序化特效节点，挂在玩家下自动跟随移动。
+func _mount_aura() -> void:
+	var aura: Node = load("res://scripts/fx/player_aura.gd").new()
+	aura.name = "PlayerAura"
+	add_child(aura)
+
+
+## 常驻近战攻击（N7 方案 A）：独立近战层，与法术自动施法共存
+func _mount_melee() -> void:
+	var melee: Node = load("res://scripts/combat/melee_attack.gd").new()
+	melee.name = "MeleeAttack"
+	add_child(melee)
 
 
 ## 代码构建 SpriteFrames：4 方向 × 2 帧循环动画。
@@ -58,6 +74,7 @@ func _physics_process(delta: float) -> void:
 		velocity = InputRouter.move_vector * _move_speed()
 	move_and_slide()
 	_update_anim(velocity)
+	SynergyRegistry.trigger("player_move", {"player": self, "velocity": velocity, "delta": delta})
 
 
 ## 速度 = balance.player.speed × (1 + 移速聚合加成)。
@@ -76,14 +93,33 @@ func _tick_timers(delta: float) -> void:
 	_invuln_left = maxf(_invuln_left - delta, 0.0)
 
 
-func _try_dash() -> void:
-	if _dash_cd_left > 0.0 or not Input.is_action_just_pressed("dash"):
+func _try_dash(force := false) -> void:
+	if _dash_cd_left > 0.0 or (not force and not Input.is_action_just_pressed("dash")):
 		return
 	var bal: Dictionary = GameState.balance().get("player", {})
 	_dash_dir = InputRouter.move_vector if InputRouter.move_vector.length_squared() > 0.0 else _facing_vector()
 	_dash_time_left = bal.get("dash_time", 0.18)
 	_dash_cd_left = bal.get("dash_cd", 2.0)
 	_invuln_left = bal.get("invuln_time", 0.35)
+
+
+## 触屏闪避入口（虚拟摇杆调用）：跳过键盘判定，方向沿用移动向量/面朝方向
+func request_dash() -> void:
+	_try_dash(true)
+
+
+func grant_invuln(seconds: float) -> void:
+	## 升级等场景的短暂无敌：覆盖当前无敌帧并触发闪烁反馈
+	_invuln_left = maxf(_invuln_left, seconds)
+	if seconds > 0.0:
+		var spr := get_node_or_null("AnimatedSprite2D") as AnimatedSprite2D
+		if spr != null:
+			var tw := create_tween()
+			tw.tween_property(spr, "modulate", Color(1, 1, 1, 0.35), 0.12)
+			tw.tween_property(spr, "modulate", Color.WHITE, 0.12)
+			for i in maxi(int(seconds / 0.24), 2):
+				tw.tween_property(spr, "modulate", Color(1, 1, 1, 0.35), 0.12)
+				tw.tween_property(spr, "modulate", Color.WHITE, 0.12)
 
 
 func _facing_vector() -> Vector2:

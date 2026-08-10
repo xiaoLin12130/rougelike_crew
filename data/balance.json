@@ -1,40 +1,49 @@
 {
-  "player": {
-    "hp": 100,
-    "speed": 220,
-    "base_dps": 25,
-    "dash_cd": 2.0,
-    "dash_time": 0.18,
-    "dash_speed": 520,
-    "invuln_time": 0.35
-  },
-  "xp": {"base": 50, "per_level": 30, "quad": 5},
-  "enemy_scaling": {
-    "level_hp": 1.18,
-    "level_atk": 0.12,
-    "level_num": 0.22,
-    "level_xp": 0.12,
-    "loop_hp": 1.30,
-    "loop_dmg": 1.18,
-    "loop_num": 1.25,
-    "loop_xp": 1.35
-  },
-  "ttk": {"normal_sec": 1.5, "elite_sec": 6.0, "boss_sec": 45.0, "final_boss_sec": 75.0},
-  "feel": {
-    "clear_under_sec": 45,
-    "overwhelm_dps_ratio": 1.2,
-    "slow_mo_factor": 0.25,
-    "slow_mo_duration": 0.3,
-    "dmg_number_scale": 1.6
-  },
-  "crit": {
-    "base_chance": 0.03,
-    "per_stack": 0.02,
-    "cap": 0.85,
-    "base_mult": 1.5,
-    "per_crit_dmg": 0.10
-  },
-  "levelup_choices": 3,
-  "max_grid_slots": 5,
-  "trinket_slots": 3
+ "player": {
+  "hp": 100,
+  "speed": 220,
+  "base_dps": 25,
+  "dash_cd": 2.0,
+  "dash_time": 0.18,
+  "dash_speed": 520,
+  "invuln_time": 0.35
+ },
+ "xp": {
+  "base": 40,
+  "per_level": 30,
+  "quad": 5
+ },
+ "enemy_scaling": {
+  "level_hp": 1.18,
+  "level_atk": 0.12,
+  "level_num": 0.22,
+  "level_xp": 0.12,
+  "loop_hp": 1.35,
+  "loop_dmg": 1.45,
+  "loop_num": 1.25,
+  "loop_xp": 1.35
+ },
+ "ttk": {
+  "normal_sec": 1.5,
+  "elite_sec": 6.0,
+  "boss_sec": 45.0,
+  "final_boss_sec": 75.0
+ },
+ "feel": {
+  "clear_under_sec": 45,
+  "overwhelm_dps_ratio": 1.2,
+  "slow_mo_factor": 0.25,
+  "slow_mo_duration": 0.3,
+  "dmg_number_scale": 1.6
+ },
+ "crit": {
+  "base_chance": 0.03,
+  "per_stack": 0.02,
+  "cap": 0.85,
+  "base_mult": 1.5,
+  "per_crit_dmg": 0.1
+ },
+ "levelup_choices": 3,
+ "max_grid_slots": 5,
+ "trinket_slots": 3
 }

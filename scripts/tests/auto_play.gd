@@ -57,13 +57,37 @@ func _process(_delta: float) -> void:
 		return
 	if GameState.run.time > 1500.0:
 		print("[AUTOPLAY] TIMEOUT kills=", GameState.run.kills, " level=", GameState.run.level)
-		_log_line("[AUTOPLAY] TIMEOUT kills=%d level=%d" % [GameState.run.kills, GameState.run.level])
+		var p2 := get_tree().get_first_node_in_group("player") as Node2D
+		var en := get_tree().get_nodes_in_group("enemy")
+		var kinds2 := {}
+		for e in en:
+			if is_instance_valid(e) and e.has_method("get_enemy_id"):
+				var kid: String = e.get_enemy_id()
+				kinds2[kid] = kinds2.get(kid, 0) + 1
+		_log_line("[AUTOPLAY] TIMEOUT kills=%d level=%d hp=%d player=%s enemies=%s" % [
+			GameState.run.kills, GameState.run.level, GameState.run.hp,
+			str(p2.global_position) if p2 else "?", kinds2])
 		get_tree().quit(2)
 		return
 	_drive_player()
 	if GameState.run.time - _last_report > 5.0:
 		_last_report = GameState.run.time
 		var enemies := get_tree().get_nodes_in_group("enemy")
+		var player := get_tree().get_first_node_in_group("player")
+		var dist_info := "none"
+		if player and not enemies.is_empty():
+			var ne: Node2D = null
+			var nd := INF
+			for e in enemies:
+				if is_instance_valid(e):
+					var d: float = player.global_position.distance_to(e.global_position)
+					if d < nd:
+						nd = d
+						ne = e
+			if ne:
+				dist_info = "dist=%.0f player=%s enemy=%s mv=%s aim=%s" % [
+					nd, player.global_position, ne.global_position,
+					InputRouter.move_vector, InputRouter.aim_vector]
 		var kinds := {}
 		for e in enemies:
 			if is_instance_valid(e) and e.has_method("get_enemy_id"):
@@ -79,10 +103,10 @@ func _process(_delta: float) -> void:
 				item_slots = hud._items_box.get_child_count()
 			if hud.get("_grid_box") != null:
 				grid_slots = hud._grid_box.get_child_count()
-		_log_line("[AUTOPLAY] t=%d hp=%d lv=%d kills=%d enemies=%d dps=%d grid=%d items=%d" % [
+		_log_line("[AUTOPLAY] t=%d hp=%d lv=%d kills=%d enemies=%d dps=%d grid=%d items=%d %s" % [
 			int(GameState.run.time), GameState.run.hp, GameState.run.player_level,
 			GameState.run.kills, enemies.size(), int(GameState.estimate_dps()),
-			GameState.run.grid.size(), GameState.run.items.size()])
+			GameState.run.grid.size(), GameState.run.items.size(), dist_info])
 		_log_line("[HUD] item_slots=%d grid_slots=%d" % [item_slots, grid_slots])
 		_log_line("[KINDS] " + str(kinds))
 
@@ -99,7 +123,7 @@ func _handle_overlays(scene: Node) -> bool:
 		return true
 	var lc := scene.get_node_or_null("LoopChoice")
 	if lc and lc.visible:
-		if GameState.run.loop < 1:
+		if GameState.run.loop <= 1:
 			EventBus.loop_choice.emit("loop")
 			print("[AUTOPLAY] loop farm -> loop=", GameState.run.loop + 1)
 			_log_line("[AUTOPLAY] loop farm -> loop=%d" % (GameState.run.loop + 1))
@@ -107,6 +131,18 @@ func _handle_overlays(scene: Node) -> bool:
 			EventBus.loop_choice.emit("boss")
 			print("[AUTOPLAY] final boss now")
 			_log_line("[AUTOPLAY] final boss now")
+		return true
+	var ws := scene.get_node_or_null("WandShop")
+	if ws and ws.visible:
+		# 法杖商店：买最贵的可负担法杖（含 3 把上限替换），否则直接离开
+		ws.call("autoplay_handle")
+		_log_line("[AUTOPLAY] wand shop handled")
+		return true
+	var sr := scene.get_node_or_null("SpellReplace")
+	if sr and sr.visible:
+		# 法术栏满替换：直接替换第一个格子（保留新法术，简单策略）
+		sr.call("choose_first")
+		_log_line("[AUTOPLAY] spell replace -> slot 0")
 		return true
 	var go := scene.get_node_or_null("GameOver")
 	if go and go.visible:
@@ -122,6 +158,15 @@ func _handle_overlays(scene: Node) -> bool:
 		return true
 	return false
 
+func _find_wand_buttons(node: Node) -> Array:
+	## 返回 [[Button, price], ...]：商店里的购买按钮（文本以"金"结尾）
+	var out: Array = []
+	for c in node.get_children():
+		if c is Button and str(c.text).ends_with("金") and not c.disabled:
+			out.append([c, int(str(c.text).trim_suffix("金"))])
+		out.append_array(_find_wand_buttons(c))
+	return out
+
 func _rarity_score(c: Dictionary) -> int:
 	match str(c.get("rarity", "common")):
 		"legendary":
@@ -135,6 +180,8 @@ func _choice_score(c: Dictionary) -> int:
 	## 选道具策略：DPS 词条 > 吸血（低血时）> 稀有度 > 其他
 	var score := _rarity_score(c) * 100
 	var tags: Array = c.get("tags", [])
+	if "spell_part" in tags:
+		score += 120  # 法术是 DPS 核心，最高优先
 	for t in ["atk", "attack_speed", "crit", "crit_dmg", "cooldown", "area"]:
 		if t in tags:
 			score += 40
@@ -170,6 +217,7 @@ func _drive_player() -> void:
 			near_count += 1
 	var mv := Vector2.ZERO
 	var aim := Vector2.RIGHT
+	var side := Vector2.ZERO  # 环绕切线方向（函数级声明：贴墙 fallback 需要）
 	var aim_target := ranged_target if ranged_target != null else nearest
 	if nearest == null:
 		mv = (GameState.MAP_SIZE / 2.0 - player.global_position).normalized() * 0.5
@@ -188,7 +236,7 @@ func _drive_player() -> void:
 			away = (player.global_position - centroid / count).normalized()
 		else:
 			away = (player.global_position - nearest.global_position).normalized()
-		var side := Vector2(-away.y, away.x)
+		side = Vector2(-away.y, away.x)
 		if _frames % 120 < 60:
 			side = -side
 		var flee := 0.0
@@ -213,7 +261,64 @@ func _drive_player() -> void:
 			mv = (nearest.global_position - player.global_position).normalized() * 0.6 + side * 0.5
 		else:
 			mv = side * 0.55  # 安全距离 → 环绕
+	# 血包拾取：低血量时优先冲向附近血包（配合 110px 磁吸半径）
+	if GameState.run.hp < GameState.run.max_hp * 0.75:
+		var packs := get_tree().get_nodes_in_group("health_pack")
+		var pack: Node2D = null
+		var pack_dist := INF
+		for pk in packs:
+			if not is_instance_valid(pk):
+				continue
+			var pd: float = player.global_position.distance_to(pk.global_position)
+			if pd < pack_dist:
+				pack_dist = pd
+				pack = pk
+		if pack != null and pack_dist <= 260.0:
+			mv = (pack.global_position - player.global_position).normalized()
+			if nearest != null:
+				aim = (nearest.global_position - player.global_position).normalized()
+	# 贴墙处理：mv 指向墙外时削掉法线分量，改沿墙切向移动，避免顶墙被围殴卡死
+	var m := GameState.MAP_SIZE
+	var wall := 48.0
+	if player.global_position.x < wall and mv.x < 0.0:
+		mv.x = 0.0
+	if player.global_position.x > m.x - wall and mv.x > 0.0:
+		mv.x = 0.0
+	if player.global_position.y < 210.0 and mv.y < 0.0:
+		mv.y = 0.0
+	if player.global_position.y > m.y - wall and mv.y > 0.0:
+		mv.y = 0.0
+	# 贴墙矫正：靠近任何一面墙时限制朝向墙的移动分量，避免整面墙站桩挨打（验证根因）
+	if player.global_position.y > m.y - 80.0:
+		mv.y = minf(mv.y, 0.35)
+	if player.global_position.y < 80.0:
+		mv.y = maxf(mv.y, -0.35)
+	if player.global_position.x < 80.0:
+		mv.x = minf(mv.x, 0.35)
+	if player.global_position.x > m.x - 80.0:
+		mv.x = maxf(mv.x, -0.35)
+	# 低血量贴墙脱困：被堵墙角时强制向场内移动，避免贴墙被围殴致死
+	if GameState.run.hp < GameState.run.max_hp * 0.5:
+		# 突围：向 120px 采样圈内怪最少的 8 方向之一跑（比朝中心更有效）
+		var escape_dir := _escape_direction(player.global_position, enemies)
+		if escape_dir != Vector2.ZERO:
+			mv = escape_dir
+		else:
+			var to_center: Vector2 = (GameState.MAP_SIZE / 2.0 - player.global_position).normalized()
+			mv = mv.lerp(to_center, 0.8).normalized()
+		# 贴墙时强制加上离墙分量（escape 方向可能仍压墙）
+		if player.global_position.y > m.y - 80.0:
+			mv.y = -absf(mv.y)
+		if player.global_position.y < 80.0:
+			mv.y = absf(mv.y)
+		if player.global_position.x < 80.0:
+			mv.x = absf(mv.x)
+		if player.global_position.x > m.x - 80.0:
+			mv.x = -absf(mv.x)
+	if mv.length_squared() < 0.01 and not enemies.is_empty():
+		mv = side  # 贴墙且无有效方向 → 沿墙绕行
 	InputRouter.move_vector = mv.normalized() if mv.length_squared() > 0.01 else Vector2.ZERO
+	InputRouter.external_move = InputRouter.move_vector.length_squared() > 0.01
 	InputRouter.aim_override = aim
 	# 近身(≤70px)必闪；低血量时更积极
 	var dash_now: bool = nearest_dist < 70.0 if nearest != null else false
@@ -225,6 +330,25 @@ func _drive_player() -> void:
 	elif _dash_pressed:
 		Input.action_release("dash")
 		_dash_pressed = false
+
+func _escape_direction(from: Vector2, enemies: Array) -> Vector2:
+	## 低血量突围：8 方向采样，返回 140px 处敌人数最少的方向（避开墙）
+	var best := Vector2.ZERO
+	var best_count := 999
+	for i in 8:
+		var dir := Vector2.from_angle(TAU * i / 8.0)
+		var sample: Vector2 = from + dir * 140.0
+		var m := GameState.MAP_SIZE
+		if sample.x < 40.0 or sample.x > m.x - 40.0 or sample.y < 40.0 or sample.y > m.y - 40.0:
+			continue  # 采样点出墙则跳过
+		var cnt := 0
+		for e in enemies:
+			if is_instance_valid(e) and sample.distance_to(e.global_position) < 120.0:
+				cnt += 1
+		if cnt < best_count:
+			best_count = cnt
+			best = dir
+	return best
 
 func _safe_corner(player_pos: Vector2, centroid: Vector2, count: int) -> Vector2:
 	var m := GameState.MAP_SIZE

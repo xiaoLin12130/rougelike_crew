@@ -1,5 +1,7 @@
 extends CanvasLayer
-## 结算界面：胜利/失败 + 统计卡片
+## 结算界面（竖版 360x640）：面板 320x320 居中（<=340 宽），
+## 标题 + 统计 + 返回按钮（44 高），竖屏不超屏。
+const UiLayout := preload("res://scripts/ui/ui_layout.gd")
 
 var _title: Label
 var _stats: Label
@@ -13,9 +15,8 @@ func _ready() -> void:
 	dim.set_anchors_preset(Control.PRESET_FULL_RECT)
 	root.add_child(dim)
 	var panel := PanelContainer.new()
-	panel.set_anchors_preset(Control.PRESET_CENTER)
-	panel.position = Vector2(-240, -120)
-	panel.custom_minimum_size = Vector2(480, 240)
+	UiLayout.center_panel(panel, 320.0, 320.0)
+	panel.custom_minimum_size = Vector2(320, 320)
 	panel.add_theme_stylebox_override("panel", UiTheme.style(UiTheme.PANEL, UiTheme.BORDER, 3, 6))
 	root.add_child(panel)
 	var vbox := VBoxContainer.new()
@@ -27,7 +28,7 @@ func _ready() -> void:
 	_stats = UiTheme.label("", 13, Color("#c8c0e0"))
 	_stats.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	vbox.add_child(_stats)
-	var btn := UiTheme.button("返回主菜单", Vector2(160, 40))
+	var btn := UiTheme.button("返回主菜单", Vector2(180, UiLayout.touch_min()))
 	btn.pressed.connect(_back)
 	btn.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	vbox.add_child(btn)

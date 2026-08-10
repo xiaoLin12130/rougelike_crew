@@ -1,17 +1,12 @@
 ﻿{
     "services":  {
-                     "static":  {
+                    "static":  {
                                     "type":  "static",
                                     "cwd":  ".",
                                     "cmd":  [
                                                 "python",
-                                                "-m",
-                                                "http.server",
-                                                "{port}",
-                                                "--bind",
-                                                "127.0.0.1",
-                                                "--directory",
-                                                "export/web"
+                                                "tools/scripts/web_serve.py",
+                                                "{port}"
                                             ],
                                     "port":  8125,
                                     "purpose":  "static",
@@ -29,3 +24,4 @@
                                 }
                  }
 }
+

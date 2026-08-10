@@ -2,7 +2,7 @@ extends Node
 ## 波次生成器：按 levels.json 时间线刷怪，全清后通知关卡
 
 const ENEMY_SCENE := preload("res://scenes/game/enemy.tscn")
-const ARENA := Rect2(40, 40, 1200, 640)
+const ARENA := Rect2(40, 16, 1200, 688)  # 刷怪区=整张地图（草地铺满全屏后 y 16-704 可出怪）
 const MAX_CONCURRENT := 32
 
 var _waves: Array = []
@@ -53,7 +53,11 @@ func _physics_process(delta: float) -> void:
 
 func _spawn_group(wave: Dictionary) -> void:
 	var spawns: Dictionary = wave.get("spawn", {})
-	var elite_chance: float = float(wave.get("elite_chance", 0.0))
+	# 精英率 = 波次数据优先；数据缺失时用关卡/波次兜底曲线（防并行数据覆盖后无精英）
+	var fallback: float = clampf(
+		0.06 + 0.02 * float(GameState.run.level - 1) + 0.04 * float(_active_wave),
+		0.0, 0.15)
+	var elite_chance: float = float(wave.get("elite_chance", fallback))
 	for enemy_id in spawns:
 		var count: int = int(spawns[enemy_id])
 		for i in count:
@@ -70,6 +74,8 @@ func _spawn_one(enemy_id: String, elite_chance: float) -> void:
 		if not pool.is_empty():
 			affix = str(pool[randi() % pool.size()])
 	e.setup(enemy_id, GameState.run.level, GameState.run.loop, affix)
+	if affix != "":
+		e.set_elite()
 	e.global_position = _edge_position()
 	add_child(e)  # 挂在关卡下：切关时随关卡一起清理
 

@@ -4,8 +4,14 @@ extends Node
 var move_vector := Vector2.ZERO
 var aim_vector := Vector2.RIGHT
 var aim_override := Vector2.ZERO  # 外部瞄准覆盖（自动测试/触屏瞄准用）
+var external_move := false  # 外部（自动测试/虚拟摇杆）写入 move_vector 后，本帧跳过键盘覆盖
 
 func _physics_process(_delta: float) -> void:
+	if external_move:
+		external_move = false
+		if aim_override.length_squared() > 0.0:
+			aim_vector = aim_override.normalized()
+		return
 	var v := Vector2.ZERO
 	if Input.is_action_pressed("move_left"):
 		v.x -= 1.0

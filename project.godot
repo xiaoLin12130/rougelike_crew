@@ -22,16 +22,22 @@ GameState="*res://scripts/core/game_state.gd"
 InputRouter="*res://scripts/core/input_router.gd"
 SfxBus="*res://scripts/core/sfx_bus.gd"
 SaveStore="*res://scripts/core/save_store.gd"
+SynergyRegistry="*res://scripts/core/synergy_registry.gd"
+Settings="*res://scripts/core/settings.gd"
+
+[gui]
+
+theme/custom="res://assets/ui/theme.tres"
 
 [display]
 
-window/size/viewport_width=640
-window/size/viewport_height=360
-window/size/window_width_override=1280
-window/size/window_height_override=720
+window/size/viewport_width=360
+window/size/viewport_height=640
+window/size/window_width_override=720
+window/size/window_height_override=1280
 window/stretch/mode="canvas_items"
-window/stretch/aspect="keep"
-window/stretch/scale_mode="integer"
+window/stretch/aspect="expand"
+window/stretch/scale_mode="fractional"
 
 [input]
 

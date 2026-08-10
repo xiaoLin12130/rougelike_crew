@@ -29,7 +29,7 @@ def load(name):
 def curve_value(c, n):
     t = c["type"]
     base = c.get("base", 0.0)
-    if t == "linear":
+    if t in ("linear", "tradeoff"):
         v = base * (1.0 + c.get("k", 0.0) * n)
     elif t == "exp_proc":
         v = 1.0 - math.pow(1.0 - c.get("p", 0.1), n + 1)
@@ -55,16 +55,17 @@ def main():
     enemies = load("enemies")
     levels = load("levels")
     drops = load("drops")
+    wands = load("wands")
 
     # --- basic schema integrity ---
     item_ids = [i["id"] for i in items]
     check(len(item_ids) == len(set(item_ids)), "item ids unique")
     for i in items:
-        check(i["curve"]["type"] in ("linear", "exp_proc", "threshold", "multiplicative"),
+        check(i["curve"]["type"] in ("linear", "exp_proc", "threshold", "multiplicative", "tradeoff"),
               f"item {i['id']} curve type")
         for f in ("base",):
             check(f in i["curve"], f"item {i['id']} curve has {f}")
-        if i["curve"]["type"] == "linear":
+        if i["curve"]["type"] in ("linear", "tradeoff"):
             check("k" in i["curve"], f"item {i['id']} linear needs k")
         if i["curve"]["type"] == "exp_proc":
             p = i["curve"].get("p", 0)
@@ -72,7 +73,8 @@ def main():
         if i["curve"]["type"] == "threshold":
             check(i["curve"].get("threshold", 0) >= 1, f"item {i['id']} threshold >= 1")
         if i["curve"]["type"] == "multiplicative":
-            check(0 < i["curve"]["base"] < 1, f"item {i['id']} multiplicative base in (0,1)")
+            check(i["curve"]["base"] > 0 and abs(i["curve"]["base"] - 1.0) > 1e-9,
+                  f"item {i['id']} multiplicative base >0 and !=1")
         check(0 <= i["curve"].get("base", 0), f"item {i['id']} base >= 0")
         check(i["rarity"] in ("common", "rare", "legendary"), f"item {i['id']} rarity")
         check(i["type"] in ("item", "trinket", "memory"), f"item {i['id']} type")
@@ -104,6 +106,12 @@ def main():
     check(abs(val("wand_charge", 3) - 0.9 ** 3) < 1e-9, "wand_charge multiplicative")
     check(abs(val("wand_charge", 7) - 0.5) < 1e-9, "wand_charge cap floor 0.5")
     check(abs(val("wand_charge", 10) - 0.5) < 1e-9, "wand_charge stays at floor")
+    # --- 吸血牙（调低后：1% + 0.25%/层，曲线封顶 3%） ---
+    check(abs(val("vampire_fang", 1) - 0.0125) < 1e-9, "vampire_fang n=1 = 1.25%")
+    check(abs(val("vampire_fang", 8) - 0.03) < 1e-9, "vampire_fang n=8 cap 3%")
+    check(abs(val("vampire_fang", 20) - 0.03) < 1e-9, "vampire_fang n=20 stays at 3%")
+    vamp = next(i for i in items if i["id"] == "vampire_fang")
+    check(vamp["curve"].get("cap", 0) <= 0.03, "vampire_fang curve cap <= 3%")
 
     # --- drops ---
     total = sum(d["prob"] for d in drops["kill_drops"])
@@ -111,8 +119,50 @@ def main():
     check(drops["pity_threshold"] > 0, "pity threshold positive")
     for d in drops["kill_drops"]:
         check(0 <= d["prob"] <= 1, f"drop prob in [0,1]: {d}")
+        check(d["type"] != "heal", "普通小怪不再掉落回血（回血只来自精英/Boss 血包）")
+    check(abs(drops["elite_drops"]["heal_pct"] - 0.10) < 1e-9, "elite heal pack = 10%")
+    check(abs(drops["boss_drops"]["heal_pct"] - 0.30) < 1e-9, "boss heal pack = 30%")
+    # 全局吸血上限 4%（GameState 钳制）；吸血牙单件封顶 3% 必须低于全局上限
+    check(vamp["curve"].get("cap", 0) < 0.04, "vampire_fang cap < 全局吸血上限 4%")
     rw = drops["item_rarity_weights"]
     check(abs(sum(rw.values()) - 1.0) < 1e-9, "rarity weights sum to 1")
+
+    # --- wands（法杖商店） ---
+    wand_ids = [w["id"] for w in wands["wands"]]
+    check(len(wand_ids) == len(set(wand_ids)), "wand ids unique")
+    valid_shapes = ("none", "burst", "rapid", "orbit", "scatter", "frost", "homing", "summon",
+                    "pierce", "poison", "light", "chain", "split", "bounce")
+    for w in wands["wands"]:
+        check(w["price"] > 0, f"wand {w['id']} price > 0")
+        check(w["shape"] in valid_shapes, f"wand {w['id']} shape valid")
+        check(w["icon"].startswith("res://"), f"wand {w['id']} icon path")
+        check(w.get("damage_mult", 0) > 0 and w.get("cd_mult", 0) > 0, f"wand {w['id']} mults > 0")
+
+    # --- 防御流道具（F7） ---
+    stone = next(i for i in items if i["id"] == "stone_armor")
+    thorn_r = next(i for i in items if i["id"] == "thorn_reflect")
+    blood = next(i for i in items if i["id"] == "blood_thorn")
+    check(abs(stone["curve"]["cap"] - 0.35) < 1e-9, "stone_armor cap 35%")
+    check(abs(thorn_r["curve"]["base"] - 0.30) < 1e-9, "thorn_reflect base 30%")
+    check(abs(blood["curve"]["base"] - 0.02) < 1e-9, "blood_thorn 2%")
+
+    # --- 新法术核心（15）与外壳（10） ---
+    all_cores = [c["id"] for c in spells["cores"]]
+    all_shells = [s["id"] for s in spells["shells"]]
+    check(len(all_cores) == 15, f"15 cores (got {len(all_cores)})")
+    check(len(all_shells) == 10, f"10 shells (got {len(all_shells)})")
+    for c in spells["cores"]:
+        check(c["icon"].startswith("res://"), f"core {c['id']} icon path")
+        check(c["element"] in ("fire", "ice", "lightning", "poison", "summon", "blade",
+                               "water", "nature", "light", "void", "buff"), f"core {c['id']} element")
+
+    # --- Boss 技能参数（F5） ---
+    for b in enemies["bosses"]:
+        sk = b.get("skills", [])
+        check(len(sk) >= 2, f"boss {b['id']} has >=2 skills")
+        for s in sk:
+            check(s.get("id", "") and s.get("type", ""), f"boss {b['id']} skill fields")
+            check(s.get("cooldown", 0) > 0, f"boss {b['id']} skill cooldown > 0")
 
     # --- enemy scaling hand checks ---
     b = balance["enemy_scaling"]
@@ -120,16 +170,16 @@ def main():
     hp_l1_l1 = slime["hp"] * math.pow(b["level_hp"], 0) * math.pow(b["loop_hp"], 0)
     hp_l5_l2 = slime["hp"] * math.pow(b["level_hp"], 4) * math.pow(b["loop_hp"], 1)
     check(abs(hp_l1_l1 - 45) < 1e-9, "slime hp l1 loop1 = 45")
-    check(abs(hp_l5_l2 - 45 * (1.18 ** 4) * 1.30) < 1e-6, "slime hp l5 loop2")
+    check(abs(hp_l5_l2 - 45 * (1.18 ** 4) * b["loop_hp"]) < 1e-6, "slime hp l5 loop2")
     atk_l1 = slime["attack"] * (1 + 0.12 * 0)
     atk_l5 = slime["attack"] * (1 + 0.12 * 4)
     check(abs(atk_l5 / atk_l1 - (1 + 0.48)) < 1e-9, "atk scaling level factor")
 
     # --- xp curve (GameState.xp_to_next 公式一致性) ---
     xp = balance["xp"]
-    check(xp["base"] + xp["per_level"] * 0 == 50, "xp L1 = 50")
-    check(xp["base"] + xp["per_level"] * 3 + xp["quad"] * 9 == 185, "xp L4 = 185")
-    check(xp["base"] + xp["per_level"] * 4 + xp["quad"] * 16 == 250, "xp L5 = 250")
+    check(xp["base"] + xp["per_level"] * 0 == 40, "xp L1 = 40")
+    check(xp["base"] + xp["per_level"] * 3 + xp["quad"] * 9 == 175, "xp L4 = 175")
+    check(xp["base"] + xp["per_level"] * 4 + xp["quad"] * 16 == 240, "xp L5 = 240")
     # 增幅逐级增加 → 曲线平滑且单调
     prev_gain = 0
     for l in range(1, 15):
@@ -167,7 +217,8 @@ def main():
             for i, v in enumerate(obj):
                 scan(v, f"{path}[{i}]")
         elif isinstance(obj, (int, float)):
-            if obj < 0:
+            # tradeoff 曲线的负惩罚字段（如 crit_penalty）是设计内合法的
+            if obj < 0 and not path.endswith(".curve.crit_penalty"):
                 check(False, f"negative value at {path}: {obj}")
 
     scan(balance)

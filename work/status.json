@@ -1,17 +1,138 @@
 {
-  "phase": "demo-polish",
-  "updated": "2026-08-08-session-end",
-  "tasks": {
-    "core_gameplay": {"status": "done", "note": "5关+Boss+抉择循环+最终Boss，旧配置自动通关VICTORY"},
-    "save_system": {"status": "done", "note": "10s自动存档+继续恢复+波次续接，headless已验证"},
-    "camera_and_map": {"status": "done", "note": "地图1280x720+相机跟随+墙碰撞（角色不可出屏）"},
-    "boss_hpbar": {"status": "done", "note": "HUD大血条+头顶血条，test_boss全绿"},
-    "enemy_skills": {"status": "done", "note": "4新怪+7技能+防重叠+分裂防循环+清场兜底"},
-    "hud_item_bar": {"status": "done", "note": "物品栏文字化(名称+×N)+获得提示飘字，已改未导出"},
-    "balance_retune": {"status": "done", "note": "远程怪回调（imp/弓手攻速数量↓、受击保护0.6s），待autoplay验证"},
-    "autoplay_verify": {"status": "in_progress", "note": "回调后完整通关验证未跑完，上次DEFEAT@level4"},
-    "export_v6": {"status": "pending", "note": "待导出并打开给用户复测"},
-    "git_push": {"status": "pending", "note": "本轮改动未提交"},
-    "issues_update": {"status": "pending", "note": "issues #1-#6 状态待更新"}
+ "phase": "demo-polish",
+ "updated": "2026-08-10-leap-fix",
+ "tasks": {
+  "core_gameplay": {
+   "status": "done",
+   "note": "5关+Boss+抉择循环+最终Boss，旧配置自动通关VICTORY"
+  },
+  "save_system": {
+   "status": "done",
+   "note": "10s自动存档+继续恢复+波次续接，headless已验证"
+  },
+  "camera_and_map": {
+   "status": "done",
+   "note": "地图1280x720+相机跟随+墙碰撞（角色不可出屏）"
+  },
+  "boss_hpbar": {
+   "status": "done",
+   "note": "HUD大血条+头顶血条，test_boss全绿"
+  },
+  "enemy_skills": {
+   "status": "done",
+   "note": "4新怪+7技能+防重叠+分裂防循环+清场兜底"
+  },
+  "hud_item_bar": {
+   "status": "done",
+   "note": "物品栏文字化(名称+×N)+获得提示飘字，已改未导出"
+  },
+  "balance_retune": {
+   "status": "done",
+   "note": "远程怪回调（imp/弓手攻速数量↓、受击保护0.6s），待autoplay验证"
+  },
+  "autoplay_verify": {
+   "status": "in_progress",
+   "note": "Curie ????leap ???????????"
+  },
+  "export_v6": {
+   "status": "done",
+   "note": "2026-08-10 14:08 ?? + gz ???????????????? gz?"
+  },
+  "git_push": {
+   "status": "pending",
+   "note": "本轮改动未提交"
+  },
+  "issues_update": {
+   "status": "pending",
+   "note": "issues #1-#6 状态待更新"
+  },
+  "desc_leak_fix": {
+   "status": "done",
+   "note": "???????? summon.gd ?????? debuff/CD ???????????????Web ?????20:43??8125 ???"
+  },
+  "fx_shape": {
+   "status": "done",
+   "note": "12 元素形态化（雷云闪电/火柱/冰晶/涟漪/光柱/黑洞/弧斩/钱雨等），已导出"
+  },
+  "fx_tier": {
+   "status": "done",
+   "note": "特效分级 cast/hit/explode，普通弹道不再全爆炸"
+  },
+  "status_attach": {
+   "status": "done",
+   "note": "怪物状态附着：燃烧火焰/水流/电弧/冰壳/毒泡/减速雾"
+  },
+  "summon_fix": {
+   "status": "done",
+   "note": "召唤按指定类型+上限判断；火球30%点燃/水弹30%减速/冰锥50%减速"
+  },
+  "desc_consistency": {
+   "status": "done",
+   "note": "描述与实现全检：修复记忆疾风/破军/冷却聚合/旋风刃改环绕；发现14件无效道具待修"
+  },
+  "telegraph_fix": {
+   "status": "done",
+   "note": "Boss预告圈=伤害区：ring_barrage改发射点小圈、charge线长修正、beam宽度色带"
+  },
+  "telegraph_all_boss_fix": {
+   "status": "done",
+   "note": "全Boss预告一致性：leap红线+落点圈(锁场内)/lava+meteor持续预告逐点消失/root_zone+charge+beam+whirl_laser+ring_barrage已审计；test_boss_skills OK；autoplay复验两局零报错"
+  },
+  "spell_full_replace": {
+   "status": "done",
+   "note": "技能栏满时三选一仍出技能，选中弹替换界面"
+  },
+  "fx_radius_visual": {
+   "status": "done",
+   "note": "范围变大特效同步缩放（fx_explosion_scaled）"
+  },
+  "dot_damage_text": {
+   "status": "done",
+   "note": "中毒/燃烧 DOT 彩色伤害飘字（绿/橙）"
+  },
+  "pending_items_broken": {
+   "status": "pending",
+   "note": "14 件无效道具待修：bounce_mirror/frost_charm/magnet/gold_pouch/xp_book/lucky_clover/ember_ring/lava_amulet/fear_word/defense_life_crystal/defense_stone_skin/thunder_10/water_tide_power/storm_cloud/venom_flask/trinket_frost/trinket_storm/crit_deadly_rhythm"
+  },
+  "web_fast": {
+   "status": "done",
+   "note": "wasm gzip 39.5→10MB，web_serve.py 透明解压+强缓存，8125 单监听"
+  },
+  "gold_economy": {
+   "status": "done",
+   "note": "小怪1-3金/Boss 40-300/法杖+40%/强化系统(200起+8%/级)/gold_pouch+10%"
+  },
+  "boss_model": {
+   "status": "done",
+   "note": "4 Boss 换 Retro 96px 大图，size 折算+自动居中"
+  },
+  "melee_build": {
+   "status": "done",
+   "note": "常驻近战攻击 melee_attack.gd：自动索敌/攻速联动/钩子触发/melee 流派成型"
+  },
+  "broken_items": {
+   "status": "done",
+   "note": "11件无效道具修复+0层泄漏守卫+fear_word cap 0.25+构筑筛选(无元素技能不给元素构筑)"
+  },
+  "crit_m3_fix": {
+   "status": "done",
+   "note": "非暴击不结算连击加成直接重置"
+  },
+  "levelup_deadlock": {
+   "status": "done",
+   "note": "满格替换卡死修复：hide+防重入+create_timer(0.1,true)暂停期计时+8s超时兜底"
+  },
+  "ios_joystick": {
+   "status": "done",
+   "note": "升级后摇杆残留修复：reset_state+deferred重置+弹出前reset"
+  },
+  "playbook_update": {
+   "status": "done",
+   "note": "11条新踩坑写入 H:\u0007i-playbook\\projects\rougelike_crew.md"
+  },
+  "telegraph_all_boss_fix": {
+   "status": "done",
+   "note": "?Boss???????leap?????+???(??clamp????)?eruption/meteor???????????root_zone???????test_boss_skills???Boss??????==???? ALL PASS????+gz????8125???"
   }
+ }
 }

@@ -1,6 +1,9 @@
 extends Control
-## 主菜单：像素风背景 + 大标题 + 开始/继续/退出
+## 主菜单（竖版 360x640）：像素风背景 + 大标题 + 开始/继续/退出。
+## 按钮在 tscn 中锚定（宽 200 高 44，中心 0.45/0.60/0.75 → 拇指可达区）。
+const UiLayout := preload("res://scripts/ui/ui_layout.gd")
 
+var _stars: CPUParticles2D
 @onready var start_button: Button = $StartButton
 @onready var continue_button: Button = $ContinueButton
 
@@ -12,6 +15,8 @@ func _ready() -> void:
 	start_button.pressed.connect(_on_start)
 	continue_button.pressed.connect(_on_continue)
 	$QuitButton.pressed.connect(_on_quit)
+	get_viewport().size_changed.connect(_update_starfield)
+	_update_starfield()
 
 func _build_background() -> void:
 	var grad := GradientTexture2D.new()
@@ -32,7 +37,7 @@ func _build_background() -> void:
 	stars.explosiveness = 0.0
 	stars.emitting = true
 	stars.emission_shape = CPUParticles2D.EMISSION_SHAPE_RECTANGLE
-	stars.emission_rect_extents = Vector2(320, 180)
+	stars.emission_rect_extents = Vector2(UiLayout.DESIGN_W / 2.0, UiLayout.DESIGN_H / 2.0)
 	stars.initial_velocity_min = 8.0
 	stars.initial_velocity_max = 20.0
 	stars.direction = Vector2(0, 1)
@@ -40,23 +45,36 @@ func _build_background() -> void:
 	stars.scale_amount_min = 0.6
 	stars.scale_amount_max = 1.6
 	stars.color = Color(0.85, 0.8, 1.0, 0.7)
+	_stars = stars
 	add_child(stars)
 
+func _update_starfield() -> void:
+	## expand 下视口尺寸随屏幕变化：星野发射区跟随实时视口，背景占满全屏
+	if _stars != null:
+		_stars.emission_rect_extents = UiLayout.viewport_size() / 2.0
+
 func _build_title() -> void:
-	var title := UiTheme.label("像素肉鸽", 44, UiTheme.GOLD)
+	var title := UiTheme.label("秘法残卷", 48, UiTheme.GOLD)
 	title.set_anchors_preset(Control.PRESET_CENTER_TOP)
-	title.position = Vector2(-180, 40)
-	title.custom_minimum_size = Vector2(360, 56)
+	title.position = Vector2(-UiLayout.panel_w() / 2.0, 40)
+	title.custom_minimum_size = Vector2(UiLayout.panel_w(), 56)
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	title.add_theme_color_override("font_outline_color", Color(0, 0, 0, 0.9))
 	title.add_theme_constant_override("outline_size", 4)
 	add_child(title)
 	var sub := UiTheme.label("法术构筑 · 割草 · 雨中冒险式抉择", 12, Color("#9d8fc4"))
 	sub.set_anchors_preset(Control.PRESET_CENTER_TOP)
-	sub.position = Vector2(-200, 96)
-	sub.custom_minimum_size = Vector2(400, 20)
+	sub.position = Vector2(-UiLayout.panel_w() / 2.0, 96)
+	sub.custom_minimum_size = Vector2(UiLayout.panel_w(), 20)
 	sub.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	add_child(sub)
+	# 构建指纹：确认浏览器加载的是最新版（显示构建时间戳）
+	var build := UiTheme.label("v26 · 2026-08-09 19:00", 8, Color("#6a6080"))
+	build.set_anchors_preset(Control.PRESET_TOP_RIGHT)
+	build.position = Vector2(-160, 8)
+	build.custom_minimum_size = Vector2(150, 14)
+	build.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+	add_child(build)
 
 func _style_buttons() -> void:
 	for b in [$StartButton, $ContinueButton, $QuitButton]:
@@ -72,8 +90,8 @@ func _style_buttons() -> void:
 		b.add_theme_stylebox_override("focus", StyleBoxEmpty.new())
 	var hint := UiTheme.label("WASD 移动 · 空格闪避 · 自动施法 · Esc 暂停", 10, Color("#7a6fa0"))
 	hint.set_anchors_preset(Control.PRESET_CENTER_BOTTOM)
-	hint.position = Vector2(-220, -48)
-	hint.custom_minimum_size = Vector2(440, 18)
+	hint.position = Vector2(-UiLayout.panel_w() / 2.0, -48)
+	hint.custom_minimum_size = Vector2(UiLayout.panel_w(), 18)
 	hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	add_child(hint)
 	var ver := UiTheme.label("v0.1 DEMO", 9, Color("#5a5278"))
