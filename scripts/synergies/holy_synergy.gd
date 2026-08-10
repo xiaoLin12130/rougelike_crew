@@ -256,7 +256,7 @@ func _on_enemy_hit(ctx: Dictionary) -> void:
 func _on_enemy_status(ctx: Dictionary) -> void:
 	if not (ctx is Dictionary):
 		return
-	var enemy := ctx.get("enemy")
+	var enemy := ctx.get("enemy") as Node
 	if not is_instance_valid(enemy):
 		return
 	var id := enemy.get_instance_id()

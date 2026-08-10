@@ -85,11 +85,13 @@ def main():
     # _stacks("ice_mN") / _stacks("summon_mN") 消费点一一对应（只读契约）
     ICE_GATES = {f"ice_m{i}" for i in range(1, 11)}
     SUMMON_GATES = {f"summon_m{i}" for i in range(1, 11)}
+    # 机制补全批次（mech_fill_batch）：圣光流 10+10 门控与 holy_synergy.gd 一致
+    HOLY_GATES = {f"holy_m{i}" for i in range(1, 11)}
     def school_items(school):
         return [i for i in items
                 if str(i["id"]).startswith(school + "_") or school in i.get("tags", [])]
 
-    for school, gates in (("ice", ICE_GATES), ("summon", SUMMON_GATES)):
+    for school, gates in (("ice", ICE_GATES), ("summon", SUMMON_GATES), ("holy", HOLY_GATES)):
         school_it = school_items(school)
         check(len(school_it) >= 20,
               f"{school} 流派道具数 >= 20（现 {len(school_it)}）")
@@ -126,6 +128,33 @@ def main():
                 gate = str(tag).split(":", 1)[1]
                 check(gate in gates,
                       f"{school} item {it['id']} 机制 tag {tag} 不在脚本门控 {school}_m1..m10")
+
+    # --- 机制补全批次（mech_fill_batch）：G7 全流派传说 >= 4 ---
+    # wind / melee（blade）原各 3 传说，本轮补 melee_giant_cleaver / wind_typhoon_eye
+    for school in ("wind", "melee"):
+        rarities = Counter(i["rarity"] for i in school_items(school))
+        check(rarities.get("legendary", 0) >= 4,
+              f"{school} 传说 >= 4（现 {rarities.get('legendary', 0)}）")
+
+    # --- 机制补全批次：G4 毒系门控道具齐备（poison_m1..m10 带 mechanic tag）---
+    POISON_GATES = {f"poison_m{i}" for i in range(1, 11)}
+    for gate in sorted(POISON_GATES):
+        it = next((x for x in items if x["id"] == gate), None)
+        check(it is not None, f"poison 门控道具 {gate} 存在")
+        if it is not None:
+            check(f"mechanic:{gate}" in it.get("tags", []), f"{gate} mechanic tag")
+
+    # --- 机制补全批次：G5 重复道具去重（defense_amulet 曲线与 defense_iron_wall 区分）---
+    amulet_def = next(x for x in items if x["id"] == "defense_amulet")
+    iron_wall_def = next(x for x in items if x["id"] == "defense_iron_wall")
+    check(amulet_def["curve"] != iron_wall_def["curve"],
+          "defense_amulet 曲线已与 defense_iron_wall 去重（不再数值相同）")
+
+    # --- 机制补全批次：防9 石肤 / 咒7 恐惧咒 语义对齐（实现为玩家减伤）---
+    stone_skin = next(x for x in items if x["id"] == "defense_stone_skin")
+    fear_word = next(x for x in items if x["id"] == "curse_fear_word")
+    check("受到伤害" in stone_skin["description"], "defense_stone_skin 描述对齐减伤实现")
+    check("受到" in fear_word["description"], "curse_fear_word 描述对齐玩家减伤实现")
 
     # --- monotonicity: increasing curves non-decrease; multiplicative(base<1) non-increase ---
     for i in items:

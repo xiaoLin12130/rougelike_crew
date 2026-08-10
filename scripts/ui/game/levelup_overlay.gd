@@ -20,7 +20,9 @@ func _ready() -> void:
 	root.add_child(dim)
 	var vbox := VBoxContainer.new()
 	vbox.set_anchors_preset(Control.PRESET_CENTER)
-	vbox.position = Vector2(-(UiLayout.panel_w() + 20.0) / 2.0, -205)  # 卡片含左右边距共 340 宽，对称居中
+	# 2026-08-10 四选一：4 卡总高 ≈ 4×110+3×12+标题 ≈ 510，垂直居中偏移 -255
+	# （顶部 65 / 底部 575，640 屏内居中；3 卡时期用 -205，4 卡需上移）
+	vbox.position = Vector2(-(UiLayout.panel_w() + 20.0) / 2.0, -255.0)
 	vbox.custom_minimum_size = Vector2(UiLayout.panel_w() + 20.0, 0.0)
 	vbox.add_theme_constant_override("separation", 12)
 	root.add_child(vbox)
