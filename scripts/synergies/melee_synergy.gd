@@ -316,7 +316,7 @@ func _m1_splash(center: Vector2, dmg: int, hit_enemy) -> void:
 	var tree := get_tree()
 	if tree == null:
 		return
-	for e in tree.get_nodes_in_group("enemy"):
+	for e in GameState.get_enemies():
 		if e == hit_enemy or not is_instance_valid(e) or not (e is Node2D):
 			continue
 		if _iget(e, "_dead", false):
@@ -588,7 +588,7 @@ func _nearest_enemy(pos: Vector2) -> Node:
 		return null
 	var best: Node = null
 	var best_d := INF
-	for e in tree.get_nodes_in_group("enemy"):
+	for e in GameState.get_enemies():
 		if not is_instance_valid(e) or not (e is Node2D):
 			continue
 		var d: float = pos.distance_to((e as Node2D).global_position)

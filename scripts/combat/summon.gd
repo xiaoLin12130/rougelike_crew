@@ -467,7 +467,7 @@ func _fire_projectile(dir: Vector2, speed: float, range: float, mods: Dictionary
 
 func _taunt() -> void:
 	EventBus.fx_explosion.emit(global_position, "ice")
-	for e in get_tree().get_nodes_in_group("enemy"):
+	for e in GameState.get_enemies():
 		if not is_instance_valid(e):
 			continue
 		if global_position.distance_to(e.global_position) <= TAUNT_RADIUS + e.scale.x * 8.0:
@@ -482,7 +482,7 @@ func _hit_range(target: Node) -> float:
 func _nearest_enemy(max_range: float) -> Node:
 	var best: Node = null
 	var best_d := max_range
-	for e in get_tree().get_nodes_in_group("enemy"):
+	for e in GameState.get_enemies():
 		if not is_instance_valid(e):
 			continue
 		var d: float = global_position.distance_to(e.global_position) - e.scale.x * 8.0
@@ -494,7 +494,7 @@ func _nearest_enemy(max_range: float) -> Node:
 
 func _enemies_near(center: Vector2, radius: float) -> Array:
 	var result: Array = []
-	for e in get_tree().get_nodes_in_group("enemy"):
+	for e in GameState.get_enemies():
 		if not is_instance_valid(e):
 			continue
 		if center.distance_to(e.global_position) <= radius + e.scale.x * 8.0:

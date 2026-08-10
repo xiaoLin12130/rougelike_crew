@@ -404,7 +404,8 @@ func _on_player_hit(dmg: int, pos: Vector2) -> void:
 	)
 	# 防御流成型奖励：附加到反弹比例（不在减伤上重复叠加）
 	reflect_pct += float(GameState.run.get("synergy_bonus", {}).get("defense", 0.0))
-	if reflect_pct > 0.0 and taken_int > 0:
+	# 0 层不生效：item_value(linear) 在 0 层返回 base（40%），不加守卫会白送反弹（P2-1a）
+	if GameState.total_stacks("thorn_reflect") > 0 and reflect_pct > 0.0 and taken_int > 0:
 		var reflected := int(taken_int * reflect_pct)
 		var attacker := _nearest_enemy(pos)
 		if attacker != null and is_instance_valid(attacker) and attacker.has_method("take_damage"):
@@ -415,7 +416,8 @@ func _on_player_hit(dmg: int, pos: Vector2) -> void:
 				{"curve": {"type": "linear", "base": 0.04, "k": 0.0}},
 				GameState.total_stacks("blood_thorn")
 			)
-			if blood > 0.0:
+			# 0 层不生效：血棘甲同款 0 层泄漏（P2-1a）
+			if GameState.total_stacks("blood_thorn") > 0 and blood > 0.0:
 				GameState.heal(float(reflected) * blood)
 	GameState.run.hp = mini(GameState.run.max_hp, int(maxf(GameState.run.hp - taken, 0)))
 	SynergyRegistry.trigger("player_hit", {"dmg": taken_int, "pos": pos, "taken": taken, "attacker": null})

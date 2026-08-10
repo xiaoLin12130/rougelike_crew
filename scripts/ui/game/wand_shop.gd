@@ -112,11 +112,17 @@ func _build_ui() -> void:
 	_build_buy_page()
 
 func _build_menu_page() -> void:
-	## 选择页：两个大按钮（宽 220 高 64，手机 260）+ 药水/刷新/离开（44 高，拇指可达）
+	## 选择页（2026-08-10 用户确认）：三个大按钮 = 强化法杖 / 购买法杖 / 回血；
+	## 刷新移入购买页；右上角小 × 关闭（手机无 Esc 时仍可离开）
 	var hint := UiTheme.label("请选择商店功能", 12, Color("#9d8fc4"))
 	hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_menu_box.add_child(hint)
 	var btn_w: float = 260.0 if _mobile else 220.0
+	var close := UiTheme.button("×", Vector2(44, 44))
+	close.name = "CloseBtn"
+	close.size_flags_horizontal = Control.SIZE_SHRINK_END
+	close.pressed.connect(_close_shop)
+	_menu_box.add_child(close)
 	var enhance := UiTheme.button("强化法杖", Vector2(btn_w, 64))
 	enhance.name = "EnhanceBtn"
 	enhance.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
@@ -127,21 +133,11 @@ func _build_menu_page() -> void:
 	buy.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	buy.pressed.connect(_goto_buy)
 	_menu_box.add_child(buy)
-	var pot := UiTheme.button("恢复药水（%d金）" % HEAL_POTION_PRICE, Vector2(0, BTN_H))
+	var pot := UiTheme.button("回血（%d金）" % HEAL_POTION_PRICE, Vector2(btn_w, 64))
 	pot.name = "PotionBtn"
-	pot.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	pot.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	pot.pressed.connect(_buy_potion)
 	_menu_box.add_child(pot)
-	var refresh := UiTheme.button("刷新（%d金）" % REFRESH_PRICE, Vector2(0, BTN_H))
-	refresh.name = "RefreshBtn"
-	refresh.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	refresh.pressed.connect(_refresh_offers)
-	_menu_box.add_child(refresh)
-	var leave := UiTheme.button("离开", Vector2(0, BTN_H))
-	leave.name = "LeaveBtn"
-	leave.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	leave.pressed.connect(_close_shop)
-	_menu_box.add_child(leave)
 
 func _build_enhance_page() -> void:
 	## 强化页：返回按钮 + 已持有法杖强化卡（售出 50% 返还 / 强化 +8% 每级）
@@ -165,12 +161,17 @@ func _build_enhance_page() -> void:
 	_enhance_section.add_child(_owned_box)
 
 func _build_buy_page() -> void:
-	## 购买页：返回按钮 + 今日上架 3 把随机法杖（稀有度加权）
+	## 购买页（2026-08-10）：返回按钮 + 刷新（原在选择页）+ 今日上架 3 把随机法杖
 	var back := UiTheme.button("← 返回选择页", Vector2(_card_w, BTN_H))
 	back.name = "BackBtnBuy"
 	back.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	back.pressed.connect(_goto_menu)
 	_buy_section.add_child(back)
+	var refresh := UiTheme.button("刷新（%d金）" % REFRESH_PRICE, Vector2(_card_w, BTN_H))
+	refresh.name = "RefreshBtn"
+	refresh.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	refresh.pressed.connect(_refresh_offers)
+	_buy_section.add_child(refresh)
 	var offer_title := UiTheme.label("今日上架", 10, Color("#9d8fc4"))
 	offer_title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_buy_section.add_child(offer_title)
@@ -457,7 +458,11 @@ func autoplay_handle() -> void:
 	if best_id != "":
 		_buy_wand(best_id)
 	else:
-		_close_shop()
+		# 2026-08-10：买不起法杖且有富余金币时先回血（限购 1 次），否则关闭
+		if not _pot_bought and gold >= HEAL_POTION_PRICE:
+			_buy_potion()
+		else:
+			_close_shop()
 
 func _buy_potion() -> void:
 	if _pot_bought:

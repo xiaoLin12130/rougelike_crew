@@ -788,3 +788,61 @@ func upgrade_wand(wand_id: String) -> bool:
 	run["wand_upgrade_levels"] = levels
 	EventBus.player_stats_changed.emit()
 	return true
+
+## ===== 敌人常驻缓存（P0 性能优化，2026-08-10）=====
+## 背景：get_nodes_in_group("enemy") 在 synergy 钩子/combat 读取点高频调用
+## （20+ 文件，每帧/每钩子），每次调用都会构建新数组。改为常驻数组缓存：
+## enemy.gd 入树（_ready）注册、出树（_exit_tree）注销，查询走 get_enemies()。
+## 语义保证：
+## - 缓存非空时与组 "enemy" 当前成员一致（全部敌人/Boss 均为 EnemyBase，统一注册）；
+## - 缓存为空时回退组查询，与旧行为完全一致（兼容测试中用 add_to_group 的假敌人）；
+## - 敌人死亡帧（_die → queue_free，tree_exiting 帧末触发）缓存仍含该敌人，
+##   与 get_nodes_in_group 行为一致；遍历处保留 is_instance_valid 检查即可。
+## 并发安全：注册走挂起队列、注销只置脏标记，查询时统一合并/压缩（整体重建数组，
+## 不改原数组对象），任何遍历中触发注册/注销/嵌套查询都不会报"数组遍历中被修改"。
+## 调用方约定：get_enemies() 返回内部数组，只读遍历，不得增删元素。
+
+## 类型化 Array[Node]：与 get_nodes_in_group 返回类型一致，遍历元素为 Node，
+## 保证 `var id := e.get_instance_id()` 等类型推断与旧代码完全一致。
+var _enemy_cache: Array[Node] = []           # 常驻敌人列表（缓存）
+var _enemy_cache_pending: Array[Node] = []   # 入树注册挂起（查询时合并，避免遍历中追加）
+var _enemy_cache_dirty := false              # 有出树注销待压缩（查询时剔除失效条目）
+
+func register_enemy(e: Node) -> void:
+	## 敌人入树注册（enemy.gd _ready 调用；Boss 继承 EnemyBase 自动注册）
+	if _enemy_cache.has(e) or _enemy_cache_pending.has(e):
+		return
+	_enemy_cache_pending.append(e)
+
+func unregister_enemy(e: Node) -> void:
+	## 敌人出树注销（enemy.gd _exit_tree 调用；切关/场景切换随树退出自动清理）
+	# Array.erase 返回 void（不可作 if 条件）：先 has 再 erase，语义不变（P0 缓存工作区解阻塞）
+	if _enemy_cache_pending.has(e):
+		_enemy_cache_pending.erase(e)
+		return
+	if _enemy_cache.has(e):
+		_enemy_cache_dirty = true
+
+func get_enemies() -> Array[Node]:
+	## 常驻敌人缓存查询（只读遍历约定）。返回内部数组，调用方不得增删元素。
+	if not _enemy_cache_pending.is_empty():
+		# 整体重建（duplicate + 追加），不就地修改旧数组对象：
+		# 遍历期间发生注册/嵌套查询不会报"数组遍历中被修改"
+		var merged: Array[Node] = _enemy_cache.duplicate()
+		for e in _enemy_cache_pending:
+			merged.append(e)
+		_enemy_cache = merged
+		_enemy_cache_pending.clear()
+	if _enemy_cache_dirty:
+		var keep: Array[Node] = []
+		for e in _enemy_cache:
+			if is_instance_valid(e) and e.is_inside_tree():
+				keep.append(e)
+		_enemy_cache = keep
+		_enemy_cache_dirty = false
+	if _enemy_cache.is_empty():
+		# 缓存为空时回退组查询：保证与旧语义完全一致（含测试场景的假敌人）
+		var tree := get_tree()
+		if tree != null:
+			return tree.get_nodes_in_group("enemy")
+	return _enemy_cache

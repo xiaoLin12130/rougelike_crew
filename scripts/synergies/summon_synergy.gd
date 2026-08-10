@@ -275,7 +275,7 @@ func _on_summon_exiting(s: Node) -> void:
 func _aoe_damage(center: Vector2, radius: float, dmg: float) -> void:
 	if dmg <= 0.0 or get_tree() == null:
 		return
-	for e in get_tree().get_nodes_in_group("enemy"):
+	for e in GameState.get_enemies():
 		if e == null or not is_instance_valid(e):
 			continue
 		if center.distance_to(e.global_position) <= radius + e.scale.x * 8.0:
@@ -350,7 +350,7 @@ func _is_focus_target(enemy: Node) -> bool:
 	var origin: Vector2 = player.global_position
 	var focus: Node = null
 	var focus_d := INF
-	for e in get_tree().get_nodes_in_group("enemy"):
+	for e in GameState.get_enemies():
 		if e == null or not is_instance_valid(e) or e.is_queued_for_deletion():
 			continue
 		if e.get("is_elite") != true:
@@ -360,7 +360,7 @@ func _is_focus_target(enemy: Node) -> bool:
 			focus_d = d
 			focus = e
 	if focus == null:
-		for e in get_tree().get_nodes_in_group("enemy"):
+		for e in GameState.get_enemies():
 			if e == null or not is_instance_valid(e) or e.is_queued_for_deletion():
 				continue
 			var d: float = origin.distance_to(e.global_position)
@@ -467,7 +467,7 @@ func _update_sacrifice(delta: float) -> void:
 		return
 	var n := _summon_stacks()
 	_sacrifice_timer = maxf(SACRIFICE_BASE_CD - 0.5 * float(n - 1), SACRIFICE_MIN_CD)
-	if get_tree().get_nodes_in_group("enemy").is_empty():
+	if GameState.get_enemies().is_empty():
 		return  # 无敌人不引爆，避免空转损耗
 	var s := _weakest_summon()
 	if s == null:
@@ -479,7 +479,7 @@ func _update_sacrifice(delta: float) -> void:
 	var radius := 56.0 + 6.0 * float(n)
 	EventBus.fx_explosion.emit(pos, "fire")
 	EventBus.screen_shake.emit(3.0)
-	for e in get_tree().get_nodes_in_group("enemy"):
+	for e in GameState.get_enemies():
 		if e == null or not is_instance_valid(e):
 			continue
 		if pos.distance_to(e.global_position) <= radius + e.scale.x * 8.0:
@@ -520,7 +520,7 @@ func _update_circles(delta: float) -> void:
 			cd["tick"] = CIRCLE_TICK
 			var center: Vector2 = cd.get("pos", Vector2.ZERO)
 			var radius := float(cd.get("radius", 48.0))
-			for e in get_tree().get_nodes_in_group("enemy"):
+			for e in GameState.get_enemies():
 				if e == null or not is_instance_valid(e):
 					continue
 				if center.distance_to(e.global_position) <= radius + e.scale.x * 8.0:

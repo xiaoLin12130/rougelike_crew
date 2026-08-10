@@ -419,7 +419,7 @@ func _blade_hit(b: Dictionary) -> void:
 	var radius := float(b["radius"])
 	var dmg := int(b["dmg"])
 	var hits: Dictionary = b["hit"]
-	for e in tree.get_nodes_in_group("enemy"):
+	for e in GameState.get_enemies():
 		if not is_instance_valid(e) or not (e is Node2D):
 			continue
 		var eid := e.get_instance_id()
@@ -685,7 +685,7 @@ func _nearest_enemy(pos: Vector2) -> Node:
 		return null
 	var best: Node = null
 	var best_d := INF
-	for e in tree.get_nodes_in_group("enemy"):
+	for e in GameState.get_enemies():
 		if not is_instance_valid(e) or not (e is Node2D):
 			continue
 		var d: float = pos.distance_to((e as Node2D).global_position)
@@ -700,7 +700,7 @@ func _damage_aoe(center: Vector2, radius: float, dmg: int) -> int:
 	if tree == null:
 		return 0
 	var hits := 0
-	for e in tree.get_nodes_in_group("enemy"):
+	for e in GameState.get_enemies():
 		if not is_instance_valid(e) or not (e is Node2D):
 			continue
 		if _iget(e, "_dead", false):
@@ -720,7 +720,7 @@ func _slow_aoe(center: Vector2, radius: float) -> void:
 	var tree := get_tree()
 	if tree == null:
 		return
-	for e in tree.get_nodes_in_group("enemy"):
+	for e in GameState.get_enemies():
 		if not is_instance_valid(e) or not (e is Node2D):
 			continue
 		if _iget(e, "_dead", false):

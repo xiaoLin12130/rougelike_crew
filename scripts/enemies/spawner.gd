@@ -98,4 +98,4 @@ func _edge_position() -> Vector2:
 			return Vector2(ARENA.end.x, randf_range(ARENA.position.y, ARENA.end.y))
 
 func _enemies_alive() -> int:
-	return get_tree().get_nodes_in_group("enemy").size()
+	return GameState.get_enemies().size()

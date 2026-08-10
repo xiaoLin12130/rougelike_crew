@@ -421,7 +421,7 @@ func _tick_heal_block() -> void:
 		return
 	var radius := AURA_RADIUS + AURA_RADIUS_PER * float(n6)
 	var pp := _player_pos()
-	for e in tree.get_nodes_in_group("enemy"):
+	for e in GameState.get_enemies():
 		if not is_instance_valid(e):
 			continue
 		var id := e.get_instance_id()
@@ -673,7 +673,7 @@ func _nearest_enemy(pos: Vector2, radius: float, exclude: Node) -> Node2D:
 		return null
 	var best: Node2D = null
 	var bd := INF
-	for e in tree.get_nodes_in_group("enemy"):
+	for e in GameState.get_enemies():
 		if e == exclude or not is_instance_valid(e):
 			continue
 		var node := e as Node2D
@@ -693,7 +693,7 @@ func _nearest_enemy_without(pos: Vector2, radius: float, exclude: Node, avoid_ki
 		return null
 	var best: Node2D = null
 	var bd := INF
-	for e in tree.get_nodes_in_group("enemy"):
+	for e in GameState.get_enemies():
 		if e == exclude or not is_instance_valid(e):
 			continue
 		var node := e as Node2D

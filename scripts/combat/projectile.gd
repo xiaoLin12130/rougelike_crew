@@ -383,7 +383,8 @@ func _spawn_split_minis(source: Node) -> void:
 		})
 		# 小弹不再重复命中来源敌人（避免贴脸三连击）
 		mini._hit_enemies[source.get_instance_id()] = true
-		get_tree().current_scene.add_child(mini)
+		# P2-1b：命中链可能处于物理冲刷期回调内（反弹-击杀链），deferred 下一帧加树
+		get_tree().current_scene.call_deferred("add_child", mini)
 
 
 func _try_chain(from: Vector2) -> void:
@@ -468,7 +469,7 @@ func _enemies_in_radius(center: Vector2, radius: float) -> Array:
 
 ## 敌人扫描：优先 group "enemy"；组缺失时回退全树找 take_damage 节点。
 func _all_enemies() -> Array:
-	var grouped := get_tree().get_nodes_in_group("enemy")
+	var grouped := GameState.get_enemies()
 	if not grouped.is_empty():
 		return grouped
 	var scene := get_tree().current_scene

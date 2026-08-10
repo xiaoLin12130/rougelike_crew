@@ -279,7 +279,7 @@ func _on_m8(pos: Vector2) -> void:
 	var center := (player as Node2D).global_position
 	var radius := clampf(M8_RADIUS + 20.0 * float(stacks - 1), 200.0, 360.0)
 	var pull := clampf(M8_PULL + 20.0 * float(stacks - 1), 60.0, 160.0)
-	for e in get_tree().get_nodes_in_group("enemy"):
+	for e in GameState.get_enemies():
 		if not is_instance_valid(e) or not (e is Node2D):
 			continue
 		if _iget(e, "_dead", false):
@@ -346,6 +346,9 @@ func _reflect_pct_old() -> float:
 	## 与 game_root._on_player_hit 完全同款（thorn_reflect + 防御成型奖励）
 	if GameState == null:
 		return 0.0
+	# 0 层不生效：item_value(linear) 在 0 层返回 base（40%），不加守卫会白送反弹（P2-1a）
+	if GameState.total_stacks("thorn_reflect") <= 0:
+		return 0.0
 	var pct := GameState.item_value({"curve": OLD_REFLECT}, GameState.total_stacks("thorn_reflect"))
 	pct += float(GameState.run.get("synergy_bonus", {}).get("defense", 0.0))
 	return pct
@@ -353,6 +356,9 @@ func _reflect_pct_old() -> float:
 
 func _reflect_pct_new() -> float:
 	## 新构筑：防2 荆棘甲改造（30% +6%/层，上限 65%）；防7 反震提高反弹上限
+	# 0 层不生效：item_value(linear) 在 0 层返回 base（30%），不加守卫会白送反弹（P2-1a）
+	if _stacks(N2) <= 0:
+		return 0.0
 	var pct := _curve_value(N2, C2)
 	if pct <= 0.0:
 		return 0.0
@@ -442,7 +448,7 @@ func _nearest_enemy(pos: Vector2) -> Node:
 		return null
 	var best: Node = null
 	var best_d := INF
-	for e in tree.get_nodes_in_group("enemy"):
+	for e in GameState.get_enemies():
 		if not is_instance_valid(e) or not (e is Node2D):
 			continue
 		var d: float = pos.distance_to((e as Node2D).global_position)
@@ -463,7 +469,7 @@ func _damage_aoe(center: Vector2, radius: float, dmg: int) -> int:
 	if tree == null or dmg <= 0:
 		return 0
 	var hits := 0
-	for e in tree.get_nodes_in_group("enemy"):
+	for e in GameState.get_enemies():
 		if not is_instance_valid(e) or not (e is Node2D):
 			continue
 		if _iget(e, "_dead", false):

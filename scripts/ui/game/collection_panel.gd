@@ -15,6 +15,14 @@ const UNCOLLECTED_ICON := Color(0, 0, 0, 0.6)  # 未收集：原图标压黑 + 6
 const CELL_SIZE := Vector2(64, 64)
 const ICON_SIZE := Vector2(48, 44)
 const GRID_COLUMNS := 4
+## 手机端（is_mobile，同 wand_shop 分支风格）：3 列 72x72 格（触控目标更大）+ 图标 56
+## + 两行缩略 tab（"法杖\n1/55"）+ 字号略小；PC 保持 4 列 64x64。
+const CELL_SIZE_MOBILE := Vector2(72, 72)
+const ICON_SIZE_MOBILE := Vector2(56, 56)
+const GRID_COLUMNS_MOBILE := 3
+const TAB_W := 60.0
+## 手机端 tab 短名：法杖/法术/外壳/装备/召唤（长名"装备饰品 274/276"放不下，改两行）
+const TAB_SHORT_NAMES: Array = ["法杖", "法术", "外壳", "装备", "召唤"]
 
 ## 分类定义：["categories 键", "中文名", "稀有度兜底"]（cores/shells/summons 数据表无 rarity 字段）
 const CATEGORIES: Array = [
@@ -32,8 +40,22 @@ var _progress: Label
 var _detail: PanelContainer
 var _detail_title: Label
 var _detail_body: Label
+## 平台分支尺寸：_ready 按 UiLayout.is_mobile() 初始化（PC 默认值，手机端覆盖）
+var _mobile := false
+var _grid_columns := GRID_COLUMNS
+var _cell_size := CELL_SIZE
+var _icon_size := ICON_SIZE
+var _tab_w := TAB_W
+var _name_sz := 10
 
 func _ready() -> void:
+	_mobile = UiLayout.is_mobile()
+	if _mobile:
+		# 手机端：网格 3 列 72x72、图标 56、tab 两行缩略、字号略小
+		_grid_columns = GRID_COLUMNS_MOBILE
+		_cell_size = CELL_SIZE_MOBILE
+		_icon_size = ICON_SIZE_MOBILE
+		_name_sz = 9
 	var root := Control.new()
 	root.set_anchors_preset(Control.PRESET_FULL_RECT)
 	add_child(root)
@@ -53,21 +75,23 @@ func _ready() -> void:
 	var title := UiTheme.label("图鉴", 18, UiTheme.GOLD)
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	main.add_child(title)
-	_progress = UiTheme.label("", 10, Color("#9d8fc4"))
+	_progress = UiTheme.label("", 9 if _mobile else 10, Color("#9d8fc4"))
 	_progress.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	main.add_child(_progress)
-	# 分类 tab（5 个，44 高触控目标；60 宽 x5 = 300 ≤ 320 面板宽）
+	# 分类 tab（5 个，44 高触控目标；60 宽 x5 + 4x4 间距 = 316 ≤ 340）
 	var tabs := HBoxContainer.new()
 	tabs.add_theme_constant_override("separation", 4)
 	tabs.alignment = BoxContainer.ALIGNMENT_CENTER
 	main.add_child(tabs)
 	for i in CATEGORIES.size():
-		var b := UiTheme.button("", Vector2(60, UiLayout.touch_min()))
+		var b := UiTheme.button("", Vector2(_tab_w, UiLayout.touch_min()))
+		if _mobile:
+			b.add_theme_font_size_override("font_size", 9)
 		b.toggle_mode = true
 		b.pressed.connect(_on_tab_pressed.bind(i))
 		tabs.add_child(b)
 		_tabs.append(b)
-	var hint := UiTheme.label("已收集条目点击查看详情 · 未收集为黑色剪影", 9, Color("#7a6fa0"))
+	var hint := UiTheme.label("已收集条目点击查看详情 · 未收集为黑色剪影", 8 if _mobile else 9, Color("#7a6fa0"))
 	hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	main.add_child(hint)
 	# 条目网格：可滚动（274 件装备等多行内容）
@@ -76,7 +100,7 @@ func _ready() -> void:
 	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	main.add_child(scroll)
 	_grid = GridContainer.new()
-	_grid.columns = GRID_COLUMNS
+	_grid.columns = _grid_columns
 	_grid.add_theme_constant_override("h_separation", 6)
 	_grid.add_theme_constant_override("v_separation", 6)
 	_grid.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
@@ -102,10 +126,13 @@ func _build_detail(root: Control) -> void:
 	_detail_title = UiTheme.label("", 16, UiTheme.GOLD)
 	_detail_title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_detail_title.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	_detail_title.custom_minimum_size = Vector2(260, 0)  # 同 body：避免 min-size 按窄宽换行膨胀
 	vb.add_child(_detail_title)
 	_detail_body = UiTheme.label("", 12, Color("#c8c0e0"))
 	_detail_body.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	_detail_body.custom_minimum_size = Vector2(0, 76)
+	# min 宽 260（非 0）：autowrap Label 在 min-size 计算时按 1px 宽换行会膨胀到数百 px
+	# 高（同 wand_shop 卡片描述坑），导致详情弹窗超高越屏
+	_detail_body.custom_minimum_size = Vector2(260, 76)
 	_detail_body.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	_detail_body.vertical_alignment = VERTICAL_ALIGNMENT_TOP
 	vb.add_child(_detail_body)
@@ -158,9 +185,16 @@ func _collected_count(category: String) -> int:
 
 func refresh() -> void:
 	var category := _category_key(_tab_idx)
+	_grid.columns = _grid_columns  # 切分类时保持平台列数（PC 4 / 手机 3）
 	for i in CATEGORIES.size():
 		var ck := _category_key(i)
-		_tabs[i].text = "%s %d/%d" % [_category_name(i), _collected_count(ck), _entries(ck).size()]
+		var count := _collected_count(ck)
+		var total := _entries(ck).size()
+		if _mobile:
+			# 手机端两行缩略：短名 + 进度（字号 9，5 x 60 宽不溢出）
+			_tabs[i].text = "%s\n%d/%d" % [TAB_SHORT_NAMES[i], count, total]
+		else:
+			_tabs[i].text = "%s %d/%d" % [_category_name(i), count, total]
 		_tabs[i].button_pressed = (i == _tab_idx)
 	var entries := _entries(category)
 	_progress.text = "收集进度：%s 已收集 %d / %d" % [
@@ -176,7 +210,7 @@ func _make_entry(def: Dictionary, category: String) -> Control:
 	var collected := GameState.is_collected(category, str(def.get("id", "")))
 	var rarity := _rarity_of(category, def)
 	var cell := PanelContainer.new()
-	cell.custom_minimum_size = CELL_SIZE
+	cell.custom_minimum_size = _cell_size
 	cell.add_theme_stylebox_override("panel", UiTheme.style(
 		CELL_BG,
 		UiTheme.RARITY.get(rarity, UiTheme.BORDER) if collected else CELL_BORDER_DIM,
@@ -192,7 +226,7 @@ func _make_entry(def: Dictionary, category: String) -> Control:
 		# 数据表图标缺失时用纯色占位（未收集保持黑色剪影语义）
 		var ph := ColorRect.new()
 		ph.color = Color(0.16, 0.13, 0.24, 0.9) if collected else Color(0.04, 0.03, 0.06, 0.9)
-		ph.custom_minimum_size = ICON_SIZE
+		ph.custom_minimum_size = _icon_size
 		ph.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 		ph.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 		ph.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -202,7 +236,7 @@ func _make_entry(def: Dictionary, category: String) -> Control:
 		tex.texture = icon
 		tex.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 		tex.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-		tex.custom_minimum_size = ICON_SIZE
+		tex.custom_minimum_size = _icon_size
 		tex.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 		tex.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 		tex.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -211,10 +245,10 @@ func _make_entry(def: Dictionary, category: String) -> Control:
 		vb.add_child(tex)
 	var name_l := UiTheme.label(
 		str(def.get("name", "?")) if collected else "？？？",
-		10,
+		_name_sz,
 		UiTheme.WHITE if collected else Color("#6a6280"))
 	name_l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	name_l.custom_minimum_size = Vector2(CELL_SIZE.x, 16)
+	name_l.custom_minimum_size = Vector2(_cell_size.x, 16)
 	name_l.clip_text = true
 	name_l.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	vb.add_child(name_l)

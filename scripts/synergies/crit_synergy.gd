@@ -664,7 +664,7 @@ func _damage_aoe(center: Vector2, radius: float, dmg: int, element: String, excl
 	if tree == null:
 		return 0
 	var hits := 0
-	for e in tree.get_nodes_in_group("enemy"):
+	for e in GameState.get_enemies():
 		if e == exclude or not is_instance_valid(e) or not (e is Node2D):
 			continue
 		if _iget(e, "_dead", false):
@@ -682,7 +682,7 @@ func _random_enemy_other(pos: Vector2, radius: float, exclude) -> Node:
 	if tree == null:
 		return null
 	var pool: Array = []
-	for e in tree.get_nodes_in_group("enemy"):
+	for e in GameState.get_enemies():
 		if e == exclude or not is_instance_valid(e) or not (e is Node2D):
 			continue
 		if _iget(e, "_dead", false):

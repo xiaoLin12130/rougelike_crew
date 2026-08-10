@@ -316,7 +316,7 @@ func _do_burst(enemy: Node2D, id: int) -> void:
 	var tree := get_tree()
 	if tree == null:
 		return
-	for node in tree.get_nodes_in_group("enemy"):
+	for node in GameState.get_enemies():
 		var e := node as Node2D
 		if e == null or not is_instance_valid(e):
 			continue
@@ -354,7 +354,7 @@ func _spread_to_nearby(source: Node2D, radius: float, layers: int, max_targets: 
 	var sid := source.get_instance_id()
 	var pos: Vector2 = source.global_position
 	var count := 0
-	for node in get_tree().get_nodes_in_group("enemy"):
+	for node in GameState.get_enemies():
 		if count >= max_targets:
 			break
 		var e := node as Node2D

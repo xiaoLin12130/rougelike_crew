@@ -61,7 +61,7 @@ func _process(_delta: float) -> void:
 	if GameState.run.time > 1500.0:
 		print("[AUTOPLAY] TIMEOUT kills=", GameState.run.kills, " level=", GameState.run.level)
 		var p2 := get_tree().get_first_node_in_group("player") as Node2D
-		var en := get_tree().get_nodes_in_group("enemy")
+		var en := GameState.get_enemies()
 		var kinds2 := {}
 		for e in en:
 			if is_instance_valid(e) and e.has_method("get_enemy_id"):
@@ -77,7 +77,7 @@ func _process(_delta: float) -> void:
 	_drive_player()
 	if GameState.run.time - _last_report > 5.0:
 		_last_report = GameState.run.time
-		var enemies := get_tree().get_nodes_in_group("enemy")
+		var enemies := GameState.get_enemies()
 		var player := get_tree().get_first_node_in_group("player")
 		var dist_info := "none"
 		if player and not enemies.is_empty():
@@ -422,7 +422,7 @@ func _drive_player() -> void:
 	var player := get_tree().get_first_node_in_group("player")
 	if player == null:
 		return
-	var enemies := get_tree().get_nodes_in_group("enemy")
+	var enemies := GameState.get_enemies()
 	var nearest: Node2D = null
 	var nearest_dist := INF
 	var ranged_target: Node2D = null

@@ -214,7 +214,7 @@ func _on_enemy_died(ctx: Dictionary) -> void:
 		return
 	var pos: Vector2 = enemy.global_position
 	var count := 0
-	for node in tree.get_nodes_in_group("enemy"):
+	for node in GameState.get_enemies():
 		if count >= 2:
 			break
 		var e := node as Node2D
@@ -279,7 +279,7 @@ func _on_damage_dealt(ctx: Dictionary) -> void:
 	if tree == null:
 		return
 	# 致盲周围敌人（闪光核心联动）
-	for node in tree.get_nodes_in_group("enemy"):
+	for node in GameState.get_enemies():
 		var e := node as Node2D
 		if e == null or not is_instance_valid(e):
 			continue
@@ -312,7 +312,7 @@ func _on_cast(ctx: Dictionary) -> void:
 		return
 	var pos: Vector2 = (player as Node2D).global_position
 	var radius := _domain_radius()
-	for node in tree.get_nodes_in_group("enemy"):
+	for node in GameState.get_enemies():
 		var e := node as Node2D
 		if e == null or not is_instance_valid(e):
 			continue
@@ -375,7 +375,7 @@ func _nearest_other_enemy(self_node: Node2D, radius: float) -> Node2D:
 		return null
 	var best: Node2D = null
 	var best_d := INF
-	for node in tree.get_nodes_in_group("enemy"):
+	for node in GameState.get_enemies():
 		var e := node as Node2D
 		if e == null or not is_instance_valid(e) or e == self_node:
 			continue

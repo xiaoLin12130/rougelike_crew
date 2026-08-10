@@ -301,7 +301,7 @@ func _cast_teleport(player: Node2D, core: Dictionary, mods: Dictionary) -> void:
 	var r := float(core.get("aoe", 48.0)) * float(mods.get("aoe_mult", 1.0)) * (1.0 + GameState.aggregate_bonus("area"))
 	EventBus.fx_explosion_scaled.emit(new_pos, "void", r)
 	var dealt := 0
-	for e in get_tree().get_nodes_in_group("enemy"):
+	for e in GameState.get_enemies():
 		if is_instance_valid(e) and new_pos.distance_to(e.global_position) <= r + e.scale.x * 8.0:
 			if e.has_method("take_damage"):
 				e.take_damage(int(dmg), "void", false)
@@ -315,7 +315,7 @@ func _cast_blessing(player: Node2D, core: Dictionary, mods: Dictionary) -> void:
 	var dmg := _spell_damage(core, mods, "light")
 	var r := float(core.get("aoe", 90.0)) * float(mods.get("aoe_mult", 1.0)) * (1.0 + GameState.aggregate_bonus("area"))
 	var dealt := 0
-	for e in get_tree().get_nodes_in_group("enemy"):
+	for e in GameState.get_enemies():
 		if is_instance_valid(e) and player.global_position.distance_to(e.global_position) <= r + e.scale.x * 8.0:
 			if e.has_method("take_damage"):
 				e.take_damage(int(dmg), "light", false)
@@ -332,7 +332,7 @@ func _cast_counter(player: Node2D, core: Dictionary, mods: Dictionary) -> void:
 	for e in get_tree().get_nodes_in_group("enemy_bullet"):
 		if is_instance_valid(e) and player.global_position.distance_to(e.global_position) <= r:
 			e.queue_free()
-	for e in get_tree().get_nodes_in_group("enemy"):
+	for e in GameState.get_enemies():
 		if is_instance_valid(e) and player.global_position.distance_to(e.global_position) <= r + e.scale.x * 8.0:
 			if e.has_method("take_damage"):
 				e.take_damage(int(dmg), "void", false)
@@ -400,7 +400,7 @@ func _aim_dir(player: Node2D) -> Vector2:
 func _nearest_enemy(player: Node2D) -> Node:
 	var best: Node = null
 	var best_d := INF
-	for e in get_tree().get_nodes_in_group("enemy"):
+	for e in GameState.get_enemies():
 		if not is_instance_valid(e):
 			continue
 		var d: float = player.global_position.distance_to(e.global_position)

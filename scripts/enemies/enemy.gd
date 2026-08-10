@@ -109,6 +109,7 @@ func _find_conf(enemy_id_: String) -> Dictionary:
 
 func _ready() -> void:
 	add_to_group("enemy")
+	GameState.register_enemy(self)  # P0 性能优化：入树注册进常驻敌人缓存
 	_player = get_tree().get_first_node_in_group("player")
 	_build_sprite()
 	_status_attach_root = Node2D.new()
@@ -118,6 +119,11 @@ func _ready() -> void:
 	if is_elite:
 		_apply_elite_visual()
 	EventBus.apply_status.connect(_on_status)
+
+func _exit_tree() -> void:
+	# P0 性能优化：出树注销常驻缓存（切关/死亡帧末/场景切换自动清理）
+	if is_instance_valid(GameState):
+		GameState.unregister_enemy(self)
 
 ## 精英怪：affix 强化 + 金色描边标识（掉落血包见 game_root）
 func set_elite() -> void:
@@ -290,7 +296,7 @@ func _tick_skills(delta: float) -> void:
 			_heal_cd -= delta
 			if _heal_cd <= 0.0:
 				_heal_cd = 4.0
-				for e in get_tree().get_nodes_in_group("enemy"):
+				for e in GameState.get_enemies():
 					if is_instance_valid(e) and e != self and global_position.distance_to(e.global_position) < 150.0:
 						if e.has_method("heal_ally"):
 							e.heal_ally(int(e.max_hp * 0.05))
@@ -300,7 +306,7 @@ func _tick_skills(delta: float) -> void:
 			_swarm_cd -= delta
 			if _swarm_cd <= 0.0 and _dive_time <= 0.0:
 				var allies := 0
-				for e in get_tree().get_nodes_in_group("enemy"):
+				for e in GameState.get_enemies():
 					var eid = e.get("enemy_id")
 					if is_instance_valid(e) and e != self and str(eid) == enemy_id \
 							and global_position.distance_to(e.global_position) < 200.0:
@@ -412,7 +418,7 @@ func _spawn_totem() -> void:
 		if not is_instance_valid(totem) or _dead:
 			alive = false
 			break
-		for e in get_tree().get_nodes_in_group("enemy"):
+		for e in GameState.get_enemies():
 			if is_instance_valid(e) and e != self and totem.global_position.distance_to(e.global_position) < 120.0:
 				if e.has_method("heal_ally"):
 					e.heal_ally(int(e.max_hp * 0.02))
@@ -695,7 +701,7 @@ func _tick_separation(delta: float) -> void:
 	if _sep_timer > 0.0:
 		return
 	_sep_timer = 0.1
-	for e in get_tree().get_nodes_in_group("enemy"):
+	for e in GameState.get_enemies():
 		if e == self or not is_instance_valid(e):
 			continue
 		var to_self: Vector2 = global_position - e.global_position
@@ -832,7 +838,9 @@ func _die() -> void:
 		e.attack = maxi(int(e.attack * 0.5), 2)
 		e.scale = Vector2.ONE * 0.5
 		e.global_position = global_position + Vector2(randf_range(-12, 12), randf_range(-12, 12))
-		get_parent().add_child(e)
+		# P2-1b：死亡可能发生在物理冲刷期回调内（反弹/弹体命中链），
+		# 直接 add_child 会报 "Can't change this state while flushing queries"；deferred 下一帧加树
+		get_parent().call_deferred("add_child", e)
 		# 分裂产物 20 秒后自毁：防卡场（清场判定依赖场上敌人归零）
 		var kill_timer := get_tree().create_timer(20.0)
 		var e_id: int = e.get_instance_id()

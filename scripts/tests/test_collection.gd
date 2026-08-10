@@ -9,6 +9,8 @@ extends SceneTree
 ## ③ 持久化：mark_collected 落盘 → 清空内存 → load_collection 恢复完整；
 ##    SaveStore 直接 round-trip 完整；new_run 不重置收集（跨局图鉴进度）；
 ## ④ 主菜单：图鉴按钮存在、触控区 >=44、与其他按钮不重叠、按下可打开面板。
+## ⑤ 手机端（force_mobile(true)）：tab 总宽 ≤340 不溢出、网格 3 列、
+##    格 ≥64px（72x72 触控目标）、详情弹窗 ≤320 且在屏内；PC 断言不受影响。
 ## Run: godot --headless --path . -s res://scripts/tests/test_collection.gd
 
 var failures: Array[String] = []
@@ -120,6 +122,7 @@ func _run_all() -> void:
 	if gs == null:
 		fail("GameState autoload missing")
 		return
+	UiLayout.force_mobile(false)  # 平台判定固定为 PC（headless 无触屏，但显式更稳）
 	# ---- 准备：物理删档 + 清内存，隔离环境 ----
 	_store().clear_collection()
 	gs.collection = {}
@@ -176,6 +179,7 @@ func _run_all() -> void:
 	panel.name = "CollectionPanel"
 	root.add_child(panel)
 	_assert_panel_rendering(panel)
+	_assert_mobile_layout()
 	# ---- ③ 持久化 ----
 	gs.mark_collected("items", "strength_badge")
 	var expect_items: Array = gs.collection_of("items")
@@ -299,6 +303,56 @@ func _assert_panel_rendering(panel: CanvasLayer) -> void:
 	# 详情弹窗：Esc/知道了关闭路径存在
 	if panel._detail == null:
 		fail("面板缺详情弹窗")
+	if panel._grid.columns != 4:
+		fail("PC 网格列数 != 4: %d" % panel._grid.columns)
+
+func _assert_mobile_layout() -> void:
+	## 手机端适配验收（force_mobile(true) 后新建面板）：
+	## tab 总宽 ≤340（不溢出）、网格 3 列、格 ≥64px、详情弹窗 ≤320 且在屏内
+	UiLayout.force_mobile(true)
+	var panel: CanvasLayer = load("res://scripts/ui/collection_panel.tscn").instantiate()
+	panel.name = "CollectionPanelMobile"
+	root.add_child(panel)
+	# tab 总宽：按钮父容器（HBox）combined min = 5 按钮 + 4x4 间距
+	var tabs_box: Control = panel._tabs[0].get_parent()
+	var total_w: float = tabs_box.get_combined_minimum_size().x
+	if total_w > 340.0:
+		fail("手机 tab 总宽溢出: %.1f > 340" % total_w)
+	# tab 两行缩略名（短名 + 进度），字号小
+	if not str(panel._tabs[0].text).contains("法杖"):
+		fail("手机 tab 缩略名错误: %s" % str(panel._tabs[0].text))
+	if not str(panel._tabs[3].text).contains("装备"):
+		fail("手机 tab 缩略名错误: %s" % str(panel._tabs[3].text))
+	if not str(panel._tabs[0].text).contains("/"):
+		fail("手机 tab 缺进度行: %s" % str(panel._tabs[0].text))
+	# 网格 3 列
+	if panel._grid.columns != 3:
+		fail("手机网格列数 != 3: %d" % panel._grid.columns)
+	# 格 ≥64px（72x72 触控目标）
+	var cells := _live_cells(panel)
+	if cells.is_empty():
+		fail("手机网格无条目")
+	for c in cells:
+		var cs: Vector2 = (c as Control).get_combined_minimum_size()
+		if cs.x < 64.0 or cs.y < 64.0:
+			fail("手机格 < 64px: %s" % str(cs))
+			break
+	# 切分类后列数保持 3（refresh() 重设 columns）
+	_switch_tab(panel, 3)
+	if panel._grid.columns != 3:
+		fail("手机切 tab 后列数 != 3: %d" % panel._grid.columns)
+	# 详情弹窗 ≤320 且在屏内
+	var it := _find_cell(panel, "attack_speed_potion")
+	if it != null:
+		_click(it)
+	var drect: Rect2 = panel._detail.get_global_rect()
+	if drect.size.x > 320.0:
+		fail("手机详情弹窗宽 > 320: %s" % str(drect))
+	var screen := Rect2(Vector2.ZERO, root.get_visible_rect().size)
+	if not screen.encloses(drect):
+		fail("手机详情弹窗超出屏幕: %s / %s" % [str(drect), str(screen)])
+	panel.queue_free()
+	UiLayout.force_mobile(false)
 
 func _assert_main_menu() -> void:
 	var menu: Control = load("res://scenes/main_menu.tscn").instantiate()
@@ -328,3 +382,15 @@ func _assert_main_menu() -> void:
 	else:
 		opened.queue_free()
 	menu.queue_free()
+	# 手机端同样 >=44px（图鉴按钮 200x44 为代码建锚点，与平台无关，复核一遍）
+	UiLayout.force_mobile(true)
+	var menu2: Control = load("res://scenes/main_menu.tscn").instantiate()
+	menu2.name = "MainMenuMobile"
+	root.add_child(menu2)
+	var cb2 := menu2.get_node_or_null("CollectionButton")
+	if cb2 == null:
+		fail("手机主菜单缺图鉴按钮")
+	elif (cb2 as Control).get_global_rect().size.y < 43.0:
+		fail("手机图鉴按钮触控区 < 44: %s" % str((cb2 as Control).get_global_rect()))
+	menu2.queue_free()
+	UiLayout.force_mobile(false)

@@ -561,7 +561,7 @@ func _on_phase_up() -> void:
 	EventBus.screen_shake.emit(10.0)
 	# 清屏冲击波：对场上其他敌人造成伤害
 	var shock := int(max_hp * 0.2)
-	for e in get_tree().get_nodes_in_group("enemy"):
+	for e in GameState.get_enemies():
 		if e == self or not is_instance_valid(e):
 			continue
 		if e.has_method("take_damage"):

@@ -286,7 +286,7 @@ func _on_m7(ctx: Dictionary) -> void:
 	var tree := get_tree()
 	if tree == null:
 		return
-	for e in tree.get_nodes_in_group("enemy"):
+	for e in GameState.get_enemies():
 		if e == enemy or not is_instance_valid(e) or not (e is Node2D):
 			continue
 		if _fget(e, "_burn_left", 0.0) > 0.0:
@@ -392,7 +392,7 @@ func _zone_hit(z: Dictionary) -> void:
 	var pos: Vector2 = z["pos"]
 	var radius := float(z["radius"])
 	var dmg := maxi(int(float(z["dps"]) * 0.25), 1)
-	for e in tree.get_nodes_in_group("enemy"):
+	for e in GameState.get_enemies():
 		if not is_instance_valid(e) or not (e is Node2D):
 			continue
 		if _iget(e, "_dead", false):
@@ -507,7 +507,7 @@ func _nearest_enemy(pos: Vector2) -> Node:
 		return null
 	var best: Node = null
 	var best_d := INF
-	for e in tree.get_nodes_in_group("enemy"):
+	for e in GameState.get_enemies():
 		if not is_instance_valid(e) or not (e is Node2D):
 			continue
 		var d: float = pos.distance_to((e as Node2D).global_position)
@@ -523,7 +523,7 @@ func _random_enemy_near(source, radius: float) -> Node:
 		return null
 	var src := source as Node2D
 	var pool: Array = []
-	for e in tree.get_nodes_in_group("enemy"):
+	for e in GameState.get_enemies():
 		if e == source or not is_instance_valid(e) or not (e is Node2D):
 			continue
 		if _iget(e, "_dead", false):
@@ -543,7 +543,7 @@ func _damage_aoe(center: Vector2, radius: float, dmg: int, spread_burn: bool) ->
 	if tree == null:
 		return 0
 	var hits := 0
-	for e in tree.get_nodes_in_group("enemy"):
+	for e in GameState.get_enemies():
 		if not is_instance_valid(e) or not (e is Node2D):
 			continue
 		if _iget(e, "_dead", false):

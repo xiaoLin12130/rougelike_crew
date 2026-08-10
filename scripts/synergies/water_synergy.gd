@@ -218,7 +218,7 @@ func _tick_tide_lock(delta: float) -> void:
 	if tree == null:
 		return
 	var dur := _slow_duration()
-	for e in tree.get_nodes_in_group("enemy"):
+	for e in GameState.get_enemies():
 		if not is_instance_valid(e):
 			continue
 		var eid := _id_of(e)
@@ -247,7 +247,7 @@ func _tick_storm(delta: float) -> void:
 		return
 	var dur := clampf(STORM_SLOW_TIME + SLOW_DURATION_PER * float(_stacks(N3)), 0.5, 2.5)
 	var applied := 0
-	for e in tree.get_nodes_in_group("enemy"):
+	for e in GameState.get_enemies():
 		if not is_instance_valid(e) or _iget(e, "_dead", false):
 			continue
 		_apply_slow(e, dur)
@@ -292,7 +292,7 @@ func _spread_vines(pos: Vector2) -> void:
 		return
 	var radius := VINE_RADIUS_BASE * _area_mult()
 	var applied := 0
-	for e in tree.get_nodes_in_group("enemy"):
+	for e in GameState.get_enemies():
 		if not is_instance_valid(e) or not (e is Node2D):
 			continue
 		if _iget(e, "_dead", false):
@@ -621,7 +621,7 @@ class WaterZone:
 	func _apply_marsh(tree: SceneTree) -> void:
 		var has_vortex: bool = host._stacks("water_vortex") > 0
 		var has_curtain: bool = host._stacks("water_curtain") > 0
-		for e in tree.get_nodes_in_group("enemy"):
+		for e in GameState.get_enemies():
 			if not _valid(e):
 				continue
 			var d: float = global_position.distance_to(e.global_position)
@@ -642,7 +642,7 @@ class WaterZone:
 	func _apply_tornado(tree: SceneTree) -> void:
 		var dmg := maxi(int(host._tornado_dps() * 0.25), 1)
 		var push: float = host._tornado_push() * 0.25
-		for e in tree.get_nodes_in_group("enemy"):
+		for e in GameState.get_enemies():
 			if not _valid(e):
 				continue
 			var d: float = global_position.distance_to(e.global_position)

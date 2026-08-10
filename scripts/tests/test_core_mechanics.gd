@@ -8,6 +8,8 @@ const ENEMY_SCENE := preload("res://scenes/game/enemy.tscn")
 const PROJECTILE_SCENE := preload("res://scenes/game/projectile.tscn")
 
 var _failures: Array[String] = []
+var _dd_count := 0               ## P2-1a：damage_dealt 计数（反弹断言）
+var _split_test_enemy: Node = null  ## P2-1b：物理回调内待击杀的分裂史莱姆
 
 
 func _ready() -> void:
@@ -22,6 +24,8 @@ func _ready() -> void:
 	await _test_drain()
 	await _test_chain()
 	await _test_caster_passthrough()
+	await _test_thorn_reflect()
+	await _test_split_flush_safe()
 	await _clear_enemies()
 	await _clear_projectiles()
 	if _failures.is_empty():
@@ -258,3 +262,122 @@ func _test_caster_passthrough() -> void:
 	caster.queue_free()
 	GameState.run.grid = saved_grid
 	await _clear_projectiles()
+
+
+func _on_dd(_dmg: int, _pos: Vector2, _crit: bool) -> void:
+	_dd_count += 1
+
+
+func _test_thorn_reflect() -> void:
+	## P2-1a：荆棘甲（thorn_reflect）0 层受击不反弹；1 层按曲线反弹 40%
+	await _clear_enemies()
+	await _clear_projectiles()
+	var ds_script: Script = load("res://scripts/synergies/defense_synergy.gd")
+	if ds_script == null:
+		_fail("thorn: defense_synergy.gd 编译失败")
+		return
+	var ds: Node = ds_script.new()
+	# 免疫掷骰（thorn_armor/guard_shield 在 0 层 exp_proc 仍有 10%/30% 概率）用固定种子压掉
+	var safe_seed := 0
+	for s in range(1, 600):
+		seed(s)
+		if randf() >= 0.35:
+			safe_seed = s
+			break
+	if safe_seed == 0:
+		_fail("thorn: 找不到免疫掷骰通过种子")
+		return
+	var saved_items: Dictionary = GameState.run.get("items", {}).duplicate()
+	var saved_bonus = GameState.run.get("synergy_bonus", {})
+	GameState.run.items.clear()
+	GameState.run["synergy_bonus"] = {}
+	# 树上裸节点后置 set_script：跑真实 game_root._on_player_hit 但不触发 _ready（不拉整局）
+	var gr := Node2D.new()
+	add_child(gr)
+	gr.set_script(load("res://scenes/game/game_root.gd"))
+	EventBus.damage_dealt.connect(_on_dd)
+	var attacker := _spawn_enemy(Vector2(600, 40))
+	attacker.hp = 10000.0
+	attacker.max_hp = 10000.0
+	var pos: Vector2 = attacker.global_position
+	# --- 0 层：不反弹 ---
+	_dd_count = 0
+	gr._hit_protect = 0.0
+	seed(safe_seed)
+	gr._on_player_hit(10, pos)
+	await get_tree().physics_frame
+	if not is_equal_approx(attacker.hp, attacker.max_hp):
+		_fail("thorn 0层: attacker 不应掉血（hp=%s）" % str(attacker.hp))
+	if _dd_count != 0:
+		_fail("thorn 0层: 不应产生 damage_dealt（%d 次）" % _dd_count)
+	if ds._reflect_pct_old() != 0.0 or ds._reflect_pct_new() != 0.0:
+		_fail("thorn 0层: defense_synergy 反弹估算应为 0")
+	# --- 1 层：按曲线反弹（game_root 硬编码 0.40/0.35/0.95，第 1 层 = base 40%）---
+	GameState.run.items["thorn_reflect"] = 1
+	var stone := float(GameState.item_value(
+		GameState.item_def("stone_armor").get("curve", {"type": "linear", "base": 0.06, "k": 0.06, "cap": 0.35}), 0))
+	var amulet := float(GameState.item_value(
+		GameState.item_def("defense_amulet").get("curve", {"type": "linear", "base": 0.03, "k": 0.03, "cap": 0.20}), 0))
+	var taken_int := int(10.0 * (1.0 - minf(stone + amulet, 0.50)))
+	var reflected := int(float(taken_int) * 0.40)
+	if not is_equal_approx(float(ds._reflect_pct_old()), 0.40):
+		_fail("thorn 1层: defense_synergy 旧 id 估算应 0.40")
+	_dd_count = 0
+	gr._hit_protect = 0.0
+	seed(safe_seed)
+	gr._on_player_hit(10, pos)
+	await get_tree().physics_frame
+	var expect_hp: float = attacker.max_hp - float(reflected) * (1.0 - float(attacker.armor))
+	if not is_equal_approx(attacker.hp, expect_hp):
+		_fail("thorn 1层: 反弹 %d 伤，attacker hp=%s（期望 %s）" % [reflected, attacker.hp, expect_hp])
+	if _dd_count != 1:
+		_fail("thorn 1层: 应恰好 1 次 damage_dealt（got %d）" % _dd_count)
+	# 还原
+	EventBus.damage_dealt.disconnect(_on_dd)
+	GameState.run.items.clear()
+	for k in saved_items:
+		GameState.run.items[k] = saved_items[k]
+	GameState.run["synergy_bonus"] = saved_bonus
+	attacker.queue_free()
+	gr.queue_free()
+	ds.free()
+	await get_tree().physics_frame
+
+
+func _on_killer_body(body: Node) -> void:
+	## 物理冲刷期回调内击杀分裂史莱姆：_die 内 add_child 若未 deferred 会报 flushing queries
+	if body == _split_test_enemy and is_instance_valid(_split_test_enemy):
+		_split_test_enemy.take_damage(99999, "blade", false)
+
+
+func _test_split_flush_safe() -> void:
+	## P2-1b：分裂史莱姆在物理回调内死亡 → 分裂体 deferred 生成，不报 flushing queries
+	await _clear_enemies()
+	await _clear_projectiles()
+	var e := _spawn_enemy(Vector2(300, 300))
+	e.hp = 10.0
+	e.max_hp = 10.0
+	e.behavior = "split"  # 史莱姆 conf 默认即 split，显式声明防配置漂移
+	_split_test_enemy = e
+	var killer := Area2D.new()
+	killer.collision_mask = 2  # 敌人 collision_layer=2
+	var cs := CollisionShape2D.new()
+	cs.shape = CircleShape2D.new()
+	(cs.shape as CircleShape2D).radius = 10.0
+	killer.add_child(cs)
+	killer.global_position = e.global_position
+	killer.body_entered.connect(_on_killer_body)
+	add_child(killer)
+	for i in 5:
+		await get_tree().physics_frame
+	var minis := 0
+	for c in get_children():
+		if c.get("_is_split") == true:
+			minis += 1
+	if minis != 1:
+		_fail("split flush: 应生成 1 只分裂史莱姆（got %d）" % minis)
+	if is_instance_valid(e):
+		_fail("split flush: 原史莱姆应已死亡")
+	killer.queue_free()
+	_split_test_enemy = null
+	await get_tree().physics_frame

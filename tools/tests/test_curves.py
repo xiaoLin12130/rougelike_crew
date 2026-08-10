@@ -274,6 +274,58 @@ def main():
     check(abs(b["loop_hp"] - 1.34) < 1e-9, "balance loop_hp = 1.34 (GameState.loop_factor_hp)")
     check(abs(b["loop_dmg"] - 1.24) < 1e-9, "balance loop_dmg = 1.24 (GameState.loop_factor_dmg)")
 
+
+    # --- ?????2026-08-10?minion_boost????/??/?????????? ---
+    # ??????touch???? atk_cd????????enemy.gd _ai_melee ????
+    # ???projectile???? fire_interval / bullet_speed?enemy.gd _ai_ranged ????
+    for e in enemies["enemies"]:
+        if e.get("touch", False):
+            check("atk_cd" in e, f"enemy {e['id']} melee has atk_cd")
+            check(0.5 < e.get("atk_cd", 0) <= 1.1, f"enemy {e['id']} atk_cd in (0.5, 1.1]")
+        if e.get("projectile", False):
+            check(2.5 < e.get("fire_interval", 0) <= 5.0, f"enemy {e['id']} fire_interval in (2.5, 5.0]")
+            check(120 <= e.get("bullet_speed", 0) <= 400, f"enemy {e['id']} bullet_speed in [120, 400]")
+    # ????????? -> ???
+    def ec(eid):
+        return next(x for x in enemies["enemies"] if x["id"] == eid)
+    check(ec("slime")["attack"] == 9 and abs(ec("slime")["atk_cd"] - 0.85) < 1e-9, "slime 7/1.0 -> 9/0.85")
+    check(ec("bat")["attack"] == 6 and abs(ec("bat")["atk_cd"] - 0.8) < 1e-9, "bat 5/1.0 -> 6/0.8")
+    check(ec("goblin")["attack"] == 13 and abs(ec("goblin")["atk_cd"] - 0.85) < 1e-9, "goblin 10/1.0 -> 13/0.85")
+    check(ec("wizard")["attack"] == 18 and abs(ec("wizard")["bullet_speed"] - 165) < 1e-9, "wizard 14/130 -> 18/165")
+    check(ec("goblin_archer")["bullet_speed"] == 190 and ec("goblin_archer")["sniper_speed"] == 340,
+          "archer bullet 150 -> 190 / sniper 300 -> 340")
+    check(ec("charger")["charge_cd"] == 2.6, "charger charge_cd 3.2 -> 2.6 (????+)")
+    check(ec("bat")["dive_cd"] == 2.4, "bat dive_cd 3.0 -> 2.4 (????+)")
+    # ???? DPS ?? 30~60%????????????=atk/atk_cd???=atk/fire_interval?
+    OLD_STATS = {
+        "slime": (7, 1.0), "bat": (5, 1.0), "ghost": (8, 1.0), "goblin": (10, 1.0),
+        "goblin_archer": (7, 4.5), "skeleton": (12, 1.0), "imp": (8, 4.5), "wizard": (14, 3.6),
+        "bomber": (10, 1.0), "charger": (14, 1.0), "healer": (6, 1.0),
+        "crystal_sentry": (9, 4.0), "spider": (7, 1.0), "mimic_block": (13, 1.0), "specter": (10, 4.2),
+    }
+    for e in enemies["enemies"]:
+        eid = e["id"]
+        if eid not in OLD_STATS:
+            continue
+        o_atk, o_iv = OLD_STATS[eid]
+        o_dps = o_atk / o_iv
+        n_dps = e["attack"] / (e.get("atk_cd", e.get("fire_interval", 1.0)))
+        ratio = n_dps / o_dps
+        check(1.30 <= ratio <= 1.60,
+              f"enemy {eid} ?? DPS ?? {ratio:.2f}x ?? [1.30, 1.60]")
+
+    # --- ???? +20% ???2026-08-10 minion_boost?---
+    lv1 = next(x for x in levels["levels"] if x["id"] == "level_1")
+    wave_totals = [sum(w["spawn"].values()) for w in lv1["waves"]]
+    check(wave_totals == [4, 6, 12], f"level_1 ???? 3/5/10 -> 4/6/12 (got {wave_totals})")
+    for lv in levels["levels"]:
+        old_total = {"level_1": 18, "level_2": 29, "level_3": 33, "level_4": 31, "level_5": 46}[lv["id"]]
+        new_total = sum(sum(w["spawn"].values()) for w in lv["waves"])
+        check(new_total >= old_total * 1.12,
+              f"level {lv['id']} ???? >= ??x1.12 ({old_total} -> {new_total})")
+    # level_num ????? spawner??? +26%??? x1.5?
+    check(abs(b["level_num"] - 0.26) < 1e-9, "balance level_num = 0.26 (spawner ????)")
+
     # --- xp curve (GameState.xp_to_next 公式一致性) ---
     xp = balance["xp"]
     # 2026-08-10: L1-3 ????30/60/100?? GameState.xp_to_next ?????

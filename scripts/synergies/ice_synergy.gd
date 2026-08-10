@@ -231,7 +231,7 @@ func _on_player_move(ctx: Dictionary) -> void:
 # ================= 每帧扫描（冻结 tick）=================
 
 func _scan_freeze(delta: float) -> void:
-	for e in get_tree().get_nodes_in_group("enemy"):
+	for e in GameState.get_enemies():
 		if not is_instance_valid(e):
 			continue
 		var id: int = e.get_instance_id()
@@ -311,7 +311,7 @@ func _tick_absolute_zero(delta: float) -> void:
 		return
 	var pos: Vector2 = player.global_position
 	var dur := AZ_TIME + FREEZE_TIME_K * _stacks("ice_3")
-	for e in get_tree().get_nodes_in_group("enemy"):
+	for e in GameState.get_enemies():
 		if not is_instance_valid(e) or _b(e, "_dead"):
 			continue
 		if pos.distance_to(e.global_position) <= AZ_RADIUS + e.scale.x * 8.0:
@@ -398,7 +398,7 @@ func _shatter(enemy: Node) -> void:
 
 func _shatter_at(pos: Vector2) -> void:
 	var dmg := _shatter_dmg()
-	for e in get_tree().get_nodes_in_group("enemy"):
+	for e in GameState.get_enemies():
 		if not is_instance_valid(e) or _b(e, "_dead"):
 			continue
 		if not e.has_method("take_damage"):
@@ -422,7 +422,7 @@ func _try_spread(enemy: Node) -> void:
 	if randf() >= chance:
 		return
 	var pos: Vector2 = enemy.global_position
-	for o in get_tree().get_nodes_in_group("enemy"):
+	for o in GameState.get_enemies():
 		if o == enemy or not is_instance_valid(o) or _b(o, "_dead"):
 			continue
 		if not _freezeable(o):
@@ -433,7 +433,7 @@ func _try_spread(enemy: Node) -> void:
 
 ## 冰M3 冰霜新星：冻结环（只冻结，新冻结目标后续触发碎冰/扩散连锁）
 func _nova(pos: Vector2) -> void:
-	for e in get_tree().get_nodes_in_group("enemy"):
+	for e in GameState.get_enemies():
 		if not is_instance_valid(e) or _b(e, "_dead"):
 			continue
 		if pos.distance_to(e.global_position) <= NOVA_RADIUS + e.scale.x * 8.0:
@@ -536,7 +536,7 @@ func _b(e: Object, prop: String) -> bool:
 func _nearest_enemy(pos: Vector2, radius: float) -> Node:
 	var best: Node = null
 	var best_d := radius
-	for e in get_tree().get_nodes_in_group("enemy"):
+	for e in GameState.get_enemies():
 		if not is_instance_valid(e) or _b(e, "_dead"):
 			continue
 		var d: float = pos.distance_to(e.global_position)
@@ -615,7 +615,7 @@ class SlowZone:
 		if _scan > 0.0:
 			return
 		_scan = 0.25
-		for e in get_tree().get_nodes_in_group("enemy"):
+		for e in GameState.get_enemies():
 			if not is_instance_valid(e):
 				continue
 			var dead = e.get("_dead")

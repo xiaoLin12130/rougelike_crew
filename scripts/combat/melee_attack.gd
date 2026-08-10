@@ -62,7 +62,7 @@ func _nearest_enemy_in_range(center: Vector2) -> Node:
 		return null
 	var best: Node = null
 	var best_d := INF
-	for e in tree.get_nodes_in_group("enemy"):
+	for e in GameState.get_enemies():
 		if not is_instance_valid(e) or not (e is Node2D):
 			continue
 		var dead: Variant = e.get("_dead")

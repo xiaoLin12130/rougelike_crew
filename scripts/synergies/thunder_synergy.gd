@@ -505,7 +505,7 @@ func _enemies_alive() -> Array:
 	if tree == null:
 		return []
 	var out: Array = []
-	for e in tree.get_nodes_in_group("enemy"):
+	for e in GameState.get_enemies():
 		if _alive_enemy(e):
 			out.append(e)
 	return out
