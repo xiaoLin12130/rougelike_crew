@@ -407,7 +407,7 @@
     "type": "linear"
    },
    "description": "饰品：冰霜伤害 +25%，冻结时间 +0.3s",
-   "icon": "res://assets/icons/verarc/ice_spell.png",
+   "icon": "res://assets/icons/shikashi/shikashi_r9_c9.png",
    "id": "trinket_frost",
    "name": "霜之心",
    "rarity": "rare",
@@ -1082,7 +1082,7 @@
     "type": "linear"
    },
    "description": "冰系冷却 -6%（每层，上限 45%）",
-   "icon": "res://assets/icons/willibab/DAGGERS_12.png",
+   "icon": "res://assets/icons/shikashi/shikashi_r9_c12.png",
    "id": "ice_9",
    "name": "冰棱",
    "rarity": "common",
@@ -1865,7 +1865,7 @@
     "type": "threshold"
    },
    "description": "召唤物对集火目标（最近精英，无精英取最近敌人）伤害提升",
-   "icon": "res://assets/icons/shikashi/shikashi_r4_c7.png",
+   "icon": "res://assets/icons/shikashi/shikashi_r7_c9.png",
    "id": "summon_m4",
    "name": "集火",
    "rarity": "rare",
@@ -4891,7 +4891,7 @@
     "type": "linear"
    },
    "description": "冰系伤害 +25%（每层，tag 聚合进冰系伤害乘区）；冰M1 碎冰联动：碎冰伤害 ×(1+5%×冰系构筑数，基础 12）",
-   "icon": "res://assets/icons/shikashi/shikashi_r18_c2.png",
+   "icon": "res://assets/icons/shikashi/shikashi_r9_c8.png",
    "id": "ice_glacier_heart",
    "name": "冰川之心",
    "rarity": "legendary",
@@ -4909,7 +4909,7 @@
     "type": "linear"
    },
    "description": "全法术范围 +25%（每层，tag 聚合）；冰M7 冰雪风暴联动：移动每 56px 留下 1s 减速区域（半径 64px）",
-   "icon": "res://assets/icons/shikashi/shikashi_r18_c2.png",
+   "icon": "res://assets/icons/shikashi/shikashi_r9_c7.png",
    "id": "ice_frozen_domain",
    "name": "冰封领域",
    "rarity": "legendary",
@@ -4928,7 +4928,7 @@
     "type": "linear"
    },
    "description": "法术冷却 -7%（每层，tag 聚合，与技能冷却合计上限 80%）；冰M10 绝对零度联动：脉冲间隔 8s÷(1+5%×冰系构筑数)（下限 4s）",
-   "icon": "res://assets/icons/shikashi/shikashi_r10_c15.png",
+   "icon": "res://assets/icons/shikashi/shikashi_r9_c5.png",
    "id": "ice_chrono_frost",
    "name": "时之冰",
    "rarity": "legendary",
