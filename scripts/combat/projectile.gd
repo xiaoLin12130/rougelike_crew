@@ -82,7 +82,14 @@ func _ready() -> void:
 	add_to_group("player_projectile")
 	var spr := $Sprite2D as Sprite2D
 	if spr != null:
-		spr.texture = load(STATUS_TEXTURES.get(_element, STATUS_TEXTURES["fire"]))
+		if _is_whirl:
+			# 旋风刃专用视觉（2026-08-10）：宽刀身贴图（SWORDS_120）+ 刀尖朝外，
+			# 解决"刀刃太小看不出是刀在转"
+			spr.texture = load("res://assets/icons/willibab/SWORDS_120.png")
+			spr.scale = Vector2.ONE * 1.8
+			spr.rotation = _dir.angle()
+		else:
+			spr.texture = load(STATUS_TEXTURES.get(_element, STATUS_TEXTURES["fire"]))
 	_player_ref = get_tree().get_first_node_in_group("player")
 	if _orbit_mode:
 		_orbit_angle = _dir.angle()
@@ -203,6 +210,11 @@ func _orbit_step(delta: float) -> void:
 		_orbit_center = _player_ref.global_position
 	_orbit_angle += ORBIT_SPEED * delta
 	global_position = _orbit_center + Vector2.from_angle(_orbit_angle) * ORBIT_RADIUS
+	if _is_whirl:
+		# 刀刃自转：刀身随轨道角度旋转（刀尖朝外），看起来是"刀在转"
+		var spr := $Sprite2D as Sprite2D
+		if spr != null:
+			spr.rotation = _orbit_angle + PI / 2.0
 	for e in _enemies_in_radius(global_position, CONTACT_RADIUS):
 		var id: int = e.get_instance_id()
 		if _hit_enemies.has(id):

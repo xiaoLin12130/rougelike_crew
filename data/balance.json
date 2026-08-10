@@ -43,7 +43,7 @@
   "base_mult": 1.5,
   "per_crit_dmg": 0.1
  },
- "levelup_choices": 4,
+ "levelup_choices": 3,
  "max_grid_slots": 5,
  "trinket_slots": 3
 }

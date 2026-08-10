@@ -66,6 +66,7 @@ const FxManagerScript := preload("res://scripts/fx/fx_manager.gd")
 var _m2_bonus := 0.0          ## 薪火相传当前生效的攻速加成
 var _m2_left := 0.0           ## 薪火相传剩余秒数
 var _zones: Array = []        ## 龙息火地列表：[{pos, radius, dps, left, tick}]
+var _zone_seq := 0            ## 火地唯一 id 计数（重入安全的删除定位用）
 var _m3_ticks := {}           ## 纵火狂节流计数（enemy instance_id → 帧数）
 var _m4_ticks := {}           ## 烈焰新星叠层节流计数
 var _m4_stacks := {}          ## 烈焰新星当前层数（enemy instance_id → 层数）
@@ -346,7 +347,9 @@ func _on_m10(ctx: Dictionary) -> void:
 	if _zones.size() >= M10_MAX_ZONES:
 		var oldest: Dictionary = _zones.pop_front()
 		_free_zone_fx(oldest)
+	_zone_seq += 1
 	_zones.append({
+		"id": _zone_seq,
 		"pos": pos,
 		"radius": radius,
 		"dps": maxf(M10_DPS + 4.0 * float(stacks - 1), 1.0),
@@ -359,9 +362,12 @@ func _on_m10(ctx: Dictionary) -> void:
 func _tick_zones(dt: float) -> void:
 	if _zones.is_empty():
 		return
-	var i := _zones.size() - 1
-	while i >= 0:
-		var z: Dictionary = _zones[i]
+	## P2-4 修复：快照迭代 + 按 id 删除。_zone_hit → 敌人死亡 → 火M1 灰烬爆炸会
+	## 重入 _ignite_zones 改写 _zones（还可能触发火M10 上限 pop_front 前移索引），
+	## 旧版按调用时的下标继续访问/remove_at 会越界。逐条处理前先确认该 zone 仍存在。
+	for z in _zones.duplicate():
+		if not _zone_exists(z):
+			continue
 		z["left"] = float(z["left"]) - dt
 		z["tick"] = float(z["tick"]) - dt
 		if float(z["tick"]) <= 0.0:
@@ -369,8 +375,7 @@ func _tick_zones(dt: float) -> void:
 			_zone_hit(z)
 		if float(z["left"]) <= 0.0:
 			_free_zone_fx(z)
-			_zones.remove_at(i)
-		i -= 1
+			_remove_zone(z)
 
 
 func _free_zone_fx(z: Dictionary) -> void:
@@ -403,17 +408,40 @@ func _zone_hit(z: Dictionary) -> void:
 func _ignite_zones(center: Vector2, radius: float) -> void:
 	if _zones.is_empty():
 		return
-	var i := _zones.size() - 1
-	while i >= 0:
-		var z: Dictionary = _zones[i]
+	## P2-4 修复：同上（_damage_aoe → 敌人死亡 → 火M1 → 重入本函数时旧下标失效）。
+	## 先按 id 摘除再结算伤害，重入方不会对同一 zone 二次引爆/二次释放。
+	for z in _zones.duplicate():
+		if not _zone_exists(z):
+			continue
 		var zpos: Vector2 = z["pos"]
 		if zpos.distance_to(center) <= radius + float(z["radius"]):
+			_remove_zone(z)
+			_free_zone_fx(z)
 			var burst := maxi(int(float(z["dps"]) * maxf(float(z["left"]), 0.0) * 0.5), 1)
 			if burst > 0:
 				_damage_aoe(zpos, float(z["radius"]), burst, false)
-			_free_zone_fx(z)
+
+
+func _zone_exists(z: Dictionary) -> bool:
+	## 按唯一 id 确认 zone 仍在列表中（重入可能已删除/替换）
+	var zid := int(z.get("id", -1))
+	if zid < 0:
+		return false
+	for other in _zones:
+		if int(other.get("id", -1)) == zid:
+			return true
+	return false
+
+
+func _remove_zone(z: Dictionary) -> void:
+	## 按唯一 id 删除（索引可能已被重入修改，定位后 remove_at 保证不越界）
+	var zid := int(z.get("id", -1))
+	if zid < 0:
+		return
+	for i in _zones.size():
+		if int(_zones[i].get("id", -1)) == zid:
 			_zones.remove_at(i)
-		i -= 1
+			return
 
 
 ## ===== 工具函数（全部防御性）=====

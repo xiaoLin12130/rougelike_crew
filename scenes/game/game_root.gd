@@ -152,7 +152,7 @@ func _show_levelup() -> void:
 		return
 	_reset_joystick()  # 升级弹出前清残留：防止升级瞬间按着的触摸在暂停期残留
 	get_tree().paused = true
-	var choices: Array = GameState.roll_item_choices(4)
+	var choices: Array = GameState.roll_item_choices(3)
 	levelup_overlay.show_choices(choices)
 	levelup_overlay.show()
 	if not levelup_overlay.choice_made.is_connected(_on_choice_made):

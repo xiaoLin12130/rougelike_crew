@@ -5,7 +5,6 @@
    "status": "done",
    "note": "2026-08-10 第2轮导出版复测：通关率 4/5=80%（第1轮27%）；P0直击修复验证通过；R1召唤光环freed-instance崩溃(必胜局丢失,P0待修)；R6并行编辑干扰超时；回归:smoke/lightning/core_shell全绿,ground_fx导出树全绿(当前树毒雾用例漂移)；报告 docs/reports/全流程体验报告-第2轮.md"
   },
-
   "autoplay_verify": {
    "note": "3局2胜VICTORY(793s/837s/158s-DEFEAT)：bot构筑打分+预判瞄准+Boss绕圈集火+躲圈/周期闪+直取古神；波次压缩40%、远古守卫追击+20%、树精root_zone/bark回调；古神18.6k血约2分钟击杀",
    "status": "done"
@@ -241,7 +240,11 @@
   "mech_fill_batch": {
    "status": "done",
    "note": "G6 圣光流：大全追加第12章(10数值+10机制)；items.json 落库20件(holy_1..10+holy_m1..m10，8普通/8稀有/4传说)；新增 holy_synergy.gd注册全8类钩子(致盲扩散/治疗光环/圣盾/净化/光矛穿透/圣印/爆发/审判/复活/领域)与flash/blessing联动。G4 毒系门控：poison_m1..m10 独立解锁对应机制，放大器保留；无道具不生效。G5 去重：defense_amulet 被禁改文件引用不可移除，重调曲线-2%/上限15%(原3%/20%与iron_wall相同)区分。G7 稀有度：补 melee_giant_cleaver/wind_typhoon_eye 第4传说，圣光自带4传说，test_curves 全流派传说>=4断言。P2 语义对齐：大全防9石肤改'受到伤害-10%/上限35%'、咒7恐惧咒改'玩家受到伤害-8%/上限25%'与实现一致。四叶草0层泄漏：melee_attack._roll_crit 加 clover_stacks>0 守卫。测试：test_holy ALL PASS / test_curves OK(296件) / smoke SMOKE OK / test_sync_hooks SYNC HOOKS OK；无 Godot 残留进程"
+  },
+  "skill_visual_audit": {
+   "status": "done",
+   "note": "只读审计:15核心+10外壳施法视觉对照描述全查,文档 docs/design/技能视觉全量审计.md;15核心 ✅5/⚠️6/❌4(water_bolt+thorn_vine弹体回退火球贴图、flash爆炸视觉半径1vs命中90、frenzy无狂暴视觉),外壳 ✅6/⚠️4;P0x4+P1x6+P2x5;共性根因:STATUS_TEXTURES缺water/nature/summon、特殊核心fx kind传错(counter/frenzy/mana_echo)、_explode_at emit早于盲爆半径修正"
   }
  },
- "updated": "2026-08-10-mech_fill_batch"
+ "updated": "2026-08-10-skill_visual_audit"
 }

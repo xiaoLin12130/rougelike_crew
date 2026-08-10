@@ -1083,6 +1083,12 @@ func _spawn_ice_shards(pos: Vector2, color: Color, scale_mult: float) -> void:
 func _refresh_summon_auras() -> void:
 	## A2 召唤流派光环：按召唤流派持有件数（3/6/9）渲染召唤物脚下光环；
 	## 档位随件数升级，召唤物消失后光环自动释放。
+	## P0-1 修复（全流程体验报告-第2轮）：_summon_auras 中的值可能是已释放实例
+	## （召唤物死亡连带光环销毁 / 光环被外部释放）。旧代码把字典值直接赋给
+	## Node2D 类型化变量会触发 "Trying to assign invalid previously freed instance"
+	## 并中止函数（erase 未执行 → 条目每帧残留报错直至进程退出）。
+	## 现在：一律先用无类型 Variant 取值 + is_instance_valid() 判活后再使用；
+	## 光环创建时挂 tree_exiting 清理钩子（召唤物销毁帧即擦除条目，不留窗口期）。
 	var tier: int = _tier_of(_school_holdings_of("summon"))
 	var summons := get_tree().get_nodes_in_group("summons")
 	var alive: Dictionary = {}
@@ -1091,8 +1097,9 @@ func _refresh_summon_auras() -> void:
 			continue
 		var sid := s.get_instance_id()
 		alive[sid] = true
-		var aura: Node2D = _summon_auras.get(sid)
+		var aura = _summon_auras.get(sid)
 		if aura != null and not is_instance_valid(aura):
+			## 光环已被释放但召唤物存活：清残留条目，下一分支重建
 			_summon_auras.erase(sid)
 			aura = null
 		if tier == 0:
@@ -1105,14 +1112,29 @@ func _refresh_summon_auras() -> void:
 			aura.position = Vector2(0, 10)
 			s.add_child(aura)
 			_summon_auras[sid] = aura
+			_connect_aura_cleanup(aura, sid)
 		_build_aura_rings(aura, tier)
 	for sid in _summon_auras.keys():
 		if alive.has(sid):
 			continue
-		var aura: Node2D = _summon_auras[sid]
+		var aura = _summon_auras[sid]
 		_summon_auras.erase(sid)
-		if is_instance_valid(aura):
+		if aura != null and is_instance_valid(aura):
 			aura.queue_free()
+
+
+func _connect_aura_cleanup(aura: Node2D, sid: int) -> void:
+	## 光环随召唤物销毁（queue_free 同帧触发 tree_exiting）时同步擦除字典条目，
+	## 杜绝下一轮刷新读到 freed-instance。
+	if aura.tree_exiting.is_connected(_on_aura_tree_exiting.bind(sid)):
+		return
+	aura.tree_exiting.connect(_on_aura_tree_exiting.bind(sid))
+
+
+func _on_aura_tree_exiting(sid: int) -> void:
+	if _summon_auras.has(sid):
+		_summon_auras.erase(sid)
+
 
 func _build_aura_rings(aura: Node2D, tier: int) -> void:
 	## 光环环数 = 档位（tier 1/2/3 = 1/2/3 圈，半径与亮度递增），反向旋转增加层次。
