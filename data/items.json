@@ -824,7 +824,7 @@
     "type": "threshold"
    },
    "description": "燃烧叠满（基础 5 层，灼热核心提升上限）时自动引爆：范围伤害 + 清空层数",
-   "icon": "res://assets/icons/willibab/SWORDS_72.png",
+   "icon": "res://assets/icons/shikashi/shikashi_r10_c11.png",
    "id": "fire_fire_nova",
    "name": "烈焰新星",
    "rarity": "legendary",
@@ -940,7 +940,7 @@
     "type": "threshold"
    },
    "description": "火系弹幕命中后留下 1.5s 火地（持续伤害），灰烬爆炸可引爆火地",
-   "icon": "res://assets/icons/willibab/SWORDS_114.png",
+   "icon": "res://assets/icons/shikashi/shikashi_r10_c11.png",
    "id": "fire_dragon_breath",
    "name": "龙息",
    "rarity": "legendary",
@@ -1113,7 +1113,7 @@
     "type": "threshold"
    },
    "description": "冻结结束/死亡时爆炸造成冰伤（基础 12，参考冰锥 10-14；冰4 增伤）",
-   "icon": "res://assets/icons/willibab/SWORDS_51.png",
+   "icon": "res://assets/icons/shikashi/shikashi_r18_c2.png",
    "id": "ice_m1",
    "name": "碎冰",
    "rarity": "rare",
@@ -1131,7 +1131,7 @@
     "type": "threshold"
    },
    "description": "冻结目标每 0.5s 有 15% 概率冻结附近敌人（冰2 提升概率）",
-   "icon": "res://assets/icons/willibab/SWORDS_59.png",
+   "icon": "res://assets/icons/shikashi/shikashi_r18_c0.png",
    "id": "ice_m2",
    "name": "极寒扩散",
    "rarity": "rare",
@@ -1149,7 +1149,7 @@
     "type": "threshold"
    },
    "description": "冻结敌人死亡时释放冻结环（新冻结目标可再次触发碎冰/扩散）",
-   "icon": "res://assets/icons/willibab/SWORDS_80.png",
+   "icon": "res://assets/icons/shikashi/shikashi_r18_c4.png",
    "id": "ice_m3",
    "name": "冰霜新星",
    "rarity": "rare",
@@ -1257,7 +1257,7 @@
     "type": "threshold"
    },
    "description": "冻结敌人死亡时碎成 3 片追踪冰弹（冰4 增伤；冰5 提速）",
-   "icon": "res://assets/icons/willibab/SWORDS_84.png",
+   "icon": "res://assets/icons/willibab/DAGGERS_12.png",
    "id": "ice_m9",
    "name": "冰晶碎裂",
    "rarity": "rare",
@@ -1275,7 +1275,7 @@
     "type": "threshold"
    },
    "description": "每 8s 自动冻结周围敌人 0.8s（冰3 加时长；冰M4 深冻联动）",
-   "icon": "res://assets/icons/willibab/SWORDS_61.png",
+   "icon": "res://assets/icons/shikashi/shikashi_r10_c15.png",
    "id": "ice_m10",
    "name": "绝对零度",
    "rarity": "rare",
@@ -1436,7 +1436,7 @@
     "type": "linear"
    },
    "description": "毒层超过 5 时额外真伤 1%/层（每层）",
-   "icon": "res://assets/icons/willibab/SWORDS_100.png",
+   "icon": "res://assets/icons/shikashi/shikashi_r0_c1.png",
    "id": "poison_infection",
    "name": "感染源",
    "rarity": "legendary",
@@ -1635,7 +1635,7 @@
     "type": "linear"
    },
    "description": "五毒俱全倍率 +0.5（每层，上限 ×4）",
-   "icon": "res://assets/icons/shikashi/shikashi_r13_c14.png",
+   "icon": "res://assets/icons/shikashi/shikashi_r0_c1.png",
    "id": "poison_pentad",
    "name": "五毒符",
    "rarity": "legendary",
@@ -1865,7 +1865,7 @@
     "type": "threshold"
    },
    "description": "召唤物对集火目标（最近精英，无精英取最近敌人）伤害提升",
-   "icon": "res://assets/icons/shikashi/shikashi_r10_c4.png",
+   "icon": "res://assets/icons/shikashi/shikashi_r4_c7.png",
    "id": "summon_m4",
    "name": "集火",
    "rarity": "rare",
@@ -2086,7 +2086,7 @@
     "type": "linear"
    },
    "description": "连锁递减从 30% 降到 20%（每层递减 -5%）",
-   "icon": "res://assets/icons/willibab/SWORDS_88.png",
+   "icon": "res://assets/icons/shikashi/shikashi_r3_c2.png",
    "id": "thunder_6",
    "name": "高压",
    "rarity": "rare",
@@ -2143,7 +2143,7 @@
     "type": "multiplicative"
    },
    "description": "每跳伤害 +4%（叠乘，每层 ×1.04）",
-   "icon": "res://assets/icons/willibab/SWORDS_2.png",
+   "icon": "res://assets/icons/shikashi/shikashi_r3_c2.png",
    "id": "thunder_9",
    "name": "电荷",
    "rarity": "rare",
@@ -2675,7 +2675,7 @@
     "type": "threshold"
    },
    "description": "被 debuff 的敌人攻击玩家时反弹 10% 伤害（上限 15%）",
-   "icon": "res://assets/icons/shikashi/shikashi_r12_c13.png",
+   "icon": "res://assets/icons/shikashi/shikashi_r0_c4.png",
    "id": "curse_retribution",
    "name": "反噬",
    "rarity": "rare",
@@ -3564,7 +3564,7 @@
     "type": "linear"
    },
    "description": "击退距离 +15%（每层；水M10 水龙卷击退联动）",
-   "icon": "res://assets/icons/willibab/SPEARS_9.png",
+   "icon": "res://assets/icons/shikashi/shikashi_r3_c4.png",
    "id": "water_torrent",
    "name": "激流",
    "rarity": "rare",
@@ -3618,7 +3618,7 @@
     "type": "linear"
    },
    "description": "水系暴击率 +5%（每层）",
-   "icon": "res://assets/icons/willibab/SWORDS_131.png",
+   "icon": "res://assets/icons/shikashi/shikashi_r3_c4.png",
    "id": "water_tide_power",
    "name": "潮汐之力",
    "rarity": "legendary",
@@ -3658,7 +3658,7 @@
     "type": "threshold"
    },
    "description": "被减速敌人缓慢吸向水泽中心（水M1 联动；水6 范围）",
-   "icon": "res://assets/icons/willibab/SWORDS_105.png",
+   "icon": "res://assets/icons/shikashi/shikashi_r16_c3.png",
    "id": "water_vortex",
    "name": "旋涡",
    "rarity": "rare",
@@ -3741,7 +3741,7 @@
     "type": "threshold"
    },
    "description": "敌方弹幕进入减速区域后速度 -60%（水M1 联动；圣光弹反联动）",
-   "icon": "res://assets/icons/willibab/SWORDS_12.png",
+   "icon": "res://assets/icons/shikashi/shikashi_r0_c10.png",
    "id": "water_curtain",
    "name": "水幕",
    "rarity": "legendary",
@@ -3824,7 +3824,7 @@
     "type": "threshold"
    },
    "description": "每击杀 5 个被减速敌人生成水龙卷（持续伤害+击退；水M1、水7 联动）",
-   "icon": "res://assets/icons/willibab/SWORDS_21.png",
+   "icon": "res://assets/icons/verarc/water_spell.png",
    "id": "water_tornado",
    "name": "水龙卷",
    "rarity": "legendary",
@@ -3897,7 +3897,7 @@
     "type": "linear"
    },
    "description": "击杀后移速 +8% 持续 3s（每层）",
-   "icon": "res://assets/icons/willibab/SWORDS_28.png",
+   "icon": "res://assets/icons/shikashi/shikashi_r8_c2.png",
    "id": "wind_chase",
    "name": "追风",
    "rarity": "common",
@@ -3950,7 +3950,7 @@
     "type": "linear"
    },
    "description": "每 100% 移速 +4% 暴击率（每层）",
-   "icon": "res://assets/icons/willibab/SWORDS_90.png",
+   "icon": "res://assets/icons/shikashi/shikashi_r8_c3.png",
    "id": "wind_tailwind",
    "name": "顺风",
    "rarity": "rare",
@@ -4101,7 +4101,7 @@
     "type": "threshold"
    },
    "description": "高速移动 2s 后生成风域：范围内敌人持续减速（构筑提升范围）",
-   "icon": "res://assets/icons/willibab/SWORDS_44.png",
+   "icon": "res://assets/icons/shikashi/shikashi_r3_c12.png",
    "id": "wind_domain",
    "name": "疾风领域",
    "rarity": "rare",
@@ -4178,7 +4178,7 @@
     "type": "threshold"
    },
    "description": "高速时攻击 20% 概率附加减速（移速联动提升概率，上限 45%）",
-   "icon": "res://assets/icons/willibab/SWORDS_48.png",
+   "icon": "res://assets/icons/shikashi/shikashi_r3_c12.png",
    "id": "wind_frost",
    "name": "急冻风",
    "rarity": "common",
@@ -4255,7 +4255,7 @@
     "type": "threshold"
    },
    "description": "毒持续时间 ×2 起步，毒雾扩散加快（构筑每多 1 层 +25%，上限 ×4）",
-   "icon": "res://assets/icons/willibab/SWORDS_26.png",
+   "icon": "res://assets/icons/shikashi/shikashi_r11_c15.png",
    "id": "poison_m3",
    "name": "毒雾弥漫",
    "rarity": "common",
@@ -4427,7 +4427,7 @@
     "type": "threshold"
    },
    "description": "击杀敌人 12% 概率降下范围落雷",
-   "icon": "res://assets/icons/willibab/SWORDS_53.png",
+   "icon": "res://assets/icons/verarc/blinding_light_spell.png",
    "id": "thunder_m2",
    "name": "雷暴",
    "rarity": "rare",
@@ -4467,7 +4467,7 @@
     "type": "threshold"
    },
    "description": "麻痹时间 +0.5s/层；麻痹目标被击中时必定暴击",
-   "icon": "res://assets/icons/willibab/SWORDS_50.png",
+   "icon": "res://assets/icons/verarc/paralyzed.png",
    "id": "thunder_m4",
    "name": "过载",
    "rarity": "rare",
@@ -4487,7 +4487,7 @@
     "type": "threshold"
    },
    "description": "每 3s 向附近敌人施放一道微型闪电链（40% 伤害）",
-   "icon": "res://assets/icons/shikashi/shikashi_r6_c3.png",
+   "icon": "res://assets/icons/shikashi/shikashi_r5_c8.png",
    "id": "thunder_m5",
    "name": "导雷",
    "rarity": "common",
@@ -4567,7 +4567,7 @@
     "type": "threshold"
    },
    "description": "每 5s 随机降下落雷（构筑每层 +1 道，上限 12 道）",
-   "icon": "res://assets/icons/willibab/SWORDS_29.png",
+   "icon": "res://assets/icons/shikashi/shikashi_r2_c6.png",
    "id": "thunder_m9",
    "name": "雷云风暴",
    "rarity": "legendary",
@@ -4587,7 +4587,7 @@
     "type": "threshold"
    },
    "description": "被麻痹的敌人死亡时连锁电爆（范围雷伤 + 链跳）",
-   "icon": "res://assets/icons/shikashi/shikashi_r5_c9.png",
+   "icon": "res://assets/icons/shikashi/shikashi_r17_c6.png",
    "id": "thunder_m10",
    "name": "高压电网",
    "rarity": "legendary",
@@ -4873,7 +4873,7 @@
     "type": "threshold"
    },
    "description": "暴击时全屏粒子 + 小慢动作（构筑提升触发频率）",
-   "icon": "res://assets/icons/willibab/SWORDS_107.png",
+   "icon": "res://assets/icons/shikashi/shikashi_r3_c3.png",
    "id": "crit_crit_storm",
    "name": "暴击风暴",
    "rarity": "legendary",
@@ -4891,7 +4891,7 @@
     "type": "linear"
    },
    "description": "冰系伤害 +25%（每层，tag 聚合进冰系伤害乘区）；冰M1 碎冰联动：碎冰伤害 ×(1+5%×冰系构筑数，基础 12）",
-   "icon": "res://assets/icons/shikashi/shikashi_r14_c11.png",
+   "icon": "res://assets/icons/shikashi/shikashi_r18_c2.png",
    "id": "ice_glacier_heart",
    "name": "冰川之心",
    "rarity": "legendary",
@@ -4909,7 +4909,7 @@
     "type": "linear"
    },
    "description": "全法术范围 +25%（每层，tag 聚合）；冰M7 冰雪风暴联动：移动每 56px 留下 1s 减速区域（半径 64px）",
-   "icon": "res://assets/icons/shikashi/shikashi_r14_c7.png",
+   "icon": "res://assets/icons/shikashi/shikashi_r18_c2.png",
    "id": "ice_frozen_domain",
    "name": "冰封领域",
    "rarity": "legendary",
@@ -4928,7 +4928,7 @@
     "type": "linear"
    },
    "description": "法术冷却 -7%（每层，tag 聚合，与技能冷却合计上限 80%）；冰M10 绝对零度联动：脉冲间隔 8s÷(1+5%×冰系构筑数)（下限 4s）",
-   "icon": "res://assets/icons/shikashi/shikashi_r15_c1.png",
+   "icon": "res://assets/icons/shikashi/shikashi_r10_c15.png",
    "id": "ice_chrono_frost",
    "name": "时之冰",
    "rarity": "legendary",
@@ -4947,7 +4947,7 @@
     "type": "linear"
    },
    "description": "攻速 +10%（每层，tag 聚合，法术与近战同公式）；冰M5 冰刃联动：冻结目标 +40% 独立乘区（与燃烧增伤互不干扰）",
-   "icon": "res://assets/icons/willibab/STAFFS_11.png",
+   "icon": "res://assets/icons/willibab/SWORDS_51.png",
    "id": "ice_glacial_haste",
    "name": "冰霜迅捷",
    "rarity": "legendary",
@@ -4966,7 +4966,7 @@
     "type": "linear"
    },
    "description": "攻击力 +10%（每层，tag 聚合）；召唤M1 军团光环联动：机制系数 0.6+0.4×召唤构筑数（上限 2.0，作用于光环/献祭/共生/替身）",
-   "icon": "res://assets/icons/willibab/ALL_180.png",
+   "icon": "res://assets/icons/shikashi/shikashi_r11_c8.png",
    "id": "summon_war_banner",
    "name": "军团战旗",
    "rarity": "legendary",
@@ -5003,7 +5003,7 @@
     "type": "linear"
    },
    "description": "技能伤害 +15%（每层，tag 聚合）；召唤M8 替身联动：替身回血 30%×机制系数（0.6+0.4×召唤构筑数，上限 2.0）",
-   "icon": "res://assets/icons/willibab/ALL_135.png",
+   "icon": "res://assets/icons/shikashi/shikashi_r11_c0.png",
    "id": "summon_graveyard_keep",
    "name": "墓园守望",
    "rarity": "legendary",
@@ -5022,7 +5022,7 @@
     "type": "linear"
    },
    "description": "法术冷却 -7%（每层，tag 聚合，与技能冷却合计上限 80%）；召唤M10 军团冲锋联动：献祭伤害倍率 1.5×机制系数（0.6+0.4×召唤构筑数，上限 3.0 倍）",
-   "icon": "res://assets/icons/willibab/ALL_231.png",
+   "icon": "res://assets/icons/shikashi/shikashi_r13_c10.png",
    "id": "summon_overlord_edict",
    "name": "军令",
    "rarity": "legendary",

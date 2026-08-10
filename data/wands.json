@@ -926,7 +926,7 @@
     "speed_mult": 1.2
    },
    "description": "血刃形态：弹道贯穿 3 个敌人，命中吸血 7%，弹速 +20%，伤害 +15%",
-   "icon": "res://assets/icons/willibab/STAFFS_50.png",
+   "icon": "res://assets/icons/willibab/SWORDS_141.png",
    "school": "crit"
   },
   {
@@ -959,7 +959,7 @@
     "speed_mult": 1.15
    },
    "description": "战刃形态：弹道贯穿 2 个敌人，弹速 +15%，斩击伤害 +25%",
-   "icon": "res://assets/icons/willibab/STAFFS_51.png",
+   "icon": "res://assets/icons/willibab/SWORDS_52.png",
    "school": "melee"
   },
   {

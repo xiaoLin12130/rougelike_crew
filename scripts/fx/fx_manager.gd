@@ -1161,6 +1161,7 @@ func _build_aura_rings(aura: Node2D, tier: int) -> void:
 
 func _on_damage_dealt(dmg: int, pos: Vector2, is_crit: bool) -> void:
 	var number: DamageNumber = DamageNumberScene.instantiate()
+	number.z_index = 100  # 数字永远渲染在敌人/Boss 大贴图之上（Boss 无数字的根因：层级被盖）
 	number.position = pos
 	add_child(number)
 	# 爽感：DPS 档位越高伤害数字越大（tier 1: 1.25x / tier 2: 1.6x / tier 3: 2x）
@@ -1213,6 +1214,7 @@ func _on_enemy_died(_id: String, pos: Vector2, _xp: int, _gold: int, _elite: boo
 
 func _on_fx_heal_text(pos: Vector2, amount: int) -> void:
 	var number: DamageNumber = DamageNumberScene.instantiate()
+	number.z_index = 100
 	number.position = pos
 	add_child(number)
 	number.play(amount, false, true)
@@ -1229,6 +1231,7 @@ func _on_fx_dot_text(pos: Vector2, amount: int, kind: String) -> void:
 	if amount <= 0:
 		return
 	var number: DamageNumber = DamageNumberScene.instantiate()
+	number.z_index = 100
 	number.position = pos
 	add_child(number)
 	number.play(amount, false, false, DOT_COLORS.get(kind, Color.WHITE))

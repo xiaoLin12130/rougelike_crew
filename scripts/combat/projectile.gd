@@ -20,6 +20,16 @@ const STATUS_TEXTURES := {
 	"lightning": "res://assets/sprites/gen/proj_lightning.png",
 	"poison": "res://assets/sprites/gen/proj_poison.png",
 	"blade": "res://assets/sprites/gen/proj_blade.png",
+	## 技能视觉 P0-1（2026-08-10）：water_bolt/thorn_vine 弹体此前回退火球贴图，
+	## 补 water/nature 映射（verarc 16x16 水滴/藤蔓图标，路径已核实存在）
+	"water": "res://assets/icons/verarc/water_spell.png",
+	"nature": "res://assets/icons/verarc/thorn_vine_spell.png",
+}
+## verarc 法术图标 16x16 > 常规 proj_* 12x12：给这两个元素弹体放大补偿，
+## 保证"水滴/藤蔓"形态可辨识（参考旋风刃 1.8x 思路，幅度更克制）
+const STATUS_TEXTURE_SCALE := {
+	"water": 1.5,
+	"nature": 1.6,
 }
 
 var _spawn_pos := Vector2.ZERO
@@ -90,6 +100,7 @@ func _ready() -> void:
 			spr.rotation = _dir.angle()
 		else:
 			spr.texture = load(STATUS_TEXTURES.get(_element, STATUS_TEXTURES["fire"]))
+			spr.scale = Vector2.ONE * STATUS_TEXTURE_SCALE.get(_element, 1.0)
 	_player_ref = get_tree().get_first_node_in_group("player")
 	if _orbit_mode:
 		_orbit_angle = _dir.angle()
@@ -170,12 +181,13 @@ func _explode_at(pos: Vector2, keep_alive: bool = false) -> void:
 	var radius := maxf(_aoe, 1.0)
 	# 移8 踏浪：每 100% 移速 +6% 技能范围（run.wind_speed_area 读取点接线）
 	radius *= 1.0 + maxf(float(GameState.run.get("wind_speed_area", 0.0)), 0.0)
-	# 特效范围同步：按实际 AOE 半径缩放爆炸特效（范围变大时视觉可感知）
-	EventBus.fx_explosion_scaled.emit(pos, _element, radius)
 	# flash（数据 aoe=0）瞬发时以固定爆发半径命中，保证失明/伤害生效
 	# 闪光×爆发（问题10）：盲爆半径参与 aoe_mult（爆发外壳"范围翻倍"对闪光兑现）
 	if _instant and float(_status.get("blind", 0.0)) > 0.0:
 		radius = maxf(radius, BLIND_BURST_RADIUS * float(_mods.get("aoe_mult", 1.0)))
+	# 特效范围同步（技能视觉 P0-2）：先算最终命中半径（含盲爆修正）再 emit，
+	# 修复 flash 以 radius≈1 发最小档特效、视觉与实际 90px 盲爆差 90 倍的问题
+	EventBus.fx_explosion_scaled.emit(pos, _element, radius)
 	for e in _enemies_in_radius(pos, radius):
 		var id: int = e.get_instance_id()
 		if _hit_enemies.has(id):

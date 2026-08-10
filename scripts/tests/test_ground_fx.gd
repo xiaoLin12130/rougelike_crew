@@ -107,12 +107,13 @@ func _test_water() -> void:
 
 ## poison 毒雾（毒M3 毒雾弥漫扩散落点）→ GroundPoison
 func _test_poison() -> void:
-	GameState.run.items["poison_m1"] = 1  # 任意 poison_ 前缀使 _poison_power >= 1
+	# 毒M3 毒雾弥漫门控（a94b85d）：需持有 poison_m3 才扩散 GroundPoison
+	GameState.run.items["poison_m3"] = 1
 	var e := _dummy(Vector2(540, 300))
 	SynergyRegistry.trigger("enemy_status", {"enemy": e, "kind": "poison", "delta": 2.0})
 	await _check_appear("GroundPoison", "poison 毒雾")
 	await _wait_gone("GroundPoison", 3.0, "poison 毒雾")
-	GameState.run.items.erase("poison_m1")
+	GameState.run.items.erase("poison_m3")
 	e.queue_free()
 	await get_tree().process_frame
 

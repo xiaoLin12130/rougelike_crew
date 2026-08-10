@@ -7,6 +7,7 @@ const PROJECTILE_SCENE := preload("res://scenes/game/projectile.tscn")
 const SUMMON_SCRIPT := preload("res://scripts/combat/summon.gd")
 const WAND_CHARGE_CURVE := {"curve": {"type": "multiplicative", "base": 0.9, "cap": 0.5}}
 const MIN_CD := 0.05
+const FRENZY_DURATION := 3.0  # 狂暴持续时长（技能视觉 P0-3：与 _frenzy_left 同步）
 
 ## 攻速全局接线（G1/G2 收敛）：各 synergy 脚本只写自己的 run.xxx_bonus 读取点，
 ## run.attack_speed_bonus 仅由 game_state.apply_item_effects_to_stats 写入基础聚合
@@ -137,13 +138,17 @@ func _cast(player: Node2D, core: Dictionary, mods: Dictionary) -> void:
 		_cast_teleport(player, core, mods)
 		return
 	if core.get("frenzy", false):
-		_frenzy_left = 3.0
-		EventBus.fx_explosion.emit(player.global_position, "lightning")
+		_frenzy_left = FRENZY_DURATION
+		# 技能视觉 P0-3：狂暴是 buff 语义，改发金色 buff 配方（fx_manager KIND_RECIPES 已支持），
+		# 不再误用 lightning 黄色闪电爆
+		EventBus.fx_explosion.emit(player.global_position, "buff")
+		_spawn_frenzy_aura(player)
 		return
 	if core.get("mana_echo", false):
 		for i in _cds.size():
 			_cds[i] = 0.0
-		EventBus.fx_explosion.emit(player.global_position, "ice")
+		# 技能视觉 P1：回响是 void 系余波，改发虚空紫爆（原 ice 冰蓝错位）
+		EventBus.fx_explosion.emit(player.global_position, "void")
 		return
 	if core.get("bless", false):
 		_cast_blessing(player, core, mods)
@@ -197,6 +202,36 @@ func _cast_whirl_blade(player: Node2D, core: Dictionary, mods: Dictionary) -> vo
 		var dir := Vector2.from_angle(base_angle + TAU * float(i) / float(blades))
 		_spawn_projectile(player, dir, core, orbit_mods, dmg, aoe, 1.0)
 	EventBus.fx_cast.emit(player.global_position, "blade", Vector2.RIGHT)
+
+
+## 狂暴持续反馈（技能视觉 P0-3）：金色双环程序化光环挂在玩家身上，
+## 随 _frenzy_left 剩余时间收缩渐隐，3s 自毁；内嵌最小实现，不依赖 fx_manager 新 kind。
+func _spawn_frenzy_aura(player: Node2D) -> void:
+	if player == null or not is_instance_valid(player):
+		return
+	var aura := FrenzyAuraRing.new()
+	aura.name = "FrenzyAura"
+	player.add_child(aura)
+
+
+class FrenzyAuraRing extends Node2D:
+	## 金色光环：外层大环 + 内层亮环 + 最外淡环，剩余时间越短越收缩淡出
+	const _DURATION := 3.0
+	var left := _DURATION
+
+	func _process(delta: float) -> void:
+		left -= delta
+		if left <= 0.0:
+			queue_free()
+			return
+		queue_redraw()
+
+	func _draw() -> void:
+		var t := clampf(left / _DURATION, 0.0, 1.0)
+		var r := 20.0 + (1.0 - t) * 10.0
+		draw_arc(Vector2.ZERO, r, 0.0, TAU, 48, Color(1.0, 0.84, 0.2, 0.6 * t), 2.5)
+		draw_arc(Vector2.ZERO, r + 6.0, 0.0, TAU, 48, Color(1.0, 0.7, 0.3, 0.35 * t), 1.5)
+		draw_arc(Vector2.ZERO, r + 12.0, 0.0, TAU, 48, Color(1.0, 0.92, 0.45, 0.18 * t), 1.0)
 
 
 ## 伤害 = core.base_damage × mods.damage_mult × (1+atk 加成) × (1+元素加成)。
@@ -266,7 +301,8 @@ func _cast_counter(player: Node2D, core: Dictionary, mods: Dictionary) -> void:
 				EventBus.damage_dealt.emit(int(dmg), e.global_position, false)
 				dealt += int(dmg)
 	_drain_heal(mods, dealt)
-	EventBus.fx_explosion_scaled.emit(player.global_position, "ice", r)
+	# 技能视觉 P1：反制是 void 系"吞没弹幕"语义，改发虚空紫爆（原 ice 冰蓝错位）
+	EventBus.fx_explosion_scaled.emit(player.global_position, "void", r)
 
 
 ## 吸血外壳（问题19）：特殊核心爆炸命中按 总伤害×drain 回血（与弹幕 _hit_enemy 同口径）
