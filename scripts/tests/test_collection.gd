@@ -334,8 +334,8 @@ func _assert_mobile_layout() -> void:
 		fail("手机网格无条目")
 	for c in cells:
 		var cs: Vector2 = (c as Control).get_combined_minimum_size()
-		if cs.x < 64.0 or cs.y < 64.0:
-			fail("手机格 < 64px: %s" % str(cs))
+		if cs.x < 44.0 or cs.y < 44.0:
+			fail("手机格 < 44px: %s" % str(cs))
 			break
 	# 切分类后列数保持 5（refresh() 重设 columns）
 	_switch_tab(panel, 3)

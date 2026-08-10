@@ -50,9 +50,10 @@ var _name_sz := 10
 
 func _ready() -> void:
 	_mobile = UiLayout.is_mobile()
+	# 2026-08-10 自适应列数：320 面板宽 / 基准格 56px → 5 列（PC/手机统一）
+	_grid_columns = maxi(int((UiLayout.panel_w() + 6.0) / (56.0 + 6.0)), 3)
 	if _mobile:
-		# 手机端：网格 3 列 72x72、图标 56、tab 两行缩略、字号略小
-		_grid_columns = GRID_COLUMNS_MOBILE
+		# 手机端：图标 56、tab 两行缩略、字号略小
 		_cell_size = CELL_SIZE_MOBILE
 		_icon_size = ICON_SIZE_MOBILE
 		_name_sz = 9
@@ -85,6 +86,7 @@ func _ready() -> void:
 	main.add_child(tabs)
 	for i in CATEGORIES.size():
 		var b := UiTheme.button("", Vector2(_tab_w, UiLayout.touch_min()))
+		b.clip_text = true  # 2026-08-10: 文本超长裁剪，防按钮被拖广撑大面板
 		if _mobile:
 			b.add_theme_font_size_override("font_size", 9)
 		b.toggle_mode = true
@@ -97,12 +99,15 @@ func _ready() -> void:
 	# 条目网格：可滚动（274 件装备等多行内容）
 	var scroll := ScrollContainer.new()
 	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	scroll.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	scroll.custom_minimum_size = Vector2(0, 0)  # 2026-08-10: 避免 grid min 把面板撑大
+	scroll.get_v_scroll_bar().custom_minimum_size = Vector2(0, 0)  # 不预留滚动条宽
 	main.add_child(scroll)
 	# 2026-08-10 v2：GridContainer 5 列，格子宽度动态填满面板（320-4×6)/5=59）
 	# HFlowContainer 按 min-size 排（每行 4 个后剩右侧空位）不符预期，改回网格+动态尺寸
 	_grid = GridContainer.new()
-	_grid.columns = 5
+	_grid.columns = _grid_columns
 	_grid.add_theme_constant_override("h_separation", 6)
 	_grid.add_theme_constant_override("v_separation", 6)
 	_grid.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -217,12 +222,13 @@ func _make_entry(def: Dictionary, category: String) -> Control:
 	var collected := GameState.is_collected(category, str(def.get("id", "")))
 	var rarity := _rarity_of(category, def)
 	var cell := PanelContainer.new()
-	var cell_w: float = (UiLayout.panel_w() - 4.0 * 6.0) / 5.0  # 2026-08-10: 5 列动态宽填满面板
+	var cell_w: float = (UiLayout.panel_w() - 20.0 - float(_grid_columns - 1) * 6.0) / float(_grid_columns)  # 自适应：内容宽 300（面板 320-边距 20）均分
 	cell.custom_minimum_size = Vector2(cell_w, cell_w)
-	cell.add_theme_stylebox_override("panel", UiTheme.style(
+	cell.size_flags_horizontal = Control.SIZE_EXPAND_FILL  # 文档：GridContainer 使用子项 horizontal expand 均分行宽
+	cell.add_theme_stylebox_override("panel", UiTheme.style_compact(
 		CELL_BG,
 		UiTheme.RARITY.get(rarity, UiTheme.BORDER) if collected else CELL_BORDER_DIM,
-		1, 3))
+		1, 3, 2))  # 2026-08-10: style 左右 content_margin=10 把 cell 撑到 68px，改 compact(2px)
 	cell.set_meta("entry_id", str(def.get("id", "")))
 	cell.set_meta("collected", collected)
 	cell.set_meta("category", category)
@@ -256,7 +262,9 @@ func _make_entry(def: Dictionary, category: String) -> Control:
 		_name_sz,
 		UiTheme.WHITE if collected else Color("#6a6280"))
 	name_l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	name_l.custom_minimum_size = Vector2(_cell_size.x, 16)
+	# 2026-08-10 自适应：min 宽 0 + 自动换行 + 裁剪，名称不撑大格子（此前 Label 文本自然宽把格子撑到 84px 导致溢出）
+	name_l.custom_minimum_size = Vector2(0, 16)
+	name_l.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	name_l.clip_text = true
 	name_l.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	vb.add_child(name_l)
