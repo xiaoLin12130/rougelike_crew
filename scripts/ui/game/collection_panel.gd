@@ -86,7 +86,8 @@ func _ready() -> void:
 	main.add_child(tabs)
 	for i in CATEGORIES.size():
 		var b := UiTheme.button("", Vector2(_tab_w, UiLayout.touch_min()))
-		b.clip_text = true  # 2026-08-10: 文本超长裁剪，防按钮被拖广撑大面板
+		b.clip_text = true  # 两行短名+进度，超长裁剪保险
+		b.add_theme_font_size_override("font_size", 9)  # 统一 9px 两行
 		if _mobile:
 			b.add_theme_font_size_override("font_size", 9)
 		b.toggle_mode = true
@@ -198,15 +199,12 @@ func _collected_count(category: String) -> int:
 func refresh() -> void:
 	var category := _category_key(_tab_idx)
 
+	# 2026-08-10 自适应：PC/手机统一两行（短名 + 进度），字完整不截断（用户确认手机端两行样式好）
 	for i in CATEGORIES.size():
 		var ck := _category_key(i)
 		var count := _collected_count(ck)
 		var total := _entries(ck).size()
-		if _mobile:
-			# 手机端两行缩略：短名 + 进度（字号 9，5 x 60 宽不溢出）
-			_tabs[i].text = "%s\n%d/%d" % [TAB_SHORT_NAMES[i], count, total]
-		else:
-			_tabs[i].text = "%s %d/%d" % [_category_name(i), count, total]
+		_tabs[i].text = "%s\n%d/%d" % [TAB_SHORT_NAMES[i], count, total]
 		_tabs[i].button_pressed = (i == _tab_idx)
 	var entries := _entries(category)
 	_progress.text = "收集进度：%s 已收集 %d / %d" % [
