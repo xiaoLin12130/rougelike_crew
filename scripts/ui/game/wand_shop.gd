@@ -197,11 +197,13 @@ func _goto_menu() -> void:
 func _goto_enhance() -> void:
 	_page = PAGE_ENHANCE
 	_apply_page()
+	_refresh()  # 2026-08-10：切页重建卡片——Godot 隐藏容器不排序，visible 切换后需重建布局
 	_scroll.scroll_vertical = 0
 
 func _goto_buy() -> void:
 	_page = PAGE_BUY
 	_apply_page()
+	_refresh()
 	_scroll.scroll_vertical = 0
 
 func _apply_page() -> void:

@@ -491,6 +491,10 @@ func _collect_enemies(node: Node, found: Array) -> void:
 static func clear_player_projectiles(tree: SceneTree) -> void:
 	## 替换/添加法术后清空场上玩家弹道（含 split 小弹）；
 	## 只清 group "player_projectile"，不触碰敌人弹幕（enemy_bullet）与召唤物（summons）。
+	## 2026-08-10：跳过旋风刃（_is_whirl）——持续型法术不应因网格变化突然消失，
+	## 玩家拿新法术后正在旋转的刀刃保留到生命周期结束。
 	for p in tree.get_nodes_in_group("player_projectile"):
 		if is_instance_valid(p):
+			if p.get("_is_whirl") == true:
+				continue
 			p.queue_free()

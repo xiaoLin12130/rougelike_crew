@@ -116,15 +116,16 @@ func _ready() -> void:
 func _build_detail(root: Control) -> void:
 	## 已收集条目点击详情弹窗（名称/稀有度/描述；未收集条目不触发）
 	_detail = PanelContainer.new()
-	# 2026-08-10????? offsets???????????????????
-	# ???? + grow BOTH + min-size??????????????
-	_detail.set_anchors_preset(Control.PRESET_CENTER)
-	_detail.grow_horizontal = Control.GROW_DIRECTION_BOTH
-	_detail.grow_vertical = Control.GROW_DIRECTION_BOTH
-	_detail.custom_minimum_size = Vector2(300, 200)
+	# 2026-08-10?CenterContainer ???????????????+grow ?????
+	# PRESET_CENTER ? grow ?? END ?????????????
+	_detail.custom_minimum_size = Vector2(320, 200)
 	_detail.add_theme_stylebox_override("panel", UiTheme.style(Color(0.10, 0.08, 0.18, 0.96), UiTheme.BORDER, 2, 6))
 	_detail.visible = false
-	root.add_child(_detail)
+	var _center := CenterContainer.new()
+	_center.set_anchors_preset(Control.PRESET_FULL_RECT)
+	_center.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	root.add_child(_center)
+	_center.add_child(_detail)
 	var vb := VBoxContainer.new()
 	vb.add_theme_constant_override("separation", 10)
 	_detail.add_child(vb)
@@ -137,7 +138,7 @@ func _build_detail(root: Control) -> void:
 	_detail_body.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	# min 宽 260（非 0）：autowrap Label 在 min-size 计算时按 1px 宽换行会膨胀到数百 px
 	# 高（同 wand_shop 卡片描述坑），导致详情弹窗超高越屏
-	_detail_body.custom_minimum_size = Vector2(260, 76)
+	_detail_body.custom_minimum_size = Vector2(300, 76)  # 2026-08-10??? 320 ???? 300 ????
 	_detail_body.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	_detail_body.vertical_alignment = VERTICAL_ALIGNMENT_TOP
 	vb.add_child(_detail_body)

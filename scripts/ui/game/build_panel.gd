@@ -55,7 +55,7 @@ func _ready() -> void:
 	_grid_box = GridContainer.new()
 	# 法术序列：PC 5 格单行展示（1 行）；手机 3 列排布（3+2 两行，2026-08-10 修复：
 	# 不能用 is_portrait 判定——桌面窗口版 720x1280 竖窗口会被误判为手机）
-	_grid_box.columns = 3 if UiLayout.is_mobile() else 5
+	_grid_box.columns = 5  # 2026-08-10?PC/???????5 ? 46px = 254 ? ?? 320?
 	_grid_box.add_theme_constant_override("h_separation", 6)
 	_grid_box.add_theme_constant_override("v_separation", 6)
 	_grid_box.size_flags_horizontal = Control.SIZE_SHRINK_CENTER  # 法术格整体居中

@@ -226,15 +226,15 @@ func _assert_build_grid() -> void:
 	var bp: Node = _panels[0]
 	# 2026-08-10：PC（无触摸）5 列单行；手机 3 列两行（3+2）。
 	# headless 默认无触摸 → 期望 5 列；force_mobile(true) 后期望 3 列。
-	var expect_cols: int = 3 if UiLayout.is_mobile() else 5
+	var expect_cols: int = 5  # 2026-08-10 PC/??????
 	if bp._grid_box.columns != expect_cols:
 		fail("构筑法术网格列数错误: columns=%d 期望=%d" % [bp._grid_box.columns, expect_cols])
 	# 手机模拟：force_mobile 后新建面板实例验证 3 列（3+2 两行）
 	UiLayout.force_mobile(true)
 	var bp2: Node = load("res://scenes/ui/build_panel.tscn").instantiate()
 	root.add_child(bp2)
-	if bp2._grid_box.columns != 3:
-		fail("手机模拟下构筑法术网格应为 3 列(两行): columns=%d" % bp2._grid_box.columns)
+	if bp2._grid_box.columns != 5:
+		fail("手机模拟下构筑法术网格应为 5 列一行: columns=%d" % bp2._grid_box.columns)
 	bp2.queue_free()
 	UiLayout.force_mobile(false)
 	if bp._detail == null:
@@ -244,9 +244,11 @@ func _assert_build_grid() -> void:
 
 func _assert_wand_shop_offers() -> void:
 	var ws: Node = _panels[2]
+	# 2026-08-10：商店 v2 默认选择页——先切到购买页再断言商品卡
+	ws._goto_buy()
 	var cards: Array = []
 	for c in ws._box.get_children():
-		if c is PanelContainer:
+		if c is PanelContainer and not c.is_queued_for_deletion():
 			cards.append(c.get_global_rect())
 	if cards.size() != 3:
 		fail("法杖商店商品卡数量 != 3: " + str(cards.size()))
