@@ -134,10 +134,16 @@ func _start_level() -> void:
 	var levels: Array = GameState.tables.get("levels", {}).get("levels", [])
 	var idx: int = clampi(GameState.run.level - 1, 0, levels.size() - 1)
 	var level_id: String = str(levels[idx].get("id", "level_1"))
-	GameState.run.level_elapsed = 0.0  # 必须先重置：spawner.setup 依赖它计算波次起点
+	# 读档恢复（main_menu 继续）时保留波次进度与血量，回到离开时的对局；
+	# 新开局/切关才重置（2026-08-10 修复：此前无条件重置导致"继续"从第一波重来）
+	var resumed: bool = bool(GameState.run.get("resumed", false))
+	if resumed:
+		GameState.run["resumed"] = false  # 消费标志，后续切关正常重置
+	else:
+		GameState.run.level_elapsed = 0.0  # 必须先重置：spawner.setup 依赖它计算波次起点
+		GameState.run.hp = GameState.run.max_hp
 	level_node.init_level(level_id)
 	add_child(level_node)
-	GameState.run.hp = GameState.run.max_hp
 	EventBus.player_stats_changed.emit()
 
 func _check_levelup() -> void:

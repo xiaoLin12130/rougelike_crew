@@ -130,6 +130,7 @@ func _on_continue() -> void:
 		_on_start()
 		return
 	GameState.run = data
+	GameState.run["resumed"] = true  # 标记读档恢复：game_root 保留波次进度与血量（2026-08-10）
 	get_tree().change_scene_to_file("res://scenes/game/game_root.tscn")
 
 func _on_collection() -> void:
