@@ -99,9 +99,10 @@ func _ready() -> void:
 	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
 	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	main.add_child(scroll)
-	# 2026-08-10?GridContainer ????????? ? ? HFlowContainer??????
-	# ????????????????????????PC/????????
-	_grid = HFlowContainer.new()
+	# 2026-08-10 v2：GridContainer 5 列，格子宽度动态填满面板（320-4×6)/5=59）
+	# HFlowContainer 按 min-size 排（每行 4 个后剩右侧空位）不符预期，改回网格+动态尺寸
+	_grid = GridContainer.new()
+	_grid.columns = 5
 	_grid.add_theme_constant_override("h_separation", 6)
 	_grid.add_theme_constant_override("v_separation", 6)
 	_grid.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -216,7 +217,8 @@ func _make_entry(def: Dictionary, category: String) -> Control:
 	var collected := GameState.is_collected(category, str(def.get("id", "")))
 	var rarity := _rarity_of(category, def)
 	var cell := PanelContainer.new()
-	cell.custom_minimum_size = _cell_size
+	var cell_w: float = (UiLayout.panel_w() - 4.0 * 6.0) / 5.0  # 2026-08-10: 5 列动态宽填满面板
+	cell.custom_minimum_size = Vector2(cell_w, cell_w)
 	cell.add_theme_stylebox_override("panel", UiTheme.style(
 		CELL_BG,
 		UiTheme.RARITY.get(rarity, UiTheme.BORDER) if collected else CELL_BORDER_DIM,

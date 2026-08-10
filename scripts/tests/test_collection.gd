@@ -303,8 +303,8 @@ func _assert_panel_rendering(panel: CanvasLayer) -> void:
 	# 详情弹窗：Esc/知道了关闭路径存在
 	if panel._detail == null:
 		fail("面板缺详情弹窗")
-	if panel._grid.columns != 4:
-		fail("PC 网格列数 != 4: %d" % panel._grid.columns)
+	if panel._grid.columns != 5:
+		fail("PC 网格列数 != 5: %d" % panel._grid.columns)
 
 func _assert_mobile_layout() -> void:
 	## 手机端适配验收（force_mobile(true) 后新建面板）：
@@ -326,8 +326,8 @@ func _assert_mobile_layout() -> void:
 	if not str(panel._tabs[0].text).contains("/"):
 		fail("手机 tab 缺进度行: %s" % str(panel._tabs[0].text))
 	# 网格 3 列
-	if panel._grid.columns != 3:
-		fail("手机网格列数 != 3: %d" % panel._grid.columns)
+	if panel._grid.columns != 5:
+		fail("手机网格列数 != 5: %d" % panel._grid.columns)
 	# 格 ≥64px（72x72 触控目标）
 	var cells := _live_cells(panel)
 	if cells.is_empty():
@@ -337,10 +337,10 @@ func _assert_mobile_layout() -> void:
 		if cs.x < 64.0 or cs.y < 64.0:
 			fail("手机格 < 64px: %s" % str(cs))
 			break
-	# 切分类后列数保持 3（refresh() 重设 columns）
+	# 切分类后列数保持 5（refresh() 重设 columns）
 	_switch_tab(panel, 3)
-	if panel._grid.columns != 3:
-		fail("手机切 tab 后列数 != 3: %d" % panel._grid.columns)
+	if panel._grid.columns != 5:
+		fail("手机切 tab 后列数 != 5: %d" % panel._grid.columns)
 	# 详情弹窗 ≤320 且在屏内
 	var it := _find_cell(panel, "attack_speed_potion")
 	if it != null:
