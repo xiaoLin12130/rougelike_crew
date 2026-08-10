@@ -363,7 +363,7 @@
      "id": "split_frenzy",
      "name": "????",
      "type": "summon_minions",
-     "count": 4,
+     "count": 3,
      "cooldown": 9.0,
      "windup": 0.7,
      "min_phase": 2
