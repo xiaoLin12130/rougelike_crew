@@ -98,8 +98,8 @@
    "status": "done"
   },
   "icon_dedup_impl": {
-   "note": "??????(?Hypatia??items.json???)",
-   "status": "pending"
+   "status": "done",
+   "note": "按 docs/design/图标去重分配方案.md 落地：items 212 条改图 + spells 5 处（whirl_blade→SWORDS_141 / poison_cloud→poisoned / shells homing·pierce·orbit），wands 55、summons 10 保留；glow.png 归零、任一素材引用≤3、356 个 icon ResourceLoader+文件系统双重核实全绿；SMOKE OK；备份 .tmp/backup_icon_dedup/"
   },
   "icon_dedup_plan": {
    "status": "done",

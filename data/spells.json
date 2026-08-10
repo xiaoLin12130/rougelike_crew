@@ -49,7 +49,7 @@
    "speed": 0,
    "aoe": 48,
    "dot": true,
-   "icon": "res://assets/icons/verarc/poison_dagger.png",
+   "icon": "res://assets/icons/verarc/poisoned.png",
    "description": "在目标区域释放毒雾，持续造成中毒伤害。"
   },
   {
@@ -75,7 +75,7 @@
    "speed": 0,
    "aoe": 40,
    "pierce": true,
-   "icon": "res://assets/icons/willibab/SWORDS_0.png",
+   "icon": "res://assets/icons/willibab/SWORDS_141.png",
    "description": "召唤 2 把刀刃围绕自身旋转 4 秒，接触敌人持续造成斩击伤害。"
   },
   {
@@ -226,7 +226,7 @@
     "damage_mult": 0.9,
     "speed_mult": 0.85
    },
-   "icon": "res://assets/icons/verarc/glow.png"
+   "icon": "res://assets/icons/verarc/magic_amplification.png"
   },
   {
    "id": "pierce",
@@ -235,7 +235,7 @@
     "pierce": 2,
     "damage_mult": 0.85
    },
-   "icon": "res://assets/icons/verarc/magic_amplification.png"
+   "icon": "res://assets/icons/willibab/SPEARS_20.png"
   },
   {
    "id": "bounce",
@@ -253,7 +253,7 @@
     "orbit": 2,
     "damage_mult": 0.75
    },
-   "icon": "res://assets/icons/verarc/divine_protection_spell.png"
+   "icon": "res://assets/icons/willibab/STAFFS_3.png"
   },
   {
    "id": "burst",

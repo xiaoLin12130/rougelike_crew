@@ -129,7 +129,7 @@
     "type": "multiplicative"
    },
    "description": "冷却 ×0.9/层（上限 50% 减免）",
-   "icon": "res://assets/icons/willibab/STAFFS_1.png",
+   "icon": "res://assets/icons/verarc/mana_replenish.png",
    "id": "wand_charge",
    "name": "法杖充能",
    "rarity": "legendary",
@@ -146,7 +146,7 @@
     "type": "linear"
    },
    "description": "金币获取 +10%（每层 +10%）",
-   "icon": "res://assets/icons/shikashi/shikashi_r0_c5.png",
+   "icon": "res://assets/icons/shikashi/shikashi_r12_c10.png",
    "id": "gold_pouch",
    "name": "金币袋",
    "rarity": "common",
@@ -198,7 +198,7 @@
     "type": "linear"
    },
    "description": "暴击伤害 +15%（每层 +15%）",
-   "icon": "res://assets/icons/verarc/glow.png",
+   "icon": "res://assets/icons/verarc/critical_boost.png",
    "id": "crit_gem",
    "name": "暴伤宝石",
    "rarity": "rare",
@@ -356,7 +356,7 @@
     "type": "linear"
    },
    "description": "记忆：技能冷却 -20%",
-   "icon": "res://assets/icons/verarc/teleportation_spell.png",
+   "icon": "res://assets/icons/verarc/swiftness.png",
    "id": "memory_haste",
    "name": "记忆·疾风",
    "rarity": "rare",
@@ -424,7 +424,7 @@
     "type": "linear"
    },
    "description": "饰品：雷电伤害 +25%，落雷触发率翻倍",
-   "icon": "res://assets/icons/verarc/lightning_spell.png",
+   "icon": "res://assets/icons/shikashi/shikashi_r18_c5.png",
    "id": "trinket_storm",
    "name": "雷核",
    "rarity": "legendary",
@@ -478,7 +478,7 @@
     "type": "linear"
    },
    "description": "反弹伤害的 2% 回复生命（防御流专属，不占攻击吸血上限）",
-   "icon": "res://assets/icons/verarc/regeneration.png",
+   "icon": "res://assets/icons/verarc/bleeding.png",
    "id": "blood_thorn",
    "name": "血棘甲",
    "rarity": "legendary",
@@ -516,7 +516,7 @@
     "type": "linear"
    },
    "description": "受到伤害 -3%（每层 +3%，上限 20%）",
-   "icon": "res://assets/icons/verarc/negative_status_resistance.png",
+   "icon": "res://assets/icons/shikashi/shikashi_r7_c4.png",
    "id": "defense_amulet",
    "name": "防御护符",
    "rarity": "common",
@@ -638,7 +638,7 @@
     "type": "linear"
    },
    "description": "燃烧持续时间 +0.6s（每层）",
-   "icon": "res://assets/icons/verarc/fire_spell.png",
+   "icon": "res://assets/icons/shikashi/shikashi_r8_c4.png",
    "id": "fire_ember_ring",
    "name": "余烬指环",
    "rarity": "common",
@@ -656,7 +656,7 @@
     "type": "linear"
    },
    "description": "燃烧层数上限 +1（每层，基础 5 层）",
-   "icon": "res://assets/icons/verarc/fire_spell_2.png",
+   "icon": "res://assets/icons/shikashi/shikashi_r18_c0.png",
    "id": "fire_heat_core",
    "name": "灼热核心",
    "rarity": "rare",
@@ -674,7 +674,7 @@
     "type": "linear"
    },
    "description": "攻击速度 +8%（每层）",
-   "icon": "res://assets/icons/verarc/attack_speed_boost.png",
+   "icon": "res://assets/icons/shikashi/shikashi_r9_c4.png",
    "id": "fire_attack_potion",
    "name": "火攻药",
    "rarity": "common",
@@ -692,7 +692,7 @@
     "type": "linear"
    },
    "description": "技能范围 +10%（每层）",
-   "icon": "res://assets/icons/verarc/element_boost.png",
+   "icon": "res://assets/icons/shikashi/shikashi_r12_c14.png",
    "id": "fire_prism",
    "name": "烈焰棱镜",
    "rarity": "rare",
@@ -747,7 +747,7 @@
     "type": "linear"
    },
    "description": "燃烧目标受到暴击率 +6%（每层，上限 60%）",
-   "icon": "res://assets/icons/verarc/critical_boost.png",
+   "icon": "res://assets/icons/shikashi/shikashi_r3_c9.png",
    "id": "fire_volcano_core",
    "name": "火山核心",
    "rarity": "legendary",
@@ -766,7 +766,7 @@
     "type": "threshold"
    },
    "description": "燃烧中的敌人死亡时爆炸：范围火焰伤害并扩散燃烧",
-   "icon": "res://assets/icons/verarc/fire_spell_2.png",
+   "icon": "res://assets/icons/shikashi/shikashi_r10_c12.png",
    "id": "fire_ash_blast",
    "name": "灰烬爆炸",
    "rarity": "rare",
@@ -785,7 +785,7 @@
     "type": "threshold"
    },
    "description": "燃烧伤害的 8% 转化为攻速，持续 3s（可叠加，上限 30%）",
-   "icon": "res://assets/icons/verarc/fire_spell.png",
+   "icon": "res://assets/icons/shikashi/shikashi_r10_c10.png",
    "id": "fire_passing_flame",
    "name": "薪火相传",
    "rarity": "rare",
@@ -805,7 +805,7 @@
     "type": "threshold"
    },
    "description": "燃烧目标 20% 概率传染附近 1 个敌人（引燃粉提升概率）",
-   "icon": "res://assets/icons/verarc/on_fire_(burning).png",
+   "icon": "res://assets/icons/shikashi/shikashi_r0_c9.png",
    "id": "fire_pyromaniac",
    "name": "纵火狂",
    "rarity": "common",
@@ -824,7 +824,7 @@
     "type": "threshold"
    },
    "description": "燃烧叠满（基础 5 层，灼热核心提升上限）时自动引爆：范围伤害 + 清空层数",
-   "icon": "res://assets/icons/verarc/fire_spell_2.png",
+   "icon": "res://assets/icons/willibab/SWORDS_72.png",
    "id": "fire_fire_nova",
    "name": "烈焰新星",
    "rarity": "legendary",
@@ -881,7 +881,7 @@
     "type": "threshold"
    },
    "description": "对燃烧目标暴击 +20%（每层），暴击时点燃周围敌人",
-   "icon": "res://assets/icons/verarc/critical_boost.png",
+   "icon": "res://assets/icons/shikashi/shikashi_r3_c10.png",
    "id": "fire_ash_bringer",
    "name": "灰烬使者",
    "rarity": "rare",
@@ -901,7 +901,7 @@
     "type": "threshold"
    },
    "description": "燃烧敌人死亡时回复 2% 技能冷却（全法术）",
-   "icon": "res://assets/icons/verarc/mana_replenish.png",
+   "icon": "res://assets/icons/shikashi/shikashi_r4_c4.png",
    "id": "fire_forge_heart",
    "name": "熔炉之心",
    "rarity": "common",
@@ -940,7 +940,7 @@
     "type": "threshold"
    },
    "description": "火系弹幕命中后留下 1.5s 火地（持续伤害），灰烬爆炸可引爆火地",
-   "icon": "res://assets/icons/verarc/fire_spell_2.png",
+   "icon": "res://assets/icons/willibab/SWORDS_114.png",
    "id": "fire_dragon_breath",
    "name": "龙息",
    "rarity": "legendary",
@@ -990,7 +990,7 @@
     "type": "linear"
    },
    "description": "冻结持续时间 +0.3s（每层，基础 1.0s；冰M4 深冻时长联动）",
-   "icon": "res://assets/icons/verarc/ice_spell.png",
+   "icon": "res://assets/icons/shikashi/shikashi_r18_c1.png",
    "id": "ice_3",
    "name": "极寒之心",
    "rarity": "common",
@@ -1005,7 +1005,7 @@
     "type": "linear"
    },
    "description": "冻结中目标受到伤害 +8%（每层；冰M1 碎冰 / 冰M5 冰刃乘区）",
-   "icon": "res://assets/icons/verarc/frozen.png",
+   "icon": "res://assets/icons/shikashi/shikashi_r9_c1.png",
    "id": "ice_4",
    "name": "冰雪精粹",
    "rarity": "common",
@@ -1020,7 +1020,7 @@
     "type": "linear"
    },
    "description": "冰系攻速 +8%（每层；冰M9 冰弹提速）",
-   "icon": "res://assets/icons/verarc/attack_speed_boost.png",
+   "icon": "res://assets/icons/willibab/STAFFS_8.png",
    "id": "ice_5",
    "name": "冰锥术架",
    "rarity": "common",
@@ -1050,7 +1050,7 @@
     "type": "linear"
    },
    "description": "被冻结敌人死亡回复 1% 最大生命（每层）",
-   "icon": "res://assets/icons/verarc/regeneration.png",
+   "icon": "res://assets/icons/shikashi/shikashi_r6_c0.png",
    "id": "ice_7",
    "name": "冰晶护体",
    "rarity": "common",
@@ -1065,7 +1065,7 @@
     "type": "linear"
    },
    "description": "全法术范围 +8%（每层）",
-   "icon": "res://assets/icons/verarc/element_boost.png",
+   "icon": "res://assets/icons/shikashi/shikashi_r3_c12.png",
    "id": "ice_8",
    "name": "寒风",
    "rarity": "common",
@@ -1082,7 +1082,7 @@
     "type": "linear"
    },
    "description": "冰系冷却 -6%（每层，上限 45%）",
-   "icon": "res://assets/icons/verarc/mana_replenish.png",
+   "icon": "res://assets/icons/willibab/DAGGERS_12.png",
    "id": "ice_9",
    "name": "冰棱",
    "rarity": "common",
@@ -1113,7 +1113,7 @@
     "type": "threshold"
    },
    "description": "冻结结束/死亡时爆炸造成冰伤（基础 12，参考冰锥 10-14；冰4 增伤）",
-   "icon": "res://assets/icons/verarc/frozen.png",
+   "icon": "res://assets/icons/willibab/SWORDS_51.png",
    "id": "ice_m1",
    "name": "碎冰",
    "rarity": "rare",
@@ -1131,7 +1131,7 @@
     "type": "threshold"
    },
    "description": "冻结目标每 0.5s 有 15% 概率冻结附近敌人（冰2 提升概率）",
-   "icon": "res://assets/icons/verarc/frozen.png",
+   "icon": "res://assets/icons/willibab/SWORDS_59.png",
    "id": "ice_m2",
    "name": "极寒扩散",
    "rarity": "rare",
@@ -1149,7 +1149,7 @@
     "type": "threshold"
    },
    "description": "冻结敌人死亡时释放冻结环（新冻结目标可再次触发碎冰/扩散）",
-   "icon": "res://assets/icons/verarc/ice_spell.png",
+   "icon": "res://assets/icons/willibab/SWORDS_80.png",
    "id": "ice_m3",
    "name": "冰霜新星",
    "rarity": "rare",
@@ -1167,7 +1167,7 @@
     "type": "threshold"
    },
    "description": "满冻结层数（冻结中被再次冻结）触发深冻：2s 完全控制 + 易伤 20%",
-   "icon": "res://assets/icons/verarc/ice_spell.png",
+   "icon": "res://assets/icons/shikashi/shikashi_r12_c7.png",
    "id": "ice_m4",
    "name": "冰封王座",
    "rarity": "rare",
@@ -1185,7 +1185,7 @@
     "type": "threshold"
    },
    "description": "对冻结目标伤害 +40%（独立乘区，与燃烧增伤互不干扰；冰4 乘区联动）",
-   "icon": "res://assets/icons/verarc/blinding_light_spell.png",
+   "icon": "res://assets/icons/shikashi/shikashi_r5_c3.png",
    "id": "ice_m5",
    "name": "冰刃",
    "rarity": "rare",
@@ -1203,7 +1203,7 @@
     "type": "threshold"
    },
    "description": "玩家受击时 12% 冻结攻击者（冰2 提升概率；冻结后触发碎冰）",
-   "icon": "res://assets/icons/verarc/divine_protection_spell.png",
+   "icon": "res://assets/icons/shikashi/shikashi_r6_c1.png",
    "id": "ice_m6",
    "name": "寒冰护盾",
    "rarity": "rare",
@@ -1257,7 +1257,7 @@
     "type": "threshold"
    },
    "description": "冻结敌人死亡时碎成 3 片追踪冰弹（冰4 增伤；冰5 提速）",
-   "icon": "res://assets/icons/verarc/ice_spell.png",
+   "icon": "res://assets/icons/willibab/SWORDS_84.png",
    "id": "ice_m9",
    "name": "冰晶碎裂",
    "rarity": "rare",
@@ -1275,7 +1275,7 @@
     "type": "threshold"
    },
    "description": "每 8s 自动冻结周围敌人 0.8s（冰3 加时长；冰M4 深冻联动）",
-   "icon": "res://assets/icons/verarc/ice_spell.png",
+   "icon": "res://assets/icons/willibab/SWORDS_61.png",
    "id": "ice_m10",
    "name": "绝对零度",
    "rarity": "rare",
@@ -1328,7 +1328,7 @@
     "type": "linear"
    },
    "description": "毒持续时间 +0.8s（每层）",
-   "icon": "res://assets/icons/verarc/poison_dagger.png",
+   "icon": "res://assets/icons/shikashi/shikashi_r9_c14.png",
    "id": "poison_duration",
    "name": "腐蚀液",
    "rarity": "common",
@@ -1346,7 +1346,7 @@
     "type": "linear"
    },
    "description": "毒系攻速 +8%（每层）",
-   "icon": "res://assets/icons/verarc/attack_speed_boost.png",
+   "icon": "res://assets/icons/willibab/STAFFS_9.png",
    "id": "poison_haste",
    "name": "毒雾术架",
    "rarity": "common",
@@ -1364,7 +1364,7 @@
     "type": "linear"
    },
    "description": "中毒目标攻击 -8%（每层）",
-   "icon": "res://assets/icons/verarc/poisoned.png",
+   "icon": "res://assets/icons/shikashi/shikashi_r17_c9.png",
    "id": "poison_plague_touch",
    "name": "疫病之触",
    "rarity": "rare",
@@ -1382,7 +1382,7 @@
     "type": "linear"
    },
    "description": "毒系范围 +12%（每层）",
-   "icon": "res://assets/icons/verarc/element_boost.png",
+   "icon": "res://assets/icons/shikashi/shikashi_r0_c1.png",
    "id": "poison_area",
    "name": "毒囊",
    "rarity": "common",
@@ -1418,7 +1418,7 @@
     "type": "linear"
    },
    "description": "毒系冷却 -6%（每层）",
-   "icon": "res://assets/icons/verarc/mana_replenish.png",
+   "icon": "res://assets/icons/shikashi/shikashi_r1_c0.png",
    "id": "poison_cd",
    "name": "毒蛇之心",
    "rarity": "rare",
@@ -1436,7 +1436,7 @@
     "type": "linear"
    },
    "description": "毒层超过 5 时额外真伤 1%/层（每层）",
-   "icon": "res://assets/icons/verarc/poison_dagger.png",
+   "icon": "res://assets/icons/willibab/SWORDS_100.png",
    "id": "poison_infection",
    "name": "感染源",
    "rarity": "legendary",
@@ -1454,7 +1454,7 @@
     "type": "linear"
    },
    "description": "中毒目标暴击率 +5%（每层）",
-   "icon": "res://assets/icons/verarc/critical_boost.png",
+   "icon": "res://assets/icons/shikashi/shikashi_r0_c0.png",
    "id": "poison_omen",
    "name": "瘟疫预言",
    "rarity": "legendary",
@@ -1472,7 +1472,7 @@
     "type": "linear"
    },
    "description": "传染概率 +2%（每层，上限 25%）",
-   "icon": "res://assets/icons/verarc/poisoned.png",
+   "icon": "res://assets/icons/shikashi/shikashi_r11_c13.png",
    "id": "poison_spore",
    "name": "孢子囊",
    "rarity": "common",
@@ -1490,7 +1490,7 @@
     "type": "linear"
    },
    "description": "毒爆伤害 +20%（每层）",
-   "icon": "res://assets/icons/verarc/poison_dagger.png",
+   "icon": "res://assets/icons/shikashi/shikashi_r12_c0.png",
    "id": "poison_amp",
    "name": "剧毒增幅",
    "rarity": "rare",
@@ -1508,7 +1508,7 @@
     "type": "linear"
    },
    "description": "腐蚀护甲穿透 +4%（每层，上限 60%）",
-   "icon": "res://assets/icons/verarc/poisoned.png",
+   "icon": "res://assets/icons/shikashi/shikashi_r9_c2.png",
    "id": "poison_corrosive",
    "name": "强腐蚀酸",
    "rarity": "common",
@@ -1526,7 +1526,7 @@
     "type": "linear"
    },
    "description": "解毒反哺 +1%（每层，上限 20%）",
-   "icon": "res://assets/icons/verarc/poisoned.png",
+   "icon": "res://assets/icons/shikashi/shikashi_r9_c10.png",
    "id": "poison_serum",
    "name": "反哺血清",
    "rarity": "rare",
@@ -1544,7 +1544,7 @@
     "type": "linear"
    },
    "description": "慢性死亡增幅 +10%（每层，上限 150%）",
-   "icon": "res://assets/icons/verarc/poison_dagger.png",
+   "icon": "res://assets/icons/shikashi/shikashi_r11_c15.png",
    "id": "poison_ramp",
    "name": "慢性毒囊",
    "rarity": "rare",
@@ -1562,7 +1562,7 @@
     "type": "linear"
    },
    "description": "毒雾扩散间隔 -12%（每层）",
-   "icon": "res://assets/icons/verarc/negative_status_resistance.png",
+   "icon": "res://assets/icons/shikashi/shikashi_r9_c6.png",
    "id": "poison_cloud_vial",
    "name": "毒雾药瓶",
    "rarity": "common",
@@ -1580,7 +1580,7 @@
     "type": "linear"
    },
    "description": "毒爆虫概率 +2%（每层，上限 30%）",
-   "icon": "res://assets/icons/verarc/poisoned.png",
+   "icon": "res://assets/icons/shikashi/shikashi_r15_c6.png",
    "id": "poison_bug_egg",
    "name": "毒虫卵",
    "rarity": "legendary",
@@ -1599,7 +1599,7 @@
     "type": "threshold"
    },
    "description": "毒刃附加层数 +1（每 2 层 +1）",
-   "icon": "res://assets/icons/verarc/regeneration.png",
+   "icon": "res://assets/icons/verarc/poison_dagger.png",
    "id": "poison_blade_oil",
    "name": "淬毒刃油",
    "rarity": "common",
@@ -1635,7 +1635,7 @@
     "type": "linear"
    },
    "description": "五毒俱全倍率 +0.5（每层，上限 ×4）",
-   "icon": "res://assets/icons/verarc/poisoned.png",
+   "icon": "res://assets/icons/shikashi/shikashi_r13_c14.png",
    "id": "poison_pentad",
    "name": "五毒符",
    "rarity": "legendary",
@@ -1654,7 +1654,7 @@
     "type": "threshold"
    },
    "description": "召唤物总上限 +1（每 2 层再 +1）",
-   "icon": "res://assets/icons/verarc/summoning_spell.png",
+   "icon": "res://assets/icons/shikashi/shikashi_r4_c7.png",
    "id": "summon_1",
    "name": "召唤之书",
    "rarity": "common",
@@ -1703,7 +1703,7 @@
     "type": "linear"
    },
    "description": "召唤物攻速 +10%（每层，冷却换算）",
-   "icon": "res://assets/icons/verarc/attack_speed_boost.png",
+   "icon": "res://assets/icons/shikashi/shikashi_r8_c8.png",
    "id": "summon_4",
    "name": "御兽鞭",
    "rarity": "common",
@@ -1718,7 +1718,7 @@
     "type": "linear"
    },
    "description": "召唤系冷却 -8%（每层，作用于召唤物技能冷却）",
-   "icon": "res://assets/icons/verarc/mana_replenish.png",
+   "icon": "res://assets/icons/shikashi/shikashi_r13_c11.png",
    "id": "summon_5",
    "name": "契约符文",
    "rarity": "common",
@@ -1733,7 +1733,7 @@
     "type": "exp_proc"
    },
    "description": "召唤物死亡 25% 概率不消失（保 1 血，每层独立判定）",
-   "icon": "res://assets/icons/verarc/regeneration.png",
+   "icon": "res://assets/icons/shikashi/shikashi_r12_c15.png",
    "id": "summon_6",
    "name": "灵魂石",
    "rarity": "common",
@@ -1763,7 +1763,7 @@
     "type": "linear"
    },
    "description": "每存在 1 只召唤物，玩家伤害 +2%（每层；上限 60%）",
-   "icon": "res://assets/icons/verarc/magic_amplification.png",
+   "icon": "res://assets/icons/shikashi/shikashi_r17_c8.png",
    "id": "summon_8",
    "name": "兽群本能",
    "rarity": "common",
@@ -1780,7 +1780,7 @@
     "type": "linear"
    },
    "description": "召唤物死亡时玩家回复 1% 最大生命（每层）",
-   "icon": "res://assets/icons/verarc/regeneration.png",
+   "icon": "res://assets/icons/verarc/ghost_form_(physical_damage_immunity).png",
    "id": "summon_9",
    "name": "亡者低语",
    "rarity": "common",
@@ -1795,7 +1795,7 @@
     "type": "linear"
    },
    "description": "召唤物暴击率 +6%（每层，上限 50%）",
-   "icon": "res://assets/icons/verarc/critical_boost.png",
+   "icon": "res://assets/icons/shikashi/shikashi_r13_c8.png",
    "id": "summon_10",
    "name": "召唤精通",
    "rarity": "common",
@@ -1811,7 +1811,7 @@
     "type": "threshold"
    },
    "description": "每存在 1 只召唤物，玩家攻速 +2%（总加成上限 50%）",
-   "icon": "res://assets/icons/verarc/attack_speed_boost.png",
+   "icon": "res://assets/icons/shikashi/shikashi_r3_c15.png",
    "id": "summon_m1",
    "name": "军团光环",
    "rarity": "rare",
@@ -1829,7 +1829,7 @@
     "type": "threshold"
    },
    "description": "周期引爆最弱召唤物：范围伤害 + 燃烧，3s 后同型重生",
-   "icon": "res://assets/icons/verarc/fire_spell_2.png",
+   "icon": "res://assets/icons/shikashi/shikashi_r8_c7.png",
    "id": "summon_m2",
    "name": "献祭",
    "rarity": "rare",
@@ -1847,7 +1847,7 @@
     "type": "threshold"
    },
    "description": "召唤物死亡爆炸（40% 伤害）",
-   "icon": "res://assets/icons/verarc/fire_spell.png",
+   "icon": "res://assets/icons/shikashi/shikashi_r0_c7.png",
    "id": "summon_m3",
    "name": "亡语",
    "rarity": "rare",
@@ -1865,7 +1865,7 @@
     "type": "threshold"
    },
    "description": "召唤物对集火目标（最近精英，无精英取最近敌人）伤害提升",
-   "icon": "res://assets/icons/verarc/critical_boost.png",
+   "icon": "res://assets/icons/shikashi/shikashi_r10_c4.png",
    "id": "summon_m4",
    "name": "集火",
    "rarity": "rare",
@@ -1883,7 +1883,7 @@
     "type": "threshold"
    },
    "description": "玩家受击伤害 15% 由召唤物分摊（上限 45%）",
-   "icon": "res://assets/icons/verarc/defense_boost.png",
+   "icon": "res://assets/icons/shikashi/shikashi_r12_c5.png",
    "id": "summon_m5",
    "name": "共生",
    "rarity": "rare",
@@ -1901,7 +1901,7 @@
     "type": "threshold"
    },
    "description": "场上每 5 只召唤物时，下一次召唤必定精英级（+50% 属性）",
-   "icon": "res://assets/icons/verarc/element_boost.png",
+   "icon": "res://assets/icons/shikashi/shikashi_r11_c11.png",
    "id": "summon_m6",
    "name": "首领",
    "rarity": "rare",
@@ -1919,7 +1919,7 @@
     "type": "threshold"
    },
    "description": "召唤物击杀敌人后攻速 +8% 持续 3s（可叠加）",
-   "icon": "res://assets/icons/verarc/frenzy_spell_(critical_booster).png",
+   "icon": "res://assets/icons/shikashi/shikashi_r3_c0.png",
    "id": "summon_m7",
    "name": "狂热",
    "rarity": "rare",
@@ -1955,7 +1955,7 @@
     "type": "threshold"
    },
    "description": "召唤时脚下生成法阵，法阵内敌人减速（持续 3s）",
-   "icon": "res://assets/icons/verarc/element_boost.png",
+   "icon": "res://assets/icons/shikashi/shikashi_r6_c8.png",
    "id": "summon_m9",
    "name": "召唤阵",
    "rarity": "rare",
@@ -1973,7 +1973,7 @@
     "type": "threshold"
    },
    "description": "每 3 次召唤后，本次召唤 3 只（小规模，受总上限钳制）",
-   "icon": "res://assets/icons/verarc/summoning_spell.png",
+   "icon": "res://assets/icons/shikashi/shikashi_r5_c10.png",
    "id": "summon_m10",
    "name": "军团冲锋",
    "rarity": "rare",
@@ -2009,7 +2009,7 @@
     "type": "threshold"
    },
    "description": "连锁跳数 +1（每 2 层）",
-   "icon": "res://assets/icons/verarc/lightning_spell.png",
+   "icon": "res://assets/icons/shikashi/shikashi_r3_c2.png",
    "id": "thunder_2",
    "name": "静电力场",
    "rarity": "rare",
@@ -2028,7 +2028,7 @@
     "type": "linear"
    },
    "description": "连锁距离 +20px（每层 +20px）",
-   "icon": "res://assets/icons/verarc/element_boost.png",
+   "icon": "res://assets/icons/shikashi/shikashi_r2_c6.png",
    "id": "thunder_3",
    "name": "导线",
    "rarity": "common",
@@ -2067,7 +2067,7 @@
     "type": "linear"
    },
    "description": "雷系攻速 +8%（每层 +8%）",
-   "icon": "res://assets/icons/verarc/attack_speed_boost.png",
+   "icon": "res://assets/icons/willibab/STAFFS_6.png",
    "id": "thunder_5",
    "name": "雷暴术架",
    "rarity": "common",
@@ -2086,7 +2086,7 @@
     "type": "linear"
    },
    "description": "连锁递减从 30% 降到 20%（每层递减 -5%）",
-   "icon": "res://assets/icons/verarc/magic_amplification.png",
+   "icon": "res://assets/icons/willibab/SWORDS_88.png",
    "id": "thunder_6",
    "name": "高压",
    "rarity": "rare",
@@ -2106,7 +2106,7 @@
     "type": "threshold"
    },
    "description": "闪电优先目标精英/Boss（1 层生效）",
-   "icon": "res://assets/icons/verarc/critical_boost.png",
+   "icon": "res://assets/icons/shikashi/shikashi_r5_c8.png",
    "id": "thunder_7",
    "name": "避雷针",
    "rarity": "rare",
@@ -2143,7 +2143,7 @@
     "type": "multiplicative"
    },
    "description": "每跳伤害 +4%（叠乘，每层 ×1.04）",
-   "icon": "res://assets/icons/verarc/lightning_spell.png",
+   "icon": "res://assets/icons/willibab/SWORDS_2.png",
    "id": "thunder_9",
    "name": "电荷",
    "rarity": "rare",
@@ -2162,7 +2162,7 @@
     "type": "linear"
    },
    "description": "雷系暴击率 +5%（每层 +5%）",
-   "icon": "res://assets/icons/verarc/critical_boost.png",
+   "icon": "res://assets/icons/shikashi/shikashi_r0_c2.png",
    "id": "thunder_10",
    "name": "雷暴预感",
    "rarity": "common",
@@ -2182,7 +2182,7 @@
     "type": "linear"
    },
    "description": "暴击率上限 +5%（每层，上限 25%）",
-   "icon": "res://assets/icons/verarc/glow.png",
+   "icon": "res://assets/icons/shikashi/shikashi_r10_c8.png",
    "id": "crit_sharp_senses",
    "name": "敏锐",
    "rarity": "common",
@@ -2200,7 +2200,7 @@
     "type": "linear"
    },
    "description": "对精英/Boss 暴击率 +6%（每层，上限 30%）",
-   "icon": "res://assets/icons/verarc/glow.png",
+   "icon": "res://assets/icons/shikashi/shikashi_r3_c3.png",
    "id": "crit_hunters_mark",
    "name": "猎杀标记",
    "rarity": "common",
@@ -2219,7 +2219,7 @@
     "type": "threshold"
    },
    "description": "暴击后 2s 内攻速 +4%（每层，上限 20%）",
-   "icon": "res://assets/icons/verarc/glow.png",
+   "icon": "res://assets/icons/shikashi/shikashi_r11_c3.png",
    "id": "crit_deadly_rhythm",
    "name": "致命节奏",
    "rarity": "rare",
@@ -2238,7 +2238,7 @@
     "type": "linear"
    },
    "description": "敌人血量低于 50% 时暴击率 +8%（每层，上限 40%）",
-   "icon": "res://assets/icons/verarc/glow.png",
+   "icon": "res://assets/icons/shikashi/shikashi_r10_c8.png",
    "id": "crit_weakness_insight",
    "name": "弱点洞悉",
    "rarity": "common",
@@ -2256,7 +2256,7 @@
     "type": "linear"
    },
    "description": "暴击系攻速 +6%（每层，上限 30%）",
-   "icon": "res://assets/icons/verarc/glow.png",
+   "icon": "res://assets/icons/willibab/STAFFS_46.png",
    "id": "crit_staff",
    "name": "暴击术架",
    "rarity": "common",
@@ -2275,7 +2275,7 @@
     "type": "threshold"
    },
    "description": "暴击伤害上限 +30%（溢出转真伤，每层）",
-   "icon": "res://assets/icons/verarc/glow.png",
+   "icon": "res://assets/icons/willibab/AXES_16.png",
    "id": "crit_executioner",
    "name": "处刑者",
    "rarity": "legendary",
@@ -2294,7 +2294,7 @@
     "type": "linear"
    },
    "description": "幸运值：暴击率 +10%（每层，上限 50%）",
-   "icon": "res://assets/icons/verarc/glow.png",
+   "icon": "res://assets/icons/verarc/lucky_boost.png",
    "id": "crit_lucky",
    "name": "幸运",
    "rarity": "rare",
@@ -2313,7 +2313,7 @@
     "type": "tradeoff"
    },
    "description": "暴击率 -2%，暴伤 +30%（每层，高伤低率）",
-   "icon": "res://assets/icons/verarc/glow.png",
+   "icon": "res://assets/icons/verarc/critical_boost.png",
    "id": "crit_storm_eye",
    "name": "暴风眼",
    "rarity": "legendary",
@@ -2331,7 +2331,7 @@
     "type": "linear"
    },
    "description": "所有 debuff 持续时间 +15%（每层）",
-   "icon": "res://assets/icons/verarc/glow.png",
+   "icon": "res://assets/icons/shikashi/shikashi_r13_c9.png",
    "id": "curse_ink",
    "name": "诅咒墨水",
    "rarity": "common",
@@ -2349,7 +2349,7 @@
     "type": "linear"
    },
    "description": "敌人攻击 -6%（每层）",
-   "icon": "res://assets/icons/verarc/glow.png",
+   "icon": "res://assets/icons/verarc/attack_down.png",
    "id": "curse_weak_word",
    "name": "虚弱咒",
    "rarity": "common",
@@ -2367,7 +2367,7 @@
     "type": "linear"
    },
    "description": "敌人移速 -5%（每层，与减速叠加）",
-   "icon": "res://assets/icons/verarc/glow.png",
+   "icon": "res://assets/icons/shikashi/shikashi_r0_c5.png",
    "id": "curse_slow_word",
    "name": "失衡咒",
    "rarity": "common",
@@ -2385,7 +2385,7 @@
     "type": "linear"
    },
    "description": "每层 debuff 使敌人受伤 +4%（每层）",
-   "icon": "res://assets/icons/verarc/glow.png",
+   "icon": "res://assets/icons/shikashi/shikashi_r11_c2.png",
    "id": "curse_torment",
    "name": "折磨精通",
    "rarity": "rare",
@@ -2403,7 +2403,7 @@
     "type": "linear"
    },
    "description": "诅咒系攻速 +8%（每层）",
-   "icon": "res://assets/icons/verarc/glow.png",
+   "icon": "res://assets/icons/willibab/STAFFS_42.png",
    "id": "curse_rack",
    "name": "恶咒术架",
    "rarity": "common",
@@ -2421,7 +2421,7 @@
     "type": "linear"
    },
    "description": "敌人治疗 -15%（每层）",
-   "icon": "res://assets/icons/verarc/glow.png",
+   "icon": "res://assets/icons/shikashi/shikashi_r9_c15.png",
    "id": "curse_no_heal_word",
    "name": "禁疗咒",
    "rarity": "rare",
@@ -2440,7 +2440,7 @@
     "type": "linear"
    },
    "description": "受到的伤害 -8%（每层，上限 25%）",
-   "icon": "res://assets/icons/verarc/glow.png",
+   "icon": "res://assets/icons/shikashi/shikashi_r0_c0.png",
    "id": "curse_fear_word",
    "name": "恐惧咒",
    "rarity": "rare",
@@ -2458,7 +2458,7 @@
     "type": "linear"
    },
    "description": "诅咒系冷却 -7%（每层）",
-   "icon": "res://assets/icons/verarc/glow.png",
+   "icon": "res://assets/icons/shikashi/shikashi_r0_c4.png",
    "id": "curse_mastery",
    "name": "诅咒精通",
    "rarity": "rare",
@@ -2477,7 +2477,7 @@
     "type": "linear"
    },
    "description": "敌人生命上限 -3%（每层，上限 30%）",
-   "icon": "res://assets/icons/verarc/glow.png",
+   "icon": "res://assets/icons/shikashi/shikashi_r0_c0.png",
    "id": "curse_death_word",
    "name": "死咒",
    "rarity": "legendary",
@@ -2496,7 +2496,7 @@
     "type": "linear"
    },
    "description": "诅咒系暴击率 +5%（每层，上限 50%）",
-   "icon": "res://assets/icons/verarc/glow.png",
+   "icon": "res://assets/icons/shikashi/shikashi_r0_c8.png",
    "id": "curse_omen",
    "name": "厄运预感",
    "rarity": "legendary",
@@ -2515,7 +2515,7 @@
     "type": "threshold"
    },
    "description": "敌人获得第 2 个 debuff 时概率传染给附近 1 个敌人（8%-15%）",
-   "icon": "res://assets/icons/verarc/glow.png",
+   "icon": "res://assets/icons/shikashi/shikashi_r11_c14.png",
    "id": "curse_plague",
    "name": "传染诅咒",
    "rarity": "rare",
@@ -2535,7 +2535,7 @@
     "type": "threshold"
    },
    "description": "敌人每有 1 层 debuff 受伤 +4%（上限 25%）",
-   "icon": "res://assets/icons/verarc/glow.png",
+   "icon": "res://assets/icons/shikashi/shikashi_r1_c3.png",
    "id": "curse_agony",
    "name": "痛苦加深",
    "rarity": "common",
@@ -2555,7 +2555,7 @@
     "type": "threshold"
    },
    "description": "攻击被 debuff 敌人 10%-15% 概率附加虚弱（攻 -20% 3s）",
-   "icon": "res://assets/icons/verarc/glow.png",
+   "icon": "res://assets/icons/verarc/defense_down.png",
    "id": "curse_weak_strike",
    "name": "虚弱打击",
    "rarity": "rare",
@@ -2575,7 +2575,7 @@
     "type": "threshold"
    },
    "description": "被 3+ debuff 的敌人 10%-15% 概率逃跑（远离玩家）",
-   "icon": "res://assets/icons/verarc/glow.png",
+   "icon": "res://assets/icons/verarc/confused.png",
    "id": "curse_fear",
    "name": "恐惧",
    "rarity": "rare",
@@ -2595,7 +2595,7 @@
     "type": "threshold"
    },
    "description": "debuff 刷新时按层数造成伤害（0.5s 节流）",
-   "icon": "res://assets/icons/verarc/glow.png",
+   "icon": "res://assets/icons/shikashi/shikashi_r2_c3.png",
    "id": "curse_agony_loop",
    "name": "折磨循环",
    "rarity": "common",
@@ -2615,7 +2615,7 @@
     "type": "threshold"
    },
    "description": "被 4+ debuff 敌人 8%-15% 概率眩晕 1s",
-   "icon": "res://assets/icons/verarc/glow.png",
+   "icon": "res://assets/icons/shikashi/shikashi_r0_c5.png",
    "id": "curse_unbalance",
    "name": "失衡",
    "rarity": "rare",
@@ -2635,7 +2635,7 @@
     "type": "threshold"
    },
    "description": "玩家周围 100px 敌人无法治疗（禁疗咒扩大范围）",
-   "icon": "res://assets/icons/verarc/glow.png",
+   "icon": "res://assets/icons/shikashi/shikashi_r9_c15.png",
    "id": "curse_no_heal_zone",
    "name": "禁疗领域",
    "rarity": "common",
@@ -2655,7 +2655,7 @@
     "type": "threshold"
    },
    "description": "受负面状态影响的敌人死亡时，8%-15% 概率掉落诅咒之魂（拾取后减少技能冷却）",
-   "icon": "res://assets/icons/verarc/glow.png",
+   "icon": "res://assets/icons/shikashi/shikashi_r0_c8.png",
    "id": "curse_doom",
    "name": "厄运",
    "rarity": "legendary",
@@ -2675,7 +2675,7 @@
     "type": "threshold"
    },
    "description": "被 debuff 的敌人攻击玩家时反弹 10% 伤害（上限 15%）",
-   "icon": "res://assets/icons/verarc/glow.png",
+   "icon": "res://assets/icons/shikashi/shikashi_r12_c13.png",
    "id": "curse_retribution",
    "name": "反噬",
    "rarity": "rare",
@@ -2695,7 +2695,7 @@
     "type": "threshold"
    },
    "description": "敌人死亡时把全部 debuff 传染给最近敌人",
-   "icon": "res://assets/icons/verarc/glow.png",
+   "icon": "res://assets/icons/shikashi/shikashi_r3_c14.png",
    "id": "curse_all_as_one",
    "name": "万咒归一",
    "rarity": "legendary",
@@ -2715,7 +2715,7 @@
     "type": "linear"
    },
    "description": "受到伤害 -6%（每层，上限 35%）",
-   "icon": "res://assets/icons/verarc/glow.png",
+   "icon": "res://assets/icons/shikashi/shikashi_r17_c1.png",
    "id": "defense_bedrock",
    "name": "磐石护甲",
    "rarity": "common",
@@ -2733,7 +2733,7 @@
     "type": "linear"
    },
    "description": "受击反弹 30%（每层约 +6%，上限 65%）",
-   "icon": "res://assets/icons/verarc/glow.png",
+   "icon": "res://assets/icons/shikashi/shikashi_r5_c13.png",
    "id": "defense_thorn_refit",
    "name": "荆棘甲改造",
    "rarity": "common",
@@ -2752,7 +2752,7 @@
     "type": "linear"
    },
    "description": "反弹伤害的 2% 回血（每层，上限 4%）",
-   "icon": "res://assets/icons/verarc/glow.png",
+   "icon": "res://assets/icons/shikashi/shikashi_r5_c14.png",
    "id": "defense_blood_thorn",
    "name": "血棘甲",
    "rarity": "rare",
@@ -2771,7 +2771,7 @@
     "type": "linear"
    },
    "description": "额外减伤 -3%（每层，独立乘区，上限 20%）",
-   "icon": "res://assets/icons/verarc/glow.png",
+   "icon": "res://assets/icons/shikashi/shikashi_r7_c4.png",
    "id": "defense_iron_wall",
    "name": "铁壁",
    "rarity": "rare",
@@ -2806,7 +2806,7 @@
     "type": "linear"
    },
    "description": "攻击速度 +8%（每层）",
-   "icon": "res://assets/icons/verarc/glow.png",
+   "icon": "res://assets/icons/willibab/STAFFS_38.png",
    "id": "defense_guard_staff",
    "name": "守御术架",
    "rarity": "common",
@@ -2825,7 +2825,7 @@
     "type": "threshold"
    },
    "description": "反弹比例上限 +10%（每 2 层）",
-   "icon": "res://assets/icons/verarc/glow.png",
+   "icon": "res://assets/icons/shikashi/shikashi_r3_c13.png",
    "id": "defense_counter_shock",
    "name": "反震",
    "rarity": "rare",
@@ -2843,7 +2843,7 @@
     "type": "linear"
    },
    "description": "护盾上限 +15%（生命比例，每层）",
-   "icon": "res://assets/icons/verarc/glow.png",
+   "icon": "res://assets/icons/shikashi/shikashi_r6_c2.png",
    "id": "defense_shield_battery",
    "name": "护盾电池",
    "rarity": "rare",
@@ -2862,7 +2862,7 @@
     "type": "linear"
    },
    "description": "受到伤害 -10%（每层，上限 35%）",
-   "icon": "res://assets/icons/verarc/glow.png",
+   "icon": "res://assets/icons/shikashi/shikashi_r17_c1.png",
    "id": "defense_stone_skin",
    "name": "石肤",
    "rarity": "common",
@@ -2880,7 +2880,7 @@
     "type": "threshold"
    },
    "description": "生命低于 40% 时减伤 +10%",
-   "icon": "res://assets/icons/verarc/glow.png",
+   "icon": "res://assets/icons/shikashi/shikashi_r1_c4.png",
    "id": "defense_unyielding",
    "name": "不屈",
    "rarity": "legendary",
@@ -2898,7 +2898,7 @@
     "type": "threshold"
    },
    "description": "受击反弹时 12% 概率把反弹伤害传染给附近敌人（范围伤害）",
-   "icon": "res://assets/icons/verarc/glow.png",
+   "icon": "res://assets/icons/shikashi/shikashi_r5_c13.png",
    "id": "defense_thorn_field",
    "name": "荆棘领域",
    "rarity": "rare",
@@ -2918,7 +2918,7 @@
     "type": "threshold"
    },
    "description": "受击后 2s 内全伤害 +25%（每层，可叠加，上限 75%）",
-   "icon": "res://assets/icons/verarc/glow.png",
+   "icon": "res://assets/icons/shikashi/shikashi_r3_c8.png",
    "id": "defense_shield_counter",
    "name": "盾反",
    "rarity": "common",
@@ -2937,7 +2937,7 @@
     "type": "threshold"
    },
    "description": "护盾破碎时对周围敌人造成护盾值伤害（配合防M6 吸收）",
-   "icon": "res://assets/icons/verarc/glow.png",
+   "icon": "res://assets/icons/shikashi/shikashi_r3_c8.png",
    "id": "defense_shield_echo",
    "name": "护盾回响",
    "rarity": "rare",
@@ -2957,7 +2957,7 @@
     "type": "threshold"
    },
    "description": "血棘甲吸血 +1%（每 2 层，上限 4%）",
-   "icon": "res://assets/icons/verarc/glow.png",
+   "icon": "res://assets/icons/shikashi/shikashi_r7_c5.png",
    "id": "defense_thorn_leech",
    "name": "反甲吸血",
    "rarity": "common",
@@ -2977,7 +2977,7 @@
     "type": "threshold"
    },
    "description": "减伤 ≥30% 后免疫击退（防1/防4/防10 叠减伤）",
-   "icon": "res://assets/icons/verarc/glow.png",
+   "icon": "res://assets/icons/shikashi/shikashi_r17_c1.png",
    "id": "defense_unbreakable",
    "name": "磐石不破",
    "rarity": "legendary",
@@ -2996,7 +2996,7 @@
     "type": "threshold"
    },
    "description": "反弹伤害的 30% 转化为护盾（转化率随层提升，护盾上限 25% 生命）",
-   "icon": "res://assets/icons/verarc/glow.png",
+   "icon": "res://assets/icons/shikashi/shikashi_r12_c12.png",
    "id": "defense_absorb",
    "name": "吸收",
    "rarity": "rare",
@@ -3016,7 +3016,7 @@
     "type": "threshold"
    },
    "description": "受击后下一次攻击伤害 -50%（蓄力窗口 1s）",
-   "icon": "res://assets/icons/verarc/glow.png",
+   "icon": "res://assets/icons/shikashi/shikashi_r7_c7.png",
    "id": "defense_harden",
    "name": "硬化",
    "rarity": "common",
@@ -3035,7 +3035,7 @@
     "type": "threshold"
    },
    "description": "受击 20% 概率吸引周围敌人贴近自己（配合反弹）",
-   "icon": "res://assets/icons/verarc/glow.png",
+   "icon": "res://assets/icons/shikashi/shikashi_r4_c1.png",
    "id": "defense_taunt",
    "name": "嘲讽",
    "rarity": "rare",
@@ -3054,7 +3054,7 @@
     "type": "threshold"
    },
    "description": "每次反弹获得 2% 暴击率 3s（可叠加，上限 30%）",
-   "icon": "res://assets/icons/verarc/glow.png",
+   "icon": "res://assets/icons/shikashi/shikashi_r5_c12.png",
    "id": "defense_vengeance",
    "name": "复仇",
    "rarity": "legendary",
@@ -3074,7 +3074,7 @@
     "type": "threshold"
    },
    "description": "生命低于 30% 时 3s 无敌（冷却 30s，可挡致死）",
-   "icon": "res://assets/icons/verarc/glow.png",
+   "icon": "res://assets/icons/shikashi/shikashi_r17_c3.png",
    "id": "defense_golden_body",
    "name": "金身",
    "rarity": "legendary",
@@ -3092,7 +3092,7 @@
     "type": "linear"
    },
    "description": "近战/刀刃伤害 +15%（每层）",
-   "icon": "res://assets/icons/verarc/glow.png",
+   "icon": "res://assets/icons/willibab/AXES_15.png",
    "id": "melee_1",
    "name": "战斧",
    "rarity": "common",
@@ -3109,7 +3109,7 @@
     "type": "linear"
    },
    "description": "近战攻速 +10%（每层）",
-   "icon": "res://assets/icons/verarc/glow.png",
+   "icon": "res://assets/icons/willibab/SWORDS_52.png",
    "id": "melee_2",
    "name": "磨刀石",
    "rarity": "common",
@@ -3127,7 +3127,7 @@
     "type": "linear"
    },
    "description": "吸血 +0.5%（每层，受全局上限约束）",
-   "icon": "res://assets/icons/verarc/glow.png",
+   "icon": "res://assets/icons/willibab/SWORDS_13.png",
    "id": "melee_3",
    "name": "血怒",
    "rarity": "common",
@@ -3145,7 +3145,7 @@
     "type": "linear"
    },
    "description": "近战减伤 +5%（每层，上限 40%）",
-   "icon": "res://assets/icons/verarc/glow.png",
+   "icon": "res://assets/icons/willibab/MACES_16.png",
    "id": "melee_4",
    "name": "铁壁",
    "rarity": "common",
@@ -3162,7 +3162,7 @@
     "type": "linear"
    },
    "description": "生命上限 +20（每层）",
-   "icon": "res://assets/icons/verarc/glow.png",
+   "icon": "res://assets/icons/shikashi/shikashi_r7_c15.png",
    "id": "melee_5",
    "name": "狂战腰带",
    "rarity": "rare",
@@ -3179,7 +3179,7 @@
     "type": "linear"
    },
    "description": "近战范围 +12%（每层）",
-   "icon": "res://assets/icons/verarc/glow.png",
+   "icon": "res://assets/icons/willibab/MACES_19.png",
    "id": "melee_6",
    "name": "碎裂锤",
    "rarity": "common",
@@ -3196,7 +3196,7 @@
     "type": "linear"
    },
    "description": "近战暴击率 +5%（每层）",
-   "icon": "res://assets/icons/verarc/glow.png",
+   "icon": "res://assets/icons/shikashi/shikashi_r4_c0.png",
    "id": "melee_7",
    "name": "战吼",
    "rarity": "rare",
@@ -3213,7 +3213,7 @@
     "type": "linear"
    },
    "description": "近战暴伤 +20%（每层）",
-   "icon": "res://assets/icons/verarc/glow.png",
+   "icon": "res://assets/icons/willibab/AXES_22.png",
    "id": "melee_8",
    "name": "巨力",
    "rarity": "rare",
@@ -3230,7 +3230,7 @@
     "type": "linear"
    },
    "description": "受击保护时间 +0.1s（每层）",
-   "icon": "res://assets/icons/verarc/glow.png",
+   "icon": "res://assets/icons/shikashi/shikashi_r7_c5.png",
    "id": "melee_9",
    "name": "钢体",
    "rarity": "common",
@@ -3248,7 +3248,7 @@
     "type": "threshold"
    },
    "description": "生命低于 40% 时近战伤害 +15%（每层）",
-   "icon": "res://assets/icons/verarc/glow.png",
+   "icon": "res://assets/icons/willibab/SWORDS_65.png",
    "id": "melee_10",
    "name": "嗜血",
    "rarity": "legendary",
@@ -3266,7 +3266,7 @@
     "type": "threshold"
    },
    "description": "旋风刃旋转半径 +30%，持续命中：命中附加刀刃伤害并在命中点扩散扫击",
-   "icon": "res://assets/icons/verarc/glow.png",
+   "icon": "res://assets/icons/willibab/SWORDS_77.png",
    "id": "melee_m1",
    "name": "旋风斩",
    "rarity": "rare",
@@ -3285,7 +3285,7 @@
     "type": "threshold"
    },
    "description": "击杀后 1.5s 内下一发近战伤害 +50%（构筑提升，上限 90%）",
-   "icon": "res://assets/icons/verarc/glow.png",
+   "icon": "res://assets/icons/willibab/DAGGERS_3.png",
    "id": "melee_m2",
    "name": "连环处决",
    "rarity": "rare",
@@ -3304,7 +3304,7 @@
     "type": "threshold"
    },
    "description": "每次受击 +5% 攻速持续 4s（上限 10 层）",
-   "icon": "res://assets/icons/verarc/glow.png",
+   "icon": "res://assets/icons/willibab/AXES_32.png",
    "id": "melee_m3",
    "name": "血之狂暴",
    "rarity": "common",
@@ -3323,7 +3323,7 @@
     "type": "threshold"
    },
    "description": "攻速每满 50% 阈值，近战伤害 +10%（上限 50%）",
-   "icon": "res://assets/icons/verarc/glow.png",
+   "icon": "res://assets/icons/shikashi/shikashi_r3_c7.png",
    "id": "melee_m4",
    "name": "战意",
    "rarity": "rare",
@@ -3342,7 +3342,7 @@
     "type": "threshold"
    },
    "description": "受击瞬间 20% 概率反弹全额伤害并眩晕攻击者（构筑提升，上限 40%）",
-   "icon": "res://assets/icons/verarc/glow.png",
+   "icon": "res://assets/icons/shikashi/shikashi_r5_c0.png",
    "id": "melee_m5",
    "name": "弹反",
    "rarity": "rare",
@@ -3361,7 +3361,7 @@
     "type": "threshold"
    },
    "description": "击杀 5 连后全法术暴击 2s（期间击杀刷新）",
-   "icon": "res://assets/icons/verarc/glow.png",
+   "icon": "res://assets/icons/willibab/AXES_33.png",
    "id": "melee_m6",
    "name": "屠戮",
    "rarity": "rare",
@@ -3380,7 +3380,7 @@
     "type": "threshold"
    },
    "description": "近战命中 20% 概率降低目标护甲 20%（3s，构筑提升，上限 40%）",
-   "icon": "res://assets/icons/verarc/glow.png",
+   "icon": "res://assets/icons/willibab/AXES_5.png",
    "id": "melee_m7",
    "name": "破甲斩",
    "rarity": "common",
@@ -3399,7 +3399,7 @@
     "type": "threshold"
    },
    "description": "吸血溢出（满血时）转化为护盾（上限 30% 最大生命，构筑提升转化量）",
-   "icon": "res://assets/icons/verarc/glow.png",
+   "icon": "res://assets/icons/shikashi/shikashi_r9_c3.png",
    "id": "melee_m8",
    "name": "血池",
    "rarity": "rare",
@@ -3418,7 +3418,7 @@
     "type": "threshold"
    },
    "description": "生命低于 50% 时近战攻速 +25%（构筑提升，上限 50%）",
-   "icon": "res://assets/icons/verarc/glow.png",
+   "icon": "res://assets/icons/verarc/frenzy_spell_(critical_booster).png",
    "id": "melee_m9",
    "name": "狂化",
    "rarity": "legendary",
@@ -3437,7 +3437,7 @@
     "type": "threshold"
    },
    "description": "对低于 20% 生命敌人一击必杀（Boss/精英无效，构筑提升阈值）",
-   "icon": "res://assets/icons/verarc/glow.png",
+   "icon": "res://assets/icons/willibab/AXES_31.png",
    "id": "melee_m10",
    "name": "处刑",
    "rarity": "legendary",
@@ -3455,7 +3455,7 @@
     "type": "linear"
    },
    "description": "水系伤害 +12%（每层；水M10 水龙卷乘区）",
-   "icon": "res://assets/icons/verarc/glow.png",
+   "icon": "res://assets/icons/verarc/water_spell.png",
    "id": "water_essence",
    "name": "水元素精粹",
    "rarity": "common",
@@ -3474,7 +3474,7 @@
     "type": "linear"
    },
    "description": "减速强度 +8%（每层，基础 20%，上限 85%）",
-   "icon": "res://assets/icons/verarc/glow.png",
+   "icon": "res://assets/icons/shikashi/shikashi_r13_c10.png",
    "id": "water_tide_rune",
    "name": "潮汐符",
    "rarity": "common",
@@ -3492,7 +3492,7 @@
     "type": "linear"
    },
    "description": "减速持续时间 +0.6s（每层；水泽/暴雨/潮汐锁定联动）",
-   "icon": "res://assets/icons/verarc/glow.png",
+   "icon": "res://assets/icons/shikashi/shikashi_r16_c14.png",
    "id": "water_deep_water",
    "name": "深水",
    "rarity": "common",
@@ -3510,7 +3510,7 @@
     "type": "linear"
    },
    "description": "水系攻速 +8%（每层）",
-   "icon": "res://assets/icons/verarc/glow.png",
+   "icon": "res://assets/icons/willibab/STAFFS_31.png",
    "id": "water_curtain_frame",
    "name": "水幕术架",
    "rarity": "common",
@@ -3528,7 +3528,7 @@
     "type": "linear"
    },
    "description": "定身概率 +8%（每层；水M3 藤蔓缠绕概率提升）",
-   "icon": "res://assets/icons/verarc/glow.png",
+   "icon": "res://assets/icons/shikashi/shikashi_r13_c10.png",
    "id": "water_root_rune",
    "name": "定身符",
    "rarity": "common",
@@ -3546,7 +3546,7 @@
     "type": "linear"
    },
    "description": "水系范围 +12%（每层；水泽/缠绕/旋涡范围联动）",
-   "icon": "res://assets/icons/verarc/glow.png",
+   "icon": "res://assets/icons/shikashi/shikashi_r0_c10.png",
    "id": "water_moist",
    "name": "潮湿",
    "rarity": "common",
@@ -3564,7 +3564,7 @@
     "type": "linear"
    },
    "description": "击退距离 +15%（每层；水M10 水龙卷击退联动）",
-   "icon": "res://assets/icons/verarc/glow.png",
+   "icon": "res://assets/icons/willibab/SPEARS_9.png",
    "id": "water_torrent",
    "name": "激流",
    "rarity": "rare",
@@ -3582,7 +3582,7 @@
     "type": "linear"
    },
    "description": "水系冷却 -6%（每层）",
-   "icon": "res://assets/icons/verarc/glow.png",
+   "icon": "res://assets/icons/shikashi/shikashi_r9_c1.png",
    "id": "water_ice_mix",
    "name": "冰水混合",
    "rarity": "rare",
@@ -3600,7 +3600,7 @@
     "type": "linear"
    },
    "description": "被减速敌人受到伤害 +8%（每层；水M4 湿润导电/水M9 沸腾乘区）",
-   "icon": "res://assets/icons/verarc/glow.png",
+   "icon": "res://assets/icons/shikashi/shikashi_r12_c2.png",
    "id": "water_swamp",
    "name": "沼泽",
    "rarity": "rare",
@@ -3618,7 +3618,7 @@
     "type": "linear"
    },
    "description": "水系暴击率 +5%（每层）",
-   "icon": "res://assets/icons/verarc/glow.png",
+   "icon": "res://assets/icons/willibab/SWORDS_131.png",
    "id": "water_tide_power",
    "name": "潮汐之力",
    "rarity": "legendary",
@@ -3637,7 +3637,7 @@
     "type": "threshold"
    },
    "description": "水弹命中留下 1.5-2s 减速区域（重叠可叠加；水2 强度、水3 时长、水6 范围）",
-   "icon": "res://assets/icons/verarc/glow.png",
+   "icon": "res://assets/icons/shikashi/shikashi_r12_c4.png",
    "id": "water_marsh",
    "name": "水泽",
    "rarity": "rare",
@@ -3658,7 +3658,7 @@
     "type": "threshold"
    },
    "description": "被减速敌人缓慢吸向水泽中心（水M1 联动；水6 范围）",
-   "icon": "res://assets/icons/verarc/glow.png",
+   "icon": "res://assets/icons/willibab/SWORDS_105.png",
    "id": "water_vortex",
    "name": "旋涡",
    "rarity": "rare",
@@ -3678,7 +3678,7 @@
     "type": "threshold"
    },
    "description": "定身敌人死亡时 15%-25% 概率向周围释放缠绕（新根须；水5 提升概率）",
-   "icon": "res://assets/icons/verarc/glow.png",
+   "icon": "res://assets/icons/shikashi/shikashi_r12_c1.png",
    "id": "water_vine_tangle",
    "name": "藤蔓缠绕",
    "rarity": "rare",
@@ -3699,7 +3699,7 @@
     "type": "threshold"
    },
    "description": "被减速敌人受到雷系伤害 +30%（联动雷系；水9 沼泽增伤乘区）",
-   "icon": "res://assets/icons/verarc/glow.png",
+   "icon": "res://assets/icons/shikashi/shikashi_r16_c9.png",
    "id": "water_conduct",
    "name": "湿润导电",
    "rarity": "rare",
@@ -3720,7 +3720,7 @@
     "type": "threshold"
    },
    "description": "定身持续期间每秒叠加减速层（定身结束仍被减速；水M1 水泽联动）",
-   "icon": "res://assets/icons/verarc/glow.png",
+   "icon": "res://assets/icons/shikashi/shikashi_r16_c12.png",
    "id": "water_tide_lock",
    "name": "潮汐锁定",
    "rarity": "rare",
@@ -3741,7 +3741,7 @@
     "type": "threshold"
    },
    "description": "敌方弹幕进入减速区域后速度 -60%（水M1 联动；圣光弹反联动）",
-   "icon": "res://assets/icons/verarc/glow.png",
+   "icon": "res://assets/icons/willibab/SWORDS_12.png",
    "id": "water_curtain",
    "name": "水幕",
    "rarity": "legendary",
@@ -3761,7 +3761,7 @@
     "type": "threshold"
    },
    "description": "玩家在水泽区域移动速度 +20%（移速流派联动；水M1）",
-   "icon": "res://assets/icons/verarc/glow.png",
+   "icon": "res://assets/icons/shikashi/shikashi_r16_c5.png",
    "id": "water_ocean_current",
    "name": "洋流",
    "rarity": "rare",
@@ -3782,7 +3782,7 @@
     "type": "threshold"
    },
    "description": "每 6s 全场下暴雨（全敌减速 0.8s；水2 强度、水3 时长联动）",
-   "icon": "res://assets/icons/verarc/glow.png",
+   "icon": "res://assets/icons/shikashi/shikashi_r3_c4.png",
    "id": "water_storm",
    "name": "暴雨",
    "rarity": "legendary",
@@ -3803,7 +3803,7 @@
     "type": "threshold"
    },
    "description": "被减速敌人受到火系伤害 +30%（联动火系；水9 沼泽增伤乘区）",
-   "icon": "res://assets/icons/verarc/glow.png",
+   "icon": "res://assets/icons/shikashi/shikashi_r4_c2.png",
    "id": "water_boil",
    "name": "沸腾",
    "rarity": "rare",
@@ -3824,7 +3824,7 @@
     "type": "threshold"
    },
    "description": "每击杀 5 个被减速敌人生成水龙卷（持续伤害+击退；水M1、水7 联动）",
-   "icon": "res://assets/icons/verarc/glow.png",
+   "icon": "res://assets/icons/willibab/SWORDS_21.png",
    "id": "water_tornado",
    "name": "水龙卷",
    "rarity": "legendary",
@@ -3843,7 +3843,7 @@
     "type": "linear"
    },
    "description": "移速 +10%（每层）",
-   "icon": "res://assets/icons/verarc/glow.png",
+   "icon": "res://assets/icons/shikashi/shikashi_r8_c2.png",
    "id": "wind_boots",
    "name": "疾风靴",
    "rarity": "common",
@@ -3861,7 +3861,7 @@
     "type": "linear"
    },
    "description": "移速→攻速联动系数 +0.2（每层，基础 0.5）",
-   "icon": "res://assets/icons/verarc/glow.png",
+   "icon": "res://assets/icons/shikashi/shikashi_r17_c10.png",
    "id": "wind_blessing",
    "name": "风之祝福",
    "rarity": "rare",
@@ -3879,7 +3879,7 @@
     "type": "linear"
    },
    "description": "闪避率 +4%（每层）",
-   "icon": "res://assets/icons/verarc/glow.png",
+   "icon": "res://assets/icons/shikashi/shikashi_r17_c10.png",
    "id": "wind_feather",
    "name": "轻身",
    "rarity": "common",
@@ -3897,7 +3897,7 @@
     "type": "linear"
    },
    "description": "击杀后移速 +8% 持续 3s（每层）",
-   "icon": "res://assets/icons/verarc/glow.png",
+   "icon": "res://assets/icons/willibab/SWORDS_28.png",
    "id": "wind_chase",
    "name": "追风",
    "rarity": "common",
@@ -3915,7 +3915,7 @@
     "type": "linear"
    },
    "description": "移速流派攻速 +8%（每层）",
-   "icon": "res://assets/icons/verarc/glow.png",
+   "icon": "res://assets/icons/willibab/STAFFS_35.png",
    "id": "wind_grimoire",
    "name": "疾风术架",
    "rarity": "common",
@@ -3933,7 +3933,7 @@
     "type": "linear"
    },
    "description": "移动时伤害 +4%（每层）",
-   "icon": "res://assets/icons/verarc/glow.png",
+   "icon": "res://assets/icons/willibab/SWORDS_97.png",
    "id": "wind_blade",
    "name": "风刃",
    "rarity": "common",
@@ -3950,7 +3950,7 @@
     "type": "linear"
    },
    "description": "每 100% 移速 +4% 暴击率（每层）",
-   "icon": "res://assets/icons/verarc/glow.png",
+   "icon": "res://assets/icons/willibab/SWORDS_90.png",
    "id": "wind_tailwind",
    "name": "顺风",
    "rarity": "rare",
@@ -3968,7 +3968,7 @@
     "type": "linear"
    },
    "description": "每 100% 移速 +6% 技能范围（每层）",
-   "icon": "res://assets/icons/verarc/glow.png",
+   "icon": "res://assets/icons/shikashi/shikashi_r16_c3.png",
    "id": "wind_surf",
    "name": "踏浪",
    "rarity": "rare",
@@ -3986,7 +3986,7 @@
     "type": "linear"
    },
    "description": "技能冷却 -5%（每层）",
-   "icon": "res://assets/icons/verarc/glow.png",
+   "icon": "res://assets/icons/shikashi/shikashi_r17_c10.png",
    "id": "wind_haste",
    "name": "迅捷",
    "rarity": "common",
@@ -4004,7 +4004,7 @@
     "type": "linear"
    },
    "description": "移速上限 +20%（每层）",
-   "icon": "res://assets/icons/verarc/glow.png",
+   "icon": "res://assets/icons/shikashi/shikashi_r8_c2.png",
    "id": "wind_walker",
    "name": "风行者",
    "rarity": "legendary",
@@ -4024,7 +4024,7 @@
     "type": "threshold"
    },
    "description": "高速移动（>80% 移速）时留下伤害风痕（构筑提升伤害/范围）",
-   "icon": "res://assets/icons/verarc/glow.png",
+   "icon": "res://assets/icons/willibab/SWORDS_20.png",
    "id": "wind_slice",
    "name": "风切",
    "rarity": "rare",
@@ -4043,7 +4043,7 @@
     "type": "threshold"
    },
    "description": "闪避后 2s 内攻速 +40%（构筑提升）",
-   "icon": "res://assets/icons/verarc/glow.png",
+   "icon": "res://assets/icons/shikashi/shikashi_r8_c3.png",
    "id": "wind_step",
    "name": "踏风",
    "rarity": "rare",
@@ -4063,7 +4063,7 @@
     "type": "threshold"
    },
    "description": "闪避/高速移动时获得 0.3s 无敌（构筑提升触发频率）",
-   "icon": "res://assets/icons/verarc/glow.png",
+   "icon": "res://assets/icons/verarc/ghost_form_(physical_damage_immunity).png",
    "id": "wind_shadow",
    "name": "影步",
    "rarity": "rare",
@@ -4082,7 +4082,7 @@
     "type": "threshold"
    },
    "description": "移速每超 100% 阈值，弹幕 +1 发（最多 +3）",
-   "icon": "res://assets/icons/verarc/glow.png",
+   "icon": "res://assets/icons/shikashi/shikashi_r6_c4.png",
    "id": "wind_hunter",
    "name": "追风猎手",
    "rarity": "legendary",
@@ -4101,7 +4101,7 @@
     "type": "threshold"
    },
    "description": "高速移动 2s 后生成风域：范围内敌人持续减速（构筑提升范围）",
-   "icon": "res://assets/icons/verarc/glow.png",
+   "icon": "res://assets/icons/willibab/SWORDS_44.png",
    "id": "wind_domain",
    "name": "疾风领域",
    "rarity": "rare",
@@ -4120,7 +4120,7 @@
     "type": "threshold"
    },
    "description": "冲刺冷却 -50%，冲刺后移速 +30% 持续 1s（构筑提升时长）",
-   "icon": "res://assets/icons/verarc/glow.png",
+   "icon": "res://assets/icons/shikashi/shikashi_r4_c6.png",
    "id": "wind_break",
    "name": "破风",
    "rarity": "rare",
@@ -4140,7 +4140,7 @@
     "type": "threshold"
    },
    "description": "移动方向与攻击方向一致时弹幕伤害 +20%（构筑提升，上限 50%）",
-   "icon": "res://assets/icons/verarc/glow.png",
+   "icon": "res://assets/icons/shikashi/shikashi_r6_c5.png",
    "id": "wind_tail_shot",
    "name": "顺风弹",
    "rarity": "common",
@@ -4159,7 +4159,7 @@
     "type": "threshold"
    },
    "description": "每移动 500px 触发一道风刃自动攻击（构筑提升频率/伤害）",
-   "icon": "res://assets/icons/verarc/glow.png",
+   "icon": "res://assets/icons/shikashi/shikashi_r11_c6.png",
    "id": "wind_echo",
    "name": "风之回响",
    "rarity": "rare",
@@ -4178,7 +4178,7 @@
     "type": "threshold"
    },
    "description": "高速时攻击 20% 概率附加减速（移速联动提升概率，上限 45%）",
-   "icon": "res://assets/icons/verarc/glow.png",
+   "icon": "res://assets/icons/willibab/SWORDS_48.png",
    "id": "wind_frost",
    "name": "急冻风",
    "rarity": "common",
@@ -4197,7 +4197,7 @@
     "type": "threshold"
    },
    "description": "移速超过 250% 时进入暴走：攻速 +50%，受击伤害 +20%",
-   "icon": "res://assets/icons/verarc/glow.png",
+   "icon": "res://assets/icons/shikashi/shikashi_r3_c11.png",
    "id": "wind_berserk",
    "name": "暴走",
    "rarity": "legendary",
@@ -4217,7 +4217,7 @@
     "type": "threshold"
    },
    "description": "中毒敌人死亡时 15% 概率向附近敌人传播 1 层毒（构筑每多 1 层 +1%，上限 25%）",
-   "icon": "res://assets/icons/verarc/poisoned.png",
+   "icon": "res://assets/icons/shikashi/shikashi_r16_c2.png",
    "id": "poison_m1",
    "name": "传染",
    "rarity": "rare",
@@ -4236,7 +4236,7 @@
     "type": "threshold"
    },
    "description": "毒层叠满时立即爆炸：范围毒伤（4% 最大生命 × 层数上限，受毒伤加成）",
-   "icon": "res://assets/icons/verarc/poison_dagger.png",
+   "icon": "res://assets/icons/shikashi/shikashi_r10_c12.png",
    "id": "poison_m2",
    "name": "毒爆",
    "rarity": "rare",
@@ -4255,7 +4255,7 @@
     "type": "threshold"
    },
    "description": "毒持续时间 ×2 起步，毒雾扩散加快（构筑每多 1 层 +25%，上限 ×4）",
-   "icon": "res://assets/icons/verarc/poisoned.png",
+   "icon": "res://assets/icons/willibab/SWORDS_26.png",
    "id": "poison_m3",
    "name": "毒雾弥漫",
    "rarity": "common",
@@ -4274,7 +4274,7 @@
     "type": "threshold"
    },
    "description": "中毒目标护甲 -30%（强腐蚀酸每层 +4%，上限 60%）",
-   "icon": "res://assets/icons/verarc/negative_status_resistance.png",
+   "icon": "res://assets/icons/shikashi/shikashi_r11_c12.png",
    "id": "poison_m4",
    "name": "腐蚀",
    "rarity": "rare",
@@ -4293,7 +4293,7 @@
     "type": "threshold"
    },
    "description": "攻击为敌人附加毒层（构筑每 2 层 +1 层）",
-   "icon": "res://assets/icons/verarc/poison_dagger.png",
+   "icon": "res://assets/icons/shikashi/shikashi_r5_c7.png",
    "id": "poison_m5",
    "name": "毒刃",
    "rarity": "common",
@@ -4312,7 +4312,7 @@
     "type": "threshold"
    },
    "description": "无视毒免疫；对 Boss 毒伤 +10%/层",
-   "icon": "res://assets/icons/verarc/magic_amplification.png",
+   "icon": "res://assets/icons/shikashi/shikashi_r2_c3.png",
    "id": "poison_m6",
    "name": "抗性渗透",
    "rarity": "rare",
@@ -4331,7 +4331,7 @@
     "type": "threshold"
    },
    "description": "毒伤随时间递增：每秒 +5%（慢性毒囊每层 +10%，上限 +150%）",
-   "icon": "res://assets/icons/verarc/slowed.png",
+   "icon": "res://assets/icons/shikashi/shikashi_r10_c15.png",
    "id": "poison_m7",
    "name": "慢性死亡",
    "rarity": "rare",
@@ -4350,7 +4350,7 @@
     "type": "threshold"
    },
    "description": "毒伤 5% 回复生命（反哺血清每层 +1%，上限 20%）",
-   "icon": "res://assets/icons/verarc/regeneration.png",
+   "icon": "res://assets/icons/shikashi/shikashi_r3_c5.png",
    "id": "poison_m8",
    "name": "解毒反哺",
    "rarity": "common",
@@ -4369,7 +4369,7 @@
     "type": "threshold"
    },
    "description": "中毒敌人死亡时 8% 概率孵化毒爆虫（构筑每层 +0.4%，毒虫卵每层 +2%，上限 30%）",
-   "icon": "res://assets/icons/verarc/poisoned.png",
+   "icon": "res://assets/icons/shikashi/shikashi_r11_c0.png",
    "id": "poison_m9",
    "name": "疫病之源",
    "rarity": "legendary",
@@ -4388,7 +4388,7 @@
     "type": "threshold"
    },
    "description": "中毒且燃烧时毒伤 ×2（五毒符每层 +0.5 倍率，上限 ×4）",
-   "icon": "res://assets/icons/verarc/element_boost.png",
+   "icon": "res://assets/icons/shikashi/shikashi_r17_c4.png",
    "id": "poison_m10",
    "name": "五毒俱全",
    "rarity": "legendary",
@@ -4427,7 +4427,7 @@
     "type": "threshold"
    },
    "description": "击杀敌人 12% 概率降下范围落雷",
-   "icon": "res://assets/icons/verarc/lightning_spell.png",
+   "icon": "res://assets/icons/willibab/SWORDS_53.png",
    "id": "thunder_m2",
    "name": "雷暴",
    "rarity": "rare",
@@ -4447,7 +4447,7 @@
     "type": "threshold"
    },
    "description": "移动累积静电，充满后自动释放连锁电弧",
-   "icon": "res://assets/icons/verarc/lightning_spell.png",
+   "icon": "res://assets/icons/shikashi/shikashi_r2_c0.png",
    "id": "thunder_m3",
    "name": "静电积累",
    "rarity": "common",
@@ -4467,7 +4467,7 @@
     "type": "threshold"
    },
    "description": "麻痹时间 +0.5s/层；麻痹目标被击中时必定暴击",
-   "icon": "res://assets/icons/verarc/lightning_spell.png",
+   "icon": "res://assets/icons/willibab/SWORDS_50.png",
    "id": "thunder_m4",
    "name": "过载",
    "rarity": "rare",
@@ -4487,7 +4487,7 @@
     "type": "threshold"
    },
    "description": "每 3s 向附近敌人施放一道微型闪电链（40% 伤害）",
-   "icon": "res://assets/icons/verarc/lightning_spell.png",
+   "icon": "res://assets/icons/shikashi/shikashi_r6_c3.png",
    "id": "thunder_m5",
    "name": "导雷",
    "rarity": "common",
@@ -4507,7 +4507,7 @@
     "type": "threshold"
    },
    "description": "闪电链每命中 1 个敌人回复 1% 技能冷却",
-   "icon": "res://assets/icons/verarc/mana_replenish.png",
+   "icon": "res://assets/icons/shikashi/shikashi_r11_c5.png",
    "id": "thunder_m6",
    "name": "雷暴回响",
    "rarity": "common",
@@ -4547,7 +4547,7 @@
     "type": "threshold"
    },
    "description": "同一敌人被闪电命中 3 次后爆炸（范围雷伤）",
-   "icon": "res://assets/icons/verarc/lightning_spell.png",
+   "icon": "res://assets/icons/shikashi/shikashi_r17_c6.png",
    "id": "thunder_m8",
    "name": "超载线圈",
    "rarity": "rare",
@@ -4567,7 +4567,7 @@
     "type": "threshold"
    },
    "description": "每 5s 随机降下落雷（构筑每层 +1 道，上限 12 道）",
-   "icon": "res://assets/icons/verarc/lightning_spell.png",
+   "icon": "res://assets/icons/willibab/SWORDS_29.png",
    "id": "thunder_m9",
    "name": "雷云风暴",
    "rarity": "legendary",
@@ -4587,7 +4587,7 @@
     "type": "threshold"
    },
    "description": "被麻痹的敌人死亡时连锁电爆（范围雷伤 + 链跳）",
-   "icon": "res://assets/icons/verarc/lightning_spell.png",
+   "icon": "res://assets/icons/shikashi/shikashi_r5_c9.png",
    "id": "thunder_m10",
    "name": "高压电网",
    "rarity": "legendary",
@@ -4607,7 +4607,7 @@
     "type": "threshold"
    },
    "description": "暴击率超过 100% 的部分转为真伤（每层转化 ×1，上限 ×2）",
-   "icon": "res://assets/icons/verarc/critical_boost.png",
+   "icon": "res://assets/icons/shikashi/shikashi_r9_c13.png",
    "id": "crit_m1",
    "name": "暴击溢出",
    "rarity": "legendary",
@@ -4626,7 +4626,7 @@
     "type": "threshold"
    },
    "description": "暴击回复该次伤害 2%/层 的生命（上限 10%）",
-   "icon": "res://assets/icons/verarc/regeneration.png",
+   "icon": "res://assets/icons/verarc/bleeding.png",
    "id": "crit_m2",
    "name": "暴击吸血",
    "rarity": "rare",
@@ -4645,7 +4645,7 @@
     "type": "threshold"
    },
    "description": "连续暴击时伤害递增 +15%/层，未暴击重置",
-   "icon": "res://assets/icons/verarc/critical_boost.png",
+   "icon": "res://assets/icons/shikashi/shikashi_r2_c0.png",
    "id": "crit_m3",
    "name": "暴击连击",
    "rarity": "rare",
@@ -4664,7 +4664,7 @@
     "type": "threshold"
    },
    "description": "暴击使目标减速 0.8s/层",
-   "icon": "res://assets/icons/verarc/slowed.png",
+   "icon": "res://assets/icons/shikashi/shikashi_r2_c3.png",
    "id": "crit_m4",
    "name": "暴击减速",
    "rarity": "common",
@@ -4683,7 +4683,7 @@
     "type": "threshold"
    },
    "description": "暴击 30% 概率引发爆炸（每层 +10%，上限 80%），对周围敌人造成 50% 暴击伤害",
-   "icon": "res://assets/icons/verarc/element_boost.png",
+   "icon": "res://assets/icons/shikashi/shikashi_r10_c12.png",
    "id": "crit_m5",
    "name": "暴击爆炸",
    "rarity": "rare",
@@ -4702,7 +4702,7 @@
     "type": "threshold"
    },
    "description": "暴击无视目标护甲（补足护甲减免掉的伤害）",
-   "icon": "res://assets/icons/verarc/magic_amplification.png",
+   "icon": "res://assets/icons/willibab/SPEARS_1.png",
    "id": "crit_m6",
    "name": "暴击穿透",
    "rarity": "rare",
@@ -4721,7 +4721,7 @@
     "type": "threshold"
    },
    "description": "暴击回复 1%/层 技能冷却（上限 5%）",
-   "icon": "res://assets/icons/verarc/mana_replenish.png",
+   "icon": "res://assets/icons/shikashi/shikashi_r18_c4.png",
    "id": "crit_m7",
    "name": "暴击回能",
    "rarity": "common",
@@ -4740,7 +4740,7 @@
     "type": "threshold"
    },
    "description": "暴击伤害 ≥2.0 时暴击概率翻倍（每层降低阈值 0.15）",
-   "icon": "res://assets/icons/verarc/critical_boost.png",
+   "icon": "res://assets/icons/shikashi/shikashi_r8_c5.png",
    "id": "crit_m8",
    "name": "完美暴击",
    "rarity": "legendary",
@@ -4759,7 +4759,7 @@
     "type": "threshold"
    },
    "description": "暴击后 2s 内攻速 +4%/层（上限 20%）",
-   "icon": "res://assets/icons/verarc/attack_speed_boost.png",
+   "icon": "res://assets/icons/shikashi/shikashi_r2_c0.png",
    "id": "crit_m9",
    "name": "暴击攻速",
    "rarity": "rare",
@@ -4778,7 +4778,7 @@
     "type": "threshold"
    },
    "description": "暴击时弹射 50% 伤害追踪弹幕（持有 crit_ 构筑数提升弹射数）",
-   "icon": "res://assets/icons/verarc/critical_boost.png",
+   "icon": "res://assets/icons/shikashi/shikashi_r6_c6.png",
    "id": "crit_crit_bounce",
    "name": "暴击弹射",
    "rarity": "rare",
@@ -4797,7 +4797,7 @@
     "type": "threshold"
    },
    "description": "暴击后标记目标 3s，被标记者受到伤害 +15%",
-   "icon": "res://assets/icons/verarc/critical_boost.png",
+   "icon": "res://assets/icons/shikashi/shikashi_r3_c1.png",
    "id": "crit_weak_mark",
    "name": "弱点标记",
    "rarity": "rare",
@@ -4816,7 +4816,7 @@
     "type": "threshold"
    },
    "description": "对低于 25% 生命敌人必暴击（构筑提升斩杀线，上限 50%）",
-   "icon": "res://assets/icons/verarc/critical_boost.png",
+   "icon": "res://assets/icons/willibab/DAGGERS_10.png",
    "id": "crit_execute",
    "name": "终结",
    "rarity": "legendary",
@@ -4835,7 +4835,7 @@
     "type": "threshold"
    },
    "description": "暴击击杀后 3s 内暴击率 +15%（构筑提升，上限 35%）",
-   "icon": "res://assets/icons/verarc/glow.png",
+   "icon": "res://assets/icons/shikashi/shikashi_r11_c8.png",
    "id": "crit_headhunter",
    "name": "猎头",
    "rarity": "legendary",
@@ -4854,7 +4854,7 @@
     "type": "threshold"
    },
    "description": "首次命中每个敌人必暴击（构筑提升必暴次数，上限 3 次）",
-   "icon": "res://assets/icons/verarc/critical_boost.png",
+   "icon": "res://assets/icons/willibab/SWORDS_31.png",
    "id": "crit_lethal_blow",
    "name": "致命一击",
    "rarity": "legendary",
@@ -4873,7 +4873,7 @@
     "type": "threshold"
    },
    "description": "暴击时全屏粒子 + 小慢动作（构筑提升触发频率）",
-   "icon": "res://assets/icons/verarc/glow.png",
+   "icon": "res://assets/icons/willibab/SWORDS_107.png",
    "id": "crit_crit_storm",
    "name": "暴击风暴",
    "rarity": "legendary",
