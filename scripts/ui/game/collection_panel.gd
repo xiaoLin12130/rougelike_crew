@@ -119,6 +119,8 @@ func _build_detail(root: Control) -> void:
 	# 2026-08-10????? offsets???????????????????
 	# ???? + grow BOTH + min-size??????????????
 	_detail.set_anchors_preset(Control.PRESET_CENTER)
+	_detail.grow_horizontal = Control.GROW_DIRECTION_BOTH
+	_detail.grow_vertical = Control.GROW_DIRECTION_BOTH
 	_detail.custom_minimum_size = Vector2(300, 200)
 	_detail.add_theme_stylebox_override("panel", UiTheme.style(Color(0.10, 0.08, 0.18, 0.96), UiTheme.BORDER, 2, 6))
 	_detail.visible = false
