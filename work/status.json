@@ -224,7 +224,15 @@
   "num_drift_fix": {
    "status": "done",
    "note": "balance.json loop_hp/loop_dmg 表值对齐 GameState 硬编码 1.30/1.18；XP 曲线文档三处对齐 40+30(L-1)+5(L-1)²(L1=40)；drops.json gold_mult 移除并注释；test_curves 同步校验全绿"
+  },
+  "icon_semantic_audit": {
+   "status": "done",
+   "note": "E批只读审计：364条(274items+15cores+10shells+55wands+10summons) icon↔description 语义排查；240匹配/92疑似/32不匹配/0路径缺失；32条不匹配含元素系剑形图标21处+3条新增冰系食物图标(冰川之心→红辣椒/冰封领域→甜玉米/时之冰→牛排)+方案超限分发完全无关项7处；文档 docs/design/图标语义排查清单.md；与Bernoulli重叠：217已实施+74保留+73未覆盖(55wands+10summons+8新增items)"
+  },
+  "collection_system": {
+   "status": "done",
+   "note": "图鉴系统(P3)落地：主菜单图鉴按钮(代码建节点,锚0.675,44高不重叠)进入全屏面板；五分类tab(法杖55/法术核心15/法术外壳10/装备饰品274/召唤物10)网格浏览,已收集=图标+名称+稀有度描边+点击详情弹窗(含描述),未收集=图标modulate压黑Color(0,0,0,0.6)+名称???+无描述点击无效；收集跨局持久化user://collection.json(SaveStore.save/load_collection,GameState.mark_collected/collection_of,只增)；触发点add_item/add_trinket/add_wand/replace_wand/add_spell_part/replace_spell(召唤核心联动召唤物记录)；new_run不重置收集；test_collection.gd ALL PASS+smoke SMOKE OK+hud_layout PORTRAIT/EXPAND OK"
   }
  },
- "updated": "2026-08-10-num_drift_fix"
+ "updated": "2026-08-10-collection_system"
 }

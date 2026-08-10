@@ -3,8 +3,11 @@ extends Node
 ## 毒M5 毒刃 / 毒M6 抗性渗透 / 毒M7 慢性死亡 / 毒M8 解毒反哺 / 毒M9 疫病之源 /
 ## 毒M10 五毒俱全），并承载毒1-毒10 数值构筑在战斗中的实际结算。
 ##
-## 强度模型：机制强度由持有的 poison_ 前缀构筑总层数驱动（GameState.run.items
-## 中 id 以 poison_ 开头的堆叠数之和，即 GameState.total_stacks 的聚合）。
+## 强度模型（2026-08-10 门控改造，G4）：
+## - 机制解锁：持有对应机制道具（poison_m1..m10）才解锁该机制，无道具时机制不生效；
+## - 强度乘区：机制生效后，强度由持有的 poison_ 前缀构筑总层数驱动
+##   （GameState.run.items 中 id 以 poison_ 开头的堆叠数之和，即
+##   GameState.total_stacks 的聚合），放大器（poison_spore 等）继续做乘区。
 ## 钩子：enemy_status / enemy_died / projectile_hit / cast（SynergyRegistry），
 ## 另监听 EventBus.apply_status 做毒层跟踪（先于敌人自身 _on_status 触发）。
 ## 回调全部防御性编写：空对象 / 缺字段 / 无效实例一律静默返回。
@@ -93,7 +96,7 @@ func _burst_radius() -> float:
 
 ## 毒M1 传染概率：15% 起，构筑每多 1 层 +1%，孢子囊每层 +2%，上限 25%。
 func _spread_chance() -> float:
-	if _poison_power() < 1:
+	if _stacks_of("poison_m1") <= 0:
 		return 0.0
 	var c := SPREAD_CHANCE_MIN + 0.01 * float(maxi(_poison_power() - 1, 0))
 	c += 0.02 * float(_stacks_of("poison_spore"))
@@ -102,14 +105,14 @@ func _spread_chance() -> float:
 
 ## 毒M3 毒雾持续时间：+100% 起步，构筑每多 1 层 +25%，上限 ×4。
 func _cloud_duration_mult() -> float:
-	if _poison_power() < 1:
+	if _stacks_of("poison_m3") <= 0:
 		return 1.0
 	return minf(1.0 + 1.0 * (1.0 + 0.25 * float(maxi(_poison_power() - 1, 0))), 4.0)
 
 
 ## 毒M7 慢性死亡：每秒 +5% 起步，慢性毒囊每层 +10%，总增幅上限 +150%。
 func _ramp_rate() -> float:
-	if _poison_power() < 1:
+	if _stacks_of("poison_m7") <= 0:
 		return 0.0
 	return RAMP_BASE_RATE * (1.0 + 0.10 * float(_stacks_of("poison_ramp")))
 
@@ -120,28 +123,28 @@ func _ramp_mult(elapsed: float) -> float:
 
 ## 毒M8 解毒反哺：基础 5%，反哺血清每层 +1%，上限 20%。
 func _feed_rate() -> float:
-	if _poison_power() < 1:
+	if _stacks_of("poison_m8") <= 0:
 		return 0.0
 	return minf(FEED_BASE_RATE + 0.01 * float(_stacks_of("poison_serum")), FEED_MAX_RATE)
 
 
 ## 毒M4 腐蚀：基础护甲穿透 30%，强腐蚀酸每层 +4%，上限 60%。
 func _corrode_pen() -> float:
-	if _poison_power() < 1:
+	if _stacks_of("poison_m4") <= 0:
 		return 0.0
 	return minf(CORRODE_BASE + 0.04 * float(_stacks_of("poison_corrosive")), 0.60)
 
 
 ## 毒M10 五毒俱全：中毒 + 燃烧时毒伤翻倍，五毒符每层 +0.5 倍率，上限 ×4。
 func _pentad_mult() -> float:
-	if _poison_power() < 1:
+	if _stacks_of("poison_m10") <= 0:
 		return 1.0
 	return minf(PENTAD_BASE_MULT + 0.5 * float(_stacks_of("poison_pentad")), PENTAD_MAX_MULT)
 
 
 ## 毒M9 疫病之源：基础 8%，构筑每多 1 层 +0.4%，毒虫卵每层 +2%，上限 30%。
 func _bug_chance() -> float:
-	if _poison_power() < 1:
+	if _stacks_of("poison_m9") <= 0:
 		return 0.0
 	var c := BUG_BASE_CHANCE * (1.0 + 0.05 * float(maxi(_poison_power() - 1, 0)))
 	c += 0.02 * float(_stacks_of("poison_bug_egg"))
@@ -169,7 +172,8 @@ func _poison_immune(enemy: Node2D) -> bool:
 
 func _can_apply_poison(enemy: Node2D) -> bool:
 	if _poison_immune(enemy):
-		return _poison_power() >= 1
+		## 毒M6 抗性渗透：持有 poison_m6 才无视免疫
+		return _stacks_of("poison_m6") > 0
 	return true
 
 
@@ -266,8 +270,6 @@ func _on_enemy_status(ctx: Dictionary) -> void:
 		_pending_duration.erase(id)
 		enemy.set("_poison_left", maxf(left, dur))
 		ending = false
-	if _poison_power() < 1:
-		return
 	# 毒M7 慢性死亡：累计中毒时长
 	_poison_time[id] = _poison_time.get(id, 0.0) + delta
 	# 毒9 感染源：层数超过 5 时，超出部分每层每秒 1% 最大生命真伤
@@ -288,8 +290,8 @@ func _on_enemy_status(ctx: Dictionary) -> void:
 				EventBus.fx_heal_text.emit(enemy.global_position, healed)
 	# 毒1 / 毒M7 / 毒M10 / 噬毒针 聚合刷新
 	_refresh_dps(enemy, id)
-	# 毒M2 毒爆：毒层叠满即爆炸（范围毒伤 + 清空层数）
-	if st >= _poison_cap():
+	# 毒M2 毒爆：持有 poison_m2 且毒层叠满即爆炸（范围毒伤 + 清空层数）
+	if _stacks_of("poison_m2") > 0 and st >= _poison_cap():
 		_do_burst(enemy, id)
 	# 毒M3 毒雾弥漫：缓慢向四周扩散毒
 	_tick_cloud_spread(enemy, id, delta)
@@ -329,6 +331,9 @@ func _do_burst(enemy: Node2D, id: int) -> void:
 
 
 func _tick_cloud_spread(enemy: Node2D, id: int, delta: float) -> void:
+	# 毒M3 毒雾弥漫：持有 poison_m3 才扩散毒雾
+	if _stacks_of("poison_m3") <= 0:
+		return
 	# 毒雾药瓶：扩散间隔 -12%/层（下限 0.45s）
 	var interval := maxf(1.2 * (1.0 - 0.12 * float(_stacks_of("poison_cloud_vial"))), 0.45)
 	var t: float = _spread_timer.get(id, interval)
@@ -376,7 +381,7 @@ func _on_enemy_died(ctx: Dictionary) -> void:
 	var id := enemy.get_instance_id()
 	var was_poisoned := _is_poisoned(enemy, id)
 	_cleanup(enemy, id)
-	if not was_poisoned or _poison_power() < 1:
+	if not was_poisoned:
 		return
 	# 毒M1 传染：中毒敌人死亡概率扩散毒（15%-25%）
 	if randf() < _spread_chance():
@@ -417,11 +422,9 @@ func _on_projectile_hit(ctx: Dictionary) -> void:
 	var enemy := ctx.get("enemy") as Node2D
 	if not is_instance_valid(enemy):
 		return
-	var n := _poison_power()
-	if n < 1:
-		return
-	# 毒M5 毒刃：攻击附加 1 层毒（每 2 层构筑 +1；淬毒刃油每 2 层 +1）
-	if _can_apply_poison(enemy):
+	# 毒M5 毒刃：持有 poison_m5 才附加毒层（每 2 层构筑 +1；淬毒刃油每 2 层 +1）
+	if _stacks_of("poison_m5") > 0 and _can_apply_poison(enemy):
+		var n := _poison_power()
 		var added := 1 + int((float(n) + float(_stacks_of("poison_blade_oil"))) / 2.0)
 		EventBus.apply_status.emit(enemy, "poison", mini(added, _poison_cap()))
 	# 毒10 瘟疫预言：对中毒目标追加暴击判定（每层 +5%，上限 50%）

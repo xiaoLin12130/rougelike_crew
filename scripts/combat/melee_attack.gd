@@ -123,11 +123,14 @@ func _roll_crit() -> bool:
 	var crit := randf() < chance
 	if not crit and GameState != null and GameState.has_method("item_def") \
 			and GameState.has_method("item_value") and GameState.has_method("total_stacks"):
-		var clover := GameState.item_def("lucky_clover")
-		if not clover.is_empty():
-			var reroll := float(GameState.item_value(clover, GameState.total_stacks("lucky_clover")))
-			if reroll > 0.0 and randf() < reroll:
-				crit = randf() < chance
+		# 0 层守卫：exp_proc 曲线在 0 层返回 p（base），不加守卫会白送重掷概率
+		var clover_stacks := GameState.total_stacks("lucky_clover")
+		if clover_stacks > 0:
+			var clover := GameState.item_def("lucky_clover")
+			if not clover.is_empty():
+				var reroll := float(GameState.item_value(clover, clover_stacks))
+				if reroll > 0.0 and randf() < reroll:
+					crit = randf() < chance
 	return crit
 
 

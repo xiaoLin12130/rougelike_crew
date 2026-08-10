@@ -1,7 +1,9 @@
 class_name UiTheme
 ## 像素 UI 主题工具：统一颜色/字体/组件样式（所有 UI 脚本调用）
 
-const FONT_CN := "res://assets/fonts/LXGWWenKai_full.ttf"
+# 2026-08-10：Web 上全量字体(24.7MB)加载不稳定导致主菜单码点，
+# 改回子集字体(3.3MB，覆盖游戏常用字形)；若个别字缺形再扩子集
+const FONT_CN := "res://assets/fonts/LXGWWenKai_subset.ttf"
 const FONT_NUM := "res://assets/fonts/kenvector_future.ttf"
 
 const BG := Color("#14111f")

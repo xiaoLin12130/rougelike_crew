@@ -510,12 +510,12 @@
   },
   {
    "curve": {
-    "base": 0.03,
-    "cap": 0.2,
-    "k": 0.03,
-    "type": "linear"
+    "base": 0.02,
+    "k": 0.02,
+    "type": "linear",
+    "cap": 0.15
    },
-   "description": "受到伤害 -3%（每层 +3%，上限 20%）",
+   "description": "受到伤害 -2%（每层，上限 15%）",
    "icon": "res://assets/icons/shikashi/shikashi_r7_c4.png",
    "id": "defense_amulet",
    "name": "防御护符",
@@ -5031,6 +5031,410 @@
     "summon",
     "cooldown",
     "mechanic:summon_m10"
+   ],
+   "type": "item"
+  },
+  {
+   "curve": {
+    "base": 0.1,
+    "k": 0.1,
+    "type": "linear"
+   },
+   "description": "光系伤害 +10%（每层）",
+   "icon": "res://assets/icons/shikashi/shikashi_r0_c3.png",
+   "id": "holy_1",
+   "name": "圣光符",
+   "rarity": "common",
+   "slot": null,
+   "tags": [
+    "light",
+    "holy"
+   ],
+   "type": "item"
+  },
+  {
+   "curve": {
+    "base": 0.12,
+    "k": 0.12,
+    "type": "linear"
+   },
+   "description": "治疗量 +12%（每层）",
+   "icon": "res://assets/icons/shikashi/shikashi_r0_c6.png",
+   "id": "holy_2",
+   "name": "圣辉石",
+   "rarity": "common",
+   "slot": null,
+   "tags": [
+    "holy"
+   ],
+   "type": "item"
+  },
+  {
+   "curve": {
+    "base": 0.08,
+    "k": 0.08,
+    "type": "linear"
+   },
+   "description": "致盲概率 +8%（每层）",
+   "icon": "res://assets/icons/shikashi/shikashi_r10_c0.png",
+   "id": "holy_3",
+   "name": "闪光粉",
+   "rarity": "common",
+   "slot": null,
+   "tags": [
+    "holy"
+   ],
+   "type": "item"
+  },
+  {
+   "curve": {
+    "base": 0.15,
+    "k": 0.15,
+    "type": "linear"
+   },
+   "description": "护盾量 +15%（每层）",
+   "icon": "res://assets/icons/shikashi/shikashi_r10_c1.png",
+   "id": "holy_4",
+   "name": "圣盾刻印",
+   "rarity": "common",
+   "slot": null,
+   "tags": [
+    "holy"
+   ],
+   "type": "item"
+  },
+  {
+   "curve": {
+    "base": 0.12,
+    "k": 0.12,
+    "type": "linear"
+   },
+   "description": "治疗光环范围 +12%（每层）",
+   "icon": "res://assets/icons/shikashi/shikashi_r10_c11.png",
+   "id": "holy_5",
+   "name": "祝福挂坠",
+   "rarity": "common",
+   "slot": null,
+   "tags": [
+    "holy"
+   ],
+   "type": "item"
+  },
+  {
+   "curve": {
+    "base": 0.08,
+    "k": 0.08,
+    "type": "linear"
+   },
+   "description": "攻击速度 +8%（每层）",
+   "icon": "res://assets/icons/shikashi/shikashi_r10_c13.png",
+   "id": "holy_6",
+   "name": "圣光术架",
+   "rarity": "common",
+   "slot": null,
+   "tags": [
+    "attack_speed",
+    "holy"
+   ],
+   "type": "item"
+  },
+  {
+   "curve": {
+    "base": 0.1,
+    "k": 0.1,
+    "type": "linear"
+   },
+   "description": "全法术范围 +10%（每层）",
+   "icon": "res://assets/icons/shikashi/shikashi_r10_c14.png",
+   "id": "holy_7",
+   "name": "光棱镜",
+   "rarity": "common",
+   "slot": null,
+   "tags": [
+    "area",
+    "holy"
+   ],
+   "type": "item"
+  },
+  {
+   "curve": {
+    "base": 0.07,
+    "k": 0.07,
+    "type": "linear"
+   },
+   "description": "技能冷却 -7%（每层）",
+   "icon": "res://assets/icons/shikashi/shikashi_r10_c2.png",
+   "id": "holy_8",
+   "name": "祈祷经文",
+   "rarity": "common",
+   "slot": null,
+   "tags": [
+    "cooldown",
+    "holy"
+   ],
+   "type": "item"
+  },
+  {
+   "curve": {
+    "base": 0.04,
+    "k": 0.04,
+    "type": "linear",
+    "cap": 0.2
+   },
+   "description": "圣印易伤额外 +4%（每层，上限 20%）",
+   "icon": "res://assets/icons/shikashi/shikashi_r10_c3.png",
+   "id": "holy_9",
+   "name": "圣洁印记",
+   "rarity": "rare",
+   "slot": null,
+   "tags": [
+    "holy"
+   ],
+   "type": "item"
+  },
+  {
+   "curve": {
+    "base": 0.015,
+    "k": 0.015,
+    "type": "linear",
+    "cap": 0.08
+   },
+   "description": "圣光净化回复 +1.5% 最大生命（每层，上限 8%）",
+   "icon": "res://assets/icons/shikashi/shikashi_r10_c5.png",
+   "id": "holy_10",
+   "name": "曙光核心",
+   "rarity": "rare",
+   "slot": null,
+   "tags": [
+    "holy"
+   ],
+   "type": "item"
+  },
+  {
+   "curve": {
+    "base": 0,
+    "step": 1,
+    "threshold": 1,
+    "type": "threshold"
+   },
+   "description": "受击获得护盾：2% 最大生命/层（光4 加成），护盾优先抵扣伤害",
+   "icon": "res://assets/icons/shikashi/shikashi_r10_c6.png",
+   "id": "holy_m1",
+   "name": "圣盾护佑",
+   "rarity": "rare",
+   "slot": null,
+   "tags": [
+    "holy",
+    "mechanic:holy_m1"
+   ],
+   "type": "item"
+  },
+  {
+   "curve": {
+    "base": 0,
+    "step": 1,
+    "threshold": 1,
+    "type": "threshold"
+   },
+   "description": "致盲目标死亡 25% 概率致盲周围 2 个敌人 1.5s（闪光联动）",
+   "icon": "res://assets/icons/shikashi/shikashi_r10_c7.png",
+   "id": "holy_m2",
+   "name": "致盲扩散",
+   "rarity": "rare",
+   "slot": null,
+   "tags": [
+    "holy",
+    "mechanic:holy_m2"
+   ],
+   "type": "item"
+  },
+  {
+   "curve": {
+    "base": 0,
+    "step": 1,
+    "threshold": 1,
+    "type": "threshold"
+   },
+   "description": "受击 20% 概率净化负面状态并回复 2% 生命（光2/光10 加成；咒M7 反制）",
+   "icon": "res://assets/icons/shikashi/shikashi_r10_c9.png",
+   "id": "holy_m3",
+   "name": "圣光净化",
+   "rarity": "rare",
+   "slot": null,
+   "tags": [
+    "holy",
+    "mechanic:holy_m3"
+   ],
+   "type": "item"
+  },
+  {
+   "curve": {
+    "base": 0,
+    "step": 1,
+    "threshold": 1,
+    "type": "threshold"
+   },
+   "description": "移动时每 0.5s 回复 0.8% 最大生命（光2 治疗加成，光5 扩大范围）",
+   "icon": "res://assets/icons/shikashi/shikashi_r11_c1.png",
+   "id": "holy_m4",
+   "name": "治疗光环",
+   "rarity": "rare",
+   "slot": null,
+   "tags": [
+    "holy",
+    "mechanic:holy_m4"
+   ],
+   "type": "item"
+  },
+  {
+   "curve": {
+    "base": 0,
+    "step": 1,
+    "threshold": 1,
+    "type": "threshold"
+   },
+   "description": "光系命中 30% 概率追加 40% 光伤给附近最近敌人（穿透）",
+   "icon": "res://assets/icons/shikashi/shikashi_r11_c10.png",
+   "id": "holy_m5",
+   "name": "光矛穿透",
+   "rarity": "rare",
+   "slot": null,
+   "tags": [
+    "holy",
+    "mechanic:holy_m5"
+   ],
+   "type": "item"
+  },
+  {
+   "curve": {
+    "base": 0,
+    "step": 1,
+    "threshold": 1,
+    "type": "threshold"
+   },
+   "description": "命中叠圣印：目标易伤 +5%/层（3s，上限 30%，光9 强化）",
+   "icon": "res://assets/icons/shikashi/shikashi_r11_c4.png",
+   "id": "holy_m6",
+   "name": "圣印",
+   "rarity": "rare",
+   "slot": null,
+   "tags": [
+    "holy",
+    "mechanic:holy_m6"
+   ],
+   "type": "item"
+  },
+  {
+   "curve": {
+    "base": 0,
+    "step": 1,
+    "threshold": 1,
+    "type": "threshold"
+   },
+   "description": "造成伤害 15% 概率致盲周围敌人 1.5s 并回复 1% 生命（闪光联动）",
+   "icon": "res://assets/icons/shikashi/shikashi_r11_c7.png",
+   "id": "holy_m7",
+   "name": "圣光爆发",
+   "rarity": "legendary",
+   "slot": null,
+   "tags": [
+    "holy",
+    "mechanic:holy_m7"
+   ],
+   "type": "item"
+  },
+  {
+   "curve": {
+    "base": 0,
+    "step": 1,
+    "threshold": 1,
+    "type": "threshold"
+   },
+   "description": "光系命中生命 <15% 敌人 20% 概率直接斩杀（Boss 无效）",
+   "icon": "res://assets/icons/shikashi/shikashi_r11_c9.png",
+   "id": "holy_m8",
+   "name": "审判",
+   "rarity": "legendary",
+   "slot": null,
+   "tags": [
+    "holy",
+    "mechanic:holy_m8"
+   ],
+   "type": "item"
+  },
+  {
+   "curve": {
+    "base": 0,
+    "step": 1,
+    "threshold": 1,
+    "type": "threshold"
+   },
+   "description": "死亡时 40% 概率以 30% 生命复活（45s 冷却；防M10/召M8 联动）",
+   "icon": "res://assets/icons/shikashi/shikashi_r12_c11.png",
+   "id": "holy_m9",
+   "name": "圣光复活",
+   "rarity": "legendary",
+   "slot": null,
+   "tags": [
+    "holy",
+    "mechanic:holy_m9"
+   ],
+   "type": "item"
+  },
+  {
+   "curve": {
+    "base": 0,
+    "step": 1,
+    "threshold": 1,
+    "type": "threshold"
+   },
+   "description": "施法后每 8s 生成领域：致盲周围 1.5s 并回复 3% 生命（光7 范围）",
+   "icon": "res://assets/icons/shikashi/shikashi_r12_c3.png",
+   "id": "holy_m10",
+   "name": "圣光领域",
+   "rarity": "legendary",
+   "slot": null,
+   "tags": [
+    "holy",
+    "mechanic:holy_m10"
+   ],
+   "type": "item"
+  },
+  {
+   "curve": {
+    "base": 0.2,
+    "k": 0.08,
+    "type": "linear",
+    "cap": 1.0
+   },
+   "description": "攻击力 +20%（每层 +8%，上限 100%）",
+   "icon": "res://assets/icons/shikashi/shikashi_r12_c6.png",
+   "id": "melee_giant_cleaver",
+   "name": "巨人斩斧",
+   "rarity": "legendary",
+   "slot": null,
+   "tags": [
+    "blade",
+    "atk"
+   ],
+   "type": "item"
+  },
+  {
+   "curve": {
+    "base": 0.15,
+    "k": 0.05,
+    "type": "linear",
+    "cap": 0.75
+   },
+   "description": "移速 +15%（每层 +5%，上限 75%）",
+   "icon": "res://assets/icons/shikashi/shikashi_r12_c8.png",
+   "id": "wind_typhoon_eye",
+   "name": "台风之眼",
+   "rarity": "legendary",
+   "slot": null,
+   "tags": [
+    "wind",
+    "speed"
    ],
    "type": "item"
   }

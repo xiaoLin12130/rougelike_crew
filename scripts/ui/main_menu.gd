@@ -10,13 +10,31 @@ var _stars: CPUParticles2D
 func _ready() -> void:
 	_build_background()
 	_build_title()
+	_build_collection_button()
 	_style_buttons()
 	continue_button.disabled = not SaveStore.has_save()
 	start_button.pressed.connect(_on_start)
 	continue_button.pressed.connect(_on_continue)
+	$CollectionButton.pressed.connect(_on_collection)
 	$QuitButton.pressed.connect(_on_quit)
 	get_viewport().size_changed.connect(_update_starfield)
 	_update_starfield()
+
+func _build_collection_button() -> void:
+	## 图鉴按钮（P3）：样式与开始/继续一致，位于"继续"下方（0.60 ↔ 0.75 中点 0.675，
+	## 44 高不重叠）。代码建节点（不动 tscn），保持 hud_layout 对三主按钮的断言不变。
+	var b := Button.new()
+	b.name = "CollectionButton"
+	b.text = "图鉴"
+	b.set_anchors_preset(Control.PRESET_CENTER_TOP)
+	b.anchor_top = 0.675
+	b.anchor_bottom = 0.675
+	b.offset_left = -100.0
+	b.offset_top = -22.0
+	b.offset_right = 100.0
+	b.offset_bottom = 22.0
+	b.grow_horizontal = Control.GROW_DIRECTION_BOTH
+	add_child(b)
 
 func _build_background() -> void:
 	var grad := GradientTexture2D.new()
@@ -77,7 +95,7 @@ func _build_title() -> void:
 	add_child(build)
 
 func _style_buttons() -> void:
-	for b in [$StartButton, $ContinueButton, $QuitButton]:
+	for b in [$StartButton, $ContinueButton, $CollectionButton, $QuitButton]:
 		b.focus_mode = Control.FOCUS_NONE
 		b.add_theme_font_override("font", UiTheme.font_cn())
 		b.add_theme_font_size_override("font_size", 15)
@@ -113,6 +131,12 @@ func _on_continue() -> void:
 		return
 	GameState.run = data
 	get_tree().change_scene_to_file("res://scenes/game/game_root.tscn")
+
+func _on_collection() -> void:
+	SfxBus.play("res://assets/audio/sfx_two_tone.ogg", -15.0)
+	var panel: Node = load("res://scripts/ui/collection_panel.tscn").instantiate()
+	panel.name = "CollectionPanel"
+	add_child(panel)  # 图鉴面板覆盖主菜单；关闭时 queue_free 回到主菜单
 
 func _on_quit() -> void:
 	get_tree().quit()

@@ -7,10 +7,69 @@ const PROJECTILE_SCRIPT := preload("res://scripts/combat/projectile.gd")  # 清�
 
 var run: Dictionary = {}
 var tables: Dictionary = {}  # items/spells/enemies/levels/drops/balance
+var collection: Dictionary = {}  # 图鉴收集进度（跨局持久化，与 run 分离）
+
+## 图鉴分类（P3）：条目来源 = data JSON 只读表，收集状态存 user://collection.json
+const COLLECTION_CATEGORIES: Array = ["items", "wands", "cores", "shells", "summons"]
 
 func _ready() -> void:
 	load_tables()
+	load_collection()
 	new_run()
+
+## ===== 图鉴收集记录（P3，只增不改既有接口）=====
+## 触发点：add_item/add_trinket（道具）、add_wand/replace_wand（法杖）、
+## add_spell_part/replace_spell（法术核心×外壳，召唤核心同时记召唤物）。
+## 新开局 new_run 不重置收集——图鉴进度是跨局的，与局内存档分离。
+
+func load_collection() -> void:
+	## 从 user://collection.json 恢复收集档案（兼容无包装的旧格式），并规范化去重
+	var data := SaveStore.load_collection()
+	if data.has("categories") and data["categories"] is Dictionary:
+		data = data["categories"]
+	collection = {}
+	for cat in COLLECTION_CATEGORIES:
+		var list: Array = data.get(cat, [])
+		var out: Array = []
+		for v in list:
+			var s := str(v)
+			if not s.is_empty() and not out.has(s):
+				out.append(s)
+		collection[cat] = out
+
+func mark_collected(category: String, id: String) -> void:
+	## 记录一次收集（去重）；变化后立即落盘（user://collection.json）
+	if not COLLECTION_CATEGORIES.has(category) or id.is_empty():
+		return
+	var list: Array = collection.get(category, [])
+	if list.has(id):
+		return
+	list.append(id)
+	collection[category] = list
+	SaveStore.save_collection(collection)
+
+func collection_of(category: String) -> Array:
+	## 某分类已收集的 id 列表（副本，调用方修改不影响存档）
+	if not COLLECTION_CATEGORIES.has(category):
+		return []
+	return (collection.get(category, []) as Array).duplicate()
+
+func is_collected(category: String, id: String) -> bool:
+	return collection_of(category).has(id)
+
+func _mark_spell_parts(core_id: String, shell_id: String) -> void:
+	## 法术获取统一记录：核心必记；外壳非空才记；召唤核心同时记录召唤物类型
+	mark_collected("cores", core_id)
+	if not shell_id.is_empty():
+		mark_collected("shells", shell_id)
+	for c in tables.get("spells", {}).get("cores", []):
+		if str(c.get("id", "")) != core_id:
+			continue
+		if c.has("summon") and not str(c.get("summon", "")).is_empty():
+			mark_collected("summons", str(c["summon"]))
+		elif core_id.begins_with("summon_"):
+			mark_collected("summons", core_id.trim_prefix("summon_"))
+		break
 
 func load_tables() -> void:
 	for t in ["balance", "items", "spells", "enemies", "levels", "drops", "wands", "summons"]:
@@ -55,6 +114,7 @@ func new_run() -> void:
 func add_item(item_id: String) -> void:
 	run.items[item_id] = run.items.get(item_id, 0) + 1
 	run.last_picked = item_id  # 物品栏"最近获得"高亮
+	mark_collected("items", item_id)  # 图鉴：获得道具即记录（P3）
 	EventBus.item_picked.emit(item_id, run.items[item_id])
 	EventBus.player_stats_changed.emit()
 
@@ -304,6 +364,7 @@ func add_wand(wand_id: String) -> void:
 		return
 	ids.append(wand_id)
 	run["wands"] = ids
+	mark_collected("wands", wand_id)  # 图鉴：获得法杖即记录（P3）
 	EventBus.player_stats_changed.emit()
 
 func replace_wand(idx: int, wand_id: String) -> void:
@@ -313,6 +374,7 @@ func replace_wand(idx: int, wand_id: String) -> void:
 		return
 	ids[idx] = wand_id
 	run["wands"] = ids
+	mark_collected("wands", wand_id)  # 图鉴：替换获得的新法杖同样记录（P3）
 	EventBus.player_stats_changed.emit()
 
 func sell_wand(idx: int) -> int:
@@ -392,6 +454,7 @@ func _invalid_combo(core: Dictionary, shell: Dictionary) -> bool:
 
 func add_spell_part(core_id: String, shell_id: String = "") -> void:
 	## 法术碎片掉落：自动填入网格第一个空槽（DEMO 简化，保留排序机制）
+	_mark_spell_parts(core_id, shell_id)  # 图鉴：获得法术部件即记录（P3）
 	var slots: int = tables.get("balance", {}).get("max_grid_slots", 5)
 	var grid: Array = run.grid
 	if grid.size() < slots:
@@ -405,6 +468,7 @@ func grid_full() -> bool:
 
 func replace_spell(idx: int, core_id: String, shell_id: String = "") -> void:
 	## 替换指定格子为新的核心×外壳（升级三选一栏位满时使用）
+	_mark_spell_parts(core_id, shell_id)  # 图鉴：替换获得的新法术同样记录（P3）
 	var grid: Array = run.grid
 	if idx < 0 or idx >= grid.size():
 		return
@@ -417,6 +481,7 @@ func add_trinket(trinket_id: String) -> void:
 	var t: Array = run.trinkets
 	if t.size() < slots:
 		t.append(trinket_id)
+	mark_collected("items", trinket_id)  # 图鉴：饰品也属装备条目（P3）
 	EventBus.player_stats_changed.emit()
 
 func swap_grid(a: int, b: int) -> void:
