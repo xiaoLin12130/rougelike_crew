@@ -172,7 +172,7 @@
    "bullet_speed": 130,
    "behavior": "cast",
    "xp": 15,
-   "gold": 4,
+   "gold": 3,
    "sprite": "res://assets/sprites/retro/wizard_1.png",
    "frames": 2,
    "affix_pool": [
@@ -223,7 +223,7 @@
    "touch": true,
    "behavior": "totem",
    "xp": 16,
-   "gold": 4,
+   "gold": 3,
    "sprite": "res://assets/sprites/retro/healer_1.png",
    "frames": 2,
    "affix_pool": [
@@ -277,7 +277,7 @@
    "size": 1.0,
    "touch": true,
    "xp": 16,
-   "gold": 4,
+   "gold": 3,
    "sprite": "res://assets/sprites/retro/mimic_1.png",
    "frames": 4,
    "affix_pool": [
@@ -318,7 +318,7 @@
    "size": 1.65,
    "touch": true,
    "xp": 100,
-   "gold": 40,
+   "gold": 30,
    "sprite": "res://assets/sprites/gen/boss_slime_king.png",
    "frames": 1,
    "phases": [
@@ -379,7 +379,7 @@
    "size": 1.8,
    "touch": true,
    "xp": 120,
-   "gold": 55,
+   "gold": 44,
    "sprite": "res://assets/sprites/gen/boss_tree_golem_new.png",
    "frames": 1,
    "phases": [
@@ -452,7 +452,7 @@
    "size": 1.8,
    "touch": true,
    "xp": 150,
-   "gold": 70,
+   "gold": 56,
    "sprite": "res://assets/sprites/gen/boss_skeleton_king.png",
    "frames": 1,
    "phases": [
@@ -516,7 +516,7 @@
    "range": 260,
    "projectile": true,
    "xp": 180,
-   "gold": 85,
+   "gold": 68,
    "sprite": "res://assets/sprites/gen/boss_imp_king.png",
    "frames": 1,
    "phases": [
@@ -590,7 +590,7 @@
    "size": 1.95,
    "touch": true,
    "xp": 220,
-   "gold": 105,
+   "gold": 84,
    "sprite": "res://assets/sprites/gen/boss_ancient_guardian_new.png",
    "frames": 1,
    "phases": [
@@ -650,7 +650,7 @@
    "size": 2.4,
    "touch": true,
    "xp": 500,
-   "gold": 300,
+   "gold": 240,
    "sprite": "res://assets/sprites/gen/boss_final_god_new.png",
    "frames": 1,
    "phases": [

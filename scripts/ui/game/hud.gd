@@ -12,8 +12,12 @@ extends CanvasLayer
 const UiLayout := preload("res://scripts/ui/ui_layout.gd")
 
 const TOUCH_BTN := Vector2(UiLayout.TOUCH_MIN + 8, UiLayout.TOUCH_MIN + 8)  # 52x52
+const SHIELD_SCRIPT_PATH := "res://scripts/synergies/defense_synergy.gd"  # 护盾池所在脚本（只读查询）
+const SHIELD_GRAY := Color(0.62, 0.64, 0.70, 0.92)  # 护盾灰色层填充色
 
 var _hp_bar: ProgressBar
+var _shield_bar: ProgressBar  # 护盾灰色层（问题5）：叠加在 HP 条上，宽度 = 护盾/最大生命
+var _shield_source: Node = null  # defense_synergy 节点缓存（只读查询 _shield）
 var _hp_label: Label
 var _xp_bar: ProgressBar
 var _lv_label: Label
@@ -101,6 +105,16 @@ func _build_resources(root: Control) -> void:
 	_hp_bar.custom_minimum_size = Vector2(bar_w, bar_h)
 	_hp_bar.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	hp_row.add_child(_hp_bar)
+	# 护盾灰色层（问题5）：作为 _hp_bar 子节点叠加绘制（子控件绘制于父级之上），
+	# 透明背景 + 灰色 fill，仅填充区显示（value/max_value = 护盾/最大生命）
+	_shield_bar = ProgressBar.new()
+	_shield_bar.show_percentage = false
+	_shield_bar.set_anchors_preset(Control.PRESET_FULL_RECT)
+	_shield_bar.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_shield_bar.add_theme_stylebox_override("background", StyleBoxEmpty.new())
+	_shield_bar.add_theme_stylebox_override("fill", UiTheme.style_compact(SHIELD_GRAY, Color(0, 0, 0, 0), 0, 3, 0))
+	_shield_bar.visible = false
+	_hp_bar.add_child(_shield_bar)
 	# 第 2 行：Lv / 金币 / DPS
 	var stat_row := HBoxContainer.new()
 	stat_row.add_theme_constant_override("separation", 10)
@@ -269,9 +283,14 @@ func _refresh() -> void:
 		return
 	var hp: int = GameState.run.get("hp", 0)
 	var max_hp: int = GameState.run.get("max_hp", 100)
-	_hp_label.text = "%d/%d" % [hp, max_hp]
+	var shield := roundi(_shield_value())
+	if shield > 0:
+		_hp_label.text = "%d/%d（护盾 %d）" % [hp, max_hp, shield]
+	else:
+		_hp_label.text = "%d/%d" % [hp, max_hp]
 	_hp_bar.max_value = max_hp
 	_hp_bar.value = hp
+	_update_shield_display()
 	var lv: int = GameState.run.get("player_level", 1)
 	_lv_label.text = "Lv.%d" % lv
 	if _xp_bar != null:
@@ -335,3 +354,41 @@ func _refresh_dps() -> void:
 	if GameState.run.is_empty():
 		return
 	_dps_label.text = "DPS %d" % int(GameState.estimate_dps())
+	_update_shield_display()  # 护盾池可能在无 player_stats_changed 的路径变化（如换局重置），0.5s 定时兜底
+
+
+func _update_shield_display() -> void:
+	if _shield_bar == null or GameState.run.is_empty():
+		return
+	var shield := roundi(_shield_value())
+	_shield_bar.max_value = maxf(float(GameState.run.get("max_hp", 100)), 1.0)
+	_shield_bar.value = shield
+	_shield_bar.visible = shield > 0
+
+
+## 护盾显示（问题5）：护盾池在 defense_synergy._shield（synergy 内部状态，非 run 字段），
+## HUD 只读查询：按脚本路径定位节点，未挂载（如 headless 测试场景）时返回 0
+func _shield_value() -> float:
+	var src := _shield_source_node()
+	if src == null:
+		return 0.0
+	var v = src.get("_shield")
+	return 0.0 if v == null else float(v)
+
+
+func _shield_source_node() -> Node:
+	if _shield_source != null and is_instance_valid(_shield_source):
+		return _shield_source
+	_shield_source = _find_synergy_node(get_tree().root)
+	return _shield_source
+
+
+func _find_synergy_node(node: Node) -> Node:
+	var script: Script = node.get_script()
+	if script != null and script.resource_path == SHIELD_SCRIPT_PATH:
+		return node
+	for child in node.get_children():
+		var hit := _find_synergy_node(child)
+		if hit != null:
+			return hit
+	return null

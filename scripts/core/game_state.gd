@@ -149,13 +149,13 @@ func xp_to_next(level: int) -> int:
 	return int(xp.get("base", 50)) + int(xp.get("per_level", 30)) * (l - 1) \
 		+ int(xp.get("quad", 5)) * (l - 1) * (l - 1)
 func level_factor(level: int) -> float:
-	return pow(1.18, level - 1)
+	return pow(1.22, level - 1)
 
 func loop_factor_hp(loop: int) -> float:
-	return pow(1.30, loop - 1)
+	return pow(1.34, loop - 1)
 
 func loop_factor_dmg(loop: int) -> float:
-	return pow(1.18, loop - 1)
+	return pow(1.24, loop - 1)
 
 func loop_factor_num(loop: int) -> float:
 	return pow(1.25, loop - 1)
@@ -164,7 +164,7 @@ func enemy_hp(base: float, level: int, loop: int) -> float:
 	return base * level_factor(level) * loop_factor_hp(loop)
 
 func enemy_atk(base: float, level: int, loop: int) -> float:
-	return base * (1.0 + 0.12 * (level - 1)) * loop_factor_dmg(loop)
+	return base * (1.0 + 0.16 * (level - 1)) * loop_factor_dmg(loop)
 
 func enemy_xp(base: float, level: int, loop: int) -> int:
 	# 经验随关卡递增（与敌人强度同节奏），保证后期升级不至于过慢
@@ -754,8 +754,8 @@ func apply_item_effects_to_stats() -> void:
 	run.speed_bonus = aggregate_bonus("speed")
 	run.attack_speed_bonus = aggregate_bonus("attack_speed")
 	detect_synergies()  # 流派成型检测（F10）
-	# 吸血全局上限 4%（吸血牙曲线自身封顶 3%，预留反甲吸血位）
-	run.lifesteal = clampf(aggregate_bonus("lifesteal"), 0.0, 0.04)
+	# 吸血全局上限 3%（balance.json lifesteal.cap，2026-08-10 平衡调整；吸血牙曲线自身封顶 3%）
+	run.lifesteal = clampf(aggregate_bonus("lifesteal"), 0.0, float(balance().get("lifesteal", {}).get("cap", 0.03)))
 	run.crit_chance = clampf(0.03 + 0.02 * total_stacks("crit_glasses"), 0.0, 0.85)
 	run.crit_dmg_bonus = 1.5 * (1.0 + 0.10 * total_stacks("crit_gem"))
 	EventBus.player_stats_changed.emit()
@@ -766,7 +766,7 @@ func balance() -> Dictionary:
 ## ===== 法杖强化（N5 金币消耗端） =====
 
 const WAND_UPGRADE_BONUS := 0.08  # 每级 +8% 伤害
-const WAND_UPGRADE_BASE_COST := 200  # 首次强化价格
+const WAND_UPGRADE_BASE_COST := 250  # 首次强化价格（2026-08-10 平衡调整 200→250）
 const WAND_UPGRADE_STEP_COST := 100  # 每级递增
 
 func wand_upgrade_level(wand_id: String) -> int:
@@ -776,7 +776,7 @@ func wand_upgrade_cost(wand_id: String) -> int:
 	return WAND_UPGRADE_BASE_COST + WAND_UPGRADE_STEP_COST * wand_upgrade_level(wand_id)
 
 func upgrade_wand(wand_id: String) -> bool:
-	## 强化已持有法杖：+8% 伤害/级，价格 200 起每级 +100；失败返回 false
+	## 强化已持有法杖：+8% 伤害/级，价格 250 起每级 +100；失败返回 false
 	if not current_wands().has(wand_id):
 		return false
 	var cost := wand_upgrade_cost(wand_id)

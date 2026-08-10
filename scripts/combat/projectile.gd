@@ -220,7 +220,12 @@ func _orbit_step(delta: float) -> void:
 		return
 	if _player_ref != null and is_instance_valid(_player_ref):
 		_orbit_center = _player_ref.global_position
-	_orbit_angle += ORBIT_SPEED * delta
+	# 旋风刃随攻速加速旋转（近战攻速堆叠 = 转得更快，2026-08-10 玩法联动）；
+	# 其他轨道弹幕（法杖环绕）保持固定转速
+	var spin_speed := ORBIT_SPEED
+	if _is_whirl:
+		spin_speed = ORBIT_SPEED * maxf(1.0 + GameState.total_attack_speed_bonus(), 1.0)
+	_orbit_angle += spin_speed * delta
 	global_position = _orbit_center + Vector2.from_angle(_orbit_angle) * ORBIT_RADIUS
 	if _is_whirl:
 		# 刀刃自转：刀身随轨道角度旋转（刀尖朝外），看起来是"刀在转"

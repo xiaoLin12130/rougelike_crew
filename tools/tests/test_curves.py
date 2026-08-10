@@ -190,9 +190,11 @@ def main():
     vamp = next(i for i in items if i["id"] == "vampire_fang")
     check(vamp["curve"].get("cap", 0) <= 0.03, "vampire_fang curve cap <= 3%")
 
-    # --- drops ---
-    total = sum(d["prob"] for d in drops["kill_drops"])
-    check(abs(total - 1.0) < 1e-9, f"kill_drops sum to 1 (got {total})")
+    # --- drops（2026-08-10：kill_drops prob 改为独立命中概率，不再权重归一求和为 1）---
+    for d in drops["kill_drops"]:
+        check(0 <= d["prob"] <= 1, f"drop prob in [0,1]: {d}")
+    gold_prob = next((float(d["prob"]) for d in drops["kill_drops"] if d.get("type") == "gold"), 0.0)
+    check(abs(gold_prob - 0.65) < 1e-9, f"kill_drops gold prob = 0.65 (got {gold_prob})")
     check(drops["pity_threshold"] > 0, "pity threshold positive")
     for d in drops["kill_drops"]:
         check(0 <= d["prob"] <= 1, f"drop prob in [0,1]: {d}")
@@ -200,10 +202,17 @@ def main():
     check(abs(drops["elite_drops"]["heal_pct"] - 0.10) < 1e-9, "elite heal pack = 10%")
     check(abs(drops["boss_drops"]["heal_pct"] - 0.30) < 1e-9, "boss heal pack = 30%")
     check("gold_mult" not in drops["boss_drops"], "boss_drops.gold_mult 已移除（Boss 金币按 enemies.json gold 发放）")
-    # 全局吸血上限 4%（GameState 钳制）；吸血牙单件封顶 3% 必须低于全局上限
-    check(vamp["curve"].get("cap", 0) < 0.04, "vampire_fang cap < 全局吸血上限 4%")
+    # 全局吸血上限 3%（balance.json lifesteal.cap，GameState 钳制）；吸血牙单件封顶 3%
+    check(abs(balance.get("lifesteal", {}).get("cap", 0.0) - 0.03) < 1e-9, "全局吸血上限 = 3%")
+    check(vamp["curve"].get("cap", 0) <= 0.03, "vampire_fang cap <= 全局吸血上限 3%")
     rw = drops["item_rarity_weights"]
     check(abs(sum(rw.values()) - 1.0) < 1e-9, "rarity weights sum to 1")
+
+    # --- 金币数值降档（2026-08-10 平衡调整）：普通 1-3、Boss 30-240 ---
+    for e in enemies["enemies"]:
+        check(1 <= e["gold"] <= 3, f"enemy {e['id']} gold in 1..3 (got {e['gold']})")
+    for b2 in enemies["bosses"]:
+        check(30 <= b2["gold"] <= 240, f"boss {b2['id']} gold in 30..240 (got {b2['gold']})")
 
     # --- wands（法杖商店） ---
     wand_ids = [w["id"] for w in wands["wands"]]
@@ -218,9 +227,13 @@ def main():
 
     # --- 防御流道具（F7） ---
     stone = next(i for i in items if i["id"] == "stone_armor")
+    amulet_def = next(i for i in items if i["id"] == "defense_amulet")
     thorn_r = next(i for i in items if i["id"] == "thorn_reflect")
     blood = next(i for i in items if i["id"] == "blood_thorn")
     check(abs(stone["curve"]["cap"] - 0.35) < 1e-9, "stone_armor cap 35%")
+    check(abs(amulet_def["curve"]["cap"] - 0.15) < 1e-9, "defense_amulet cap 15%")
+    check(stone["curve"]["cap"] + amulet_def["curve"]["cap"] <= 0.50,
+          "防御减伤合计上限 <= 50%（game_root 封顶，2026-08-10）")
     check(abs(thorn_r["curve"]["base"] - 0.30) < 1e-9, "thorn_reflect base 30%")
     check(abs(blood["curve"]["base"] - 0.02) < 1e-9, "blood_thorn 2%")
 
@@ -242,19 +255,24 @@ def main():
             check(s.get("id", "") and s.get("type", ""), f"boss {b['id']} skill fields")
             check(s.get("cooldown", 0) > 0, f"boss {b['id']} skill cooldown > 0")
 
-    # --- enemy scaling hand checks ---
+    # --- 玩家初始 HP 85（2026-08-10 平衡调整 100→85）---
+    check(balance["player"]["hp"] == 85, f"player hp = 85 (got {balance['player']['hp']})")
+
+    # --- enemy scaling hand checks（2026-08-10：level_hp 1.22 / level_atk 0.16）---
     b = balance["enemy_scaling"]
     slime = next(e for e in enemies["enemies"] if e["id"] == "slime")
     hp_l1_l1 = slime["hp"] * math.pow(b["level_hp"], 0) * math.pow(b["loop_hp"], 0)
     hp_l5_l2 = slime["hp"] * math.pow(b["level_hp"], 4) * math.pow(b["loop_hp"], 1)
     check(abs(hp_l1_l1 - 45) < 1e-9, "slime hp l1 loop1 = 45")
-    check(abs(hp_l5_l2 - 45 * (1.18 ** 4) * b["loop_hp"]) < 1e-6, "slime hp l5 loop2")
-    atk_l1 = slime["attack"] * (1 + 0.12 * 0)
-    atk_l5 = slime["attack"] * (1 + 0.12 * 4)
-    check(abs(atk_l5 / atk_l1 - (1 + 0.48)) < 1e-9, "atk scaling level factor")
-    # --- loop 系数与 GameState 硬编码一致（2026-08-10 表值对齐）---
-    check(abs(b["loop_hp"] - 1.30) < 1e-9, "balance loop_hp = 1.30 (GameState.loop_factor_hp)")
-    check(abs(b["loop_dmg"] - 1.18) < 1e-9, "balance loop_dmg = 1.18 (GameState.loop_factor_dmg)")
+    check(abs(hp_l5_l2 - 45 * (1.22 ** 4) * b["loop_hp"]) < 1e-6, "slime hp l5 loop2")
+    atk_l1 = slime["attack"] * (1 + 0.16 * 0)
+    atk_l5 = slime["attack"] * (1 + 0.16 * 4)
+    check(abs(atk_l5 / atk_l1 - (1 + 0.64)) < 1e-9, "atk scaling level factor")
+    check(abs(b["level_hp"] - 1.22) < 1e-9, "balance level_hp = 1.22 (GameState.level_factor)")
+    check(abs(b["level_atk"] - 0.16) < 1e-9, "balance level_atk = 0.16 (GameState.enemy_atk)")
+    # --- loop 系数与 GameState 硬编码一致（2026-08-10 表值对齐 1.34/1.24）---
+    check(abs(b["loop_hp"] - 1.34) < 1e-9, "balance loop_hp = 1.34 (GameState.loop_factor_hp)")
+    check(abs(b["loop_dmg"] - 1.24) < 1e-9, "balance loop_dmg = 1.24 (GameState.loop_factor_dmg)")
 
     # --- xp curve (GameState.xp_to_next 公式一致性) ---
     xp = balance["xp"]

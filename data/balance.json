@@ -1,6 +1,6 @@
 {
  "player": {
-  "hp": 100,
+  "hp": 85,
   "speed": 220,
   "base_dps": 25,
   "dash_cd": 2.0,
@@ -8,18 +8,21 @@
   "dash_speed": 520,
   "invuln_time": 0.35
  },
+ "lifesteal": {
+  "cap": 0.03
+ },
  "xp": {
   "base": 40,
   "per_level": 30,
   "quad": 5
  },
  "enemy_scaling": {
-  "level_hp": 1.18,
-  "level_atk": 0.12,
+  "level_hp": 1.22,
+  "level_atk": 0.16,
   "level_num": 0.22,
   "level_xp": 0.12,
-  "loop_hp": 1.3,
-  "loop_dmg": 1.18,
+  "loop_hp": 1.34,
+  "loop_dmg": 1.24,
   "loop_num": 1.25,
   "loop_xp": 1.35
  },

@@ -5,6 +5,7 @@ extends Node
 
 const PROJECTILE_SCENE := preload("res://scenes/game/projectile.tscn")
 const SUMMON_SCRIPT := preload("res://scripts/combat/summon.gd")
+const FLASH_BURST_RADIUS := 90.0  # flash 盲爆半径（与 projectile.gd BLIND_BURST_RADIUS 一致，供多弹分散计算）
 const WAND_CHARGE_CURVE := {"curve": {"type": "multiplicative", "base": 0.9, "cap": 0.5}}
 const MIN_CD := 0.05
 const FRENZY_DURATION := 3.0  # 狂暴持续时长（技能视觉 P0-3：与 _frenzy_left 同步）
@@ -24,6 +25,7 @@ const _SYNERGY_AS_KEYS := [
 
 var _cds: Array[float] = []
 var _frenzy_left := 0.0
+var _whirl_phase := 0  # ???????????2026-08-10?
 
 
 func _ready() -> void:
@@ -174,10 +176,16 @@ func _cast(player: Node2D, core: Dictionary, mods: Dictionary) -> void:
 	shots += maxi(int(GameState.run.get("wind_m4_shots", 0)), 0)
 	shots = maxi(shots, 1)
 	var spread: float = float(mods.get("spread_angle", 0.0))
+	# AOE 瞬发核多弹（问题3）：扇角按爆炸半径自适应（相邻落点弦距 >= 爆炸半径），
+	# 覆盖/放大齐射壳固定 24°（range 200px 时 24° 落点间距仅 ~41px < 毒雾半径 48px）
 	# 瞬发核×连发（问题7）：落点扇形分散（spread=0 时给默认扇角），避免同点堆叠；
 	# 毒雾×连发=扇形 3 团、闪电/火柱/闪光×连发=多点分散
-	if speed <= 0.0 and shots > 1 and spread <= 0.0:
-		spread = 24.0
+	if speed <= 0.0 and shots > 1:
+		var burst_radius := _instant_burst_radius(core, mods, aoe)
+		if burst_radius > 0.0:
+			spread = maxf(spread, rad_to_deg(_aoe_fan_angle(burst_radius, float(core.get("range", 360.0)), shots)))
+		if spread <= 0.0:
+			spread = 24.0
 	var base_angle := aim.angle()
 	for i in shots:
 		var dir := aim
@@ -185,6 +193,26 @@ func _cast(player: Node2D, core: Dictionary, mods: Dictionary) -> void:
 			var t := float(i) / float(shots - 1) - 0.5
 			dir = Vector2.from_angle(base_angle + deg_to_rad(spread) * t)
 		_spawn_projectile(player, dir, core, mods, dmg, aoe, speed)
+
+
+## AOE 瞬发核的多弹分散半径 = 实际爆炸半径（flash 用盲爆半径 90×aoe_mult，含 wind_speed_area）
+func _instant_burst_radius(core: Dictionary, mods: Dictionary, aoe: float) -> float:
+	var r := aoe
+	if r <= 0.0 and float(core.get("blind", 0.0)) > 0.0:
+		r = FLASH_BURST_RADIUS * float(mods.get("aoe_mult", 1.0))
+	if r <= 0.0:
+		return 0.0
+	r *= 1.0 + maxf(float(GameState.run.get("wind_speed_area", 0.0)), 0.0)
+	return r
+
+
+## AOE 多弹扇形总角（弧度）：步角 = 2*asin(radius/(2*range))，总角 = (shots-1)*步角，
+## 使相邻落点弦距 >= 爆炸半径；上限 160° 防反向散射（极端 aoe_mult 场景）
+func _aoe_fan_angle(radius: float, range_d: float, shots: int) -> float:
+	if shots <= 1 or radius <= 0.0 or range_d <= 0.0:
+		return 0.0
+	var step := 2.0 * asin(clampf(radius / (2.0 * range_d), 0.0, 1.0))
+	return minf(float(shots - 1) * step, deg_to_rad(160.0))
 
 
 func _cast_whirl_blade(player: Node2D, core: Dictionary, mods: Dictionary) -> void:
@@ -197,7 +225,17 @@ func _cast_whirl_blade(player: Node2D, core: Dictionary, mods: Dictionary) -> vo
 	orbit_mods["orbit"] = 4.0
 	orbit_mods["_whirl"] = true  # 标记旋风刃：基础刀刃不触发轨道接触爆炸（问题2/14 区分）
 	var blades := maxi(int(mods.get("shots", 0)), 2)
-	var base_angle := _aim_dir(player).angle()
+	# 多旋风刃技能时按施法轮次错开刀组相位（2026-08-10）：
+	# 每技能视为 2 刃基准，第 n 个技能整体偏移 TAU*n/(技能数*2)，
+	# 使多个技能的所有刀刃在圆周上均匀交错（2 技能 4 刀 = 90° 间隔）
+	var whirl_slots := 0
+	for slot in GameState.run.grid:
+		if str(slot.get("core", "")) == "whirl_blade":
+			whirl_slots += 1
+	whirl_slots = maxi(whirl_slots, 1)
+	var slot_offset := TAU * float(_whirl_phase % whirl_slots) / float(whirl_slots * 2)
+	_whirl_phase += 1
+	var base_angle := _aim_dir(player).angle() + slot_offset
 	for i in blades:
 		var dir := Vector2.from_angle(base_angle + TAU * float(i) / float(blades))
 		_spawn_projectile(player, dir, core, orbit_mods, dmg, aoe, 1.0)

@@ -238,10 +238,9 @@ func _reset_joystick_deferred() -> void:
 func _on_enemy_died(enemy_id: String, pos: Vector2, xp: int, gold: int, is_elite: bool = false) -> void:
 	GameState.run.kills += 1
 	var xp_mult := 1.0 + GameState.aggregate_bonus("xp")
-	var gold_mult := 1.0 + GameState.aggregate_bonus("gold")
 	GameState.add_xp(int(xp * xp_mult))
-	GameState.add_gold(int(gold * gold_mult))
-	_roll_drop(pos)
+	# 金币改为走击杀掉落判定（kill_drops prob 门控），不再无条件发放（2026-08-10 平衡调整）
+	_roll_drop(pos, gold)
 	if is_elite:
 		# 精英怪必掉血包：恢复最大生命 10%（掉落物形式，可拾取）
 		var pct: float = float(GameState.tables.get("drops", {}).get("elite_drops", {}).get("heal_pct", 0.10))
@@ -266,27 +265,31 @@ func _spawn_health_pack(pos: Vector2, heal_pct: float) -> void:
 	pack.global_position = pos
 	add_child(pack)  # 挂在 game_root 下：切关清关卡节点时血包不消失
 
-func _roll_drop(pos: Vector2) -> void:
+func _roll_drop(pos: Vector2, gold_value: int = 0) -> void:
+	## 击杀掉落：kill_drops 的 prob 是独立命中概率（非表内权重归一，2026-08-10 平衡调整）。
+	## - type=gold：发放该敌人的基础金币（enemies.json gold × 全局金币加成），
+	##   属于真实掉落并重置保底计数；未命中（概率 miss）时计为空刀。
+	## - 保底奖励：连续空刀达到 pity_threshold 后补发 15 金币（不再每 8 杀必发）。
 	var drops: Dictionary = GameState.tables.get("drops", {})
 	var kill_drops: Array = drops.get("kill_drops", [])
-	var total := 0.0
-	for d in kill_drops:
-		total += d.get("prob", 0.0)
-	var roll := randf() * total
-	var acc := 0.0
-	var kind := "gold"
-	for d in kill_drops:
-		acc += d.get("prob", 0.0)
-		if roll <= acc:
-			kind = d.get("type", "gold")
-			break
-	# 保底奖励：连续击杀无掉落物时给一笔金币（构筑道具不再从怪物掉落，全部来自升级三选一）
 	var pity: int = drops.get("pity_threshold", 8)
 	if GameState.run.pity >= pity:
 		GameState.run.pity = 0
 		GameState.add_gold(15)
 		return
+	var kind := ""
+	for d in kill_drops:
+		if randf() < d.get("prob", 0.0):
+			kind = str(d.get("type", "gold"))
+			break
+	if kind == "":
+		GameState.run.pity += 1
+		return
 	match kind:
+		"gold":
+			var gold_mult := 1.0 + GameState.aggregate_bonus("gold")
+			GameState.add_gold(maxi(int(gold_value * gold_mult), 0))
+			GameState.run.pity = 0
 		"item":
 			var item_id := _roll_random_item()
 			if item_id != "":
@@ -388,7 +391,8 @@ func _on_player_hit(dmg: int, pos: Vector2) -> void:
 	# 注意：stone_armor 自带 "defense" tag，aggregate_bonus("defense") 会重复计入其曲线值，
 	# 层数高时减伤可能 >100% 导致伤害变负（怪物打玩家=加血）。只按 stone 曲线结算，
 	# 防御流成型奖励（synergy_bonus.defense）单独附加到反弹比例上。
-	taken *= 1.0 - stone - amulet
+	# 2026-08-10 平衡调整：防御减伤合计封顶 50%（stone 35% + amulet 15% 已达上限，防御不再叠满免伤）
+	taken *= 1.0 - minf(stone + amulet, 0.50)
 	taken *= 1.0 + 0.15 * GameState.total_stacks("curse_ring")
 	# 移M10 暴走：受击伤害 +20%（run.wind_m10_taken_mult 读取点接线）
 	taken *= maxf(float(GameState.run.get("wind_m10_taken_mult", 1.0)), 0.0)

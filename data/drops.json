@@ -2,7 +2,7 @@
  "kill_drops": [
   {
    "type": "gold",
-   "prob": 1.0
+   "prob": 0.65
   }
  ],
  "elite_drops": {
