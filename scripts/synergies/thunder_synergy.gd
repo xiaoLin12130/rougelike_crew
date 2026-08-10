@@ -12,6 +12,9 @@ extends Node
 const PREFIX := "thunder_"
 const BASE_LIGHTNING_DMG := 18.0  # 参考 spells.json 闪电核心 base_damage = 18
 
+# 雷区地面视觉（只加视觉，不动伤害判定）：经 fx_manager 静态工厂实例化
+const FxManagerScript := preload("res://scripts/fx/fx_manager.gd")
+
 # ---- 雷M1 麻痹：概率克制区间 6%–15%（每层 M1 基础 6%，雷4 麻痹针 +6%/层，上限 15%）----
 const PARALYZE_CHANCE_PER := 0.06
 const PARALYZE_CHANCE_CAP := 0.15
@@ -301,6 +304,8 @@ func _tick_storm(delta: float) -> void:
 		bus.screen_shake.emit(3.0)
 	for i in n:
 		_strike(enemies[i].global_position, STORM_CLOUD_RADIUS, maxi(roundi(_bolt_dmg()), 1))
+		# 雷M9 雷云风暴：落点生成短时电弧闪烁雷区
+		FxManagerScript.spawn_ground_fx("thunder", enemies[i].global_position, STORM_CLOUD_RADIUS, 0.55)
 
 
 ## N2 雷云（storm_cloud）：每 3s 落雷，每 2 层 +1 道（阈值曲线，独立于雷M9）
@@ -326,6 +331,8 @@ func _tick_storm_cloud(delta: float) -> void:
 	var n := mini(strikes, enemies.size())
 	for i in n:
 		_strike(enemies[i].global_position, STORM_CLOUD_RADIUS, maxi(roundi(_bolt_dmg()), 1))
+		# N2 雷云：落点生成短时电弧闪烁雷区
+		FxManagerScript.spawn_ground_fx("thunder", enemies[i].global_position, STORM_CLOUD_RADIUS, 0.55)
 
 
 ## N2 雷核（trinket_storm）：持有 1 件落雷数量/触发率翻倍
@@ -509,7 +516,8 @@ func _alive_enemy(e: Node) -> bool:
 		return false
 	if not e.has_method("take_damage"):
 		return false
-	if bool(e.get("_dead")):
+	var dead = e.get("_dead")
+	if dead != null and bool(dead):
 		return false
 	return _field(e, "hp") > 0.0
 
@@ -544,7 +552,9 @@ func _nearest_enemy(from: Vector2, radius: float, prefer_elite: bool, exclude: D
 		var id: int = e.get_instance_id()
 		if exclude.has(id):
 			continue
-		if not (bool(e.get("is_elite")) or bool(e.get("is_boss"))):
+		var is_elite = e.get("is_elite")
+		var is_boss = e.get("is_boss")
+		if not ((is_elite != null and bool(is_elite)) or (is_boss != null and bool(is_boss))):
 			continue
 		var d: float = from.distance_to(e.global_position)
 		if d <= radius and d < elite_d:

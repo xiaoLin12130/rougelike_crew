@@ -151,12 +151,6 @@ func _test_synergy_chain_bolts() -> void:
 	_thunder._chain_burst(Vector2(220, 380), 200.0, 3, 8.0, false, {})
 	await get_tree().physics_frame
 	await get_tree().physics_frame
-	print("[DBG] synergy fx children: ", _fx.get_children().map(func(c): return str(c.name)))
-	var alive := []
-	for c in get_children():
-		if c.has_method("take_damage"):
-			alive.append(str(c.name) + "@" + str(c.global_position))
-	print("[DBG] alive enemies: ", alive)
 	var n := _lightning_bolts().size()
 	if n != 3:
 		_fail("synergy 电弧 3 跳应产生 3 条连线，实际 %d" % n)
@@ -184,9 +178,9 @@ func _test_paralyze_visual() -> void:
 		_fail("麻痹附着应为 paralyze，实际 %s" % str(e._status_attach_kind))
 	if e.get_node_or_null("StatusAttach/ParalyzeIcon") == null:
 		_fail("缺少定身图标 ParalyzeIcon")
-	print("[DBG] enemy children: ", e.get_children().map(func(c): return str(c.name)))
-	print("[DBG] attach root: ", e.get_node_or_null("StatusAttach").get_children().map(func(c): return str(c.name)) if e.get_node_or_null("StatusAttach") else "MISSING")
-	var spr := e.get_node_or_null("AnimatedSprite2D") as Sprite2D
+	var spr_node := e.get_node_or_null("AnimatedSprite2D")
+	# 注意：Godot 4.7 的 AnimatedSprite2D 不再继承 Sprite2D（is Sprite2D == false），用 Node2D 承接即可
+	var spr := spr_node as Node2D
 	if spr == null:
 		_fail("敌人缺少 AnimatedSprite2D")
 		return
@@ -205,7 +199,7 @@ func _test_strike_visual() -> void:
 	## FxManager 产生一批视觉节点并在 ~1.5s 内全部自毁。
 	await _clear_enemies()
 	var e := _spawn_enemy(Vector2(400, 500))
-	await _wait_sec(0.2)  # 等上一段测试节点回收
+	await _wait_sec(0.8)  # 冲刷上一段测试的伤害飘字等瞬态节点，再取基线
 	var before := _fx.get_child_count()
 	_thunder._strike(e.global_position, 60.0, 5)
 	await get_tree().physics_frame
@@ -213,7 +207,7 @@ func _test_strike_visual() -> void:
 	var gained := _fx.get_child_count() - before
 	if gained < 5:
 		_fail("落雷应产生闪电柱+溅射等视觉节点，实际新增 %d" % gained)
-	await _wait_sec(1.5)
+	await _wait_sec(2.3)  # 雷云 smoke 粒子 lifetime 上限 2.0s，留余量
 	if _fx.get_child_count() != before:
 		_fail("落雷视觉未全部自毁（残留 %d）" % (_fx.get_child_count() - before))
 	await _clear_enemies()

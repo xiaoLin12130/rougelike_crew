@@ -1461,17 +1461,16 @@ class GroundFire:
 			var base_r := radius * 0.55
 			var tip_r := base_r + len * (0.9 + 0.18 * sin(_phase * 7.0 + fl[2]))
 			var tip_a := base_a + sin(_phase * 11.0 + fl[2]) * 0.16
-			var w := len * 0.34
 			var base0 := Vector2.from_angle(base_a - 0.22) * base_r
 			var base1 := Vector2.from_angle(base_a + 0.22) * base_r
 			var tip := Vector2.from_angle(tip_a) * tip_r
-			var side0 := base0.lerp(tip, 0.5) + Vector2(-w * 0.5, -len * 0.12)
-			var side1 := base1.lerp(tip, 0.5) + Vector2(w * 0.5, -len * 0.12)
-			draw_colored_polygon(PackedVector2Array([base0, side0, tip, side1, base1]),
+			# 三角形分层（保证凸性，避免摆动自交导致三角剖分失败）
+			draw_colored_polygon(PackedVector2Array([base0, tip, base1]),
 				Color(FLAME_OUT, 0.85))
 			var tip2 := Vector2.from_angle(tip_a) * (tip_r * 0.62)
-			draw_colored_polygon(PackedVector2Array([
-				base0.lerp(base1, 0.5), base0.lerp(tip, 0.34), tip2, base1.lerp(tip, 0.34)]),
+			var mid0 := base0.lerp(tip, 0.45)
+			var mid1 := base1.lerp(tip, 0.45)
+			draw_colored_polygon(PackedVector2Array([mid0, tip2, mid1]),
 				Color(FLAME_MID, 0.9))
 			draw_circle(Vector2.ZERO.lerp(tip2, 0.7), 2.2, Color(FLAME_CORE, 0.9))
 		# 橙色光晕环（呼吸脉动）

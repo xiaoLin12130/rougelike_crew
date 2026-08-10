@@ -9,6 +9,9 @@ extends Node
 ## 另监听 EventBus.apply_status 做毒层跟踪（先于敌人自身 _on_status 触发）。
 ## 回调全部防御性编写：空对象 / 缺字段 / 无效实例一律静默返回。
 
+# ---------- 毒雾地面视觉（只加视觉，不动伤害/扩散判定） ----------
+const FxManagerScript := preload("res://scripts/fx/fx_manager.gd")
+
 # ---------- 基础数值（文档第 4 章 + 验收克制） ----------
 const POISON_DURATION_BASE := 3.0   # 毒基础持续时间（秒）
 const POISON_CAP_BASE := 5          # 毒层上限基础值（毒2 每层 +2）
@@ -306,6 +309,8 @@ func _do_burst(enemy: Node2D, id: int) -> void:
 	_stacks[id] = 0
 	enemy.set("_poison_dps", 0.0)
 	EventBus.fx_explosion.emit(pos, "poison")
+	# 毒爆地面视觉：爆点留下一团短时毒雾
+	FxManagerScript.spawn_ground_fx("poison", pos, radius, 1.4)
 	var tree := get_tree()
 	if tree == null:
 		return
@@ -331,6 +336,8 @@ func _tick_cloud_spread(enemy: Node2D, id: int, delta: float) -> void:
 	if t <= 0.0:
 		_spread_timer[id] = interval
 		_spread_to_nearby(enemy, _burst_radius(), 1, 2)
+		# 毒M3 毒雾弥漫地面视觉：扩散落点生成可见毒雾团
+		FxManagerScript.spawn_ground_fx("poison", enemy.global_position, _burst_radius() * 0.8, 1.1)
 	else:
 		_spread_timer[id] = t
 

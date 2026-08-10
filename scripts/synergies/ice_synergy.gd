@@ -473,6 +473,7 @@ func _spawn_slow_zone(pos: Vector2) -> void:
 		return
 	var zone := SlowZone.new()
 	zone.setup(pos, TRAIL_RADIUS, TRAIL_LIFE)
+	zone.name = "GroundIce"
 	scene.add_child(zone)
 
 
@@ -528,7 +529,8 @@ func _b(e: Object, prop: String) -> bool:
 	if e == null:
 		return false
 	var v = e.get(prop)
-	return bool(v)
+	## Godot 4.7 中 bool(null) 会抛 "Nonexistent 'bool' constructor"，需先判空
+	return false if v == null else bool(v)
 
 
 func _nearest_enemy(pos: Vector2, radius: float) -> Node:
@@ -570,24 +572,54 @@ class SlowZone:
 	var _radius := 64.0
 	var _life := 1.0
 	var _scan := 0.0
+	var _anim := 0.0
+	var _shards: Array = []
 
 	func setup(pos: Vector2, radius: float, life: float) -> void:
 		global_position = pos
 		_radius = radius
 		_life = life
+		_anim = 0.0
 		z_index = -10
+		# 预生成冰晶朝向（确定性，避免每帧抖动）
+		for i in 6:
+			_shards.append([randf() * TAU, randf_range(0.35, 0.9), randf_range(0.5, 1.0)])
+
+	func _draw() -> void:
+		# 地面视觉（纯程序化）：淡蓝霜地 + 冰霜结晶 + 微光
+		draw_circle(Vector2.ZERO, _radius, Color(0.55, 0.8, 1.0, 0.16))
+		draw_circle(Vector2.ZERO, _radius * 0.55, Color(0.7, 0.9, 1.0, 0.12))
+		for s in _shards:
+			var a: float = s[0]
+			var len: float = _radius * s[1]
+			var tw := 0.75 + 0.25 * sin(_anim * 5.0 + a * 3.0)
+			var dir := Vector2.from_angle(a)
+			var mid := dir * len * 0.5
+			var tip := dir * len
+			var branch := Vector2(-dir.y, dir.x) * len * 0.28
+			draw_polyline(PackedVector2Array([Vector2.ZERO, mid, tip]),
+				Color(0.78, 0.92, 1.0, 0.7 * tw), 1.8, true)
+			draw_polyline(PackedVector2Array([mid - branch * 0.4, mid, mid + branch * 0.4]),
+				Color(0.78, 0.92, 1.0, 0.5 * tw), 1.3, true)
+			draw_circle(tip, 1.5, Color(0.9, 0.97, 1.0, 0.9 * tw))
+		draw_arc(Vector2.ZERO, _radius, 0.0, TAU, 28, Color(0.75, 0.9, 1.0, 0.4), 1.6, true)
 
 	func _physics_process(delta: float) -> void:
 		_life -= delta
 		if _life <= 0.0:
 			queue_free()
 			return
+		_anim += delta
+		queue_redraw()
 		_scan -= delta
 		if _scan > 0.0:
 			return
 		_scan = 0.25
 		for e in get_tree().get_nodes_in_group("enemy"):
-			if not is_instance_valid(e) or bool(e.get("_dead")):
+			if not is_instance_valid(e):
+				continue
+			var dead = e.get("_dead")
+			if dead != null and bool(dead):
 				continue
 			if global_position.distance_to(e.global_position) <= _radius + e.scale.x * 8.0:
 				EventBus.apply_status.emit(e, "slow", 1)

@@ -627,6 +627,9 @@ class GroundZone:
 	var dps := 0.0
 	var _life := 0.0
 	var _tick := 0.0
+	var _anim := 0.0
+	var _cracks: Array = []
+	var _embers: Array = []
 
 	func setup(center: Vector2, r: float, dur: float, damage_per_sec: float) -> void:
 		global_position = center
@@ -643,12 +646,19 @@ class GroundZone:
 		col.shape = shape
 		add_child(col)
 		EventBus.fx_explosion.emit(global_position, "fire")
+		# 预生成岩浆裂纹与余烬点位（确定性，纯视觉）
+		for i in 8:
+			_cracks.append([randf() * TAU, randf_range(0.55, 1.0)])
+		for i in 6:
+			_embers.append([randf() * TAU, randf_range(0.2, 0.95)])
 
 	func _physics_process(delta: float) -> void:
 		_life += delta
 		if _life >= duration:
 			queue_free()
 			return
+		_anim += delta
+		queue_redraw()
 		_tick -= delta
 		if _tick <= 0.0:
 			_tick = 0.5
@@ -657,5 +667,28 @@ class GroundZone:
 				EventBus.player_hit.emit(maxi(int(dps * 0.5), 1), global_position)
 
 	func _draw() -> void:
+		# 地面视觉增强（保留原红色伤害圈语义，补充岩浆质感：焦灼底 + 裂纹 + 余烬脉动）
+		draw_circle(Vector2.ZERO, radius, Color(0.12, 0.03, 0.02, 0.28))
 		draw_circle(Vector2.ZERO, radius, Color(1.0, 0.28, 0.18, 0.16))
-		draw_arc(Vector2.ZERO, radius, 0.0, TAU, 40, Color(1.0, 0.38, 0.24, 0.6), 2.0)
+		draw_circle(Vector2.ZERO, radius * 0.6, Color(1.0, 0.45, 0.15, 0.12))
+		# 岩浆裂纹（锯齿折线，橙红）
+		for c in _cracks:
+			var a: float = c[0]
+			var len: float = radius * c[1]
+			var dir := Vector2.from_angle(a)
+			var pts := PackedVector2Array([dir * radius * 0.2])
+			var seg := dir * len
+			var perp := Vector2(-seg.y, seg.x).normalized()
+			for k in 4:
+				var t := float(k + 1) / 4.0
+				pts.append(dir * radius * 0.2 + seg * t + perp * randf_range(-3.0, 3.0))
+			pts[pts.size() - 1] = dir * radius * 0.2 + seg
+			draw_polyline(pts, Color(1.0, 0.55, 0.2, 0.7), 2.0, true)
+		# 余烬亮点（呼吸闪烁）
+		for e in _embers:
+			var tw := 0.55 + 0.45 * sin(_anim * 6.0 + e[0] * 4.0)
+			draw_circle(Vector2.from_angle(e[0]) * radius * e[1],
+				1.6, Color(1.0, 0.72, 0.3, 0.8 * tw))
+		# 脉动红色外圈（伤害圈语义）
+		var pulse := 0.6 + 0.18 * sin(_anim * 5.0)
+		draw_arc(Vector2.ZERO, radius, 0.0, TAU, 40, Color(1.0, 0.38, 0.24, pulse), 2.0)

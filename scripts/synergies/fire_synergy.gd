@@ -61,6 +61,8 @@ const M10_MAX_ZONES := 12     ## 火地上限（防堆积）
 const M3_TICK_GAP := 30       ## 纵火狂判定节流（帧，≈0.5s@60fps）
 const M4_TICK_GAP := 15       ## 烈焰新星叠层节流（帧，≈0.25s@60fps）
 
+## 龙息火地地面视觉（只加视觉，不动伤害判定）：经 fx_manager 静态工厂实例化
+const FxManagerScript := preload("res://scripts/fx/fx_manager.gd")
 var _m2_bonus := 0.0          ## 薪火相传当前生效的攻速加成
 var _m2_left := 0.0           ## 薪火相传剩余秒数
 var _zones: Array = []        ## 龙息火地列表：[{pos, radius, dps, left, tick}]
@@ -84,6 +86,13 @@ func _ready() -> void:
 	SynergyRegistry.register("player_hit", _on_m9)      ## 不灭之火
 	SynergyRegistry.register("projectile_hit", _on_m10) ## 龙息
 	print("[SYNERGY] fire_synergy registered")
+
+
+func _exit_tree() -> void:
+	## 场景退出时把尚存火地视觉节点一并清收，防泄漏
+	for z in _zones:
+		_free_zone_fx(z)
+	_zones.clear()
 
 
 func _process(delta: float) -> void:
@@ -333,14 +342,17 @@ func _on_m10(ctx: Dictionary) -> void:
 		return
 	var enemy = ctx.get("enemy")
 	var pos := _ctx_pos(ctx, enemy)
+	var radius := clampf((M10_RADIUS + 8.0 * float(stacks - 1)) * _area_mult(), 45.0, 100.0)
 	if _zones.size() >= M10_MAX_ZONES:
-		_zones.pop_front()
+		var oldest: Dictionary = _zones.pop_front()
+		_free_zone_fx(oldest)
 	_zones.append({
 		"pos": pos,
-		"radius": clampf((M10_RADIUS + 8.0 * float(stacks - 1)) * _area_mult(), 45.0, 100.0),
+		"radius": radius,
 		"dps": maxf(M10_DPS + 4.0 * float(stacks - 1), 1.0),
 		"left": M10_DURATION,
 		"tick": 0.25,
+		"fx": FxManagerScript.spawn_ground_fx("fire", pos, radius, M10_DURATION),
 	})
 
 
@@ -356,8 +368,16 @@ func _tick_zones(dt: float) -> void:
 			z["tick"] = 0.25
 			_zone_hit(z)
 		if float(z["left"]) <= 0.0:
+			_free_zone_fx(z)
 			_zones.remove_at(i)
 		i -= 1
+
+
+func _free_zone_fx(z: Dictionary) -> void:
+	## 火地视觉随区域结束释放（节点自身也带自计时兜底，双保险）
+	var fx = z.get("fx")
+	if fx != null and is_instance_valid(fx):
+		fx.queue_free()
 
 
 func _zone_hit(z: Dictionary) -> void:
@@ -391,6 +411,7 @@ func _ignite_zones(center: Vector2, radius: float) -> void:
 			var burst := maxi(int(float(z["dps"]) * maxf(float(z["left"]), 0.0) * 0.5), 1)
 			if burst > 0:
 				_damage_aoe(zpos, float(z["radius"]), burst, false)
+			_free_zone_fx(z)
 			_zones.remove_at(i)
 		i -= 1
 

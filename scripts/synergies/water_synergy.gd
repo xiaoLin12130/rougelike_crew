@@ -318,6 +318,7 @@ func _spawn_zone(kind: String, pos: Vector2, radius: float, left: float) -> Node
 			oldest.queue_free()
 	var zone := WaterZone.new()
 	zone.setup(self, kind, pos, radius, left)
+	zone.name = "GroundTornado" if kind == "tornado" else "GroundWater"
 	_zones.append(zone)
 	tree.current_scene.add_child(zone)
 	return zone
@@ -537,6 +538,7 @@ class WaterZone:
 	var left := 2.0
 	var tick := 0.0
 	var slow_duration := 1.2
+	var _anim := 0.0
 
 	func setup(host_: Node, kind_: String, pos: Vector2, radius_: float, left_: float) -> void:
 		host = host_
@@ -545,6 +547,7 @@ class WaterZone:
 		radius = radius_
 		left = left_
 		tick = 0.0
+		_anim = 0.0
 		z_index = -12
 
 	func _process(delta: float) -> void:
@@ -553,11 +556,51 @@ class WaterZone:
 			_finish()
 			queue_free()
 			return
+		_anim += delta
 		tick -= delta
 		if tick > 0.0:
+			queue_redraw()
 			return
 		tick = 0.25
 		_apply()
+		queue_redraw()
+
+	func _draw() -> void:
+		## 地面视觉（纯程序化，不参与碰撞/伤害）：水泽=半透明水面+涟漪；水龙卷=旋转螺旋
+		if kind == "tornado":
+			_draw_tornado()
+		else:
+			_draw_marsh()
+
+	func _draw_marsh() -> void:
+		# 半透明水面（暗蓝底 + 亮蓝内芯）
+		draw_circle(Vector2.ZERO, radius, Color(0.16, 0.4, 0.9, 0.28))
+		draw_circle(Vector2.ZERO, radius * 0.62, Color(0.42, 0.68, 1.0, 0.16))
+		# 涟漪环：半径随时间呼吸扩散
+		for i in 3:
+			var ph := _anim * (2.2 + 0.5 * float(i)) + float(i) * 1.9
+			var rr := radius * (0.28 + 0.22 * float(i)) + sin(ph) * 4.0
+			var aa := 0.4 - 0.1 * float(i)
+			draw_arc(Vector2.ZERO, rr, 0.0, TAU, 24, Color(0.65, 0.85, 1.0, aa), 1.6, true)
+		# 水M2 旋涡：有旋涡构筑时叠加旋转涡流线
+		if host != null and is_instance_valid(host) and host.has_method("_stacks") \
+				and host._stacks("water_vortex") > 0:
+			for i in 2:
+				var sw := _anim * (2.0 + 0.7 * float(i)) + float(i) * PI
+				draw_arc(Vector2.ZERO, radius * 0.42, sw, sw + 3.2, 14,
+					Color(0.75, 0.9, 1.0, 0.5), 2.0, true)
+		# 边缘亮线
+		draw_arc(Vector2.ZERO, radius, 0.0, TAU, 32, Color(0.7, 0.9, 1.0, 0.45), 2.0, true)
+
+	func _draw_tornado() -> void:
+		# 水龙卷：三圈旋转螺旋（青色）+ 底部水眼
+		for i in 3:
+			var rr := radius * (0.32 + 0.26 * float(i))
+			var start := _anim * (3.0 + 1.4 * float(i)) + float(i) * TAU / 3.0
+			draw_arc(Vector2.ZERO, rr, start, start + 4.6, 22,
+				Color(0.55, 0.8, 1.0, 0.5 - 0.1 * float(i)), 2.4 + 0.6 * float(i), true)
+		draw_circle(Vector2.ZERO, radius * 0.14, Color(0.75, 0.9, 1.0, 0.7))
+		draw_arc(Vector2.ZERO, radius, 0.0, TAU, 26, Color(0.5, 0.75, 1.0, 0.35), 1.8, true)
 
 	func _exit_tree() -> void:
 		_finish()
@@ -617,4 +660,5 @@ class WaterZone:
 			return false
 		if not (e is Node2D):
 			return false
-		return not bool(e.get("_dead"))
+		var dead = e.get("_dead")
+		return not (dead != null and bool(dead))
