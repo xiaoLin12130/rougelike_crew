@@ -255,6 +255,11 @@ const STATUS_ATTACH_RECIPES := {
 		"vel": [12, 42], "dir": Vector2(0, 1), "spread": 30.0, "grav": Vector2(0, 130),
 		"life": [0.5, 0.9], "add": true,
 	},
+	"paralyze": {
+		"tex": ["spark_01", "spark_03"], "amount": 6, "scale": [0.03, 0.06],
+		"vel": [30, 90], "spread": 360.0, "grav": Vector2(0, -25),
+		"life": [0.25, 0.4], "add": true, "color": Color(0.62, 0.82, 1.0),
+	},
 }
 
 ## 状态附着持续粒子（仅新增入口，不改动既有 _on_fx_* / KIND_RECIPES 逻辑）：
@@ -315,6 +320,7 @@ var _kill_times: Array[float] = []
 var _firework_timer := 0.0
 var _aura_timer := 0.0
 var _summon_auras: Dictionary = {}  # summon instance_id -> aura Node2D
+var _chain_bolts: Array = []  # 链跳闪电连线池（LightningBolt，上限 CHAIN_BOLT_MAX）
 
 func _ready() -> void:
 	EventBus.fx_explosion.connect(_on_fx_explosion)
@@ -617,6 +623,123 @@ static func _make_bolt_line(pts: PackedVector2Array, color: Color, width: float)
 	line.points = pts
 	line.modulate = Color(color, 0.0)
 	return line
+
+## ===================== LightningBolt：链跳闪电连线渲染节点 =====================
+## 程序化 _draw：起点→终点 3~5 段随机抖动折线，双层绘制（粗 glow + 细亮芯），
+## 主色淡蓝白 Color(0.6, 0.8, 1.0)；生命周期 0.22s（前段电流闪烁 + 尾段渐隐）后 queue_free。
+## 纯视觉节点：不参与碰撞；由 fx_manager 统一限量（同时最多 CHAIN_BOLT_MAX 条，超出降频跳过）。
+const CHAIN_BOLT_MAX := 12
+const CHAIN_BOLT_LIFETIME := 0.22
+
+class LightningBolt:
+	extends Node2D
+	## 内嵌类注意：常量/静态与本类内自包含，不依赖外层作用域（GDScript 内嵌类作用域隔离）。
+
+	const BOLT_COLOR := Color(0.6, 0.8, 1.0)
+	const CORE_COLOR := Color(1.0, 1.0, 1.0)
+	const LIFETIME := 0.22
+	const FADE_TAIL := 0.08
+
+	var _points := PackedVector2Array()
+	var _life := 0.0
+	var is_lightning_bolt := true  # 测试/外部识别标记（另附 meta 双保险）
+
+	func setup(from: Vector2, to: Vector2, jitter: float) -> void:
+		# 节点挂 fx_manager（场景原点），折线坐标直接用全局坐标绘制
+		position = Vector2.ZERO
+		_points = _bolt_points(from, to, jitter)
+		_life = LIFETIME
+		z_index = 12
+		queue_redraw()
+
+	func _process(delta: float) -> void:
+		_life -= delta
+		if _life <= 0.0:
+			queue_free()
+			return
+		queue_redraw()
+
+	func _draw() -> void:
+		if _points.size() < 2:
+			return
+		var t := LIFETIME - _life
+		var fade := 1.0
+		if _life < FADE_TAIL:
+			fade = clampf(_life / FADE_TAIL, 0.0, 1.0)
+		var flicker := 1.0 if int(t * 70.0) % 2 == 0 else 0.72  # 前段高频闪烁（电流感）
+		var glow := Color(BOLT_COLOR, 0.5 * fade * flicker)
+		var core := Color(CORE_COLOR, 0.95 * fade * flicker)
+		draw_polyline(_points, glow, 5.0, true)  # 粗 glow 层
+		draw_polyline(_points, core, 2.0, true)  # 细亮芯层
+		draw_circle(_points[0], 2.0, Color(BOLT_COLOR, 0.7 * fade))  # 起点电光
+		draw_circle(_points[_points.size() - 1], 2.6, Color(BOLT_COLOR, 0.85 * fade))  # 终点电光
+
+	static func _bolt_points(from: Vector2, to: Vector2, jitter: float) -> PackedVector2Array:
+		var pts := PackedVector2Array()
+		pts.append(from)
+		var seg := to - from
+		var perp := Vector2(-seg.y, seg.x).normalized()
+		var steps := randi_range(3, 5)  # 3~5 段随机抖动
+		for i in steps:
+			var t := float(i + 1) / float(steps)
+			pts.append(from + seg * t + perp * randf_range(-jitter, jitter))
+		pts[pts.size() - 1] = to
+		return pts
+
+func spawn_chain_bolt(from: Vector2, to: Vector2) -> void:
+	## 链跳闪电连线：projectile._try_chain / thunder_synergy._chain_burst 每跳调用一次。
+	## 性能：同时最多 CHAIN_BOLT_MAX 条；满额时降频跳过（不排队、不积压）。
+	_prune_chain_bolts()
+	if _chain_bolts.size() >= CHAIN_BOLT_MAX:
+		return
+	var bolt := LightningBolt.new()
+	bolt.name = "LightningBolt"
+	bolt.set_meta("is_lightning_bolt", true)
+	var jitter := clampf(from.distance_to(to) * 0.07, 5.0, 16.0)
+	bolt.setup(from, to, jitter)
+	add_child(bolt)
+	_chain_bolts.append(bolt)
+
+func lightning_bolt_count() -> int:
+	## 当前存活链跳连线数（测试/诊断用）。
+	_prune_chain_bolts()
+	return _chain_bolts.size()
+
+func _prune_chain_bolts() -> void:
+	var i := 0
+	while i < _chain_bolts.size():
+		if not is_instance_valid(_chain_bolts[i]):
+			_chain_bolts.remove_at(i)
+		else:
+			i += 1
+
+## 落雷视觉强化（thunder_synergy._fx_lightning 挂接）：闪电柱（竖直双层粗亮柱）+ 底部地面电弧溅射 4~6 条。
+func spawn_strike_arcs(pos: Vector2) -> void:
+	var color: Color = KIND_COLORS["lightning"]
+	var height := 86.0
+	var pts := PackedVector2Array()
+	pts.append(pos + Vector2(0.0, -height))
+	var y := pos.y - height
+	var step_y := height / 12.0
+	for i in 12:
+		var x := pos.x + (randf_range(-7.0, 7.0) if i < 11 else 0.0)
+		y += step_y
+		pts.append(Vector2(x, y))
+	var glow := _make_bolt_line(pts, Color(color, 0.30), 11.0)
+	add_child(glow)
+	_bolt_fade(glow)
+	var core := _make_bolt_line(pts, Color(1.0, 1.0, 1.0, 0.95), 3.4)
+	add_child(core)
+	_bolt_fade(core)
+	var arcs := randi_range(4, 6)
+	for i in arcs:
+		var ang := randf() * TAU
+		var dir := Vector2(cos(ang), sin(ang))
+		var tip := pos + dir * randf_range(20.0, 42.0) + Vector2(0.0, randf_range(-2.0, 8.0))
+		var arc := _make_bolt_line(_zigzag(pos + dir * 5.0, tip, 4, 9.0), Color(color, 0.9), 2.2)
+		add_child(arc)
+		_bolt_fade(arc)
+	_spawn_flash(pos, color, "light_03", 0.18, 0.3)
 
 ## 闪电闪烁 + 淡出（前摇期间云团蓄能）。
 func _bolt_fade(line: Line2D) -> void:
@@ -1136,3 +1259,308 @@ static func _get_tex(tex_name: String) -> Texture2D:
 	if tex != null:
 		_tex_cache[tex_name] = tex
 	return tex
+
+## =====================================================================
+## 地面持续效果视觉（Ground FX）：火地/水泽/毒雾/冰地/雷区/藤蔓
+## 契约：
+## - 纯视觉节点：不参与碰撞/伤害判定（伤害逻辑留在各 synergy 的数值区），
+##   挂当前场景（current_scene，headless 测试回退 root），随效果结束自动
+##   queue_free（节点自计时 + 调用方提前释放双保险），不泄漏；
+## - 程序化 _draw 优先（火焰/毒雾/电弧/藤蔓），kenney 贴图粒子点缀余烬/毒沫，
+##   不用静态贴图冒充动态效果（项目铁律）；
+## - 全局限量 GROUND_FX_MAX（30）：超限淘汰场景中最旧的 Ground* 节点；
+## - 接入方：fire/poison/thunder 等 synergy 通过 preload 静态工厂调用；
+##   water/ice 的区域节点与 boss GroundZone 自带同风格 _draw 视觉。
+## =====================================================================
+const GROUND_FX_MAX := 30
+
+## 地面视觉工厂：kind ∈ fire/poison/thunder/vine；返回节点（失败返回 null）。
+## 节点名固定 "GroundFire" 等（测试按名字断言），自计时销毁。
+static func spawn_ground_fx(kind: String, pos: Vector2, radius: float, life: float) -> Node2D:
+	var node: Node2D
+	match kind:
+		"fire":
+			node = GroundFire.new()
+		"poison":
+			node = GroundPoison.new()
+		"thunder":
+			node = GroundThunder.new()
+		"vine":
+			node = GroundVine.new()
+		_:
+			return null
+	node.setup(pos, radius, life)
+	node.name = "Ground" + kind.capitalize()
+	var tree := Engine.get_main_loop() as SceneTree
+	var parent: Node = null
+	if tree != null:
+		parent = tree.current_scene if tree.current_scene != null else tree.root
+	if parent == null:
+		return null
+	_ground_cap(parent)
+	parent.add_child(node)
+	return node
+
+## 上限淘汰：场景中 Ground* 子节点达到 GROUND_FX_MAX 时释放最早加入的。
+static func _ground_cap(parent: Node) -> void:
+	var live: Array = []
+	for c in parent.get_children():
+		if c is Node2D and str(c.name).begins_with("Ground"):
+			live.append(c)
+	while live.size() >= GROUND_FX_MAX:
+		var oldest: Node = live.pop_front()
+		if is_instance_valid(oldest):
+			oldest.queue_free()
+
+## 地面视觉共享工具：贴图缓存 + 循环粒子构造（内嵌类作用域隔离，自包含）。
+class GroundTex:
+	const FX_DIR := "res://assets/fx/kenney/"
+	static var _cache: Dictionary = {}
+
+	static func fetch(name: String) -> Texture2D:
+		if _cache.has(name):
+			return _cache[name]
+		var tex: Texture2D = load(FX_DIR + name + ".png")
+		if tex != null:
+			_cache[name] = tex
+		return tex
+
+	## 循环发射贴图粒子（作为宿主子节点，随宿主销毁；加法混合可选）。
+	static func loop_particles(parent: Node2D, tex_name: String, pos: Vector2,
+			vel: Vector2, grav: Vector2, life: float, scale_min: float, scale_max: float,
+			color: Color, additive: bool, amount: int = 8, spread: float = 28.0) -> CPUParticles2D:
+		var tex := fetch(tex_name)
+		if tex == null:
+			return null
+		var p := CPUParticles2D.new()
+		p.position = pos
+		p.texture = tex
+		p.amount = amount
+		p.lifetime = life
+		p.one_shot = false
+		p.emitting = true
+		p.explosiveness = 1.0
+		p.spread = spread
+		p.gravity = grav
+		if vel != Vector2.ZERO:
+			p.direction = vel.normalized()
+		p.initial_velocity_min = vel.length() * 0.65
+		p.initial_velocity_max = vel.length() * 1.35
+		p.scale_amount_min = scale_min
+		p.scale_amount_max = scale_max
+		var curve := Curve.new()
+		curve.add_point(Vector2(0.0, 1.0))
+		curve.add_point(Vector2(1.0, 0.18))
+		p.scale_amount_curve = curve
+		if additive:
+			var mat := CanvasItemMaterial.new()
+			mat.blend_mode = CanvasItemMaterial.BLEND_MODE_ADD
+			p.material = mat
+		var grad := Gradient.new()
+		grad.set_color(0, Color(color, 1.0))
+		grad.set_color(1, Color(color, 0.0))
+		p.color_ramp = grad
+		p.color = Color.WHITE
+		parent.add_child(p)
+		return p
+
+## 地面视觉基类：计时销毁 + 尾段淡出 + 逐帧刷新（子类覆写 _draw/_anim）。
+class GroundBase:
+	extends Node2D
+
+	var radius := 60.0
+	var life := 2.0
+	var _age := 0.0
+	var _fade := 0.0
+	var _phase := 0.0
+
+	func setup(pos: Vector2, r: float, l: float) -> void:
+		global_position = pos
+		radius = maxf(r, 10.0)
+		life = maxf(l, 0.15)
+		_fade = minf(0.4, life * 0.45)
+		_phase = randf() * TAU
+		z_index = -11
+
+	func _process(delta: float) -> void:
+		_age += delta
+		_phase += delta
+		if _age >= life:
+			queue_free()
+			return
+		_anim(delta)
+		modulate.a = _alpha()
+		queue_redraw()
+
+	func _anim(_delta: float) -> void:
+		pass
+
+	func _alpha() -> float:
+		if _fade <= 0.0:
+			return 1.0
+		return clampf((life - _age) / _fade, 0.0, 1.0)
+
+	func _ring(rad: float, n: int) -> PackedVector2Array:
+		var pts := PackedVector2Array()
+		for i in n:
+			pts.append(Vector2.from_angle(TAU * float(i) / float(n)) * rad)
+		return pts
+
+	func _jagged(from: Vector2, to: Vector2, steps: int, jitter: float) -> PackedVector2Array:
+		var pts := PackedVector2Array()
+		pts.append(from)
+		var seg := to - from
+		var perp := Vector2(-seg.y, seg.x).normalized()
+		for i in steps:
+			var t := float(i + 1) / float(steps)
+			pts.append(from + seg * t + perp * randf_range(-jitter, jitter))
+		pts[pts.size() - 1] = to
+		return pts
+
+## 火地：地面焦痕（暗色灼烧圆 + 放射裂纹）+ 4~6 簇程序化火焰舌（sin 摆动）+ 余烬粒子。
+class GroundFire:
+	extends GroundBase
+
+	const SCORCH := Color(0.07, 0.045, 0.03)
+	const FLAME_OUT := Color(1.0, 0.42, 0.12)
+	const FLAME_MID := Color(1.0, 0.72, 0.22)
+	const FLAME_CORE := Color(1.0, 0.95, 0.6)
+
+	var _cracks: Array = []
+	var _flames: Array = []
+
+	func setup(pos: Vector2, r: float, l: float) -> void:
+		super.setup(pos, r, l)
+		var n := randi_range(7, 10)
+		for i in n:
+			_cracks.append([randf() * TAU, randf_range(0.45, 0.95)])
+		var f := randi_range(4, 6)
+		for i in f:
+			_flames.append([TAU * float(i) / float(f) + randf_range(-0.3, 0.3),
+				randf_range(0.65, 1.0), randf() * TAU])
+		GroundTex.loop_particles(self, "spark_01", Vector2.ZERO, Vector2(0, -36),
+			Vector2(0, -60), 0.8, 0.03, 0.07, Color(1.0, 0.62, 0.25), true, 12, 40.0)
+
+	func _draw() -> void:
+		# 地面焦痕（灼烧圆 + 暗芯）
+		draw_circle(Vector2.ZERO, radius, Color(SCORCH, 0.62))
+		draw_circle(Vector2.ZERO, radius * 0.72, Color(0.03, 0.02, 0.015, 0.8))
+		# 放射裂纹
+		for c in _cracks:
+			var a: float = c[0]
+			var len: float = radius * c[1]
+			var tip := Vector2.from_angle(a) * len
+			var pts := _jagged(Vector2.from_angle(a) * radius * 0.25, tip, 3, 3.0)
+			draw_polyline(pts, Color(0.0, 0.0, 0.0, 0.55), 1.6, true)
+		# 火焰舌（外焰/内焰分层 + 亮芯）
+		for fl in _flames:
+			var a: float = fl[0]
+			var len: float = radius * fl[1]
+			var wob := sin(_phase * 9.0 + fl[2]) * 0.22
+			var base_a := a + wob
+			var base_r := radius * 0.55
+			var tip_r := base_r + len * (0.9 + 0.18 * sin(_phase * 7.0 + fl[2]))
+			var tip_a := base_a + sin(_phase * 11.0 + fl[2]) * 0.16
+			var w := len * 0.34
+			var base0 := Vector2.from_angle(base_a - 0.22) * base_r
+			var base1 := Vector2.from_angle(base_a + 0.22) * base_r
+			var tip := Vector2.from_angle(tip_a) * tip_r
+			var side0 := base0.lerp(tip, 0.5) + Vector2(-w * 0.5, -len * 0.12)
+			var side1 := base1.lerp(tip, 0.5) + Vector2(w * 0.5, -len * 0.12)
+			draw_colored_polygon(PackedVector2Array([base0, side0, tip, side1, base1]),
+				Color(FLAME_OUT, 0.85))
+			var tip2 := Vector2.from_angle(tip_a) * (tip_r * 0.62)
+			draw_colored_polygon(PackedVector2Array([
+				base0.lerp(base1, 0.5), base0.lerp(tip, 0.34), tip2, base1.lerp(tip, 0.34)]),
+				Color(FLAME_MID, 0.9))
+			draw_circle(Vector2.ZERO.lerp(tip2, 0.7), 2.2, Color(FLAME_CORE, 0.9))
+		# 橙色光晕环（呼吸脉动）
+		draw_arc(Vector2.ZERO, radius * 1.08, 0.0, TAU, 32,
+			Color(FLAME_OUT, 0.28 + 0.14 * sin(_phase * 6.0)), 2.0)
+
+## 毒雾：多层波浪绿雾团（sin 扰动多边形，缓慢旋转）+ 上飘毒沫粒子。
+class GroundPoison:
+	extends GroundBase
+
+	const MIST := Color(0.32, 0.72, 0.22)
+	const MIST_BRIGHT := Color(0.55, 0.9, 0.35)
+
+	func setup(pos: Vector2, r: float, l: float) -> void:
+		super.setup(pos, r, l)
+		GroundTex.loop_particles(self, "smoke_05", Vector2.ZERO, Vector2(0, -18),
+			Vector2(0, -14), 1.15, 0.16, 0.26, Color(0.42, 0.8, 0.3), false, 9, 35.0)
+
+	func _draw() -> void:
+		for k in 3:
+			var base_r := radius * (0.45 + 0.2 * float(k))
+			var pts := PackedVector2Array()
+			var n := 20
+			for i in n:
+				var a := TAU * float(i) / float(n)
+				var wob := sin(a * 3.0 + _phase * (1.6 + 0.5 * float(k)) + float(k) * 2.1) * 8.0
+				wob += sin(a * 5.0 - _phase * 1.1) * 4.0
+				pts.append(Vector2.from_angle(a) * (base_r + wob))
+			var col := Color(MIST, 0.13 + 0.05 * float(k)) if k < 2 else Color(MIST_BRIGHT, 0.10)
+			draw_colored_polygon(pts, col)
+			draw_polyline(pts, Color(MIST_BRIGHT, 0.22), 1.4, true)
+		draw_circle(Vector2.ZERO, radius * 0.3, Color(MIST, 0.12))
+
+## 雷区：地面电弧闪烁（每帧重随机锯齿线 + 高频抖动）+ 电光圆斑；加法混合。
+class GroundThunder:
+	extends GroundBase
+
+	const ARC := Color(1.0, 0.88, 0.4)
+	const ARC_BRIGHT := Color(1.0, 1.0, 0.75)
+
+	func setup(pos: Vector2, r: float, l: float) -> void:
+		super.setup(pos, r, l)
+		var mat := CanvasItemMaterial.new()
+		mat.blend_mode = CanvasItemMaterial.BLEND_MODE_ADD
+		material = mat
+		GroundTex.loop_particles(self, "spark_01", Vector2.ZERO, Vector2.ZERO,
+			Vector2(0, 60), 0.3, 0.03, 0.06, Color(1.0, 0.9, 0.5), true, 10, 60.0)
+
+	func _draw() -> void:
+		draw_circle(Vector2.ZERO, radius, Color(ARC, 0.08))
+		draw_arc(Vector2.ZERO, radius, 0.0, TAU, 26, Color(ARC, 0.35), 1.5)
+		var bolts := randi_range(4, 6)
+		for i in bolts:
+			var a := randf() * TAU
+			var from := Vector2.from_angle(a) * radius * randf_range(0.2, 0.55)
+			var to := Vector2.from_angle(a + randf_range(-0.8, 0.8)) * radius * randf_range(0.75, 1.05)
+			var pts := _jagged(from, to, 5, radius * 0.08)
+			draw_polyline(pts, Color(ARC, 0.45), 4.0, true)
+			draw_polyline(pts, Color(ARC_BRIGHT, 0.9), 1.8, true)
+		var sparks := randi_range(2, 4)
+		for i in sparks:
+			draw_circle(Vector2.from_angle(randf() * TAU) * radius * randf_range(0.3, 0.9),
+				1.5, Color(ARC_BRIGHT, 0.8))
+
+## 藤蔓：缠绕藤条（曲线卷须 + 叶片），随水 M3 定身释放；短寿命。
+class GroundVine:
+	extends GroundBase
+
+	const VINE := Color(0.24, 0.55, 0.18)
+	const VINE_LIGHT := Color(0.42, 0.78, 0.28)
+	const LEAF := Color(0.5, 0.9, 0.32)
+
+	func setup(pos: Vector2, r: float, l: float) -> void:
+		super.setup(pos, r, l)
+		GroundTex.loop_particles(self, "circle_04", Vector2.ZERO, Vector2(0, -10),
+			Vector2.ZERO, 0.9, 0.03, 0.05, Color(0.5, 0.9, 0.35), false, 6, 60.0)
+
+	func _draw() -> void:
+		for k in 6:
+			var a0 := TAU * float(k) / 6.0 + _phase * 0.3
+			var curl := 2.4 if k % 2 == 0 else -2.4
+			var pts := PackedVector2Array()
+			var steps := 12
+			for i in steps + 1:
+				var t := float(i) / float(steps)
+				var a := a0 + curl * t + sin(_phase * 2.0 + float(k) + t * 4.0) * 0.35
+				pts.append(Vector2.from_angle(a) * radius * (0.25 + 0.75 * t))
+			draw_polyline(pts, Color(VINE, 0.9), 2.4, true)
+			draw_polyline(pts, Color(VINE_LIGHT, 0.35), 5.0, true)
+			var tip := pts[pts.size() - 1]
+			draw_circle(tip, 2.4, Color(LEAF, 0.9))
+			draw_circle(tip + Vector2.from_angle(a0 + curl + 0.9) * 4.0, 1.8, Color(LEAF, 0.7))

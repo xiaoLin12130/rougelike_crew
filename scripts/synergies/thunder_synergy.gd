@@ -395,10 +395,13 @@ func _chain_burst(from: Vector2, radius: float, hits: int, dmg: float, prefer_el
 		return
 	var pos := from
 	var d := dmg
+	var fx := _fx_manager()  # 链跳电弧视觉：每跳绘制闪电连线（仅视觉，不动伤害）
 	for i in hits:
 		var target := _nearest_enemy(pos, radius, prefer_elite, exclude)
 		if target == null:
 			break
+		if fx != null and fx.has_method("spawn_chain_bolt"):
+			fx.spawn_chain_bolt(pos, target.global_position)
 		exclude[target.get_instance_id()] = true
 		_hit_enemy(target, maxi(roundi(d), 1))
 		pos = target.global_position
@@ -445,6 +448,9 @@ func _apply_paralysis(enemy: Node, duration: float) -> void:
 	if cur == null:
 		return
 	enemy.set("_root_left", maxf(float(cur), duration))
+	# 麻痹视觉标记（enemy 侧仅视觉字段，驱动蓝白闪烁 + 定身图标；不动机制参数）
+	if enemy.get("_paralyze_left") != null:
+		enemy.set("_paralyze_left", maxf(float(enemy.get("_paralyze_left")), duration))
 
 
 ## 通用状态时长写入（_slow_left/_root_left/_blind_left 同模式）
@@ -461,6 +467,18 @@ func _fx_lightning(pos: Vector2) -> void:
 	var bus := _event_bus()
 	if bus != null and bus.has_signal("fx_explosion"):
 		bus.fx_explosion.emit(pos, "lightning")
+	# 落雷视觉强化：闪电柱 + 底部地面电弧溅射（FxManager 渲染，仅视觉）
+	var fx := _fx_manager()
+	if fx != null and fx.has_method("spawn_strike_arcs"):
+		fx.spawn_strike_arcs(pos)
+
+
+func _fx_manager() -> Node:
+	## 查找 FxManager（game_root 子节点；测试场景由测试自行挂载同名节点）。
+	var scene := get_tree().current_scene
+	if scene == null:
+		return null
+	return scene.get_node_or_null("FxManager")
 
 
 ## ===================== 敌人 / 玩家查找 =====================

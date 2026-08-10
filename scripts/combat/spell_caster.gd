@@ -169,6 +169,10 @@ func _cast(player: Node2D, core: Dictionary, mods: Dictionary) -> void:
 	shots += maxi(int(GameState.run.get("wind_m4_shots", 0)), 0)
 	shots = maxi(shots, 1)
 	var spread: float = float(mods.get("spread_angle", 0.0))
+	# 瞬发核×连发（问题7）：落点扇形分散（spread=0 时给默认扇角），避免同点堆叠；
+	# 毒雾×连发=扇形 3 团、闪电/火柱/闪光×连发=多点分散
+	if speed <= 0.0 and shots > 1 and spread <= 0.0:
+		spread = 24.0
 	var base_angle := aim.angle()
 	for i in shots:
 		var dir := aim
@@ -179,15 +183,18 @@ func _cast(player: Node2D, core: Dictionary, mods: Dictionary) -> void:
 
 
 func _cast_whirl_blade(player: Node2D, core: Dictionary, mods: Dictionary) -> void:
-	## 旋风刃：2 把刀刃围绕玩家旋转（持续 4s），接触敌人造成斩击伤害
+	## 旋风刃：N 把刀刃围绕玩家旋转（持续 4s），接触敌人造成斩击伤害
 	## 描述与效果一致：剑围绕自身转，而非瞬爆
+	## 连发/齐射（问题15）：刃数 = shots（默认 2 把；连发 3 刃、齐射 5 刃）
 	var dmg := _spell_damage(core, mods, "blade")
 	var aoe: float = float(core.get("aoe", 40.0)) * float(mods.get("aoe_mult", 1.0)) * (1.0 + GameState.aggregate_bonus("area"))
 	var orbit_mods: Dictionary = mods.duplicate()
 	orbit_mods["orbit"] = 4.0
+	orbit_mods["_whirl"] = true  # 标记旋风刃：基础刀刃不触发轨道接触爆炸（问题2/14 区分）
+	var blades := maxi(int(mods.get("shots", 0)), 2)
 	var base_angle := _aim_dir(player).angle()
-	for i in 2:
-		var dir := Vector2.from_angle(base_angle + PI * float(i))
+	for i in blades:
+		var dir := Vector2.from_angle(base_angle + TAU * float(i) / float(blades))
 		_spawn_projectile(player, dir, core, orbit_mods, dmg, aoe, 1.0)
 	EventBus.fx_cast.emit(player.global_position, "blade", Vector2.RIGHT)
 
@@ -211,35 +218,44 @@ func _spell_damage(core: Dictionary, mods: Dictionary, element: String) -> float
 
 func _cast_teleport(player: Node2D, core: Dictionary, mods: Dictionary) -> void:
 	## 传送：向瞄准方向闪现 + 落点爆炸
+	## 爆发外壳（问题19）：爆炸半径乘 aoe_mult（与普通核心一致）；吸血外壳：爆炸伤害按比例回血
 	var aim := _aim_dir(player)
 	var new_pos: Vector2 = player.global_position + aim * float(core.get("range", 160.0))
 	var m := GameState.MAP_SIZE
 	new_pos = new_pos.clamp(Vector2(40, 40), m - Vector2(40, 40))
 	player.global_position = new_pos
 	var dmg := _spell_damage(core, mods, "void")
-	EventBus.fx_explosion_scaled.emit(new_pos, "void", float(core.get("aoe", 48.0)))
+	var r := float(core.get("aoe", 48.0)) * float(mods.get("aoe_mult", 1.0)) * (1.0 + GameState.aggregate_bonus("area"))
+	EventBus.fx_explosion_scaled.emit(new_pos, "void", r)
+	var dealt := 0
 	for e in get_tree().get_nodes_in_group("enemy"):
-		if is_instance_valid(e) and new_pos.distance_to(e.global_position) <= float(core.get("aoe", 48.0)) + e.scale.x * 8.0:
+		if is_instance_valid(e) and new_pos.distance_to(e.global_position) <= r + e.scale.x * 8.0:
 			if e.has_method("take_damage"):
 				e.take_damage(int(dmg), "void", false)
 				EventBus.damage_dealt.emit(int(dmg), e.global_position, false)
+				dealt += int(dmg)
+	_drain_heal(mods, dealt)
 
 func _cast_blessing(player: Node2D, core: Dictionary, mods: Dictionary) -> void:
-	## 圣光：回复生命 + 周围敌人光属性伤害
+	## 圣光：回复生命 + 周围敌人光属性伤害（爆发外壳：半径乘 aoe_mult；吸血：伤害回血）
 	GameState.heal(15.0)
 	var dmg := _spell_damage(core, mods, "light")
-	var r := float(core.get("aoe", 90.0))
+	var r := float(core.get("aoe", 90.0)) * float(mods.get("aoe_mult", 1.0)) * (1.0 + GameState.aggregate_bonus("area"))
+	var dealt := 0
 	for e in get_tree().get_nodes_in_group("enemy"):
 		if is_instance_valid(e) and player.global_position.distance_to(e.global_position) <= r + e.scale.x * 8.0:
 			if e.has_method("take_damage"):
 				e.take_damage(int(dmg), "light", false)
 				EventBus.damage_dealt.emit(int(dmg), e.global_position, false)
-	EventBus.fx_explosion_scaled.emit(player.global_position, "light", float(core.get("aoe", 90.0)))
+				dealt += int(dmg)
+	_drain_heal(mods, dealt)
+	EventBus.fx_explosion_scaled.emit(player.global_position, "light", r)
 
 func _cast_counter(player: Node2D, core: Dictionary, mods: Dictionary) -> void:
-	## 反制（简版）：销毁半径内敌方弹幕 + 对周围敌人造成伤害
-	var r := float(core.get("aoe", 60.0))
+	## 反制（简版）：销毁半径内敌方弹幕 + 对周围敌人造成伤害（爆发外壳：半径乘 aoe_mult；吸血：伤害回血）
+	var r := float(core.get("aoe", 60.0)) * float(mods.get("aoe_mult", 1.0)) * (1.0 + GameState.aggregate_bonus("area"))
 	var dmg := _spell_damage(core, mods, "void")
+	var dealt := 0
 	for e in get_tree().get_nodes_in_group("enemy_bullet"):
 		if is_instance_valid(e) and player.global_position.distance_to(e.global_position) <= r:
 			e.queue_free()
@@ -248,7 +264,16 @@ func _cast_counter(player: Node2D, core: Dictionary, mods: Dictionary) -> void:
 			if e.has_method("take_damage"):
 				e.take_damage(int(dmg), "void", false)
 				EventBus.damage_dealt.emit(int(dmg), e.global_position, false)
-	EventBus.fx_explosion_scaled.emit(player.global_position, "ice", float(core.get("aoe", 60.0)))
+				dealt += int(dmg)
+	_drain_heal(mods, dealt)
+	EventBus.fx_explosion_scaled.emit(player.global_position, "ice", r)
+
+
+## 吸血外壳（问题19）：特殊核心爆炸命中按 总伤害×drain 回血（与弹幕 _hit_enemy 同口径）
+func _drain_heal(mods: Dictionary, dealt: int) -> void:
+	var d := float(mods.get("drain", 0.0))
+	if d > 0.0 and dealt > 0:
+		GameState.heal(float(dealt) * d)
 
 
 func _spawn_projectile(player: Node2D, dir: Vector2, core: Dictionary, mods: Dictionary, dmg: float, aoe: float, speed: float) -> void:
@@ -276,14 +301,17 @@ func _spawn_projectile(player: Node2D, dir: Vector2, core: Dictionary, mods: Dic
 func _spawn_summon(player: Node2D, core: Dictionary, mods: Dictionary) -> void:
 	## 把核心期望的召唤类型 id 传给 summon.gd：按指定类型创建；
 	## 该类型已达 max_count 时由 summon.gd 静默中止（不随机换种类）。
+	## 连发外壳（问题18）：按 shots 召唤多只（受 summon.gd 类型 max_count / 总上限约束，超限静默中止）
 	var type_id := str(core.get("summon", ""))
 	if type_id == "" or type_id == "true":
 		# 兼容：核心未写明类型时按核心 id 推导（summon_bat -> bat）
 		type_id = str(core.get("id", "")).trim_prefix("summon_")
-	var summon := SUMMON_SCRIPT.new()
-	summon.setup(player, _spell_damage(core, mods, "summon"), str(core.get("element", "summon")), type_id)
-	get_tree().current_scene.add_child(summon)
-	summon.global_position = player.global_position + Vector2(randf_range(-12.0, 12.0), randf_range(-12.0, 12.0))
+	var count := maxi(int(mods.get("shots", 1)), 1)
+	for i in count:
+		var summon := SUMMON_SCRIPT.new()
+		summon.setup(player, _spell_damage(core, mods, "summon"), str(core.get("element", "summon")), type_id)
+		get_tree().current_scene.add_child(summon)
+		summon.global_position = player.global_position + Vector2(randf_range(-12.0, 12.0), randf_range(-12.0, 12.0))
 
 
 func _aim_dir(player: Node2D) -> Vector2:

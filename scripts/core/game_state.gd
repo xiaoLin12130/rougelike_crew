@@ -321,15 +321,25 @@ func sell_wand(idx: int) -> int:
 
 func _make_spell_choice() -> Dictionary:
 	## 随机法术部件选项：核心×外壳（网格满时仍返回选项，选中后由 game_root 弹替换界面）
+	## 组合有效性过滤（docs/design/核心外壳组合审计.md 修复）：随机 core×shell 后经
+	## _invalid_combo 校验，无效组合重抽（最多 8 次防死循环）；仍无有效组合时退化为
+	## "原生"（无外壳）——生成池绝不出现"选了没效果"的组合。
 	var spells: Dictionary = tables.get("spells", {})
 	var cores: Array = spells.get("cores", [])
 	if cores.is_empty():
 		return {}
-	var core: Dictionary = cores[randi() % cores.size()]
 	var shells: Array = spells.get("shells", [])
+	var core: Dictionary = {}
 	var shell: Dictionary = {}
-	if not shells.is_empty():
+	for _attempt in 8:
+		core = cores[randi() % cores.size()]
+		if shells.is_empty():
+			shell = {}
+			break
 		shell = shells[randi() % shells.size()]
+		if not _invalid_combo(core, shell):
+			break
+		shell = {}
 	var shell_name: String = str(shell.get("name", "原生"))
 	return {
 		"id": "spell_part:%s:%s" % [core.get("id", ""), shell.get("id", "")],
@@ -339,6 +349,37 @@ func _make_spell_choice() -> Dictionary:
 		"description": "新法术：%s（%s 外壳）" % [core.get("name", ""), shell_name],
 		"tags": ["spell_part"],
 	}
+
+
+## 组合有效性判定（核心外壳组合审计 25 条修复的过滤矩阵）：
+## 语义冲突 / 外壳 mods 零消费 / 负收益组合一律不进生成池（宁可"原生"也不出无效组合）。
+##  - 狂暴/回响（问题20/21）：外壳对二者零消费（狂暴连 damage_mult 都不读），全部过滤；
+##  - 传送/反制/圣光（问题19）：仅保留爆发（aoe_mult 已接线半径）/延时（正乘区）/吸血（已接线回血），
+##    其余 7 个外壳仅剩负向乘区 → 过滤；
+##  - 召唤（问题18）：连发=多召语义保留；其余 damage_mult<1 且无主体语义的外壳 → 过滤；
+##  - 旋风刃（问题12/13/16）：环绕（orbit 被核心强制覆盖 4.0）/分裂（1px/s 小弹 bug）/
+##    追踪/穿透/弹射（轨道路径零消费）→ 过滤；
+##  - 瞬发核 speed<=0（问题6/8/9）：追踪/穿透/弹射/环绕零消费 → 过滤。
+func _invalid_combo(core: Dictionary, shell: Dictionary) -> bool:
+	if shell.is_empty():
+		return false
+	var cid := str(core.get("id", ""))
+	var sid := str(shell.get("id", ""))
+	var mods: Dictionary = shell.get("mods", {})
+	if core.get("frenzy", false) or core.get("mana_echo", false):
+		return true
+	if core.get("teleport", false) or core.get("counter", false) or core.get("bless", false):
+		return sid != "burst" and sid != "delay" and sid != "drain"
+	if core.has("summon") or cid == "summon_bat":
+		if sid == "rapid":
+			return false
+		return float(mods.get("damage_mult", 1.0)) < 1.0
+	if cid == "whirl_blade":
+		return sid == "orbit" or sid == "split" or sid == "homing" \
+			or sid == "pierce" or sid == "bounce"
+	if float(core.get("speed", 0.0)) <= 0.0:
+		return mods.has("homing") or mods.has("pierce") or mods.has("bounce") or mods.has("orbit")
+	return false
 
 func add_spell_part(core_id: String, shell_id: String = "") -> void:
 	## 法术碎片掉落：自动填入网格第一个空槽（DEMO 简化，保留排序机制）

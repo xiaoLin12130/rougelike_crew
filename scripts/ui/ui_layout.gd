@@ -19,6 +19,19 @@ const PANEL_W := 320.0     # 标准面板宽度（留 20px 左右边距）
 const PANEL_H := 520.0     # 标准面板高度（640 - 2*60，含上下安全区余量）
 
 static var _portrait_override := -1  # 测试钩子：-1=自动，0=横屏，1=竖屏
+static var _mobile_override := -1    # 测试钩子：-1=自动，0=PC，1=手机
+
+static func is_mobile() -> bool:
+	## 平台判定（2026-08-10 修复）：PC/手机布局差异必须按触摸能力判定，
+	## 不能按窗口宽高比（桌面窗口版 720x1280 是竖窗口会被误判为手机）。
+	## 手机浏览器/原生 App 有触摸；PC 浏览器/桌面窗口无触摸。
+	if _mobile_override >= 0:
+		return _mobile_override == 1
+	return DisplayServer.is_touchscreen_available() or OS.has_feature("touch")
+
+static func force_mobile(v: bool) -> void:
+	## 测试钩子：headless 下强制 PC/手机判定
+	_mobile_override = 1 if v else 0
 
 static func is_portrait() -> bool:
 	## 预留接口：判断当前视口是否为竖版（宽高比 <1）。

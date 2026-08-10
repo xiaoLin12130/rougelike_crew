@@ -4883,6 +4883,156 @@
     "mechanic:crit_crit_storm"
    ],
    "type": "item"
+  },
+  {
+   "curve": {
+    "base": 0.25,
+    "k": 0.25,
+    "type": "linear"
+   },
+   "description": "冰系伤害 +25%（每层，tag 聚合进冰系伤害乘区）；冰M1 碎冰联动：碎冰伤害 ×(1+5%×冰系构筑数，基础 12）",
+   "icon": "res://assets/icons/shikashi/shikashi_r14_c11.png",
+   "id": "ice_glacier_heart",
+   "name": "冰川之心",
+   "rarity": "legendary",
+   "slot": null,
+   "tags": [
+    "ice",
+    "mechanic:ice_m1"
+   ],
+   "type": "item"
+  },
+  {
+   "curve": {
+    "base": 0.25,
+    "k": 0.25,
+    "type": "linear"
+   },
+   "description": "全法术范围 +25%（每层，tag 聚合）；冰M7 冰雪风暴联动：移动每 56px 留下 1s 减速区域（半径 64px）",
+   "icon": "res://assets/icons/shikashi/shikashi_r14_c7.png",
+   "id": "ice_frozen_domain",
+   "name": "冰封领域",
+   "rarity": "legendary",
+   "slot": null,
+   "tags": [
+    "ice",
+    "area",
+    "mechanic:ice_m7"
+   ],
+   "type": "item"
+  },
+  {
+   "curve": {
+    "base": 0.07,
+    "k": 0.07,
+    "type": "linear"
+   },
+   "description": "法术冷却 -7%（每层，tag 聚合，与技能冷却合计上限 80%）；冰M10 绝对零度联动：脉冲间隔 8s÷(1+5%×冰系构筑数)（下限 4s）",
+   "icon": "res://assets/icons/shikashi/shikashi_r15_c1.png",
+   "id": "ice_chrono_frost",
+   "name": "时之冰",
+   "rarity": "legendary",
+   "slot": null,
+   "tags": [
+    "ice",
+    "cooldown",
+    "mechanic:ice_m10"
+   ],
+   "type": "item"
+  },
+  {
+   "curve": {
+    "base": 0.1,
+    "k": 0.1,
+    "type": "linear"
+   },
+   "description": "攻速 +10%（每层，tag 聚合，法术与近战同公式）；冰M5 冰刃联动：冻结目标 +40% 独立乘区（与燃烧增伤互不干扰）",
+   "icon": "res://assets/icons/willibab/STAFFS_11.png",
+   "id": "ice_glacial_haste",
+   "name": "冰霜迅捷",
+   "rarity": "legendary",
+   "slot": null,
+   "tags": [
+    "ice",
+    "attack_speed",
+    "mechanic:ice_m5"
+   ],
+   "type": "item"
+  },
+  {
+   "curve": {
+    "base": 0.1,
+    "k": 0.1,
+    "type": "linear"
+   },
+   "description": "攻击力 +10%（每层，tag 聚合）；召唤M1 军团光环联动：机制系数 0.6+0.4×召唤构筑数（上限 2.0，作用于光环/献祭/共生/替身）",
+   "icon": "res://assets/icons/willibab/ALL_180.png",
+   "id": "summon_war_banner",
+   "name": "军团战旗",
+   "rarity": "legendary",
+   "slot": null,
+   "tags": [
+    "summon",
+    "atk",
+    "mechanic:summon_m1"
+   ],
+   "type": "item"
+  },
+  {
+   "curve": {
+    "base": 0.3,
+    "k": 0.3,
+    "type": "linear"
+   },
+   "description": "召唤物伤害 +30%（每层，tag 聚合进召唤伤害乘区）；召唤M3 亡语联动：亡语爆炸伤害随召唤物伤害提升",
+   "icon": "res://assets/icons/willibab/SWORDS_COLOR_VARIANTS_591.png",
+   "id": "summon_death_knight",
+   "name": "死亡骑士",
+   "rarity": "legendary",
+   "slot": null,
+   "tags": [
+    "summon",
+    "mechanic:summon_m3"
+   ],
+   "type": "item"
+  },
+  {
+   "curve": {
+    "base": 0.15,
+    "k": 0.15,
+    "type": "linear"
+   },
+   "description": "技能伤害 +15%（每层，tag 聚合）；召唤M8 替身联动：替身回血 30%×机制系数（0.6+0.4×召唤构筑数，上限 2.0）",
+   "icon": "res://assets/icons/willibab/ALL_135.png",
+   "id": "summon_graveyard_keep",
+   "name": "墓园守望",
+   "rarity": "legendary",
+   "slot": null,
+   "tags": [
+    "summon",
+    "skill_dmg",
+    "mechanic:summon_m8"
+   ],
+   "type": "item"
+  },
+  {
+   "curve": {
+    "base": 0.07,
+    "k": 0.07,
+    "type": "linear"
+   },
+   "description": "法术冷却 -7%（每层，tag 聚合，与技能冷却合计上限 80%）；召唤M10 军团冲锋联动：献祭伤害倍率 1.5×机制系数（0.6+0.4×召唤构筑数，上限 3.0 倍）",
+   "icon": "res://assets/icons/willibab/ALL_231.png",
+   "id": "summon_overlord_edict",
+   "name": "军令",
+   "rarity": "legendary",
+   "slot": null,
+   "tags": [
+    "summon",
+    "cooldown",
+    "mechanic:summon_m10"
+   ],
+   "type": "item"
   }
  ]
 }

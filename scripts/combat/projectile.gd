@@ -40,6 +40,7 @@ var _orbit_center := Vector2.ZERO
 var _orbit_angle := 0.0
 var _orbit_life := 2.0
 var _player_ref: Node2D = null
+var _is_whirl := false  # 旋风刃标记：基础刀刃不触发轨道接触爆炸（问题2/14 区分）
 var _hit_enemies := {}  # instance_id -> true：同一投射物对同一敌人只结算一次
 var _impacted := false
 var _status: Dictionary = {}  # 核心状态参数（burn/slow/root/poison/blind）
@@ -71,6 +72,7 @@ func setup(p: Dictionary) -> void:
 	_chain_left = int(p.get("chain", 0))
 	_split = int(_mods.get("split", 0))
 	_drain = float(_mods.get("drain", 0.0))
+	_is_whirl = bool(_mods.get("_whirl", false))
 	_instant = _speed <= 0.0
 	_orbit_mode = bool(_mods.get("orbit", false))
 	_orbit_life = maxf(float(_mods.get("orbit", 2.0)), 0.5)
@@ -130,10 +132,20 @@ func _scan_contact() -> void:
 		var id: int = e.get_instance_id()
 		if _hit_enemies.has(id):
 			continue
-		_hit_enemies[id] = true
 		if _aoe > 0.0:
-			_explode_at(global_position)
+			# AOE 核：爆炸结算统一由 _explode_at 标记+伤害（含直接接触的敌人——
+			# 此前先预标记会跳过接触敌人的伤害，导致弹道核直击无伤）。
+			# AOE核×穿透/弹射（问题1）：爆炸后弹体保留继续飞行，
+			# 每次接触爆炸消耗一次穿透（优先）/弹射次数，直至耗尽才销毁。
+			var keep := _pierce_left > 0 or _bounce_left > 0
+			_explode_at(global_position, keep)
+			if keep:
+				if _pierce_left > 0:
+					_pierce_left -= 1
+				else:
+					_bounce_left -= 1
 			return
+		_hit_enemies[id] = true
 		_hit_enemy(e, 1.0, true)
 		if _chain_left > 0:
 			_try_chain(e.global_position)
@@ -144,17 +156,19 @@ func _scan_contact() -> void:
 			return
 
 
-## 爆炸结算：范围内敌人全部受击，随后消失。
-func _explode_at(pos: Vector2) -> void:
-	_impacted = true
+## 爆炸结算：范围内敌人全部受击；keep_alive=true 时弹体保留（AOE×穿透/弹射、轨道接触爆炸）。
+func _explode_at(pos: Vector2, keep_alive: bool = false) -> void:
+	if not keep_alive:
+		_impacted = true
 	var radius := maxf(_aoe, 1.0)
 	# 移8 踏浪：每 100% 移速 +6% 技能范围（run.wind_speed_area 读取点接线）
 	radius *= 1.0 + maxf(float(GameState.run.get("wind_speed_area", 0.0)), 0.0)
 	# 特效范围同步：按实际 AOE 半径缩放爆炸特效（范围变大时视觉可感知）
 	EventBus.fx_explosion_scaled.emit(pos, _element, radius)
 	# flash（数据 aoe=0）瞬发时以固定爆发半径命中，保证失明/伤害生效
+	# 闪光×爆发（问题10）：盲爆半径参与 aoe_mult（爆发外壳"范围翻倍"对闪光兑现）
 	if _instant and float(_status.get("blind", 0.0)) > 0.0:
-		radius = maxf(radius, BLIND_BURST_RADIUS)
+		radius = maxf(radius, BLIND_BURST_RADIUS * float(_mods.get("aoe_mult", 1.0)))
 	for e in _enemies_in_radius(pos, radius):
 		var id: int = e.get_instance_id()
 		if _hit_enemies.has(id):
@@ -163,7 +177,8 @@ func _explode_at(pos: Vector2) -> void:
 		_hit_enemy(e)
 	if _chain_left > 0:
 		_try_chain(pos)
-	queue_free()
+	if not keep_alive:
+		queue_free()
 
 
 func _bounce_at(clamped: Vector2) -> void:
@@ -196,6 +211,10 @@ func _orbit_step(delta: float) -> void:
 		_hit_enemy(e, 1.0, true)
 		if _chain_left > 0:
 			_try_chain(e.global_position)
+		# AOE弹道核×环绕（问题2）：环绕弹保留爆炸（接触点小型爆炸，弹体不销毁）；
+		# 旋风刃仅在爆发外壳（explode 标志）下触发刀刃爆炸（问题14），基础刀刃不炸。
+		if _aoe > 0.0 and (not _is_whirl or bool(_mods.get("explode", false))):
+			_explode_at(global_position, true)
 
 
 func _hit_enemy(enemy: Node, dmg_mult: float = 1.0, direct_hit: bool = false) -> void:
@@ -305,7 +324,9 @@ func _apply_statuses(enemy: Node) -> void:
 
 
 func _spawn_split_minis(source: Node) -> void:
-	## split 外壳：命中后向扇形方向分裂 N 个小弹（伤害×0.6，不分裂/不链式/不施状态，保留 drain）
+	## split 外壳：命中后向扇形方向分裂 N 个小弹（伤害×0.6，不分裂/不链式，保留 drain）
+	## 问题5：小弹继承核心显式状态（根缚/减速/点燃/中毒控场价值保留）；
+	## 问题13：速度低于保底一律用 SPLIT_MINI_SPEED（修复旋风刃 speed=1.0 → 1px/s 蠕动 bug）
 	var n := maxi(_split, 1)
 	var base_angle := _dir.angle()
 	var spread := deg_to_rad(SPLIT_FAN_DEG)
@@ -322,13 +343,13 @@ func _spawn_split_minis(source: Node) -> void:
 		mini.setup({
 			"position": global_position + dir * 12.0,
 			"direction": dir,
-			"speed": _speed if _speed > 0.0 else SPLIT_MINI_SPEED,
+			"speed": _speed if _speed >= SPLIT_MINI_SPEED else SPLIT_MINI_SPEED,
 			"range": maxf(_range * 0.5, 120.0),
 			"damage": _damage * SPLIT_DAMAGE_MULT,
 			"element": _element,
 			"aoe": 0.0,
 			"mods": mini_mods,
-			"status": {},
+			"status": _status.duplicate(),
 			"chain": 0,
 		})
 		# 小弹不再重复命中来源敌人（避免贴脸三连击）
@@ -347,7 +368,19 @@ func _try_chain(from: Vector2) -> void:
 		mult *= CHAIN_FALLOFF
 		_hit_enemies[target.get_instance_id()] = true
 		_hit_enemy(target, mult, true)
+		# 链跳视觉：目标之间绘制闪电连线（仅信号/节点，不动伤害逻辑）
+		_emit_chain_bolt(from, target.global_position)
 		from = target.global_position
+
+
+func _emit_chain_bolt(from: Vector2, to: Vector2) -> void:
+	## 雷系链跳视觉信号：找 FxManager 触发 LightningBolt；场景无 FX 节点时静默跳过（如 headless 测试）。
+	var scene := get_tree().current_scene
+	if scene == null:
+		return
+	var fx = scene.get_node_or_null("FxManager")
+	if fx != null and fx.has_method("spawn_chain_bolt"):
+		fx.spawn_chain_bolt(from, to)
 
 
 func _nearest_unhit_enemy(from: Vector2, radius: float) -> Node:

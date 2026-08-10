@@ -9,6 +9,7 @@ import json
 import math
 import os
 import sys
+from collections import Counter
 
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
 DATA = os.path.join(ROOT, "data")
@@ -78,6 +79,53 @@ def main():
         check(0 <= i["curve"].get("base", 0), f"item {i['id']} base >= 0")
         check(i["rarity"] in ("common", "rare", "legendary"), f"item {i['id']} rarity")
         check(i["type"] in ("item", "trinket", "memory"), f"item {i['id']} type")
+
+    # --- 流派构筑补全（school_fill_ice_summon）---
+    # 门控 id 与 scripts/synergies/ice_synergy.gd / summon_synergy.gd 的
+    # _stacks("ice_mN") / _stacks("summon_mN") 消费点一一对应（只读契约）
+    ICE_GATES = {f"ice_m{i}" for i in range(1, 11)}
+    SUMMON_GATES = {f"summon_m{i}" for i in range(1, 11)}
+    def school_items(school):
+        return [i for i in items
+                if str(i["id"]).startswith(school + "_") or school in i.get("tags", [])]
+
+    for school, gates in (("ice", ICE_GATES), ("summon", SUMMON_GATES)):
+        school_it = school_items(school)
+        check(len(school_it) >= 20,
+              f"{school} 流派道具数 >= 20（现 {len(school_it)}）")
+        rarities = Counter(i["rarity"] for i in school_it)
+        check(rarities.get("common", 0) >= 8, f"{school} 普通 >= 8（现 {rarities.get('common', 0)}）")
+        check(rarities.get("rare", 0) >= 8, f"{school} 稀有 >= 8（现 {rarities.get('rare', 0)}）")
+        check(rarities.get("legendary", 0) >= 4, f"{school} 传说 >= 4（现 {rarities.get('legendary', 0)}）")
+        # 图标必须存在（assets/icons 下）；流派内不得新增共用图标。
+        # 存量共用对（school_fill_ice_summon 之前已存在，契约禁止修改现有条目）：
+        #   ice_spell.png: ice_1 + trinket_frost；frozen.png: ice_2 + ice_6；slowed.png: ice_10 + ice_m7
+        LEGACY_ICON_SHARES = {
+            "res://assets/icons/verarc/ice_spell.png": {"ice_1", "trinket_frost"},
+            "res://assets/icons/verarc/frozen.png": {"ice_2", "ice_6"},
+            "res://assets/icons/verarc/slowed.png": {"ice_10", "ice_m7"},
+        }
+        icon_users = {}
+        for it in school_it:
+            icon = it.get("icon", "")
+            check(icon.startswith("res://"), f"{school} item {it['id']} icon path prefix")
+            fs_path = os.path.join(ROOT, icon.replace("res://", "").replace("/", os.sep))
+            check(os.path.isfile(fs_path), f"{school} item {it['id']} icon file exists: {icon}")
+            icon_users.setdefault(icon, []).append(it["id"])
+        for icon, users in icon_users.items():
+            if len(users) <= 1:
+                continue
+            if icon in LEGACY_ICON_SHARES and set(users) == LEGACY_ICON_SHARES[icon]:
+                continue  # 存量共用对，白名单放行
+            check(False, f"{school} icon 共用（新增重复）: {icon} <- {users}")
+        # 机制型 tags：mechanic: 前缀且与脚本门控对应
+        for it in school_it:
+            for tag in it.get("tags", []):
+                if not str(tag).startswith("mechanic:"):
+                    continue
+                gate = str(tag).split(":", 1)[1]
+                check(gate in gates,
+                      f"{school} item {it['id']} 机制 tag {tag} 不在脚本门控 {school}_m1..m10")
 
     # --- monotonicity: increasing curves non-decrease; multiplicative(base<1) non-increase ---
     for i in items:

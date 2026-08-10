@@ -75,7 +75,9 @@ func _build_resources(root: Control) -> void:
 	## 左上资源条（y=24，位于 Boss 血条带下方）：三行 VBox（PC 与手机统一布局）——
 	## ① HP 数字+血条 ② Lv·金币·DPS ③ 当前关卡。
 	## PC 端血条/字号更大；手机端紧凑（小字号窄条，避免遮挡战斗视野）。
-	var portrait: bool = UiLayout.is_portrait()
+	## 2026-08-10：平台判定改用 is_mobile（触摸能力），桌面窗口版竖窗口
+	## 不再被 is_portrait 误判为手机。
+	var portrait: bool = UiLayout.is_mobile()
 	var hp_size := 11 if portrait else 14        # HP 数字字号
 	var bar_h := 10 if portrait else 14          # 血条高度
 	var bar_w := 110 if portrait else 200        # 血条宽度

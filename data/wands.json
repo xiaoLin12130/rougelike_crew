@@ -1,70 +1,40 @@
 {
  "wands": [
   {
-   "id": "basic_wand",
-   "name": "学徒法杖",
-   "rarity": "common",
-   "price": 140,
-   "shape": "none",
-   "damage_mult": 1.0,
-   "cd_mult": 1.0,
-   "element_bonus": {},
-   "shape_mods": {},
-   "description": "基础法杖：无特殊形态，法术按原样释放",
-   "icon": "res://assets/icons/willibab/STAFFS_0.png",
-   "school": "melee"
-  },
-  {
    "id": "fire_staff",
    "name": "烈焰法杖",
    "rarity": "common",
    "price": 225,
    "shape": "burst",
-   "damage_mult": 1.15,
+   "damage_mult": 1.0,
    "cd_mult": 1.0,
    "element_bonus": {
     "fire": 0.25
    },
    "shape_mods": {
-    "aoe_mult": 1.8
+    "aoe_mult": 1.5
    },
-   "description": "爆发形态：所有法术爆炸范围 +80%，火系伤害 +25%",
+   "description": "爆发形态：所有法术爆炸范围 +50%，火系伤害 +25%",
    "icon": "res://assets/icons/willibab/STAFFS_1.png",
    "school": "fire"
   },
   {
-   "id": "rapid_staff",
-   "name": "连珠法杖",
+   "id": "lava_staff",
+   "name": "熔岩法杖",
    "rarity": "common",
-   "price": 250,
-   "shape": "rapid",
-   "damage_mult": 0.9,
-   "cd_mult": 0.72,
-   "element_bonus": {},
-   "shape_mods": {
-    "shots": 3,
-    "damage_mult": 0.8
+   "price": 260,
+   "shape": "split",
+   "damage_mult": 1.0,
+   "cd_mult": 1.0,
+   "element_bonus": {
+    "fire": 0.25
    },
-   "description": "连珠形态：法术三连发（单发 80% 伤害），冷却 -28%",
-   "icon": "res://assets/icons/willibab/STAFFS_2.png",
-   "school": "wind"
-  },
-  {
-   "id": "orbit_staff",
-   "name": "环绕法杖",
-   "rarity": "rare",
-   "price": 420,
-   "shape": "orbit",
-   "damage_mult": 0.85,
-   "cd_mult": 0.8,
-   "element_bonus": {},
    "shape_mods": {
-    "orbit": 2,
-    "damage_mult": 0.8
+    "split": 2
    },
-   "description": "环绕形态：法术环绕自身持续输出，冷却 -20%",
-   "icon": "res://assets/icons/willibab/STAFFS_3.png",
-   "school": "water"
+   "description": "分裂形态：命中后分裂 2 枚熔岩小弹，火系伤害 +25%",
+   "icon": "res://assets/icons/willibab/STAFFS_13.png",
+   "school": "fire"
   },
   {
    "id": "scatter_staff",
@@ -72,34 +42,92 @@
    "rarity": "rare",
    "price": 390,
    "shape": "scatter",
-   "damage_mult": 0.95,
+   "damage_mult": 1.0,
    "cd_mult": 0.9,
-   "element_bonus": {},
+   "element_bonus": {
+    "fire": 0.2
+   },
    "shape_mods": {
     "shots": 5,
     "spread_angle": 24.0,
     "damage_mult": 0.7
    },
-   "description": "散射形态：法术扇形五连射",
+   "description": "散射形态：法术扇形五连射（单发 70% 伤害），冷却 -10%，火系伤害 +20%",
    "icon": "res://assets/icons/willibab/STAFFS_4.png",
    "school": "fire"
+  },
+  {
+   "id": "fire_rain_staff",
+   "name": "火雨法杖",
+   "rarity": "rare",
+   "price": 480,
+   "shape": "burst",
+   "damage_mult": 1.0,
+   "cd_mult": 1.0,
+   "element_bonus": {
+    "fire": 0.35
+   },
+   "shape_mods": {
+    "aoe_mult": 1.6,
+    "delay": 0.35
+   },
+   "description": "火雨形态：法术在落点延迟 0.35 秒后引爆，爆炸范围 +60%，火系伤害 +35%",
+   "icon": "res://assets/icons/willibab/STAFFS_14.png",
+   "school": "fire"
+  },
+  {
+   "id": "phoenix_staff",
+   "name": "凤凰法杖",
+   "rarity": "legendary",
+   "price": 780,
+   "shape": "burst",
+   "damage_mult": 1.0,
+   "cd_mult": 1.0,
+   "element_bonus": {
+    "fire": 0.45
+   },
+   "shape_mods": {
+    "drain": 0.08,
+    "damage_mult": 1.25
+   },
+   "description": "凤凰形态：命中吸血 8%（按造成伤害），伤害 +25%，火系伤害 +45%",
+   "icon": "res://assets/icons/willibab/STAFFS_15.png",
+   "school": "fire"
+  },
+  {
+   "id": "shatter_staff",
+   "name": "碎冰法杖",
+   "rarity": "common",
+   "price": 240,
+   "shape": "split",
+   "damage_mult": 1.0,
+   "cd_mult": 1.0,
+   "element_bonus": {
+    "ice": 0.25
+   },
+   "shape_mods": {
+    "split": 2
+   },
+   "description": "碎冰形态：命中后迸裂 2 枚冰屑小弹，冰系伤害 +25%",
+   "icon": "res://assets/icons/willibab/STAFFS_16.png",
+   "school": "ice"
   },
   {
    "id": "frost_staff",
    "name": "霜冻法杖",
    "rarity": "rare",
    "price": 450,
-   "shape": "frost",
+   "shape": "burst",
    "damage_mult": 1.0,
    "cd_mult": 1.0,
    "element_bonus": {
-    "ice": 0.4,
-    "water": 0.3
+    "ice": 0.4
    },
    "shape_mods": {
-    "slow_power": 1.8
+    "aoe_mult": 1.5,
+    "delay": 0.35
    },
-   "description": "霜冻形态：冰/水伤害 +40%/+30%，减速效果大幅增强",
+   "description": "霜冻形态：法术在落点延迟 0.35 秒形成冰霜爆发，爆炸范围 +50%，冰系伤害 +40%",
    "icon": "res://assets/icons/willibab/STAFFS_5.png",
    "school": "ice"
   },
@@ -123,41 +151,119 @@
    "school": "ice"
   },
   {
-   "id": "poison_staff",
-   "name": "毒雾法杖",
+   "id": "ice_orbit_staff",
+   "name": "冰环法杖",
    "rarity": "rare",
-   "price": 450,
-   "shape": "poison",
+   "price": 520,
+   "shape": "orbit",
    "damage_mult": 1.0,
-   "cd_mult": 1.0,
+   "cd_mult": 0.85,
    "element_bonus": {
-    "poison": 0.5
+    "ice": 0.35
    },
    "shape_mods": {
-    "aoe_mult": 2.0,
-    "delay": 0.4
+    "orbit": 2,
+    "damage_mult": 0.85
    },
-   "description": "毒雾形态：范围 +100%，延迟 0.4 秒引爆，毒系伤害 +50%",
-   "icon": "res://assets/icons/willibab/STAFFS_9.png",
-   "school": "poison"
+   "description": "冰环形态：2 枚冰弹环绕自身持续输出，伤害 -15%，冷却 -15%，冰系伤害 +35%",
+   "icon": "res://assets/icons/willibab/STAFFS_17.png",
+   "school": "ice"
   },
   {
-   "id": "light_staff",
-   "name": "圣光法杖",
-   "rarity": "rare",
-   "price": 450,
-   "shape": "light",
+   "id": "arctic_staff",
+   "name": "极寒法杖",
+   "rarity": "legendary",
+   "price": 760,
+   "shape": "burst",
    "damage_mult": 1.0,
    "cd_mult": 1.0,
    "element_bonus": {
-    "light": 0.4
+    "ice": 0.5
    },
    "shape_mods": {
-    "drain": 0.06
+    "aoe_mult": 1.8,
+    "damage_mult": 1.15
    },
-   "description": "圣光形态：命中回复 6% 伤害值的生命，光系伤害 +40%",
-   "icon": "res://assets/icons/willibab/STAFFS_10.png",
-   "school": "defense"
+   "description": "极寒形态：冰霜爆炸范围 +80%，伤害 +15%，冰系伤害 +50%",
+   "icon": "res://assets/icons/willibab/STAFFS_18.png",
+   "school": "ice"
+  },
+  {
+   "id": "surge_staff",
+   "name": "电涌法杖",
+   "rarity": "common",
+   "price": 230,
+   "shape": "rapid",
+   "damage_mult": 1.0,
+   "cd_mult": 1.0,
+   "element_bonus": {
+    "lightning": 0.2
+   },
+   "shape_mods": {
+    "speed_mult": 1.5,
+    "damage_mult": 1.1
+   },
+   "description": "电涌形态：弹速 +50%，伤害 +10%，雷系伤害 +20%",
+   "icon": "res://assets/icons/willibab/STAFFS_19.png",
+   "school": "lightning"
+  },
+  {
+   "id": "volt_staff",
+   "name": "高压法杖",
+   "rarity": "common",
+   "price": 250,
+   "shape": "rapid",
+   "damage_mult": 1.0,
+   "cd_mult": 1.0,
+   "element_bonus": {
+    "lightning": 0.25
+   },
+   "shape_mods": {
+    "shots": 3,
+    "damage_mult": 0.85
+   },
+   "description": "高压形态：法术同线三连发（单发 85% 伤害），雷系伤害 +25%",
+   "icon": "res://assets/icons/willibab/STAFFS_20.png",
+   "school": "lightning"
+  },
+  {
+   "id": "storm_staff",
+   "name": "雷云法杖",
+   "rarity": "rare",
+   "price": 480,
+   "shape": "scatter",
+   "damage_mult": 1.0,
+   "cd_mult": 1.0,
+   "element_bonus": {
+    "lightning": 0.35
+   },
+   "shape_mods": {
+    "delay": 0.3,
+    "shots": 5,
+    "spread_angle": 28.0
+   },
+   "description": "雷云形态：法术延迟 0.3 秒后扇形五点落雷，雷系伤害 +35%",
+   "icon": "res://assets/icons/willibab/STAFFS_21.png",
+   "school": "lightning"
+  },
+  {
+   "id": "chain_staff",
+   "name": "连锁法杖",
+   "rarity": "rare",
+   "price": 550,
+   "shape": "chain",
+   "damage_mult": 1.0,
+   "cd_mult": 1.0,
+   "element_bonus": {
+    "lightning": 0.4
+   },
+   "shape_mods": {
+    "pierce": 2,
+    "speed_mult": 1.2
+   },
+   "description": "连锁形态：弹道贯穿 2 个敌人，弹速 +20%，雷系伤害 +40%",
+   "icon": "res://assets/icons/willibab/STAFFS_22.png",
+   "school": "lightning"
   },
   {
    "id": "thunder_staff",
@@ -179,262 +285,21 @@
    "school": "lightning"
   },
   {
-   "id": "void_staff",
-   "name": "虚空法杖",
-   "rarity": "legendary",
-   "price": 740,
-   "shape": "split",
-   "damage_mult": 1.0,
-   "cd_mult": 1.0,
-   "element_bonus": {
-    "void": 0.45
-   },
-   "shape_mods": {
-    "split": 3,
-    "aoe_mult": 1.6
-   },
-   "description": "虚空形态：命中分裂 3 枚小弹，范围 +60%，虚空伤害 +45%",
-   "icon": "res://assets/icons/willibab/STAFFS_11.png",
-   "school": "curse"
-  },
-  {
-   "id": "bounce_staff",
-   "name": "弹射法杖",
-   "rarity": "rare",
-   "price": 450,
-   "shape": "bounce",
-   "damage_mult": 1.15,
-   "cd_mult": 1.0,
-   "element_bonus": {},
-   "shape_mods": {
-    "bounce": 2,
-    "damage_mult": 1.15
-   },
-   "description": "弹射形态：弹道碰壁反弹 2 次，伤害 +15%",
-   "icon": "res://assets/icons/willibab/STAFFS_12.png",
-   "school": "wind"
-  },
-  {
-   "id": "summon_staff",
-   "name": "唤灵法杖",
-   "rarity": "legendary",
-   "price": 750,
-   "shape": "summon",
-   "damage_mult": 1.1,
-   "cd_mult": 0.85,
-   "element_bonus": {
-    "summon": 0.5
-   },
-   "shape_mods": {},
-   "description": "唤灵形态：召唤系伤害 +50%，冷却 -15%，召唤物上限 +1",
-   "icon": "res://assets/icons/willibab/STAFFS_7.png",
-   "school": "summon"
-  },
-  {
-   "id": "lava_staff",
-   "name": "熔岩法杖",
-   "rarity": "common",
-   "price": 260,
-   "shape": "burst",
-   "damage_mult": 1.0,
-   "cd_mult": 1.05,
-   "element_bonus": {
-    "fire": 0.25
-   },
-   "shape_mods": {
-    "aoe_mult": 1.5
-   },
-   "description": "爆发形态：法术范围 +50%，火系伤害 +25%",
-   "icon": "res://assets/icons/willibab/STAFFS_13.png",
-   "school": "fire"
-  },
-  {
-   "id": "fire_rain_staff",
-   "name": "火雨法杖",
-   "rarity": "rare",
-   "price": 480,
-   "shape": "burst",
-   "damage_mult": 1.0,
-   "cd_mult": 1.05,
-   "element_bonus": {
-    "fire": 0.35
-   },
-   "shape_mods": {
-    "aoe_mult": 1.6,
-    "delay": 0.35
-   },
-   "description": "爆发形态：范围 +60%，落点延迟 0.35 秒，火系伤害 +35%",
-   "icon": "res://assets/icons/willibab/STAFFS_14.png",
-   "school": "fire"
-  },
-  {
-   "id": "phoenix_staff",
-   "name": "凤凰法杖",
-   "rarity": "legendary",
-   "price": 780,
-   "shape": "burst",
-   "damage_mult": 1.1,
-   "cd_mult": 1.0,
-   "element_bonus": {
-    "fire": 0.45
-   },
-   "shape_mods": {
-    "aoe_mult": 2.0,
-    "drain": 0.05
-   },
-   "description": "爆发形态：范围 +100%，命中吸血 5%，火系伤害 +45%",
-   "icon": "res://assets/icons/willibab/STAFFS_15.png",
-   "school": "fire"
-  },
-  {
-   "id": "shatter_staff",
-   "name": "碎冰法杖",
-   "rarity": "common",
-   "price": 240,
-   "shape": "pierce",
-   "damage_mult": 1.0,
-   "cd_mult": 1.0,
-   "element_bonus": {
-    "ice": 0.25
-   },
-   "shape_mods": {
-    "pierce": 1,
-    "speed_mult": 1.15
-   },
-   "description": "贯穿形态：弹道贯穿 1 个敌人，弹速 +15%，冰系伤害 +25%",
-   "icon": "res://assets/icons/willibab/STAFFS_16.png",
-   "school": "ice"
-  },
-  {
-   "id": "ice_orbit_staff",
-   "name": "冰环法杖",
-   "rarity": "rare",
-   "price": 520,
-   "shape": "orbit",
-   "damage_mult": 0.9,
-   "cd_mult": 0.85,
-   "element_bonus": {
-    "ice": 0.35
-   },
-   "shape_mods": {
-    "orbit": 2,
-    "damage_mult": 0.85
-   },
-   "description": "环绕形态：2 枚冰弹环绕持续输出，冷却 -15%，冰系伤害 +35%",
-   "icon": "res://assets/icons/willibab/STAFFS_17.png",
-   "school": "ice"
-  },
-  {
-   "id": "arctic_staff",
-   "name": "极寒法杖",
-   "rarity": "legendary",
-   "price": 760,
-   "shape": "frost",
-   "damage_mult": 1.05,
-   "cd_mult": 1.0,
-   "element_bonus": {
-    "ice": 0.5
-   },
-   "shape_mods": {
-    "aoe_mult": 1.8,
-    "speed_mult": 1.2
-   },
-   "description": "霜冻形态：范围 +80%，弹速 +20%，冰系伤害 +50%",
-   "icon": "res://assets/icons/willibab/STAFFS_18.png",
-   "school": "ice"
-  },
-  {
-   "id": "surge_staff",
-   "name": "电涌法杖",
-   "rarity": "common",
-   "price": 230,
-   "shape": "burst",
-   "damage_mult": 1.0,
-   "cd_mult": 1.0,
-   "element_bonus": {
-    "lightning": 0.2
-   },
-   "shape_mods": {
-    "aoe_mult": 1.3,
-    "damage_mult": 1.15
-   },
-   "description": "爆发形态：范围 +30%，伤害 +15%，雷系伤害 +20%",
-   "icon": "res://assets/icons/willibab/STAFFS_19.png",
-   "school": "lightning"
-  },
-  {
-   "id": "volt_staff",
-   "name": "高压法杖",
-   "rarity": "common",
-   "price": 250,
-   "shape": "burst",
-   "damage_mult": 1.0,
-   "cd_mult": 1.0,
-   "element_bonus": {
-    "lightning": 0.25
-   },
-   "shape_mods": {
-    "speed_mult": 1.3,
-    "aoe_mult": 1.2
-   },
-   "description": "爆发形态：弹速 +30%，范围 +20%，雷系伤害 +25%",
-   "icon": "res://assets/icons/willibab/STAFFS_20.png",
-   "school": "lightning"
-  },
-  {
-   "id": "storm_staff",
-   "name": "雷云法杖",
-   "rarity": "rare",
-   "price": 480,
-   "shape": "burst",
-   "damage_mult": 1.0,
-   "cd_mult": 1.05,
-   "element_bonus": {
-    "lightning": 0.35
-   },
-   "shape_mods": {
-    "aoe_mult": 1.7,
-    "delay": 0.3
-   },
-   "description": "爆发形态：范围 +70%，落点延迟 0.3 秒，雷系伤害 +35%",
-   "icon": "res://assets/icons/willibab/STAFFS_21.png",
-   "school": "lightning"
-  },
-  {
-   "id": "chain_staff",
-   "name": "连锁法杖",
-   "rarity": "rare",
-   "price": 550,
-   "shape": "chain",
-   "damage_mult": 1.05,
-   "cd_mult": 1.0,
-   "element_bonus": {
-    "lightning": 0.4
-   },
-   "shape_mods": {
-    "pierce": 2,
-    "speed_mult": 1.2
-   },
-   "description": "雷霆形态：弹道贯穿 2 个敌人，弹速 +20%，雷系伤害 +40%",
-   "icon": "res://assets/icons/willibab/STAFFS_22.png",
-   "school": "lightning"
-  },
-  {
    "id": "corrosion_staff",
    "name": "腐蚀法杖",
    "rarity": "common",
    "price": 250,
-   "shape": "poison",
+   "shape": "pierce",
    "damage_mult": 1.0,
    "cd_mult": 1.0,
    "element_bonus": {
     "poison": 0.25
    },
    "shape_mods": {
-    "aoe_mult": 1.4,
-    "delay": 0.2
+    "pierce": 2,
+    "speed_mult": 1.15
    },
-   "description": "毒雾形态：范围 +40%，延迟 0.2 秒引爆，毒系伤害 +25%",
+   "description": "腐蚀形态：弹道贯穿 2 个敌人，弹速 +15%，毒系伤害 +25%",
    "icon": "res://assets/icons/willibab/STAFFS_23.png",
    "school": "poison"
   },
@@ -443,16 +308,16 @@
    "name": "毒刃法杖",
    "rarity": "common",
    "price": 240,
-   "shape": "pierce",
+   "shape": "split",
    "damage_mult": 1.0,
    "cd_mult": 1.0,
    "element_bonus": {
     "poison": 0.25
    },
    "shape_mods": {
-    "pierce": 1
+    "split": 2
    },
-   "description": "贯穿形态：弹道贯穿 1 个敌人，毒系伤害 +25%",
+   "description": "毒刃形态：命中后溅射 2 枚毒屑小弹，毒系伤害 +25%",
    "icon": "res://assets/icons/willibab/STAFFS_24.png",
    "school": "poison"
   },
@@ -461,18 +326,38 @@
    "name": "疫病法杖",
    "rarity": "rare",
    "price": 500,
-   "shape": "poison",
+   "shape": "scatter",
    "damage_mult": 1.0,
    "cd_mult": 1.0,
    "element_bonus": {
     "poison": 0.45
    },
    "shape_mods": {
-    "aoe_mult": 1.8,
-    "speed_mult": 0.9
+    "shots": 5,
+    "spread_angle": 26.0,
+    "delay": 0.25
    },
-   "description": "毒雾形态：范围 +80%，毒系伤害 +45%",
+   "description": "疫病形态：法术延迟 0.25 秒后扇形五点播撒，毒系伤害 +45%",
    "icon": "res://assets/icons/willibab/STAFFS_25.png",
+   "school": "poison"
+  },
+  {
+   "id": "poison_staff",
+   "name": "毒雾法杖",
+   "rarity": "rare",
+   "price": 450,
+   "shape": "poison",
+   "damage_mult": 1.0,
+   "cd_mult": 1.0,
+   "element_bonus": {
+    "poison": 0.5
+   },
+   "shape_mods": {
+    "aoe_mult": 2.0,
+    "delay": 0.4
+   },
+   "description": "毒雾形态：毒雾范围 +100%，延迟 0.4 秒成型，毒系伤害 +50%",
+   "icon": "res://assets/icons/willibab/STAFFS_9.png",
    "school": "poison"
   },
   {
@@ -480,17 +365,17 @@
    "name": "瘟疫法杖",
    "rarity": "legendary",
    "price": 790,
-   "shape": "poison",
-   "damage_mult": 1.1,
-   "cd_mult": 0.95,
+   "shape": "split",
+   "damage_mult": 1.0,
+   "cd_mult": 1.0,
    "element_bonus": {
     "poison": 0.6
    },
    "shape_mods": {
-    "aoe_mult": 2.2,
-    "drain": 0.04
+    "split": 3,
+    "drain": 0.06
    },
-   "description": "毒雾形态：范围 +120%，命中吸血 4%，毒系伤害 +60%",
+   "description": "瘟疫形态：命中分裂 3 枚疫弹并吸血 6%，毒系伤害 +60%",
    "icon": "res://assets/icons/willibab/STAFFS_26.png",
    "school": "poison"
   },
@@ -501,12 +386,14 @@
    "price": 260,
    "shape": "summon",
    "damage_mult": 1.0,
-   "cd_mult": 0.9,
+   "cd_mult": 1.0,
    "element_bonus": {
     "summon": 0.25
    },
-   "shape_mods": {},
-   "description": "唤灵形态：召唤系伤害 +25%，冷却 -10%",
+   "shape_mods": {
+    "shots": 2
+   },
+   "description": "军团形态：召唤系法术每次召唤 2 只（受召唤上限约束），召唤伤害 +25%",
    "icon": "res://assets/icons/willibab/STAFFS_27.png",
    "school": "summon"
   },
@@ -516,13 +403,13 @@
    "rarity": "common",
    "price": 250,
    "shape": "summon",
-   "damage_mult": 1.05,
-   "cd_mult": 0.95,
+   "damage_mult": 1.0,
+   "cd_mult": 0.78,
    "element_bonus": {
-    "summon": 0.2
+    "summon": 0.25
    },
    "shape_mods": {},
-   "description": "唤灵形态：召唤系伤害 +20%，伤害 +5%",
+   "description": "亡语形态：召唤冷却 -22%，召唤伤害 +25%",
    "icon": "res://assets/icons/willibab/STAFFS_28.png",
    "school": "summon"
   },
@@ -532,13 +419,15 @@
    "rarity": "rare",
    "price": 460,
    "shape": "summon",
-   "damage_mult": 1.15,
+   "damage_mult": 1.0,
    "cd_mult": 1.0,
    "element_bonus": {
     "summon": 0.35
    },
-   "shape_mods": {},
-   "description": "唤灵形态：召唤系伤害 +35%，伤害 +15%",
+   "shape_mods": {
+    "damage_mult": 1.2
+   },
+   "description": "图腾形态：召唤物伤害 +20%，召唤系伤害 +35%",
    "icon": "res://assets/icons/willibab/STAFFS_29.png",
    "school": "summon"
   },
@@ -548,14 +437,36 @@
    "rarity": "rare",
    "price": 520,
    "shape": "summon",
-   "damage_mult": 0.95,
-   "cd_mult": 0.75,
+   "damage_mult": 1.0,
+   "cd_mult": 0.8,
    "element_bonus": {
     "summon": 0.3
    },
-   "shape_mods": {},
-   "description": "唤灵形态：召唤系伤害 +30%，冷却 -25%",
+   "shape_mods": {
+    "shots": 2,
+    "damage_mult": 1.1
+   },
+   "description": "契约形态：每次召唤 2 只（受上限约束），召唤物伤害 +10%，冷却 -20%，召唤系伤害 +30%",
    "icon": "res://assets/icons/willibab/STAFFS_30.png",
+   "school": "summon"
+  },
+  {
+   "id": "summon_staff",
+   "name": "唤灵法杖",
+   "rarity": "legendary",
+   "price": 750,
+   "shape": "summon",
+   "damage_mult": 1.0,
+   "cd_mult": 0.85,
+   "element_bonus": {
+    "summon": 0.5
+   },
+   "shape_mods": {
+    "shots": 3,
+    "damage_mult": 1.15
+   },
+   "description": "唤灵形态：每次召唤 3 只（受上限约束），召唤物伤害 +15%，冷却 -15%，召唤系伤害 +50%",
+   "icon": "res://assets/icons/willibab/STAFFS_7.png",
    "school": "summon"
   },
   {
@@ -563,17 +474,37 @@
    "name": "水弹法杖",
    "rarity": "common",
    "price": 240,
-   "shape": "burst",
+   "shape": "rapid",
    "damage_mult": 1.0,
    "cd_mult": 1.0,
    "element_bonus": {
     "water": 0.25
    },
    "shape_mods": {
-    "aoe_mult": 1.3
+    "speed_mult": 1.4,
+    "damage_mult": 1.1
    },
-   "description": "爆发形态：范围 +30%，水系伤害 +25%",
+   "description": "水弹形态：弹速 +40%，伤害 +10%，水系伤害 +25%",
    "icon": "res://assets/icons/willibab/STAFFS_31.png",
+   "school": "water"
+  },
+  {
+   "id": "orbit_staff",
+   "name": "环绕法杖",
+   "rarity": "rare",
+   "price": 420,
+   "shape": "orbit",
+   "damage_mult": 1.0,
+   "cd_mult": 0.85,
+   "element_bonus": {
+    "water": 0.3
+   },
+   "shape_mods": {
+    "orbit": 2,
+    "damage_mult": 0.9
+   },
+   "description": "环绕形态：2 枚水球环绕自身持续输出，伤害 -10%，冷却 -15%，水系伤害 +30%",
+   "icon": "res://assets/icons/willibab/STAFFS_3.png",
    "school": "water"
   },
   {
@@ -588,10 +519,10 @@
     "water": 0.4
    },
    "shape_mods": {
-    "aoe_mult": 1.8,
+    "aoe_mult": 1.7,
     "speed_mult": 1.1
    },
-   "description": "爆发形态：范围 +80%，弹速 +10%，水系伤害 +40%",
+   "description": "潮汐形态：爆炸范围 +70%，弹速 +10%，水系伤害 +40%",
    "icon": "res://assets/icons/willibab/STAFFS_32.png",
    "school": "water"
   },
@@ -601,16 +532,17 @@
    "rarity": "rare",
    "price": 540,
    "shape": "orbit",
-   "damage_mult": 0.9,
+   "damage_mult": 1.0,
    "cd_mult": 0.9,
    "element_bonus": {
     "water": 0.35
    },
    "shape_mods": {
-    "orbit": 3,
-    "damage_mult": 0.8
+    "orbit": 4,
+    "damage_mult": 0.85,
+    "drain": 0.04
    },
-   "description": "环绕形态：3 枚水弹环绕持续输出，冷却 -10%，水系伤害 +35%",
+   "description": "漩涡形态：4 枚水弹环绕自身，伤害 -15%，命中吸血 4%，冷却 -10%，水系伤害 +35%",
    "icon": "res://assets/icons/willibab/STAFFS_33.png",
    "school": "water"
   },
@@ -619,18 +551,17 @@
    "name": "深水法杖",
    "rarity": "legendary",
    "price": 780,
-   "shape": "scatter",
+   "shape": "burst",
    "damage_mult": 1.0,
    "cd_mult": 0.95,
    "element_bonus": {
     "water": 0.5
    },
    "shape_mods": {
-    "shots": 5,
-    "spread_angle": 20.0,
-    "damage_mult": 0.75
+    "aoe_mult": 2.0,
+    "drain": 0.06
    },
-   "description": "散射形态：扇形五连射，冷却 -5%，水系伤害 +50%",
+   "description": "深水形态：深渊水爆范围 +100%，命中吸血 6%，冷却 -5%，水系伤害 +50%",
    "icon": "res://assets/icons/willibab/STAFFS_34.png",
    "school": "water"
   },
@@ -646,8 +577,25 @@
    "shape_mods": {
     "speed_mult": 1.5
    },
-   "description": "无形态：弹速 +50%，伤害 -5%",
+   "description": "疾风形态：弹速 +50%，伤害 -5%",
    "icon": "res://assets/icons/willibab/STAFFS_35.png",
+   "school": "wind"
+  },
+  {
+   "id": "rapid_staff",
+   "name": "连珠法杖",
+   "rarity": "common",
+   "price": 250,
+   "shape": "rapid",
+   "damage_mult": 1.0,
+   "cd_mult": 0.72,
+   "element_bonus": {},
+   "shape_mods": {
+    "shots": 3,
+    "damage_mult": 0.8
+   },
+   "description": "连珠形态：法术三连发（单发 80% 伤害），冷却 -28%",
+   "icon": "res://assets/icons/willibab/STAFFS_2.png",
    "school": "wind"
   },
   {
@@ -655,17 +603,34 @@
    "name": "回旋法杖",
    "rarity": "rare",
    "price": 500,
-   "shape": "orbit",
-   "damage_mult": 0.9,
-   "cd_mult": 0.9,
+   "shape": "bounce",
+   "damage_mult": 1.0,
+   "cd_mult": 1.0,
    "element_bonus": {},
    "shape_mods": {
-    "orbit": 2,
-    "damage_mult": 0.85,
-    "speed_mult": 1.15
+    "bounce": 3,
+    "speed_mult": 1.25,
+    "damage_mult": 0.95
    },
-   "description": "环绕形态：2 枚弹环绕持续输出，弹速 +15%，冷却 -10%",
+   "description": "回旋形态：弹道碰壁反弹 3 次，弹速 +25%，伤害 -5%",
    "icon": "res://assets/icons/willibab/STAFFS_36.png",
+   "school": "wind"
+  },
+  {
+   "id": "bounce_staff",
+   "name": "弹射法杖",
+   "rarity": "rare",
+   "price": 450,
+   "shape": "bounce",
+   "damage_mult": 1.0,
+   "cd_mult": 1.0,
+   "element_bonus": {},
+   "shape_mods": {
+    "bounce": 2,
+    "damage_mult": 1.15
+   },
+   "description": "弹射形态：弹道碰壁反弹 2 次，伤害 +15%",
+   "icon": "res://assets/icons/willibab/STAFFS_12.png",
    "school": "wind"
   },
   {
@@ -678,11 +643,11 @@
    "cd_mult": 0.9,
    "element_bonus": {},
    "shape_mods": {
-    "shots": 7,
+    "shots": 5,
     "spread_angle": 30.0,
-    "damage_mult": 0.65
+    "damage_mult": 0.7
    },
-   "description": "散射形态：扇形七连射，伤害 +5%，冷却 -10%",
+   "description": "风暴形态：扇形五连射（单发 70% 伤害），冷却 -10%，伤害 +5%",
    "icon": "res://assets/icons/willibab/STAFFS_37.png",
    "school": "wind"
   },
@@ -698,10 +663,9 @@
     "light": 0.2
    },
    "shape_mods": {
-    "aoe_mult": 1.5,
-    "drain": 0.03
+    "drain": 0.05
    },
-   "description": "爆发形态：范围 +50%，命中吸血 3%，光系伤害 +20%",
+   "description": "护盾形态：命中吸血 5%（按造成伤害），光系伤害 +20%",
    "icon": "res://assets/icons/willibab/STAFFS_38.png",
    "school": "defense"
   },
@@ -711,15 +675,16 @@
    "rarity": "common",
    "price": 250,
    "shape": "burst",
-   "damage_mult": 1.05,
+   "damage_mult": 1.0,
    "cd_mult": 1.0,
    "element_bonus": {
     "light": 0.2
    },
    "shape_mods": {
-    "aoe_mult": 1.4
+    "damage_mult": 1.2,
+    "speed_mult": 0.85
    },
-   "description": "爆发形态：范围 +40%，伤害 +5%，光系伤害 +20%",
+   "description": "磐石形态：伤害 +20%，弹速 -15%，光系伤害 +20%",
    "icon": "res://assets/icons/willibab/STAFFS_39.png",
    "school": "defense"
   },
@@ -728,18 +693,37 @@
    "name": "荆棘法杖",
    "rarity": "rare",
    "price": 480,
-   "shape": "pierce",
+   "shape": "bounce",
    "damage_mult": 1.0,
    "cd_mult": 1.0,
    "element_bonus": {
     "light": 0.3
    },
    "shape_mods": {
-    "pierce": 2,
-    "speed_mult": 1.1
+    "bounce": 2,
+    "damage_mult": 1.05
    },
-   "description": "贯穿形态：弹道贯穿 2 个敌人，弹速 +10%，光系伤害 +30%",
+   "description": "荆棘形态：弹道碰壁反弹 2 次，伤害 +5%，光系伤害 +30%",
    "icon": "res://assets/icons/willibab/STAFFS_40.png",
+   "school": "defense"
+  },
+  {
+   "id": "light_staff",
+   "name": "圣光法杖",
+   "rarity": "rare",
+   "price": 450,
+   "shape": "light",
+   "damage_mult": 1.0,
+   "cd_mult": 1.0,
+   "element_bonus": {
+    "light": 0.4
+   },
+   "shape_mods": {
+    "drain": 0.06,
+    "damage_mult": 1.05
+   },
+   "description": "圣光形态：命中吸血 6%，伤害 +5%，光系伤害 +40%",
+   "icon": "res://assets/icons/willibab/STAFFS_10.png",
    "school": "defense"
   },
   {
@@ -748,16 +732,17 @@
    "rarity": "legendary",
    "price": 820,
    "shape": "burst",
-   "damage_mult": 1.1,
+   "damage_mult": 1.0,
    "cd_mult": 1.0,
    "element_bonus": {
     "light": 0.5
    },
    "shape_mods": {
-    "aoe_mult": 2.0,
-    "drain": 0.08
+    "aoe_mult": 1.8,
+    "drain": 0.07,
+    "damage_mult": 1.1
    },
-   "description": "爆发形态：范围 +100%，命中吸血 8%，光系伤害 +50%",
+   "description": "圣盾形态：圣光爆发范围 +80%，命中吸血 7%，伤害 +10%，光系伤害 +50%",
    "icon": "res://assets/icons/willibab/STAFFS_41.png",
    "school": "defense"
   },
@@ -766,16 +751,16 @@
    "name": "虚弱法杖",
    "rarity": "common",
    "price": 250,
-   "shape": "burst",
+   "shape": "split",
    "damage_mult": 1.0,
    "cd_mult": 1.0,
    "element_bonus": {
     "void": 0.25
    },
    "shape_mods": {
-    "aoe_mult": 1.4
+    "split": 2
    },
-   "description": "爆发形态：范围 +40%，虚空伤害 +25%",
+   "description": "虚弱形态：命中分裂 2 枚虚弱小弹，虚空伤害 +25%",
    "icon": "res://assets/icons/willibab/STAFFS_42.png",
    "school": "curse"
   },
@@ -793,9 +778,9 @@
    "shape_mods": {
     "shots": 4,
     "spread_angle": 20.0,
-    "damage_mult": 0.8
+    "damage_mult": 0.85
    },
-   "description": "散射形态：扇形四连射，虚空伤害 +20%",
+   "description": "迟缓形态：法术扇形四连射（单发 85% 伤害），虚空伤害 +20%",
    "icon": "res://assets/icons/willibab/STAFFS_43.png",
    "school": "curse"
   },
@@ -806,15 +791,15 @@
    "price": 520,
    "shape": "burst",
    "damage_mult": 1.0,
-   "cd_mult": 1.05,
+   "cd_mult": 1.0,
    "element_bonus": {
     "void": 0.4
    },
    "shape_mods": {
-    "aoe_mult": 1.7,
-    "delay": 0.4
+    "delay": 0.4,
+    "damage_mult": 1.2
    },
-   "description": "爆发形态：范围 +70%，落点延迟 0.4 秒，虚空伤害 +40%",
+   "description": "衰败形态：法术延迟 0.4 秒后定点爆发，伤害 +20%，虚空伤害 +40%",
    "icon": "res://assets/icons/willibab/STAFFS_44.png",
    "school": "curse"
   },
@@ -823,18 +808,38 @@
    "name": "恐慌法杖",
    "rarity": "rare",
    "price": 550,
-   "shape": "split",
+   "shape": "pierce",
    "damage_mult": 1.0,
    "cd_mult": 1.0,
    "element_bonus": {
     "void": 0.35
    },
    "shape_mods": {
-    "split": 2,
-    "damage_mult": 0.9
+    "pierce": 2,
+    "speed_mult": 1.2
    },
-   "description": "分裂形态：命中分裂 2 枚小弹，虚空伤害 +35%",
+   "description": "恐慌形态：弹道贯穿 2 个敌人，弹速 +20%，虚空伤害 +35%",
    "icon": "res://assets/icons/willibab/STAFFS_45.png",
+   "school": "curse"
+  },
+  {
+   "id": "void_staff",
+   "name": "虚空法杖",
+   "rarity": "legendary",
+   "price": 740,
+   "shape": "split",
+   "damage_mult": 1.0,
+   "cd_mult": 1.0,
+   "element_bonus": {
+    "void": 0.45
+   },
+   "shape_mods": {
+    "split": 3,
+    "aoe_mult": 1.6,
+    "drain": 0.06
+   },
+   "description": "虚空形态：命中分裂 3 枚虚空小弹，范围 +60%，吸血 6%，虚空伤害 +45%",
+   "icon": "res://assets/icons/willibab/STAFFS_11.png",
    "school": "curse"
   },
   {
@@ -850,7 +855,7 @@
     "pierce": 1,
     "speed_mult": 1.2
    },
-   "description": "贯穿形态：弹道贯穿 1 个敌人，弹速 +20%",
+   "description": "锐利形态：弹道贯穿 1 个敌人，弹速 +20%",
    "icon": "res://assets/icons/willibab/STAFFS_46.png",
    "school": "crit"
   },
@@ -860,14 +865,14 @@
    "rarity": "common",
    "price": 260,
    "shape": "rapid",
-   "damage_mult": 0.95,
+   "damage_mult": 1.0,
    "cd_mult": 0.8,
    "element_bonus": {},
    "shape_mods": {
     "shots": 3,
-    "damage_mult": 0.8
+    "damage_mult": 0.85
    },
-   "description": "连珠形态：法术三连发（单发 80% 伤害），冷却 -20%",
+   "description": "连击形态：法术三连发（单发 85% 伤害），冷却 -20%",
    "icon": "res://assets/icons/willibab/STAFFS_47.png",
    "school": "crit"
   },
@@ -877,14 +882,14 @@
    "rarity": "rare",
    "price": 520,
    "shape": "split",
-   "damage_mult": 1.1,
+   "damage_mult": 1.0,
    "cd_mult": 1.0,
    "element_bonus": {},
    "shape_mods": {
     "split": 2,
-    "damage_mult": 0.95
+    "damage_mult": 1.05
    },
-   "description": "分裂形态：命中分裂 2 枚小弹，伤害 +10%",
+   "description": "致命形态：命中分裂 2 枚小弹，伤害 +5%",
    "icon": "res://assets/icons/willibab/STAFFS_48.png",
    "school": "crit"
   },
@@ -900,9 +905,9 @@
    "shape_mods": {
     "shots": 5,
     "spread_angle": 24.0,
-    "damage_mult": 0.7
+    "damage_mult": 0.75
    },
-   "description": "散射形态：扇形五连射，冷却 -5%",
+   "description": "要害形态：法术扇形五连射（单发 75% 伤害），冷却 -5%",
    "icon": "res://assets/icons/willibab/STAFFS_49.png",
    "school": "crit"
   },
@@ -920,9 +925,23 @@
     "drain": 0.07,
     "speed_mult": 1.2
    },
-   "description": "贯穿形态：弹道贯穿 3 个敌人，命中吸血 7%，弹速 +20%",
+   "description": "血刃形态：弹道贯穿 3 个敌人，命中吸血 7%，弹速 +20%，伤害 +15%",
    "icon": "res://assets/icons/willibab/STAFFS_50.png",
    "school": "crit"
+  },
+  {
+   "id": "basic_wand",
+   "name": "学徒法杖",
+   "rarity": "common",
+   "price": 140,
+   "shape": "none",
+   "damage_mult": 1.0,
+   "cd_mult": 1.0,
+   "element_bonus": {},
+   "shape_mods": {},
+   "description": "基础法杖：无特殊形态，法术按原样释放",
+   "icon": "res://assets/icons/willibab/STAFFS_0.png",
+   "school": "melee"
   },
   {
    "id": "warblade_staff",
@@ -936,9 +955,10 @@
     "blade": 0.25
    },
    "shape_mods": {
-    "pierce": 1
+    "pierce": 2,
+    "speed_mult": 1.15
    },
-   "description": "贯穿形态：弹道贯穿 1 个敌人，斩击伤害 +25%",
+   "description": "战刃形态：弹道贯穿 2 个敌人，弹速 +15%，斩击伤害 +25%",
    "icon": "res://assets/icons/willibab/STAFFS_51.png",
    "school": "melee"
   },
@@ -956,7 +976,7 @@
    "shape_mods": {
     "speed_mult": 1.4
    },
-   "description": "无形态：弹速 +40%，冷却 -5%，斩击伤害 +20%",
+   "description": "突进形态：弹速 +40%，冷却 -5%，斩击伤害 +20%",
    "icon": "res://assets/icons/willibab/STAFFS_52.png",
    "school": "melee"
   },
@@ -966,15 +986,16 @@
    "rarity": "rare",
    "price": 500,
    "shape": "burst",
-   "damage_mult": 1.1,
+   "damage_mult": 1.0,
    "cd_mult": 1.0,
    "element_bonus": {
     "blade": 0.35
    },
    "shape_mods": {
-    "aoe_mult": 1.7
+    "aoe_mult": 1.7,
+    "damage_mult": 1.15
    },
-   "description": "爆发形态：范围 +70%，伤害 +10%，斩击伤害 +35%",
+   "description": "重击形态：爆炸范围 +70%，伤害 +15%，斩击伤害 +35%",
    "icon": "res://assets/icons/willibab/STAFFS_53.png",
    "school": "melee"
   },
@@ -983,17 +1004,18 @@
    "name": "旋风法杖",
    "rarity": "legendary",
    "price": 790,
-   "shape": "orbit",
-   "damage_mult": 0.95,
+   "shape": "rapid",
+   "damage_mult": 1.0,
    "cd_mult": 0.9,
    "element_bonus": {
     "blade": 0.5
    },
    "shape_mods": {
-    "orbit": 2,
-    "damage_mult": 0.9
+    "shots": 3,
+    "damage_mult": 1.1,
+    "drain": 0.04
    },
-   "description": "环绕形态：2 枚斩击环绕持续输出，冷却 -10%，斩击伤害 +50%",
+   "description": "旋风形态：旋风刃化为 3 刃环绕（其余法术三连发），伤害 +10%，接触命中吸血 4%，冷却 -10%，斩击伤害 +50%",
    "icon": "res://assets/icons/willibab/STAFFS_54.png",
    "school": "melee"
   }

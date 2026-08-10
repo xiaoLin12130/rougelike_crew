@@ -34,6 +34,7 @@ var _elite_cd := 0.0
 var _elite_frenzy_left := 0.0
 var _water_left := 0.0  # wet marker (visual-only; not emitted by gameplay)
 var _lightning_left := 0.0  # electrified marker (visual-only; not emitted by gameplay)
+var _paralyze_left := 0.0  # paralysis visual marker (written by thunder_synergy; drives blue-white flash + stun icon only)
 var _poison_fx_cd := 0.0  # 毒 DOT 特效节流（独立，避免与燃烧互相抢占）
 var _burn_fx_cd := 0.0    # 燃烧 DOT 特效节流（独立）
 var _hp_bar_left := 0.0  # 受击血条剩余显示时间（秒）
@@ -51,6 +52,7 @@ var _lt_arc: Line2D
 var _lt_branch: Line2D
 var _freeze_shell: Line2D
 var _freeze_shards: Array[Line2D] = []
+var _paralyze_icon: Node2D
 
 # 技能状态
 var _skill_cd := 0.0
@@ -226,6 +228,7 @@ func _tick(delta: float) -> void:
 	_burn_left = maxf(_burn_left - delta, 0.0)
 	_water_left = maxf(_water_left - delta, 0.0)
 	_lightning_left = maxf(_lightning_left - delta, 0.0)
+	_paralyze_left = maxf(_paralyze_left - delta, 0.0)
 	_invuln_left = maxf(_invuln_left - delta, 0.0)
 	_poison_fx_cd = maxf(_poison_fx_cd - delta, 0.0)
 	_burn_fx_cd = maxf(_burn_fx_cd - delta, 0.0)
@@ -462,11 +465,18 @@ func _update_status_attachments(delta: float) -> void:
 		# 冰壳呼吸微动（纯视觉）
 		var t := Time.get_ticks_msec() / 1000.0
 		_freeze_shell.modulate.a = 0.55 + 0.22 * (0.5 + 0.5 * sin(t * 3.5))
+	elif _status_attach_kind == "paralyze" and is_instance_valid(_paralyze_icon):
+		# stun icon sway + breathing (visual only)
+		var t2 := Time.get_ticks_msec() / 1000.0
+		_paralyze_icon.rotation = sin(t2 * 5.0) * 0.3
+		_paralyze_icon.modulate.a = 0.7 + 0.3 * (0.5 + 0.5 * sin(t2 * 8.0))
 
 ## 附着优先级：冻结 > 燃烧 > 中毒 > 雷电 > 水 > 减速（同帧多状态时只显示一种）。
 func _active_attach_kind() -> String:
 	if _freeze_left > 0.0:
 		return "freeze"
+	if _paralyze_left > 0.0:
+		return "paralyze"
 	if _burn_left > 0.0:
 		return "burn"
 	if _poison_left > 0.0:
@@ -488,6 +498,7 @@ func _clear_status_attachments() -> void:
 	_lt_branch = null
 	_freeze_shell = null
 	_freeze_shards.clear()
+	_paralyze_icon = null
 
 func _build_status_attach(kind: String) -> void:
 	match kind:
@@ -511,6 +522,48 @@ func _build_status_attach(kind: String) -> void:
 			_build_lightning_attach()
 		"freeze":
 			_build_freeze_attach()
+		"paralyze":
+			_build_paralyze_attach()
+
+## paralysis attach: procedural stun icon (3 rotating star points + vertical mark above head) + blue-white spark particles.
+## The 0.5s blue-white flash is driven by _apply_status_visual; this only mounts the icon (no logic change).
+func _build_paralyze_attach() -> void:
+	var s := maxf(scale.x, scale.y)
+	_paralyze_icon = Node2D.new()
+	_paralyze_icon.name = "ParalyzeIcon"
+	_paralyze_icon.position = Vector2(0.0, -26.0 * s)
+	_status_attach_root.add_child(_paralyze_icon)
+	for i in 3:
+		var star := Line2D.new()
+		star.name = "StunStar%d" % (i + 1)
+		star.width = 1.5
+		star.antialiased = true
+		star.default_color = Color(0.72, 0.88, 1.0, 0.95)
+		star.points = _star_points(4.2 * s)
+		var ang := TAU * float(i) / 3.0
+		star.position = Vector2(cos(ang), sin(ang)) * 6.0 * s
+		star.rotation = ang + PI / 4.0
+		_paralyze_icon.add_child(star)
+	var mark := Line2D.new()
+	mark.name = "StunMark"
+	mark.width = 1.8
+	mark.antialiased = true
+	mark.default_color = Color(0.88, 0.95, 1.0, 0.9)
+	mark.points = PackedVector2Array([Vector2(0.0, -4.0 * s), Vector2(0.0, 1.0 * s)])
+	_paralyze_icon.add_child(mark)
+	var spark := FX_MANAGER.spawn_status_particles(_status_attach_root, "paralyze")
+	if spark != null:
+		spark.name = "ParalyzeSpark"
+
+static func _star_points(radius: float) -> PackedVector2Array:
+	## four-point star closed polyline (stun icon, fully procedural, no texture)
+	var pts := PackedVector2Array()
+	for i in 8:
+		var ang := TAU * float(i) / 8.0
+		var r := radius * (0.45 if i % 2 == 1 else 1.0)
+		pts.append(Vector2(cos(ang), sin(ang)) * r)
+	pts.append(pts[0])
+	return pts
 
 ## 雷电附着：体表程序化电弧折线（主弧 + 分叉，0.07s 随机跳变）+ 电花粒子。
 func _build_lightning_attach() -> void:
@@ -608,6 +661,10 @@ func _apply_status_visual() -> void:
 		spr.modulate = _status_tint(base, Color(0.80 + 0.30 * flick * flick2, 0.62 + 0.08 * sin(t * 13.0), 0.38 + 0.08 * sin(t * 9.0)))
 	elif _freeze_left > 0.0:
 		spr.modulate = _status_tint(base, Color(0.56 + 0.04 * sin(t * 5.0), 0.72 + 0.05 * sin(t * 4.0 + 1.0), 1.26 + 0.10 * (0.5 + 0.5 * sin(t * 3.2))))
+	elif _paralyze_left > 0.0:
+		# paralysis: 0.5s period blue-white flash (bright white <-> pale blue), paired with the stun icon
+		var f := 0.5 + 0.5 * sin(t * TAU * 2.0)
+		spr.modulate = _status_tint(base, Color(0.62 + 0.55 * f, 0.82 + 0.36 * f, 1.30 + 0.05 * f))
 	elif _blind_left > 0.0:
 		spr.modulate = _status_tint(base, Color(1.25, 1.25, 0.75))
 	elif _slow_left > 0.0 or _root_left > 0.0:

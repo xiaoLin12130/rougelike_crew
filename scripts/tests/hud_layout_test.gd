@@ -1,7 +1,8 @@
 extends SceneTree
 ## 竖版 UI 布局回归测试（headless，360x640 逻辑视口）：
 ##  - HUD：Boss 血条（顶部居中，总宽<=260，y 4..20）与资源条/波次提示不重叠；
-##    资源条压缩为单行紧凑（y>=22）；左下按钮 >=44x44、互不重叠、尊重底部安全区；
+##    资源条三行布局（①HP ②Lv/金币/DPS ③关卡，y>=22 高<=80，2026-08-10 用户要求三行）；
+##    左下按钮 >=44x44、互不重叠、尊重底部安全区；
 ##    获得提示在屏幕中下、不越界；
 ##  - 全 UI 面板：宽度 <=340、整体在 360x640 视口内、面板内按钮触控区 >=44；
 ##    升级三选一卡片纵向堆叠；构筑法术网格 2 列；法杖商店商品卡竖排；
@@ -129,8 +130,8 @@ func _assert_hud() -> void:
 		fail("Boss 血条与左上资源重叠: boss=%s res=%s" % [boss, res])
 	if boss.intersects(wave):
 		fail("Boss 血条与波次横幅重叠: boss=%s wave=%s" % [boss, wave])
-	if res.position.y < 22.0 or res.size.y > 22.0:
-		fail("资源条未压缩为单行紧凑(需 y>=22, 高<=22): " + str(res))
+	if res.position.y < 22.0 or res.size.y > 80.0:
+		fail("资源条三行布局越界(需 y>=22, 高<=80): " + str(res))
 	if res.end.x > 360.0 or res.end.y > 640.0:
 		fail("资源条越界: " + str(res))
 	if pick.position.x < -1.0 or pick.end.x > 361.0 or pick.position.y < 0.0 or pick.end.y > 640.0:
@@ -223,8 +224,19 @@ func _assert_levelup_stack() -> void:
 
 func _assert_build_grid() -> void:
 	var bp: Node = _panels[0]
-	if bp._grid_box.columns != 2:
-		fail("构筑法术网格未改为 2 列: columns=%d" % bp._grid_box.columns)
+	# 2026-08-10：PC（无触摸）5 列单行；手机 3 列两行（3+2）。
+	# headless 默认无触摸 → 期望 5 列；force_mobile(true) 后期望 3 列。
+	var expect_cols: int = 3 if UiLayout.is_mobile() else 5
+	if bp._grid_box.columns != expect_cols:
+		fail("构筑法术网格列数错误: columns=%d 期望=%d" % [bp._grid_box.columns, expect_cols])
+	# 手机模拟：force_mobile 后新建面板实例验证 3 列（3+2 两行）
+	UiLayout.force_mobile(true)
+	var bp2: Node = load("res://scenes/ui/build_panel.tscn").instantiate()
+	root.add_child(bp2)
+	if bp2._grid_box.columns != 3:
+		fail("手机模拟下构筑法术网格应为 3 列(两行): columns=%d" % bp2._grid_box.columns)
+	bp2.queue_free()
+	UiLayout.force_mobile(false)
 	if bp._detail == null:
 		fail("构筑面板缺少点击详情弹窗")
 	elif bp._detail.visible:

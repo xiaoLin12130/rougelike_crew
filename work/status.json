@@ -184,7 +184,19 @@
   "web_fast": {
    "note": "wasm gzip 39.5→10MB，web_serve.py 透明解压+强缓存，8125 单监听",
    "status": "done"
+  },
+  "core_shell_audit": {
+   "status": "done",
+   "note": "readonly audit: 15 cores x 10 shells = 150 combos checked; doc written to docs/design/core_shell_audit.md; ok=49 half=55 invalid=35 conflict=11; top bugs: pierce/bounce dead on aoe cores (first-hit explode), whirl_blade orbit overridden to 4.0, whirl split minis at 1px/s, special cores only consume damage_mult, burst aoe_mult dead on flash/special cores, explode/dot fields dead everywhere, mana_echo self-slot pseudo-reset"
+  },
+  "core_shell_fix": {
+   "status": "done",
+   "note": "25条清单全部处置：①组合池过滤(_invalid_combo: 狂暴/回响×全部、传送/反制/圣光仅burst/delay/drain、召唤仅rapid+burst/delay、旋风刃×orbit/split/homing/pierce/bounce、瞬发核×homing/pierce/bounce/orbit过滤，8次重抽+原生兜底)；②赋予语义：召唤×连发=按shots多召、瞬发核×连发=24°扇形分散落点(毒雾3团)、旋风刃×连发/齐射=刃数=shots、AOE核×穿透/弹射=爆炸后弹体保留继续飞(消耗次数)、AOE核×环绕=轨道接触爆炸保留弹体、旋风刃×爆发=刀刃接触爆炸、闪光盲爆×aoe_mult、特殊核半径×aoe_mult+吸血回血；③bug修复：分裂小弹速度<240用保底240(1px/s蠕动)、小弹继承核心状态、AOE直击接触敌人漏伤修复；④死字段：explode已接消费点、dot确认死字段标注。test_core_shell.gd全绿(池过滤200抽+多召+扇形落点+小弹速度+穿透续飞+盲爆半径)，smoke/core_mechanics/sync_hooks/wand_fix/summon_ext回归全绿；test_build_mech为既有概率型flaky(雷M9随机落雷/lucky_clover阈值)与本次改动无关"
+  },
+  "school_fill_ice_summon": {
+   "status": "done",
+   "note": "??/?????????items.json ?? 8 ??????ice_glacier_heart/ice_frozen_domain/ice_chrono_frost/ice_glacial_haste + summon_war_banner/summon_death_knight/summon_graveyard_keep/summon_overlord_edict??? 25 ???10?11?4???? 25 ???10?11?4??tag ?????ice/summon/area/cooldown/attack_speed/atk/skill_dmg?+ ice_/summon_ ?????? + mechanic:ice_mN/summon_mN ????????????8 ?????????????test_curves.py ????????????20/?? 8+8+4/?????????/?????ALL PASS?smoke_test SMOKE OK?test_sync_hooks SYNC HOOKS OK?test_build_mech/test_form_tiers ???????????"
   }
  },
- "updated": "2026-08-10-round6+sync_hooks"
+ "updated": "2026-08-10-school_fill_ice_summon"
 }
