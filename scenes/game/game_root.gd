@@ -384,6 +384,8 @@ func _on_player_hit(dmg: int, pos: Vector2) -> void:
 	# 防御流成型奖励（synergy_bonus.defense）单独附加到反弹比例上。
 	taken *= 1.0 - stone - amulet
 	taken *= 1.0 + 0.15 * GameState.total_stacks("curse_ring")
+	# 移M10 暴走：受击伤害 +20%（run.wind_m10_taken_mult 读取点接线）
+	taken *= maxf(float(GameState.run.get("wind_m10_taken_mult", 1.0)), 0.0)
 	var taken_int := int(taken)
 	# 荆棘甲改造：反弹所受伤害给攻击者（近战敌人直接受伤）
 	var reflect_pct: float = GameState.item_value(

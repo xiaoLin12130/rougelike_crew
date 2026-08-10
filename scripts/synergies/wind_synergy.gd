@@ -495,18 +495,14 @@ func _tick_kill_speed(dt: float) -> void:
 
 
 ## ===== 移速→攻速联动（移2 联动系数 + 移5 疾风术架 + 移M2/移M10）=====
+## G1/G2 收敛：不再写入 run.attack_speed_bonus（该字段仅 game_state 聚合写入），
+## 只写本脚本读取点（wind_as_bonus 等），消费端（spell_caster/melee_attack）求和。
 func _sync_as() -> void:
 	if GameState == null or not (GameState.run is Dictionary):
 		return
-	var base_as := 0.0
-	if GameState.has_method("aggregate_bonus"):
-		base_as = maxf(float(GameState.aggregate_bonus("attack_speed")), 0.0)
 	var desired := _as_desired()
-	var stored := float(GameState.run.get("attack_speed_bonus", 0.0))
-	var mine := stored - base_as
-	if absf(desired - mine) < 0.0005 and absf(_as_bonus - desired) < 0.0005:
+	if absf(desired - _as_bonus) < 0.0005:
 		return
-	GameState.run.attack_speed_bonus = maxf(stored + (desired - mine), 0.0)
 	_as_bonus = desired
 	GameState.run.wind_as_bonus = desired
 	GameState.run.wind_link_as = _link_as()
@@ -517,7 +513,9 @@ func _sync_as() -> void:
 
 func _as_desired() -> float:
 	var d := _link_as()
-	d += _curve_value(N5)                                ## 移5 疾风术架
+	## 0 层泄漏守卫：item_value(linear) 在 0 层返回 base，不守卫会白送 8% 攻速
+	if _stacks(N5) > 0:
+		d += _curve_value(N5)                            ## 移5 疾风术架
 	d += _m2_bonus                                       ## 移M2 踏风
 	if _berserk:
 		d += M10_AS                                     ## 移M10 暴走
@@ -540,7 +538,8 @@ func _sync_read_points() -> void:
 	GameState.run.wind_speed_crit = tiers * _curve_value(N7)           ## 移7 顺风
 	GameState.run.wind_speed_area = tiers * _curve_value(N8)           ## 移8 踏浪
 	GameState.run.wind_cd_mult = maxf(1.0 - 0.05 * float(_stacks(N9)), 0.5)  ## 移9 迅捷
-	GameState.run.wind_speed_cap_bonus = _curve_value(N10)             ## 移10 风行者
+	## 0 层泄漏守卫：0 层时曲线返回 base，不守卫会把默认移速上限抬到 1.2
+	GameState.run.wind_speed_cap_bonus = _curve_value(N10) if _stacks(N10) > 0 else 0.0  ## 移10 风行者
 	GameState.run.wind_m9_slow_chance = _m9_chance(_stacks(M9))        ## 移M9
 	GameState.run.wind_fast_moving = _fast_moving(_fget_vel(_player())) ## 供 HUD/其他系统
 
@@ -559,7 +558,9 @@ func _on_move(ctx: Dictionary) -> void:
 	_on_m8(ctx)
 
 
-## 当前移速加成口径：聚合（含移1 疾风靴）+ 追风 + 破风（与 player._move_speed 最终公式一致）
+## 当前移速加成口径：聚合（含移1 疾风靴）+ 追风 + 破风，封顶 100%；
+## 移10 风行者提升移速上限（wind_speed_cap_bonus）——与 player._move_speed 最终公式一致
+## （暴走/追风猎手/顺风等阈值系统共用此口径，避免"脚本算高、玩家跑慢"的错位）。
 func _speed_bonus() -> float:
 	if GameState == null or not (GameState.run is Dictionary):
 		return 0.0
@@ -568,7 +569,8 @@ func _speed_bonus() -> float:
 		s = maxf(float(GameState.aggregate_bonus("speed")), 0.0)
 	s += maxf(float(GameState.run.get("wind_kill_speed_bonus", 0.0)), 0.0)
 	s += maxf(float(GameState.run.get("wind_m6_speed_bonus", 0.0)), 0.0)
-	return s
+	var cap := 1.0 + maxf(float(GameState.run.get("wind_speed_cap_bonus", 0.0)), 0.0)
+	return minf(s, cap)
 
 
 func _move_speed() -> float:

@@ -132,8 +132,9 @@ func _on_m2(ctx: Dictionary) -> void:
 	var add := _m2_bonus - old
 	if add <= 0.0:
 		return
-	GameState.run.attack_speed_bonus = float(GameState.run.get("attack_speed_bonus", 0.0)) + add
-	GameState.run.fire_m2_atk_speed = _m2_bonus  ## 主线程接线点（攻速生效处可改读此值）
+	## G1/G2 收敛：不再写入 run.attack_speed_bonus（该字段仅 game_state 聚合写入），
+	## 只写本脚本读取点 fire_m2_atk_speed，由消费端（spell_caster/melee_attack）求和。
+	GameState.run.fire_m2_atk_speed = _m2_bonus
 	EventBus.player_stats_changed.emit()
 
 
@@ -148,8 +149,6 @@ func _tick_m2(delta: float) -> void:
 func _clear_m2() -> void:
 	if _m2_bonus <= 0.0:
 		return
-	var cur := float(GameState.run.get("attack_speed_bonus", 0.0))
-	GameState.run.attack_speed_bonus = maxf(cur - _m2_bonus, 0.0)
 	GameState.run.fire_m2_atk_speed = 0.0
 	_m2_bonus = 0.0
 	EventBus.player_stats_changed.emit()

@@ -230,10 +230,25 @@ func _icon_slot(def: Dictionary, count: int, tooltip: String) -> Control:
 		badge.add_theme_constant_override("outline_size", 3)
 		badge.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		box.add_child(badge)
+	var active: Array = []
+	var holdings: Dictionary = GameState.school_holdings()
+	for s in GameState.schools_of_item(def):
+		if int(holdings.get(s, 0)) >= 2:
+			active.append(GameState.SCHOOL_NAMES.get(s, s))
+	if not active.is_empty():
+		var syn := UiTheme.label("联动", 8, Color("#8fe89a"))
+		syn.set_anchors_preset(Control.PRESET_TOP_LEFT)
+		syn.position = Vector2(2, -4)
+		syn.add_theme_color_override("font_outline_color", Color(0, 0, 0, 1))
+		syn.add_theme_constant_override("outline_size", 3)
+		syn.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		box.add_child(syn)
 	var title := str(def.get("name", "?"))
 	var body := str(def.get("description", ""))
 	if count > 1:
 		title = "%s ×%d" % [title, count]
+	if not active.is_empty():
+		body = body + "\n联动：" + "、".join(active) + " 已激活"
 	box.gui_input.connect(func(ev: InputEvent):
 		if ev is InputEventMouseButton and ev.pressed and ev.button_index == MOUSE_BUTTON_LEFT:
 			_show_detail(title, body))

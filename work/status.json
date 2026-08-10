@@ -1,166 +1,190 @@
 {
  "phase": "demo-polish",
- "updated": "2026-08-10-round5",
  "tasks": {
-  "core_gameplay": {
-   "status": "done",
-   "note": "5关+Boss+抉择循环+最终Boss，旧配置自动通关VICTORY"
-  },
-  "save_system": {
-   "status": "done",
-   "note": "10s自动存档+继续恢复+波次续接，headless已验证"
-  },
-  "camera_and_map": {
-   "status": "done",
-   "note": "地图1280x720+相机跟随+墙碰撞（角色不可出屏）"
-  },
-  "boss_hpbar": {
-   "status": "done",
-   "note": "HUD大血条+头顶血条，test_boss全绿"
-  },
-  "enemy_skills": {
-   "status": "done",
-   "note": "4新怪+7技能+防重叠+分裂防循环+清场兜底"
-  },
-  "hud_item_bar": {
-   "status": "done",
-   "note": "物品栏文字化(名称+×N)+获得提示飘字，已改未导出"
+  "autoplay_verify": {
+   "note": "3局2胜VICTORY(793s/837s/158s-DEFEAT)：bot构筑打分+预判瞄准+Boss绕圈集火+躲圈/周期闪+直取古神；波次压缩40%、远古守卫追击+20%、树精root_zone/bark回调；古神18.6k血约2分钟击杀",
+   "status": "done"
   },
   "balance_retune": {
+   "note": "远程怪回调（imp/弓手攻速数量↓、受击保护0.6s），待autoplay验证",
+   "status": "done"
+  },
+  "boss_assets_gen": {
    "status": "done",
-   "note": "远程怪回调（imp/弓手攻速数量↓、受击保护0.6s），待autoplay验证"
+   "note": "3 ?? Boss ???boss_tree_golem_new / boss_ancient_guardian_new / boss_final_god_new???+??+Godot import ???enemies.json ??? boss_tex_fix_queue ????"
   },
-  "autoplay_verify": {
-   "status": "in_progress",
-   "note": "Euler: L5??????+bot???????3?2?VICTORY"
-  },
-  "export_v6": {
-   "status": "done",
-   "note": "2026-08-10 14:08 ?? + gz ???????????????? gz?"
-  },
-  "git_push": {
-   "status": "pending",
-   "note": "本轮改动未提交"
-  },
-  "issues_update": {
-   "status": "pending",
-   "note": "issues #1-#6 状态待更新"
-  },
-  "desc_leak_fix": {
-   "status": "done",
-   "note": "???????? summon.gd ?????? debuff/CD ???????????????Web ?????20:43??8125 ???"
-  },
-  "fx_shape": {
-   "status": "done",
-   "note": "12 元素形态化（雷云闪电/火柱/冰晶/涟漪/光柱/黑洞/弧斩/钱雨等），已导出"
-  },
-  "fx_tier": {
-   "status": "done",
-   "note": "特效分级 cast/hit/explode，普通弹道不再全爆炸"
-  },
-  "status_attach": {
-   "status": "done",
-   "note": "怪物状态附着：燃烧火焰/水流/电弧/冰壳/毒泡/减速雾"
-  },
-  "summon_fix": {
-   "status": "done",
-   "note": "召唤按指定类型+上限判断；火球30%点燃/水弹30%减速/冰锥50%减速"
-  },
-  "desc_consistency": {
-   "status": "done",
-   "note": "描述与实现全检：修复记忆疾风/破军/冷却聚合/旋风刃改环绕；发现14件无效道具待修"
-  },
-  "telegraph_fix": {
-   "status": "done",
-   "note": "Boss预告圈=伤害区：ring_barrage改发射点小圈、charge线长修正、beam宽度色带"
-  },
-  "telegraph_all_boss_fix": {
-   "status": "done",
-   "note": "?Boss???????leap?????+???(??clamp????)?eruption/meteor???????????root_zone???????test_boss_skills???Boss??????==???? ALL PASS????+gz????8125???"
-  },
-  "spell_full_replace": {
-   "status": "done",
-   "note": "技能栏满时三选一仍出技能，选中弹替换界面"
-  },
-  "fx_radius_visual": {
-   "status": "done",
-   "note": "范围变大特效同步缩放（fx_explosion_scaled）"
-  },
-  "dot_damage_text": {
-   "status": "done",
-   "note": "中毒/燃烧 DOT 彩色伤害飘字（绿/橙）"
-  },
-  "pending_items_broken": {
-   "status": "pending",
-   "note": "14 件无效道具待修：bounce_mirror/frost_charm/magnet/gold_pouch/xp_book/lucky_clover/ember_ring/lava_amulet/fear_word/defense_life_crystal/defense_stone_skin/thunder_10/water_tide_power/storm_cloud/venom_flask/trinket_frost/trinket_storm/crit_deadly_rhythm"
-  },
-  "web_fast": {
-   "status": "done",
-   "note": "wasm gzip 39.5→10MB，web_serve.py 透明解压+强缓存，8125 单监听"
-  },
-  "gold_economy": {
-   "status": "done",
-   "note": "小怪1-3金/Boss 40-300/法杖+40%/强化系统(200起+8%/级)/gold_pouch+10%"
+  "boss_hpbar": {
+   "note": "HUD大血条+头顶血条，test_boss全绿",
+   "status": "done"
   },
   "boss_model": {
-   "status": "done",
-   "note": "4 Boss 换 Retro 96px 大图，size 折算+自动居中"
+   "note": "4 Boss 换 Retro 96px 大图，size 折算+自动居中",
+   "status": "done"
   },
-  "melee_build": {
-   "status": "done",
-   "note": "常驻近战攻击 melee_attack.gd：自动索敌/攻速联动/钩子触发/melee 流派成型"
+  "boss_tex_fix_queue": {
+   "note": "??????: ???????gen/boss_slime_king ?????? ?boss_2??move??(??????) ?boss_3????? ?tree_golem/lava_golem/ancient_guardian??????????(?????)??Euler??enemies.json????",
+   "status": "pending"
   },
   "broken_items": {
-   "status": "done",
-   "note": "11件无效道具修复+0层泄漏守卫+fear_word cap 0.25+构筑筛选(无元素技能不给元素构筑)"
+   "note": "11件无效道具修复+0层泄漏守卫+fear_word cap 0.25+构筑筛选(无元素技能不给元素构筑)",
+   "status": "done"
+  },
+  "camera_and_map": {
+   "note": "地图1280x720+相机跟随+墙碰撞（角色不可出屏）",
+   "status": "done"
+  },
+  "core_gameplay": {
+   "note": "5关+Boss+抉择循环+最终Boss，旧配置自动通关VICTORY",
+   "status": "done"
   },
   "crit_m3_fix": {
-   "status": "done",
-   "note": "非暴击不结算连击加成直接重置"
+   "note": "非暴击不结算连击加成直接重置",
+   "status": "done"
   },
-  "levelup_deadlock": {
-   "status": "done",
-   "note": "满格替换卡死修复：hide+防重入+create_timer(0.1,true)暂停期计时+8s超时兜底"
+  "desc_consistency": {
+   "note": "描述与实现全检：修复记忆疾风/破军/冷却聚合/旋风刃改环绕；发现14件无效道具待修",
+   "status": "done"
   },
-  "ios_joystick": {
-   "status": "done",
-   "note": "升级后摇杆残留修复：reset_state+deferred重置+弹出前reset"
+  "desc_leak_fix": {
+   "note": "???????? summon.gd ?????? debuff/CD ???????????????Web ?????20:43??8125 ???",
+   "status": "done"
   },
-  "playbook_update": {
-   "status": "done",
-   "note": "11条新踩坑写入 H:\u0007i-playbook\\projects\rougelike_crew.md"
+  "dot_damage_text": {
+   "note": "中毒/燃烧 DOT 彩色伤害飘字（绿/橙）",
+   "status": "done"
   },
-  "plan_sync_v1": {
-   "status": "confirmed",
-   "note": "?????????????3/6/9???55??????+?????????????"
+  "enemy_skills": {
+   "note": "4新怪+7技能+防重叠+分裂防循环+清场兜底",
+   "status": "done"
   },
-  "wand_expand": {
-   "status": "done",
-   "note": "55 把法杖（11 流派 x5，含学徒法杖 basic_wand）落地；商店稀有度加权 + 幸运联动（lucky=10 传说概率 8%->15.5%）；tools/tests/test_wands.py 全绿；Godot headless 3 项测试 OK"
-  },
-  "sync_audit": {
-   "status": "done",
-   "note": "Russell: 缺口审计完成→docs/design/流派机制缺口审计.md。机制110项: 96落地/6部分/8未落地(暴击6+移速2); 数值2失效(冰1/召1); 攻速/移速读取点待接线"
-  },
-  "melee_clover_leak": {
-   "status": "pending",
-   "note": "Ramanujan??: melee_attack.gd?????0???(4%??)"
-  },
-  "spell_replace_deadlock": {
-   "status": "done",
-   "note": "??=GDScript lambda????: _wait_replace_choice?on_choice????????while????????+????_on_replace_choice?diag_replace2.tscn??OK?8s????"
-  },
-  "joystick_fullscreen_move": {
-   "status": "done",
-   "note": "??A: ????????(?/?/??move)???????(??????)??????????????????diag_joystick.tscn ALL OK"
-  },
-  "icon_audit": {
-   "status": "done",
-   "note": "readonly audit: spells/items/wands/summons icons checked; doc written to docs/design/??????????.md; 13 issues (P0x2 covering 109 refs, P1x6, P2x5); no missing paths; top: 108 items share glow.png, whirl_blade shows placeholder cube"
+  "export_v6": {
+   "note": "2026-08-10 14:08 ?? + gz ???????????????? gz?",
+   "status": "done"
   },
   "export_v7": {
+   "note": "2026-08-10 ??+gz???????+????A?",
+   "status": "done"
+  },
+  "form_tiers": {
+   "note": "A2流派成型反馈三件套完成：①GameState.school_holdings()/schools_of_item()流派计数(12流派tag+法术核心)；②hud成型横幅3/6/9每档一次(顶部居中2s渐隐)；③levelup_overlay/build_panel联动标签(第2+件,含spell_part解析)；④fx_manager毒爆扩散波/碎冰冰屑/电弧震屏(强度随件数)/召唤物光环3/6/9；⑤test_form_tiers.gd ALL PASS + smoke OK；hud_layout仅基线既有资源条断言失败",
+   "status": "done"
+  },
+  "fx_radius_visual": {
+   "note": "范围变大特效同步缩放（fx_explosion_scaled）",
+   "status": "done"
+  },
+  "fx_shape": {
+   "note": "12 元素形态化（雷云闪电/火柱/冰晶/涟漪/光柱/黑洞/弧斩/钱雨等），已导出",
+   "status": "done"
+  },
+  "fx_tier": {
+   "note": "特效分级 cast/hit/explode，普通弹道不再全爆炸",
+   "status": "done"
+  },
+  "git_push": {
+   "note": "本轮改动未提交",
+   "status": "pending"
+  },
+  "gold_economy": {
+   "note": "小怪1-3金/Boss 40-300/法杖+40%/强化系统(200起+8%/级)/gold_pouch+10%",
+   "status": "done"
+  },
+  "hud_item_bar": {
+   "note": "物品栏文字化(名称+×N)+获得提示飘字，已改未导出",
+   "status": "done"
+  },
+  "icon_audit": {
+   "note": "readonly audit: spells/items/wands/summons icons checked; doc written to docs/design/??????????.md; 13 issues (P0x2 covering 109 refs, P1x6, P2x5); no missing paths; top: 108 items share glow.png, whirl_blade shows placeholder cube",
+   "status": "done"
+  },
+  "icon_dedup_impl": {
+   "note": "??????(?Hypatia??items.json???)",
+   "status": "pending"
+  },
+  "icon_dedup_plan": {
    "status": "done",
-   "note": "2026-08-10 ??+gz???????+????A?"
+   "note": "图标去重方案：212 道具改图+核心2/外壳3，glow 引用归零，全素材≤3；文档 docs/design/图标去重分配方案.md"
+  },
+  "ios_joystick": {
+   "note": "升级后摇杆残留修复：reset_state+deferred重置+弹出前reset",
+   "status": "done"
+  },
+  "issues_update": {
+   "note": "issues #1-#6 状态待更新",
+   "status": "pending"
+  },
+  "joystick_fullscreen_move": {
+   "note": "??A: ????????(?/?/??move)???????(??????)??????????????????diag_joystick.tscn ALL OK",
+   "status": "done"
+  },
+  "levelup_deadlock": {
+   "note": "满格替换卡死修复：hide+防重入+create_timer(0.1,true)暂停期计时+8s超时兜底",
+   "status": "done"
+  },
+  "melee_build": {
+   "note": "常驻近战攻击 melee_attack.gd：自动索敌/攻速联动/钩子触发/melee 流派成型",
+   "status": "done"
+  },
+  "melee_clover_leak": {
+   "note": "Ramanujan??: melee_attack.gd?????0???(4%??)",
+   "status": "pending"
+  },
+  "pending_items_broken": {
+   "note": "14 件无效道具待修：bounce_mirror/frost_charm/magnet/gold_pouch/xp_book/lucky_clover/ember_ring/lava_amulet/fear_word/defense_life_crystal/defense_stone_skin/thunder_10/water_tide_power/storm_cloud/venom_flask/trinket_frost/trinket_storm/crit_deadly_rhythm",
+   "status": "pending"
+  },
+  "plan_sync_v1": {
+   "note": "?????????????3/6/9???55??????+?????????????",
+   "status": "confirmed"
+  },
+  "playbook_update": {
+   "note": "11条新踩坑写入 H:\u0007i-playbook\\projects\rougelike_crew.md",
+   "status": "done"
+  },
+  "save_system": {
+   "note": "10s自动存档+继续恢复+波次续接，headless已验证",
+   "status": "done"
+  },
+  "spell_full_replace": {
+   "note": "技能栏满时三选一仍出技能，选中弹替换界面",
+   "status": "done"
+  },
+  "spell_replace_deadlock": {
+   "note": "??=GDScript lambda????: _wait_replace_choice?on_choice????????while????????+????_on_replace_choice?diag_replace2.tscn??OK?8s????",
+   "status": "done"
+  },
+  "status_attach": {
+   "note": "怪物状态附着：燃烧火焰/水流/电弧/冰壳/毒泡/减速雾",
+   "status": "done"
+  },
+  "summon_fix": {
+   "note": "召唤按指定类型+上限判断；火球30%点燃/水弹30%减速/冰锥50%减速",
+   "status": "done"
+  },
+  "sync_audit": {
+   "note": "Russell: 缺口审计完成→docs/design/流派机制缺口审计.md。机制110项: 96落地/6部分/8未落地(暴击6+移速2); 数值2失效(冰1/召1); 攻速/移速读取点待接线",
+   "status": "done"
+  },
+  "sync_hooks": {
+   "note": "P0+P1 流派机制接线：G3 暴击6道具(crit_crit_bounce/weak_mark/execute/headhunter/lethal_blow/crit_storm)；G1+G2 攻速全局接线(施法冷却同近战公式，fire/melee/wind改只写各自run.xxx_bonus，消费端求和，修复移5/移10零层泄漏)；移M4弹数/移M7弹幕伤害/移9冷却/移7暴击/移8范围读取点；冰1经tag聚合验证；召1上限=summon_1+summon_book+1；trinket_ember火伤+25%；player移速聚合(追风/破风/风行者上限/水M7洋流)；game_root暴走受击×1.2。test_sync_hooks全绿，smoke/build_mech/summon_ext/core/wand_fix均OK",
+   "status": "done"
+  },
+  "telegraph_all_boss_fix": {
+   "note": "?Boss???????leap?????+???(??clamp????)?eruption/meteor???????????root_zone???????test_boss_skills???Boss??????==???? ALL PASS????+gz????8125???",
+   "status": "done"
+  },
+  "telegraph_fix": {
+   "note": "Boss预告圈=伤害区：ring_barrage改发射点小圈、charge线长修正、beam宽度色带",
+   "status": "done"
+  },
+  "wand_expand": {
+   "note": "55 把法杖（11 流派 x5，含学徒法杖 basic_wand）落地；商店稀有度加权 + 幸运联动（lucky=10 传说概率 8%->15.5%）；tools/tests/test_wands.py 全绿；Godot headless 3 项测试 OK",
+   "status": "done"
+  },
+  "web_fast": {
+   "note": "wasm gzip 39.5→10MB，web_serve.py 透明解压+强缓存，8125 单监听",
+   "status": "done"
   }
- }
+ },
+ "updated": "2026-08-10-round6+sync_hooks"
 }

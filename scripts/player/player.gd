@@ -77,10 +77,20 @@ func _physics_process(delta: float) -> void:
 	SynergyRegistry.trigger("player_move", {"player": self, "velocity": velocity, "delta": delta})
 
 
-## 速度 = balance.player.speed × (1 + 移速聚合加成)。
+## 速度 = balance.player.speed × (1 + 移速加成) × 水M7 洋流乘区。
+## 移速加成聚合（P1 接线）：基础 aggregate_bonus("speed") + 移4 追风（击杀短暂加成）
+## + 移6 破风（冲刺后加成），封顶 100%（移10 风行者提升上限 wind_speed_cap_bonus，
+## 与 wind_synergy._speed_bonus 口径一致）；水M7 洋流（water_ocean_current 在水泽区域）
+## 为独立乘区 run.water_m7_speed。
 func _move_speed() -> float:
 	var base: float = GameState.balance().get("player", {}).get("speed", 220.0)
-	return base * (1.0 + GameState.aggregate_bonus("speed"))
+	var bonus := maxf(GameState.aggregate_bonus("speed"), 0.0)
+	bonus += maxf(float(GameState.run.get("wind_kill_speed_bonus", 0.0)), 0.0)
+	bonus += maxf(float(GameState.run.get("wind_m6_speed_bonus", 0.0)), 0.0)
+	var cap := 1.0 + maxf(float(GameState.run.get("wind_speed_cap_bonus", 0.0)), 0.0)
+	var speed := base * (1.0 + minf(bonus, cap))
+	speed *= maxf(float(GameState.run.get("water_m7_speed", 1.0)), 0.1)
+	return speed
 
 
 func _dash_speed() -> float:

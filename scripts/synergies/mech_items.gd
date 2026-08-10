@@ -2,6 +2,7 @@ extends Node
 ## N2 通用道具机制（无效道具修复集中营，只新增不改既有语义）：
 ## - trinket_frost 霜之心：冰霜伤害 +25%/层，冻结时间 +0.3s/层
 ## - trinket_storm 雷核：雷电伤害 +25%/层（落雷翻倍在 thunder_synergy）
+## - trinket_ember 余烬坠饰：火焰伤害 +25%/层
 ## - fire_lava_amulet 熔岩护符：火焰命中附带生命上限 0.5%/层 真伤（上限 5%）
 ## - defense_stone_skin 石肤：受到伤害 -10%/层（上限 35%），player_hit 钩子侧补结
 ## - curse_fear_word 恐惧咒：受到伤害 -8%/层，player_hit 钩子侧补结
@@ -9,6 +10,7 @@ extends Node
 
 const TRINKET_FROST := "trinket_frost"
 const TRINKET_STORM := "trinket_storm"
+const TRINKET_EMBER := "trinket_ember"
 const TRINKET_DMG := 0.25      ## 饰品同系伤害 +25%/件
 const FREEZE_EXTRA := 0.3      ## 霜之心冻结 +0.3s/件
 
@@ -51,6 +53,9 @@ func _on_projectile_hit(ctx: Dictionary) -> void:
 	var ts := _trinket_count(TRINKET_STORM)
 	if ts > 0 and element == "lightning":
 		_extra_damage(enemy, maxi(roundi(float(dmg) * TRINKET_DMG * float(ts)), 1), "lightning")
+	var te := _trinket_count(TRINKET_EMBER)
+	if te > 0 and element == "fire":
+		_extra_damage(enemy, maxi(roundi(float(dmg) * TRINKET_DMG * float(te)), 1), "fire")
 	if element == "fire" and GameState != null:
 		var lava := GameState.item_def("fire_lava_amulet")
 		var lava_stacks := GameState.total_stacks("fire_lava_amulet")

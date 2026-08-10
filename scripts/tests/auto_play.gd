@@ -58,8 +58,6 @@ func _process(_delta: float) -> void:
 	var scene := get_tree().current_scene
 	if scene == null:
 		return
-	if _handle_overlays(scene):
-		return
 	if GameState.run.time > 1500.0:
 		print("[AUTOPLAY] TIMEOUT kills=", GameState.run.kills, " level=", GameState.run.level)
 		var p2 := get_tree().get_first_node_in_group("player") as Node2D
@@ -73,6 +71,8 @@ func _process(_delta: float) -> void:
 			GameState.run.kills, GameState.run.level, GameState.run.hp,
 			str(p2.global_position) if p2 else "?", kinds2])
 		get_tree().quit(2)
+		return
+	if _handle_overlays(scene):
 		return
 	_drive_player()
 	if GameState.run.time - _last_report > 5.0:
@@ -150,12 +150,14 @@ func _handle_overlays(scene: Node) -> bool:
 	if ws and ws.visible:
 		# 法杖商店：买最贵的可负担法杖（含 3 把上限替换），否则直接离开
 		ws.call("autoplay_handle")
-		# 剩余金币升级主力法杖（每级 +8% 伤害，200 金起）
-		var wids: Array = GameState.current_wands()
-		if not wids.is_empty():
-			for _i in 3:
-				if not GameState.upgrade_wand(str(wids[0])):
-					break
+		# 商店已关闭（购买完成）后用剩余金币升级主力法杖（每级 +8% 伤害）；
+		# 替换模式未结束前不花钱，避免金不足导致商店卡死
+		if not ws.visible:
+			var wids: Array = GameState.current_wands()
+			if not wids.is_empty():
+				for _i in 3:
+					if not GameState.upgrade_wand(str(wids[0])):
+						break
 		_log_line("[AUTOPLAY] wand shop handled")
 		return true
 	var sr := scene.get_node_or_null("SpellReplace")
@@ -223,6 +225,16 @@ func _is_boss(e: Node) -> bool:
 		if str(b.get("id", "")) == eid:
 			return true
 	return false
+
+func _led_aim_at(target: Node2D, from: Vector2, proj_speed: float = 330.0) -> Vector2:
+	## 预判提前量瞄准：Boss 追着玩家直线移动，直瞄会系统性落后（命中率暴跌）
+	var to_t: Vector2 = target.global_position - from
+	var lead := Vector2.ZERO
+	var bv = target.get("velocity")
+	if bv is Vector2:
+		var flight := maxf(to_t.length() / proj_speed, 0.1)
+		lead = bv * flight
+	return (to_t + lead).normalized()
 
 func _core_def(core_id: String) -> Dictionary:
 	for c in GameState.tables.get("spells", {}).get("cores", []):
@@ -450,19 +462,17 @@ func _drive_player() -> void:
 	else:
 		if aim_target != null:
 			aim = (aim_target.global_position - player.global_position).normalized()
-		# Boss 在场时优先集火 Boss（Boss 战拖沓的根因：伤害全被小怪分摊）
-		if boss_present != null and boss_present != nearest:
-			var add_dist := INF
-			for e in enemies:
-				if is_instance_valid(e) and e != boss_present:
-					add_dist = minf(add_dist, player.global_position.distance_to(e.global_position))
-			if add_dist > 40.0:
-				aim = (boss_present.global_position - player.global_position).normalized()
+		# Boss 在场时优先集火 Boss（Boss 战拖沓的根因：伤害全被小怪分摊）；
+		# 血量充足时无视贴脸小怪，靠闪避/溅射顺带清场；残血才转防御
+		if boss_present != null and boss_present != nearest \
+				and GameState.run.hp >= GameState.run.max_hp * 0.35:
+			aim = _led_aim_at(boss_present, player.global_position)
 		if boss_fight:
 			# Boss 战：保持 150-210 距离绕 Boss 转圈（不贴墙角），光柱/弹幕靠走位与闪避
 			var to_boss: Vector2 = boss_present.global_position - player.global_position
 			var bd: float = to_boss.length()
 			var tangent: Vector2 = Vector2(-to_boss.y, to_boss.x).normalized()
+			side = tangent  # 供 mv 归零时兜底沿切线绕行
 			if _frames % 300 < 150:
 				tangent = -tangent  # 每 5s 换向，避免单侧绕圈
 			var radial := 0.15
@@ -481,7 +491,7 @@ func _drive_player() -> void:
 				elif bd < 150.0:
 					radial = -0.9
 			mv = tangent * 0.75 + to_boss.normalized() * radial
-			aim = to_boss.normalized()
+			aim = _led_aim_at(boss_present, player.global_position)
 		else:
 		# 敌群质心：从质心反方向逃跑，避免"逃离最近却被包围"
 			var centroid := Vector2.ZERO
@@ -532,7 +542,7 @@ func _drive_player() -> void:
 			if pd < pack_dist:
 				pack_dist = pd
 				pack = pk
-		if pack != null and pack_dist <= 260.0:
+		if pack != null and pack_dist <= 260.0 and pack_dist >= 30.0:
 			mv = (pack.global_position - player.global_position).normalized()
 			if nearest != null:
 				aim = (nearest.global_position - player.global_position).normalized()
@@ -613,15 +623,17 @@ func _drive_player() -> void:
 	InputRouter.aim_override = aim
 	# 近身(≤70px)必闪；低血量时更积极
 	var dash_now: bool = nearest_dist < 70.0 if nearest != null else false
-	# Boss 光柱/冲锋预警（line 型 telegraph）→ 短闪避（无敌帧），带冷却防连按
+	# Boss 战周期性短闪（无敌帧覆盖弹幕环/跳跃圈），光柱预警时立即闪
 	if boss_fight and _boss_dash_cd <= 0.0:
 		var tgs = boss_present.get("_telegraphs")
+		var beam_now := false
 		if tgs is Array:
 			for t in tgs:
 				if str(t.get("kind", "")) == "line":
-					dash_now = true
-					_boss_dash_cd = 1.5
+					beam_now = true
 					break
+		dash_now = true
+		_boss_dash_cd = 1.2 if beam_now else 1.8
 	if GameState.run.hp < 40:
 		dash_now = dash_now or near_count >= 1
 	if dash_now and not _dash_pressed:

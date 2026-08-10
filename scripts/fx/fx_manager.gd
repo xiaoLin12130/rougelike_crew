@@ -313,6 +313,8 @@ var _dps_tier := 0
 var _tier_timer := 0.0
 var _kill_times: Array[float] = []
 var _firework_timer := 0.0
+var _aura_timer := 0.0
+var _summon_auras: Dictionary = {}  # summon instance_id -> aura Node2D
 
 func _ready() -> void:
 	EventBus.fx_explosion.connect(_on_fx_explosion)
@@ -350,6 +352,11 @@ func _process(delta: float) -> void:
 			EventBus.fx_explosion.emit(Vector2(randf_range(100, 1180), randf_range(80, 640)), "gold")
 			if _dps_tier >= 3:
 				EventBus.fx_explosion.emit(Vector2(randf_range(100, 1180), randf_range(80, 640)), "lightning")
+	# A2 summon aura: refresh tier every 0.5s by summon school holdings (3/6/9)
+	_aura_timer -= delta
+	if _aura_timer <= 0.0:
+		_aura_timer = 0.5
+		_refresh_summon_auras()
 
 ## 施法瞬间（fx_cast）：1 个小型 muzzle 闪光 + 2~4 粒元素小粒子沿施法方向喷出；
 ## 无扩散环无烟雾，寿命 0.15~0.3s。
@@ -392,7 +399,15 @@ func _play_explosion(pos: Vector2, kind: String, scale_mult: float) -> void:
 	# 4. 扩散环（程序化 Line2D，tween 缩放 + 淡出；可用 ring_color 覆盖环色）
 	_spawn_ring(pos, recipe.get("ring_color", color), recipe.get("ring", [RING_SCALE, RING_DURATION, 2.0]), scale_mult)
 	# 爆炸 0.1s 后触发小威力震屏
-	get_tree().create_timer(0.1).timeout.connect(_emit_small_shake)
+	var shake_power := SHAKE_SMALL
+	if kind == "lightning":
+		shake_power = SHAKE_SMALL + 1.2 * float(_school_holdings_of("lightning"))
+	get_tree().create_timer(0.1).timeout.connect(_emit_shake.bind(shake_power))
+	match kind:
+		"poison":
+			_spawn_poison_diffusion(pos, color, scale_mult)
+		"ice":
+			_spawn_ice_shards(pos, color, scale_mult)
 
 ## 中心闪光：单粒 CPUParticles2D，加法混合，scale 曲线扩张 + color_ramp 淡出。
 func _spawn_flash(pos: Vector2, color: Color, tex_name: String, scale_min: float = 0.22, scale_max: float = 0.32) -> void:
@@ -837,6 +852,167 @@ func _spawn_ring(pos: Vector2, color: Color, params: Array, scale_mult: float = 
 
 func _emit_small_shake() -> void:
 	EventBus.screen_shake.emit(SHAKE_SMALL)
+
+func _emit_shake(power: float) -> void:
+	EventBus.screen_shake.emit(power)
+
+func _school_holdings_of(school: String) -> int:
+	## A2：查某流派当前持有件数（GameState 提供计数，档位判定在 FX 侧）
+	if GameState == null or GameState.run.is_empty():
+		return 0
+	return int(GameState.school_holdings().get(school, 0))
+
+static func _tier_of(n: int) -> int:
+	if n >= 9:
+		return 3
+	if n >= 6:
+		return 2
+	if n >= 3:
+		return 1
+	return 0
+
+func _spawn_poison_diffusion(pos: Vector2, color: Color, scale_mult: float) -> void:
+	## A2 毒爆扩散波：主环之后延迟弹出的第二圈扩散环 + 外圈毒沫粒子（加法混合）。
+	## 档位（3/6/9 件）越高，环越大、毒沫越多。
+	var tiers: int = _tier_of(_school_holdings_of("poison"))
+	var ring: Node2D = ExplosionScene.instantiate()
+	ring.position = pos
+	ring.modulate = color
+	var line := ring.get_node_or_null("Ring") as Line2D
+	if line != null:
+		line.width = 2.4
+	add_child(ring)
+	var ring_tween: Tween = ring.create_tween()
+	ring_tween.tween_interval(0.18)
+	ring_tween.tween_property(ring, "scale", Vector2.ONE * (3.4 + float(tiers) * 0.7) * scale_mult, 0.5).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+	ring_tween.parallel().tween_property(ring, "modulate:a", 0.0, 0.5)
+	ring_tween.tween_callback(ring.queue_free)
+	var tex: Texture2D = _get_tex("circle_04")
+	if tex == null:
+		return
+	var p := CPUParticles2D.new()
+	p.position = pos
+	p.texture = tex
+	p.amount = 14 + 7 * tiers
+	p.lifetime = randf_range(0.5, 0.75)
+	p.one_shot = true
+	p.explosiveness = 1.0
+	p.spread = 180.0
+	p.gravity = Vector2(0, -25)
+	p.initial_velocity_min = 95.0 * scale_mult
+	p.initial_velocity_max = 210.0 * scale_mult
+	p.scale_amount_min = 0.045
+	p.scale_amount_max = 0.085
+	var curve := Curve.new()
+	curve.clear_points()
+	curve.add_point(Vector2(0.0, 1.0))
+	curve.add_point(Vector2(1.0, 0.25))
+	p.scale_amount_curve = curve
+	var mat := CanvasItemMaterial.new()
+	mat.blend_mode = CanvasItemMaterial.BLEND_MODE_ADD
+	p.material = mat
+	var grad := Gradient.new()
+	grad.set_color(0, Color(color, 1.0))
+	grad.set_color(1, Color(color, 0.0))
+	p.color_ramp = grad
+	p.color = Color.WHITE
+	p.finished.connect(p.queue_free)
+	add_child(p)
+
+func _spawn_ice_shards(pos: Vector2, color: Color, scale_mult: float) -> void:
+	## A2 碎冰冰屑：短时多粒子向四周迸射（高初速 + 重力下落），件数越多冰屑越多；
+	## 高阶（>=6 件）追加一簇冰晶。
+	var tiers: int = _tier_of(_school_holdings_of("ice"))
+	var tex: Texture2D = _get_tex("spark_04")
+	if tex == null:
+		return
+	var p := CPUParticles2D.new()
+	p.position = pos
+	p.texture = tex
+	p.amount = 16 + 8 * tiers
+	p.lifetime = randf_range(0.3, 0.5)
+	p.one_shot = true
+	p.explosiveness = 1.0
+	p.spread = 180.0
+	p.gravity = Vector2(0, 430)
+	p.initial_velocity_min = 170.0 * scale_mult
+	p.initial_velocity_max = 330.0 * scale_mult
+	p.scale_amount_min = 0.04
+	p.scale_amount_max = 0.09
+	var curve := Curve.new()
+	curve.clear_points()
+	curve.add_point(Vector2(0.0, 1.0))
+	curve.add_point(Vector2(1.0, 0.25))
+	p.scale_amount_curve = curve
+	var mat := CanvasItemMaterial.new()
+	mat.blend_mode = CanvasItemMaterial.BLEND_MODE_ADD
+	p.material = mat
+	var grad := Gradient.new()
+	grad.set_color(0, Color(color, 1.0))
+	grad.set_color(1, Color(color, 0.0))
+	p.color_ramp = grad
+	p.color = Color.WHITE
+	p.finished.connect(p.queue_free)
+	add_child(p)
+	if tiers >= 2:
+		_spawn_ice_crystal(pos, color, {"clusters": 3, "size": 22.0})
+
+func _refresh_summon_auras() -> void:
+	## A2 召唤流派光环：按召唤流派持有件数（3/6/9）渲染召唤物脚下光环；
+	## 档位随件数升级，召唤物消失后光环自动释放。
+	var tier: int = _tier_of(_school_holdings_of("summon"))
+	var summons := get_tree().get_nodes_in_group("summons")
+	var alive: Dictionary = {}
+	for s in summons:
+		if not is_instance_valid(s):
+			continue
+		var sid := s.get_instance_id()
+		alive[sid] = true
+		var aura: Node2D = _summon_auras.get(sid)
+		if aura != null and not is_instance_valid(aura):
+			_summon_auras.erase(sid)
+			aura = null
+		if tier == 0:
+			if aura != null:
+				_summon_auras.erase(sid)
+				aura.queue_free()
+			continue
+		if aura == null:
+			aura = Node2D.new()
+			aura.position = Vector2(0, 10)
+			s.add_child(aura)
+			_summon_auras[sid] = aura
+		_build_aura_rings(aura, tier)
+	for sid in _summon_auras.keys():
+		if alive.has(sid):
+			continue
+		var aura: Node2D = _summon_auras[sid]
+		_summon_auras.erase(sid)
+		if is_instance_valid(aura):
+			aura.queue_free()
+
+func _build_aura_rings(aura: Node2D, tier: int) -> void:
+	## 光环环数 = 档位（tier 1/2/3 = 1/2/3 圈，半径与亮度递增），反向旋转增加层次。
+	if int(aura.get_meta("tier", 0)) == tier:
+		return
+	for c in aura.get_children():
+		if c is Line2D:
+			c.queue_free()
+	aura.set_meta("tier", tier)
+	var mat := CanvasItemMaterial.new()
+	mat.blend_mode = CanvasItemMaterial.BLEND_MODE_ADD
+	aura.material = mat
+	for i in tier:
+		var ring := Line2D.new()
+		ring.closed = true
+		ring.width = 2.2 + 0.4 * float(i)
+		ring.default_color = Color(0.45, 0.85, 1.0, 0.55 + 0.15 * float(i))
+		ring.antialiased = true
+		ring.points = _ring_points(13.0 + 6.0 * float(i), 26)
+		ring.rotation = float(i) * 0.7
+		aura.add_child(ring)
+		var tw: Tween = ring.create_tween().set_loops()
+		tw.tween_property(ring, "rotation", ring.rotation + TAU * (0.35 if i % 2 == 0 else -0.35), 2.6 + 0.5 * float(i))
 
 func _on_damage_dealt(dmg: int, pos: Vector2, is_crit: bool) -> void:
 	var number: DamageNumber = DamageNumberScene.instantiate()

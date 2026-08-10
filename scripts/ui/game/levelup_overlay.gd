@@ -35,6 +35,7 @@ func show_choices(choices: Array) -> void:
 	current_choices = choices
 	for c in _box.get_children():
 		c.queue_free()
+	var holdings: Dictionary = GameState.school_holdings()
 	for item in choices:
 		var rarity: String = item.get("rarity", "common")
 		var border: Color = UiTheme.RARITY.get(rarity, UiTheme.BORDER)
@@ -68,6 +69,15 @@ func show_choices(choices: Array) -> void:
 		desc.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		desc.vertical_alignment = VERTICAL_ALIGNMENT_TOP
 		info.add_child(desc)
+		var active: Array = []
+		for s in GameState.schools_of_item(item):
+			if int(holdings.get(s, 0)) >= 1:
+				active.append(GameState.SCHOOL_NAMES.get(s, s))
+		if not active.is_empty():
+			var syn := UiTheme.label("联动已激活：" + "、".join(active), 10, Color("#7fe08a"))
+			syn.custom_minimum_size = Vector2(0, 16)
+			syn.mouse_filter = Control.MOUSE_FILTER_IGNORE
+			info.add_child(syn)
 		var click := Button.new()
 		click.flat = true
 		click.set_anchors_preset(Control.PRESET_FULL_RECT)

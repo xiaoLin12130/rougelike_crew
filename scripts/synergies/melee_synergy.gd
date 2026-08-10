@@ -422,19 +422,15 @@ func _tick_max_hp() -> void:
 	EventBus.player_stats_changed.emit()
 
 
-## ===== 近M3 + 近M9 攻速：写入 run.attack_speed_bonus（自校正式）=====
+## ===== 近M3 + 近M9 攻速：只写本脚本读取点（G1/G2 收敛）=====
+## run.attack_speed_bonus 仅由 game_state 聚合写入；消费端
+## （spell_caster._total_attack_speed / melee_attack._interval）读取点求和。
 func _sync_as() -> void:
 	if GameState == null or not (GameState.run is Dictionary):
 		return
-	var base_as := 0.0
-	if GameState.has_method("aggregate_bonus"):
-		base_as = maxf(float(GameState.aggregate_bonus("attack_speed")), 0.0)
 	var desired := _as_desired()
-	var stored := float(GameState.run.get("attack_speed_bonus", 0.0))
-	var mine := stored - base_as
-	if absf(desired - mine) < 0.0005:
+	if absf(desired - _as_bonus) < 0.0005:
 		return
-	GameState.run.attack_speed_bonus = maxf(stored + (desired - mine), 0.0)
 	_as_bonus = desired
 	GameState.run.melee_m3_as_bonus = float(_m3_stacks) * M3_AS    ## 主线程接线点
 	GameState.run.melee_m9_as_bonus = maxf(desired - float(_m3_stacks) * M3_AS, 0.0)

@@ -452,6 +452,68 @@ func detect_synergies() -> void:
 			print("[SYNERGY] formed: ", name)
 			EventBus.synergy_formed.emit(name)
 
+## ===== 流派成型档位计数（A2，只增不改既有接口）=====
+
+const SCHOOL_TAGS: Array = ["fire", "ice", "lightning", "poison", "summon", "water", "wind", "blade", "defense", "curse", "crit", "speed"]
+const SCHOOL_NAMES: Dictionary = {
+	"fire": "火",
+	"ice": "冰",
+	"lightning": "雷",
+	"poison": "毒",
+	"summon": "召唤",
+	"water": "水",
+	"wind": "风",
+	"blade": "剑",
+	"defense": "防御",
+	"curse": "诅咒",
+	"crit": "暴击",
+	"speed": "疾速",
+}
+
+func school_holdings() -> Dictionary:
+	## 流派持有数：按 items.json 的 tags 统计持有层数（道具堆叠层数 + 法术网格核心），
+	## 阈值 3/6/9 由消费方（HUD 横幅 / FX 档位）自行判定，本函数只提供计数。
+	var counts: Dictionary = {}
+	for school in SCHOOL_TAGS:
+		counts[school] = 0
+	for item_id in run.items:
+		var def: Dictionary = item_def(str(item_id))
+		var stacks: int = int(run.items[item_id])
+		for tag in def.get("tags", []):
+			var key: String = str(tag)
+			if counts.has(key):
+				counts[key] = int(counts[key]) + stacks
+	for slot in run.grid:
+		var cid: String = str(slot.get("core", ""))
+		for c in tables.get("spells", {}).get("cores", []):
+			if str(c.get("id", "")) == cid:
+				var el: String = str(c.get("element", ""))
+				if counts.has(el):
+					counts[el] = int(counts[el]) + 1
+				break
+	return counts
+
+func schools_of_item(def: Dictionary) -> Array:
+	## 道具归属流派：优先取 tags 中命中流派表的元素 tag；
+	## 法术部件（spell_part）无元素 tag，按 id 解析核心元素。
+	var out: Array = []
+	for tag in def.get("tags", []):
+		var key: String = str(tag)
+		if SCHOOL_TAGS.has(key):
+			out.append(key)
+	if out.is_empty():
+		var id: String = str(def.get("id", ""))
+		if id.begins_with("spell_part:"):
+			var parts: PackedStringArray = id.split(":")
+			if parts.size() > 1:
+				for c in tables.get("spells", {}).get("cores", []):
+					if str(c.get("id", "")) == parts[1]:
+						var el: String = str(c.get("element", ""))
+						if SCHOOL_TAGS.has(el):
+							out.append(el)
+						break
+	return out
+
 func heal(amount: float) -> int:
 	## 回血（含上限钳制），返回实际回复量，并通知 HUD 刷新
 	if amount <= 0.0:

@@ -148,6 +148,8 @@ func _scan_contact() -> void:
 func _explode_at(pos: Vector2) -> void:
 	_impacted = true
 	var radius := maxf(_aoe, 1.0)
+	# 移8 踏浪：每 100% 移速 +6% 技能范围（run.wind_speed_area 读取点接线）
+	radius *= 1.0 + maxf(float(GameState.run.get("wind_speed_area", 0.0)), 0.0)
 	# 特效范围同步：按实际 AOE 半径缩放爆炸特效（范围变大时视觉可感知）
 	EventBus.fx_explosion_scaled.emit(pos, _element, radius)
 	# flash（数据 aoe=0）瞬发时以固定爆发半径命中，保证失明/伤害生效
@@ -201,7 +203,10 @@ func _hit_enemy(enemy: Node, dmg_mult: float = 1.0, direct_hit: bool = false) ->
 		return
 	var crit: bool = _roll_crit()
 	var mult: float = GameState.run.get("crit_dmg_bonus", 1.5) if crit else 1.0
-	var final_dmg := roundi(_damage * mult * dmg_mult)
+	# 移M7 顺风弹（方向一致 +20% 起）/ 移6 风刃（移动时 +4%/层）：弹幕伤害读取点接线
+	var wind_dmg := 1.0 + maxf(float(GameState.run.get("wind_m7_dmg", 0.0)), 0.0) \
+		+ maxf(float(GameState.run.get("wind_m6_move_dmg", 0.0)), 0.0)
+	var final_dmg := roundi(_damage * mult * dmg_mult * wind_dmg)
 	SynergyRegistry.trigger("projectile_hit", {"enemy": enemy, "dmg": final_dmg, "element": _element, "crit": crit, "pos": enemy.global_position})
 	if enemy.has_method("take_damage"):
 		enemy.take_damage(final_dmg, _element, crit)
@@ -230,6 +235,8 @@ func _hit_enemy(enemy: Node, dmg_mult: float = 1.0, direct_hit: bool = false) ->
 func _roll_crit() -> bool:
 	var chance := clampf(float(GameState.run.get("crit_chance", 0.03)), 0.0, 1.0)
 	chance += _lucky_crit_bonus()  # 内部已按持有件数守卫（0 层不加成）
+	# 移7 顺风：每 100% 移速 +4% 暴击率（run.wind_speed_crit 读取点接线）
+	chance += maxf(float(GameState.run.get("wind_speed_crit", 0.0)), 0.0)
 	if _element == "lightning" and GameState.total_stacks("thunder_10") > 0:
 		chance += _def_value("thunder_10")
 	elif _element == "water" and GameState.total_stacks("water_tide_power") > 0:

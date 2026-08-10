@@ -66,6 +66,23 @@ PAL = {
     "stone2": (100, 100, 112, 255),
     "water1": (56, 110, 180, 255),
     "water2": (72, 128, 200, 255),
+    # --- new boss trio (tree golem / ancient guardian / final god) ---
+    "leaf": (58, 138, 66, 255),
+    "leaf_dark": (42, 104, 50, 255),
+    "leaf_hi": (108, 186, 92, 255),
+    "bark": (122, 90, 58, 255),
+    "bark_dark": (84, 62, 40, 255),
+    "branch": (98, 72, 46, 255),
+    "eye_glow": (255, 232, 110, 255),
+    "stone": (126, 126, 138, 255),
+    "stone_dark": (92, 92, 104, 255),
+    "rune_cyan": (130, 225, 255, 255),
+    "tent": (92, 52, 140, 255),
+    "tent_dark": (64, 34, 100, 255),
+    "iris": (148, 84, 210, 255),
+    "iris_hi": (196, 150, 255, 255),
+    "star": (255, 244, 190, 255),
+    "void": (18, 14, 26, 255),
 }
 
 
@@ -465,6 +482,83 @@ def heart():
     return c
 
 
+def from_ascii(rows, colormap, scale=4):
+    """Draw an 8x8 ASCII grid scaled to a 32x32 pixel-art canvas."""
+    c = Canvas(8 * scale, 8 * scale)
+    for y, row in enumerate(rows):
+        for x, ch in enumerate(row):
+            col = colormap.get(ch)
+            if col:
+                c.rect(x * scale, y * scale, scale, scale, col)
+    return c
+
+
+def boss_tree_golem_new():
+    """树人：树干 + 树冠 + 树枝手臂 + 发光眼睛（绿色系）。"""
+    rows = [
+        "..CCCC..",
+        ".LLLLLL.",
+        ".LCCCCL.",
+        ".LLLLLL.",
+        "LB.TT.BL",
+        "B.DEED.B",
+        "..TTTT..",
+        ".TDDDDT.",
+    ]
+    cm = {
+        "L": PAL["leaf"],
+        "C": PAL["leaf_hi"],
+        "T": PAL["bark"],
+        "D": PAL["bark_dark"],
+        "B": PAL["branch"],
+        "E": PAL["eye_glow"],
+    }
+    return from_ascii(rows, cm)
+
+
+def boss_ancient_guardian_new():
+    """石像守卫：头盔雕像 + 石质躯干 + 金色眼缝 + 符文纹路（灰石色系）。"""
+    rows = [
+        "...GG...",
+        "..GGGG..",
+        ".GTGGTG.",
+        "GGGEEEGG",
+        ".GRRRRG.",
+        ".GRTTRG.",
+        "..GRRG..",
+        ".GGGGGG.",
+    ]
+    cm = {
+        "G": PAL["stone"],
+        "R": PAL["stone_dark"],
+        "E": PAL["gold"],
+        "T": PAL["rune_cyan"],
+    }
+    return from_ascii(rows, cm)
+
+
+def boss_final_god_new():
+    """古神：巨大眼球 + 卷曲触手 + 虚空光点（紫黑系）。"""
+    rows = [
+        "..D..D..",
+        ".V....V.",
+        "V..GG..V",
+        "V.PKKP.V",
+        "V.PKKP.V",
+        "..VGGV..",
+        "..V..V..",
+        ".D....D.",
+    ]
+    cm = {
+        "V": PAL["tent"],
+        "D": PAL["star"],
+        "G": PAL["iris_hi"],
+        "P": PAL["iris"],
+        "K": PAL["void"],
+    }
+    return from_ascii(rows, cm)
+
+
 def main():
     os.makedirs(OUT, exist_ok=True)
     n = 0
@@ -502,6 +596,9 @@ def main():
     save(golem(), "boss_lava_golem")
     save(golem(), "boss_ancient_guardian")
     save(imp(1), "boss_imp_king")
+    save(boss_tree_golem_new(), "boss_tree_golem_new")
+    save(boss_ancient_guardian_new(), "boss_ancient_guardian_new")
+    save(boss_final_god_new(), "boss_final_god_new")
     n += 18
     for k in ["fireball", "ice", "lightning", "poison", "blade"]:
         save(projectile(k), f"proj_{k}")

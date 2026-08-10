@@ -8,6 +8,19 @@ const SUMMON_SCRIPT := preload("res://scripts/combat/summon.gd")
 const WAND_CHARGE_CURVE := {"curve": {"type": "multiplicative", "base": 0.9, "cap": 0.5}}
 const MIN_CD := 0.05
 
+## 攻速全局接线（G1/G2 收敛）：各 synergy 脚本只写自己的 run.xxx_bonus 读取点，
+## run.attack_speed_bonus 仅由 game_state.apply_item_effects_to_stats 写入基础聚合
+## （解决 fire/melee/wind 三脚本自校正互踩同一字段的问题）；
+## 消费端（本脚本 + melee_attack）统一读"基础聚合 + 各流派贡献"之和，与近战同公式。
+const _SYNERGY_AS_KEYS := [
+	"fire_m2_atk_speed",   ## 火M2 薪火相传
+	"melee_m3_as_bonus",   ## 近M3 血之狂暴
+	"melee_m9_as_bonus",   ## 近M9 狂化
+	"wind_as_bonus",       ## 移2/移5 移速→攻速联动
+	"wind_m2_atk_speed",   ## 移M2 踏风
+	"wind_m10_as_bonus",   ## 移M10 暴走
+]
+
 var _cds: Array[float] = []
 var _frenzy_left := 0.0
 
@@ -87,7 +100,22 @@ func _cooldown_of(core: Dictionary, mods: Dictionary) -> float:
 		cd_mult *= float(wand_def.get("cd_mult", 1.0))
 	if _frenzy_left > 0.0:
 		cd_mult *= 0.5  # 狂暴：冷却减半
+	# 攻速全局接线（G1）：施法冷却接入攻速聚合，与近战 melee_attack._interval 同公式
+	cd_mult *= 1.0 / (1.0 + _total_attack_speed())
+	# 移9 迅捷：技能冷却 -5%/层（run.wind_cd_mult 读取点接线）
+	cd_mult *= maxf(float(GameState.run.get("wind_cd_mult", 1.0)), 0.0)
 	return maxf(cd * wand * cd_mult * (1.0 - cd_reduce), MIN_CD)
+
+
+## 攻速聚合：基础（run.attack_speed_bonus，game_state 写入的 aggregate_bonus("attack_speed")）
+## + 各流派贡献读取点之和。同步维护在 melee_attack.gd。
+func _total_attack_speed() -> float:
+	if GameState == null or not (GameState.run is Dictionary):
+		return 0.0
+	var total := maxf(float(GameState.run.get("attack_speed_bonus", 0.0)), 0.0)
+	for key in _SYNERGY_AS_KEYS:
+		total += maxf(float(GameState.run.get(key, 0.0)), 0.0)
+	return total
 
 
 func _cast(player: Node2D, core: Dictionary, mods: Dictionary) -> void:
@@ -137,6 +165,9 @@ func _cast(player: Node2D, core: Dictionary, mods: Dictionary) -> void:
 	var aoe: float = float(core.get("aoe", 0.0)) * float(mods.get("aoe_mult", 1.0)) * (1.0 + GameState.aggregate_bonus("area"))
 	var speed: float = float(core.get("speed", 0.0)) * float(mods.get("speed_mult", 1.0))
 	var shots: int = maxi(int(mods.get("shots", 1)), 1)
+	# 移M4 追风猎手：弹数读取点接线（wind_synergy 按移速阈值写入 run.wind_m4_shots）
+	shots += maxi(int(GameState.run.get("wind_m4_shots", 0)), 0)
+	shots = maxi(shots, 1)
 	var spread: float = float(mods.get("spread_angle", 0.0))
 	var base_angle := aim.angle()
 	for i in shots:

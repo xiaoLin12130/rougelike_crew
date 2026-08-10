@@ -177,9 +177,9 @@ func _build_sprite() -> void:
 	add_child(anim)
 
 
-## 总数量上限 = 召唤之书层数 + 1；超限销毁最旧召唤物。
+## 总数量上限 = 召1 召唤之书层数 + 旧召唤之书层数 + 1；超限销毁最旧召唤物。
 func _enforce_cap() -> void:
-	var cap: int = GameState.total_stacks("summon_book") + 1
+	var cap: int = GameState.total_stacks("summon_1") + GameState.total_stacks("summon_book") + 1
 	var group: Array = get_tree().get_nodes_in_group("summons")
 	if group.size() <= cap:
 		return

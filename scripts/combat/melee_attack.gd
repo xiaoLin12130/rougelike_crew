@@ -18,6 +18,17 @@ const BASE_DAMAGE := 8.0
 const BASE_INTERVAL := 0.8
 const MELEE_RADIUS := 48.0
 
+## 攻速全局接线（G1/G2 收敛）：与 spell_caster._SYNERGY_AS_KEYS 同步维护，
+## 基础聚合（run.attack_speed_bonus）+ 各流派贡献读取点之和（近战与法术同公式）。
+const _SYNERGY_AS_KEYS := [
+	"fire_m2_atk_speed",   ## 火M2 薪火相传
+	"melee_m3_as_bonus",   ## 近M3 血之狂暴
+	"melee_m9_as_bonus",   ## 近M9 狂化
+	"wind_as_bonus",       ## 移2/移5 移速→攻速联动
+	"wind_m2_atk_speed",   ## 移M2 踏风
+	"wind_m10_as_bonus",   ## 移M10 暴走
+]
+
 var _cooldown_left := 0.0
 
 
@@ -38,6 +49,8 @@ func _interval() -> float:
 	var as_bonus := 0.0
 	if GameState != null and (GameState.run is Dictionary):
 		as_bonus = maxf(float(GameState.run.get("attack_speed_bonus", 0.0)), 0.0)
+		for key in _SYNERGY_AS_KEYS:
+			as_bonus += maxf(float(GameState.run.get(key, 0.0)), 0.0)
 	return BASE_INTERVAL / (1.0 + as_bonus)
 
 

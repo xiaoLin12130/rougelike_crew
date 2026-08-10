@@ -28,6 +28,9 @@ var _boss_root: HBoxContainer
 var _pickup_label: Label
 var _build_btn: Button
 var _pause_btn: Button
+var _form_label: Label
+var _formed_tiers: Dictionary = {}  # 已触发过的成型档位（key: "school:tier"），每档只触发一次
+var _form_banner_count := 0         # 横幅累计触发次数（供 headless 测试断言）
 
 func _ready() -> void:
 	var root := Control.new()
@@ -37,6 +40,7 @@ func _ready() -> void:
 	_build_resources(root)
 	_build_wave(root)
 	_build_pickup_label(root)
+	_build_form_banner(root)
 	_build_corner_buttons(root)
 	_build_boss_bar(root)
 	EventBus.player_stats_changed.connect(_refresh)
@@ -136,6 +140,19 @@ func _build_pickup_label(root: Control) -> void:
 	_pickup_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_pickup_label.visible = false
 	root.add_child(_pickup_label)
+
+func _build_form_banner(root: Control) -> void:
+	## 流派成型横幅：顶部居中（y=48，位于 Boss 血条带与资源条之间），2s 渐隐。
+	## A2：同流派构筑持有数达 3/6/9 件时触发；每档位只触发一次（_formed_tiers 记录）。
+	_form_label = UiTheme.label("", 16, Color(1.0, 0.92, 0.45))
+	_form_label.set_anchors_preset(Control.PRESET_CENTER_TOP)
+	_form_label.position = Vector2(-160, 48)
+	_form_label.custom_minimum_size = Vector2(320, 26)
+	_form_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_form_label.add_theme_stylebox_override("normal", UiTheme.style_compact(Color(0.1, 0.08, 0.16, 0.9), Color(0.85, 0.72, 0.3), 1, 6, 6))
+	_form_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_form_label.visible = false
+	root.add_child(_form_label)
 
 func _build_boss_bar(root: Control) -> void:
 	## 顶部居中 Boss 血条：总宽 <=260（名称 11px + 条 200px），y 4..18，
@@ -260,6 +277,38 @@ func _refresh() -> void:
 	if _level_label != null:
 		var lvl: int = GameState.run.get("level", 1)
 		_level_label.text = "第 %d 关" % lvl
+	_check_form_tiers()
+
+func _check_form_tiers() -> void:
+	## 流派成型自检（A2）：GameState 只提供 school_holdings 计数，阈值 3/6/9 在此判定。
+	## 持有数跨档（如 2→3、5→6、8→9）时每档触发一次横幅，重复刷新不重触发。
+	if GameState.run.is_empty() or _form_label == null:
+		return
+	var holdings: Dictionary = GameState.school_holdings()
+	for school in holdings:
+		var n: int = int(holdings[school])
+		for tier in [3, 6, 9]:
+			if n < tier:
+				break
+			var key: String = "%s:%d" % [school, tier]
+			if _formed_tiers.has(key):
+				continue
+			_formed_tiers[key] = true
+			_form_banner_count += 1
+			_show_form_banner(school, tier, n)
+
+func _show_form_banner(school: String, tier: int, n: int) -> void:
+	## 顶部居中横幅：弹出放大 + 停留 2s + 渐隐（设计 A2 全屏小横幅）。
+	var sname: String = GameState.SCHOOL_NAMES.get(school, school)
+	_form_label.text = "流派成型：%s Lv.%d（%d 件）" % [sname, tier, n]
+	_form_label.visible = true
+	_form_label.modulate = Color(1.0, 0.92, 0.45)
+	_form_label.scale = Vector2.ONE
+	var tw := create_tween()
+	tw.tween_property(_form_label, "scale", Vector2(1.12, 1.12), 0.18).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+	tw.tween_interval(1.6)
+	tw.tween_property(_form_label, "modulate:a", 0.0, 0.6)
+	tw.tween_callback(func(): _form_label.visible = false)
 
 func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventKey and event.pressed and event.keycode == KEY_F8:
