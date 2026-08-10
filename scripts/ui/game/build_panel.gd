@@ -317,9 +317,10 @@ func _refresh_grid() -> void:
 			tex.mouse_filter = Control.MOUSE_FILTER_IGNORE
 			box.add_child(tex)
 			if not shell_id.is_empty():
-				# 外壳角标：右下角小方块显示外壳序号（悬停 tooltip 查看外壳名）
+				# 外壳角标：右下角小字显示外壳名首字（序号对玩家无意义，2026-08-10 修复）
 				shell = _find_shell(shell_id)
-				var badge := UiTheme.label(str(_shell_index(shell_id) + 1), 10, UiTheme.GOLD)
+				var shell_name: String = str(shell.get("name", "原"))
+				var badge := UiTheme.label(shell_name.substr(0, 1), 10, UiTheme.GOLD)
 				badge.set_anchors_preset(Control.PRESET_BOTTOM_RIGHT)
 				badge.position = Vector2(-15, -16)
 				badge.add_theme_color_override("font_outline_color", Color(0, 0, 0, 1))
