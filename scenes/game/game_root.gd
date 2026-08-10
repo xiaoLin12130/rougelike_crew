@@ -33,6 +33,8 @@ var joystick: CanvasLayer
 var _prev_level := 1
 var _levelup_queue := 0
 var _choice_busy := false  # 替换界面 await 期间的防重入守卫（修复升级满格死锁）
+var _replace_choice := -1   # 替换界面选择结果（具名回调写入；lambda 按值捕获不可用）
+var _replace_done := false  # 替换选择已完成标志
 var _hit_protect := 0.0
 
 func _ready() -> void:
@@ -193,22 +195,27 @@ func _wait_replace_choice() -> int:
 	## 等待替换界面选择（choose_made），带 8s 超时兜底：
 	## 用信号竞速——choose_made 或超时先到者胜，超时返回 -1（放弃）。
 	## 注意：替换界面弹出时游戏 paused=true，create_timer 必须 process_always=true，
-	## 否则 timer 在暂停期不触发 → while 永不退出 → 替换后卡死（已踩坑修复）。
-	var timeout_ok := false
-	var choice := -1
-	var on_choice := func(idx: int) -> void:
-		if timeout_ok:
-			return
-		choice = idx
-		timeout_ok = true
-	spell_replace.choose_made.connect(on_choice)
-	# 用 while 循环轮询超时（create_timer 无法与信号竞速，轮询最可靠）
+	## 否则 timer 在暂停期不触发 → while 永不退出 → 替换后卡死。
+	## 坑（2026-08-10）：不要用 lambda 写回调——GDScript lambda 按值捕获局部变量，
+	## 回调里修改 timeout_ok/choice 不生效，导致 while 永远等不到信号（实测卡死）。
+	## 必须用成员变量 + 具名方法（_on_replace_choice）。
+	_replace_choice = -1
+	_replace_done = false
+	spell_replace.choose_made.connect(_on_replace_choice)
 	var waited := 0.0
-	while not timeout_ok and waited < 8.0:
+	while not _replace_done and waited < 8.0:
 		await get_tree().create_timer(0.1, true).timeout  # process_always=true：暂停期也计时
 		waited += 0.1
-	spell_replace.choose_made.disconnect(on_choice)
-	return choice
+	spell_replace.choose_made.disconnect(_on_replace_choice)
+	return _replace_choice
+
+
+func _on_replace_choice(idx: int) -> void:
+	## 替换界面选择回调（具名方法：成员变量跨协程共享，lambda 值捕获不可用）
+	if _replace_done:
+		return
+	_replace_choice = idx
+	_replace_done = true
 
 func _reset_joystick() -> void:
 	## 恢复游戏时重置摇杆触摸状态（iOS：升级/暂停期间 touch up 被丢弃，

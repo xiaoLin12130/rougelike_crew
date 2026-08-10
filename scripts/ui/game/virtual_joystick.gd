@@ -1,21 +1,17 @@
 extends CanvasLayer
-## 触屏虚拟摇杆（M2，手机适配 P0）
-## - 左半屏：动态移动摇杆（按下处生成底盘，拖动写 InputRouter.move_vector + external_move）
-## - 右半屏：动态瞄准摇杆（拖动写 InputRouter.aim_override，松手保留 0.2s 后归零防抖动；
-##   轻点（位移 < TAP_MAX_MOVE 且时长 < TAP_MAX_MS）触发一次闪避）
-## - 右下角：闪避按钮（触控目标 >= 56px），点击调 player.request_dash()
-## - 多指：按 InputEventScreenTouch/Drag 的 index 跟踪，移动/瞄准各最多一个，
-##   双指（移动+瞄准）并行；闪避按钮区域触摸由本组件消费
+## 触屏虚拟移动摇杆（方案 A：全屏动态摇杆，2026-08-10 重构）
+## - 全屏：触摸屏幕任意非 UI 区域 → 按下处生成移动底盘，拖动写
+##   InputRouter.move_vector + external_move（iOS/安卓/横竖屏行为一致）
+## - 攻击方向由自动索敌接管（瞄准摇杆已废弃；aim_override 仍供自动脚本直写）
+## - 右下角：闪避按钮（触控目标 72px），点击调 player.request_dash()
+## - 多指：移动摇杆最多一个（第一指），后续手指忽略（避免双摇杆打架）；
+##   闪避按钮区域任何时候优先消费（不受单摇杆限制）
 ## - 桌面/无触摸环境：visible=false 且不拦截任何事件（overlay mouse_filter=IGNORE）
 ## 纯程序化绘制（_draw 圆环+圆头），配色取自 UiTheme 色板，零贴图。
 
 const MOVE_RADIUS := 56.0      # 移动摇杆底盘半径
-const AIM_RADIUS := 48.0       # 瞄准摇杆底盘半径
 const KNOB_RADIUS := 24.0      # 摇杆头半径
 const DEAD_ZONE := 0.18        # 死区（占半径比例），低于视为零输入
-const AIM_HOLD_TIME := 0.2     # 瞄准松手后 aim_override 保留时长（防抖动）
-const TAP_MAX_MOVE := 14.0     # 右摇杆"轻点=闪避"的最大位移（px）
-const TAP_MAX_MS := 200        # 右摇杆"轻点=闪避"的最大按住时长（ms）
 const DASH_SIZE := 72.0        # 闪避按钮边长（触控目标 >= 56px）
 const DASH_MARGIN := 14.0      # 闪避按钮距右下角边距
 
@@ -26,7 +22,6 @@ var dash_button: Button          # 右下角闪避按钮（供测试与鼠标点
 var _overlay: Control            # 全屏绘制层（IGNORE，不拦截输入）
 var _active := {}                # index -> {kind, origin, vec, radius, press_ms, drag_dist}
 var _dash_press := {}            # index -> 按下位置（闪避按钮区域触摸）
-var _aim_hold_left := 0.0
 
 
 func _ready() -> void:
@@ -122,24 +117,19 @@ func _handle_touch(index: int, pressed: bool, pos: Vector2) -> void:
 		# 其它 UI（HUD 按钮等）区域：不抢触摸
 		if _hit_foreign_control(pos):
 			return
-		var half: float = get_viewport().get_visible_rect().size.x * 0.5
-		var kind: String = "move" if pos.x < half else "aim"
-		for k in _active:
-			if _active[k].kind == kind:
-				return
+		# 移动摇杆最多一个（第一指优先；后续手指忽略，避免双摇杆打架）
+		if not _active.is_empty():
+			return
 		_active[index] = {
-			"kind": kind,
+			"kind": "move",
 			"origin": pos,
 			"vec": Vector2.ZERO,
-			"radius": MOVE_RADIUS if kind == "move" else AIM_RADIUS,
-			"press_ms": Time.get_ticks_msec(),
+			"radius": MOVE_RADIUS,
+			"press_ms": 0,
 			"drag_dist": 0.0,
 		}
-		if kind == "move":
-			router.external_move = true
-			router.move_vector = Vector2.ZERO
-		else:
-			router.aim_override = Vector2.ZERO
+		router.external_move = true
+		router.move_vector = Vector2.ZERO
 		_overlay.queue_redraw()
 		return
 	# 松手
@@ -151,16 +141,7 @@ func _handle_touch(index: int, pressed: bool, pos: Vector2) -> void:
 	if s.is_empty():
 		return
 	_active.erase(index)
-	if s.kind == "move":
-		router.move_vector = Vector2.ZERO
-	else:
-		var dir: Vector2 = _dir_from_vec(s.vec, s.radius)
-		router.aim_override = dir
-		_aim_hold_left = AIM_HOLD_TIME if dir != Vector2.ZERO else 0.0
-		# 轻点（无拖动）= 闪避方向提示：朝当前移动方向/面朝方向闪避
-		var held_ms: int = Time.get_ticks_msec() - int(s.press_ms)
-		if float(s.drag_dist) < TAP_MAX_MOVE and held_ms < TAP_MAX_MS:
-			_on_dash_pressed()
+	router.move_vector = Vector2.ZERO
 	_overlay.queue_redraw()
 
 
@@ -173,11 +154,8 @@ func _handle_drag(index: int, pos: Vector2) -> void:
 	var delta: Vector2 = pos - s.origin
 	s.vec = delta
 	s.drag_dist = delta.length()
-	if s.kind == "move":
-		router.external_move = true
-		router.move_vector = _dir_from_vec(delta, s.radius)
-	else:
-		router.aim_override = _dir_from_vec(delta, s.radius)
+	router.external_move = true
+	router.move_vector = _dir_from_vec(delta, s.radius)
 	_overlay.queue_redraw()
 
 
@@ -192,15 +170,6 @@ func _physics_process(_delta: float) -> void:
 			router.external_move = true
 			router.move_vector = _dir_from_vec(s.vec, s.radius)
 			return
-
-
-func _process(delta: float) -> void:
-	if router == null:
-		return
-	if _aim_hold_left > 0.0:
-		_aim_hold_left -= delta
-		if _aim_hold_left <= 0.0:
-			router.aim_override = Vector2.ZERO
 
 
 func _dir_from_vec(vec: Vector2, radius: float) -> Vector2:

@@ -12,6 +12,13 @@ const HEAL_POTION_PRICE := 120
 const HEAL_PCT := 0.25
 const REFRESH_PRICE := 80
 const BTN_H := 44.0
+## 稀有度加权抽取：基础权重 common 60 / rare 25 / legendary 15；
+## lucky（tag=lucky 道具总层数，当前仅 crit_lucky「幸运」）按稀有度梯度放大：
+## weight = base × (1 + lucky × 0.06 × boost)，boost：common 1.0 / rare 2.0 / legendary 4.0，
+## 归一化后不放回抽取（商店每次 3 把，55 把池）。UI 卡片已按 UiTheme.RARITY 上色，零改动。
+const RARITY_WEIGHT := {"common": 60.0, "rare": 25.0, "legendary": 15.0}
+const LUCKY_RARITY_BOOST := {"common": 1.0, "rare": 2.0, "legendary": 4.0}
+const LUCKY_PER_STACK := 0.06
 
 var _box: VBoxContainer
 var _owned_box: HBoxContainer
@@ -93,6 +100,42 @@ func show_shop() -> void:
 	_refresh()
 	show()
 
+static func rarity_weight(rarity: String, lucky: int) -> float:
+	## 稀有度权重：base × (1 + lucky × 0.06 × 稀有度梯度)
+	var base: float = float(RARITY_WEIGHT.get(rarity, 10.0))
+	var boost: float = float(LUCKY_RARITY_BOOST.get(rarity, 1.0))
+	return base * (1.0 + float(maxi(lucky, 0)) * LUCKY_PER_STACK * boost)
+
+func lucky_stacks() -> int:
+	## tag=lucky 道具层数合计（按 tag 扫描：当前仅 crit_lucky「幸运」）
+	var n := 0
+	for item_id in GameState.run.items:
+		var def := GameState.item_def(str(item_id))
+		if not def.is_empty() and "lucky" in def.get("tags", []):
+			n += int(GameState.run.items[item_id])
+	return n
+
+static func weighted_pick(wands: Array, lucky: int, count: int) -> Array:
+	## 稀有度加权不放回抽取 count 把（权重归一化后轮盘采样）
+	var pool: Array = wands.duplicate()
+	var out: Array = []
+	while out.size() < count and not pool.is_empty():
+		var total := 0.0
+		for i in pool.size():
+			var w: Dictionary = pool[i]
+			total += rarity_weight(str(w.get("rarity", "common")), lucky)
+		var r := randf() * total
+		var idx := 0
+		for i in pool.size():
+			var w: Dictionary = pool[i]
+			r -= rarity_weight(str(w.get("rarity", "common")), lucky)
+			if r <= 0.0:
+				idx = i
+				break
+		out.append(pool[idx])
+		pool.remove_at(idx)
+	return out
+
 func _roll_offers() -> void:
 	var wands: Array = GameState.tables.get("wands", {}).get("wands", []).duplicate()
 	# 不允许重复购买：排除当前已装备的全部法杖（最多 3 把）
@@ -100,8 +143,8 @@ func _roll_offers() -> void:
 	for oid in owned:
 		var ow: String = str(oid)
 		wands = wands.filter(func(w): return str(w.get("id", "")) != ow)
-	wands.shuffle()
-	_offers = wands.slice(0, 3)
+	# 稀有度加权抽取（幸运越高，传说/稀有占比越高）
+	_offers = weighted_pick(wands, lucky_stacks(), 3)
 
 func _refresh() -> void:
 	_gold_label.text = "持有金币：%d" % GameState.run.get("gold", 0)
