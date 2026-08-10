@@ -189,16 +189,28 @@ func _goto_menu() -> void:
 	_replace_mode = false
 	_pending_wand = ""
 	_page = PAGE_MENU
+	_apply_page()
 	_refresh()
 	_scroll.scroll_vertical = 0
 
 func _goto_enhance() -> void:
 	_page = PAGE_ENHANCE
-	_scroll.scroll_vertical = _section_scroll_y(_enhance_section)
+	_apply_page()
+	_scroll.scroll_vertical = 0
 
 func _goto_buy() -> void:
 	_page = PAGE_BUY
-	_scroll.scroll_vertical = _section_scroll_y(_buy_section)
+	_apply_page()
+	_scroll.scroll_vertical = 0
+
+func _apply_page() -> void:
+	## 页面切换：显式控制区块可见性（2026-08-10 修复——此前仅靠滚动定位切换，
+	## 内容总高 ≤ 视口时滚动范围为零，选择页与购买页同时可见）
+	if _menu_box == null:
+		return
+	_menu_box.visible = (_page == PAGE_MENU)
+	_enhance_section.visible = (_page == PAGE_ENHANCE)
+	_buy_section.visible = (_page == PAGE_BUY)
 
 func show_shop() -> void:
 	_pot_bought = false
@@ -208,6 +220,7 @@ func show_shop() -> void:
 	_shop_open = true
 	_roll_offers()
 	_page = PAGE_MENU
+	_apply_page()
 	_refresh()
 	_scroll.scroll_vertical = 0
 	show()

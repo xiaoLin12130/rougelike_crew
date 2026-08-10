@@ -129,6 +129,11 @@ func _cards_in(box: Node) -> Array:
 func _check_menu(shop: CanvasLayer, tag: String) -> void:
 	if shop._page != "menu":
 		fail("[%s] 打开商店默认应显示选择页，实际 page=%s" % [tag, str(shop._page)])
+	# 页面互斥（2026-08-10 修复：仅滚动定位时内容少会导致多页同时可见）
+	if not shop._menu_box.visible:
+		fail("[%s] 选择页时 menu_box 应可见" % tag)
+	if shop._enhance_section.visible or shop._buy_section.visible:
+		fail("[%s] 选择页时强化/购买区块不应同时可见" % tag)
 	var vp: Rect2 = (shop._scroll as Control).get_global_rect()
 	for bname in ["EnhanceBtn", "BuyBtn", "LeaveBtn"]:
 		var b := _find_button(shop, bname)
@@ -140,6 +145,8 @@ func _check_menu(shop: CanvasLayer, tag: String) -> void:
 func _check_buy(shop: CanvasLayer, tag: String) -> void:
 	if shop._page != "buy":
 		fail("[%s] 点击购买后应进入购买页，实际 page=%s" % [tag, str(shop._page)])
+	if shop._menu_box.visible or shop._enhance_section.visible:
+		fail("[%s] 购买页时选择/强化区块不应同时可见" % tag)
 	var cards := _cards_in(shop._box)
 	if cards.size() != 3:
 		fail("[%s] 购买页应显示 3 把法杖，实际 %d" % [tag, cards.size()])
@@ -164,6 +171,8 @@ func _check_buy(shop: CanvasLayer, tag: String) -> void:
 func _check_enhance(shop: CanvasLayer, tag: String) -> void:
 	if shop._page != "enhance":
 		fail("[%s] 点击强化后应进入强化页，实际 page=%s" % [tag, str(shop._page)])
+	if shop._menu_box.visible or shop._buy_section.visible:
+		fail("[%s] 强化页时选择/购买区块不应同时可见" % tag)
 	var slots := _cards_in(shop._owned_box)
 	if slots.size() != 3:
 		fail("[%s] 强化页应显示已持有 3 把法杖强化卡，实际 %d" % [tag, slots.size()])
