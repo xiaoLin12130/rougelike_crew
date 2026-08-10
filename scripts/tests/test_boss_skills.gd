@@ -46,6 +46,34 @@ const SKILL_TESTS := [
 	{"tag": "summon_wave", "skill": {
 		"id": "t_wave", "type": "summon_wave", "count": 2, "elite_count": 1,
 		"windup": 0.2, "cooldown": 1.0, "min_phase": 1}},
+	{"tag": "spiral", "skill": {
+		"id": "t_spiral", "type": "spiral", "shots": 10, "bullet_speed": 160.0,
+		"duration": 0.8, "ring_interval": 0.12, "offset": 18.0,
+		"windup": 0.3, "telegraph": "dot", "cooldown": 1.0, "min_phase": 1}},
+	{"tag": "homing_shot", "skill": {
+		"id": "t_homing", "type": "homing_shot", "count": 4, "bullet_speed": 135.0,
+		"turn_rate": 3.0, "lifetime": 4.0, "spread": 20.0,
+		"windup": 0.3, "telegraph": "dot", "cooldown": 1.0, "min_phase": 1}},
+	{"tag": "sweep", "skill": {
+		"id": "t_sweep", "type": "sweep", "duration": 1.0, "sweep_angle": 120.0,
+		"windup": 0.3, "telegraph": "line", "cooldown": 1.0, "min_phase": 1}},
+	{"tag": "spike_trail", "skill": {
+		"id": "t_spike", "type": "spike_trail", "count": 6, "spacing": 64.0, "radius": 34.0,
+		"delay": 0.3, "interval": 0.12, "damage_mult": 0.9,
+		"windup": 0.3, "telegraph": "dot", "cooldown": 1.0, "min_phase": 1}},
+	{"tag": "blink", "skill": {
+		"id": "t_blink", "type": "blink", "radius": 100.0, "damage_mult": 1.6,
+		"windup": 0.3, "telegraph": "circle", "cooldown": 1.0, "min_phase": 1}},
+	{"tag": "wall", "skill": {
+		"id": "t_wall", "type": "wall", "count": 8, "radius": 46.0,
+		"delay": 0.2, "interval": 0.12, "damage_mult": 1.0,
+		"windup": 0.3, "telegraph": "circle", "cooldown": 1.0, "min_phase": 1}},
+	{"tag": "enrage", "skill": {
+		"id": "t_enrage", "type": "enrage", "speed_mult": 1.3, "cd_mult": 0.7,
+		"windup": 0.1, "cooldown": 1.0, "min_phase": 1}},
+	{"tag": "split", "skill": {
+		"id": "t_split", "type": "split", "count": 2,
+		"windup": 0.2, "cooldown": 1.0, "min_phase": 1}},
 ]
 
 var _failures: Array[String] = []
@@ -67,6 +95,9 @@ func _ready() -> void:
 	await get_tree().physics_frame
 	for t in SKILL_TESTS:
 		await _test_one(str(t.tag), t.skill)
+	await _test_homing_flag()
+	await _test_enrage_cooldown()
+	await _test_boss_skill_counts()
 	await _test_phases()
 	await _test_real_boss_telegraphs()
 	_report()
@@ -211,6 +242,36 @@ func _test_one(tag: String, skill: Dictionary) -> void:
 					any_elite = true
 			if not any_elite:
 				_fail(tag + ": 召唤波未生成精英随从")
+		"spiral":
+			if _hits <= 0:
+				_fail(tag + ": 螺旋弹幕未命中玩家")
+			if _count_bullets() <= 0:
+				_fail(tag + ": 螺旋弹幕无存活子弹")
+		"homing_shot":
+			if _hits <= 0:
+				_fail(tag + ": 追踪弹未命中玩家")
+		"sweep":
+			if _hits <= 0:
+				_fail(tag + ": 扇形激光未命中玩家")
+		"spike_trail", "wall":
+			if _fx_fire < int(skill.get("count", 3)):
+				_fail(tag + ": 逐点爆炸次数不足 (%d)" % _fx_fire)
+		"blink":
+			if (Vector2(_boss.global_position) - Vector2(_boss._locked_target)).length() > 1.0:
+				_fail(tag + ": 闪现后未到达落点")
+			if _hits <= 0:
+				_fail(tag + ": 落点范围爆炸未命中")
+		"enrage":
+			if not _boss._enrage:
+				_fail(tag + ": 狂暴未触发")
+			if _boss._enrage_speed_mult < 1.2:
+				_fail(tag + ": 狂暴移速倍率未生效")
+			if _boss._enrage_cd_mult >= 1.0:
+				_fail(tag + ": 狂暴冷却倍率未生效")
+		"split":
+			var gained := get_tree().get_nodes_in_group("enemy").size() - enemy_before
+			if gained < int(skill.get("count", 2)):
+				_fail(tag + ": 分裂数量不足 (%d)" % gained)
 	# Boss 不卡死：应回到 APPROACH / IDLE 循环
 	if _boss.state != _boss.State.APPROACH and _boss.state != _boss.State.IDLE:
 		_fail(tag + ": Boss 卡在状态 %d" % _boss.state)
@@ -287,6 +348,86 @@ func _check_telegraph(tag: String, skill: Dictionary) -> void:
 				_assert(tag, float(t.get("radius", 0.0)) <= 10.0, "发射点小圈半径<=10")
 				_assert(tag, absf((t.get("pos", Vector2.ZERO) - _boss.global_position).length()
 					- _boss.BULLET_SPAWN_DIST) < 0.01, "发射点距 Boss==弹幕生成半径")
+		"spiral":
+			# 与 ring_barrage 一致：圈内无直接伤害，只画发射点小圈
+			var shots := clampi(int(skill.get("shots", 12)), 4, 48)
+			_assert(tag, _boss._telegraphs.size() == shots, "spiral 发射点预告数量==shots")
+			for t in _boss._telegraphs:
+				_assert(tag, str(t.get("kind", "")) == "dot", "spiral 预告为发射点 dot")
+				_assert(tag, float(t.get("radius", 0.0)) <= 10.0, "spiral 发射点小圈半径<=10")
+				_assert(tag, absf((t.get("pos", Vector2.ZERO) - _boss.global_position).length()
+					- _boss.BULLET_SPAWN_DIST) < 0.01, "spiral 发射点距 Boss==弹幕生成半径")
+		"homing_shot":
+			var count := clampi(int(skill.get("count", 4)), 1, 12)
+			_assert(tag, _boss._telegraphs.size() == count, "homing_shot 发射点预告数量==count")
+			for t in _boss._telegraphs:
+				_assert(tag, str(t.get("kind", "")) == "dot", "homing_shot 预告为发射点 dot")
+				_assert(tag, float(t.get("radius", 0.0)) <= 10.0, "homing_shot 发射点小圈半径<=10")
+				_assert(tag, absf((t.get("pos", Vector2.ZERO) - _boss.global_position).length()
+					- _boss.BULLET_SPAWN_DIST) < 0.01, "homing_shot 发射点距 Boss==弹幕生成半径")
+		"sweep":
+			# 边界线预告：两条线的夹角 == sweep_angle，宽度/长度 == 光束判定
+			_assert(tag, _boss._telegraphs.size() == 2, "sweep 预告数量==2（起止边界线）")
+			var sweep_angle := float(skill.get("sweep_angle", 120.0))
+			for t in _boss._telegraphs:
+				_assert(tag, str(t.get("kind", "")) == "line", "sweep 预告为 line")
+				_assert(tag, absf(float(t.get("length", 0.0)) - _boss.BEAM_RANGE) < 0.01,
+					"sweep 预告线长==BEAM_RANGE")
+				_assert(tag, absf(float(t.get("width", 0.0)) - _boss.BEAM_HALF_WIDTH * 2.0) < 0.01,
+					"sweep 预告宽度==判定宽度(半宽×2)")
+			var a0: Vector2 = _boss._telegraphs[0].get("dir", Vector2.ZERO)
+			var a1: Vector2 = _boss._telegraphs[1].get("dir", Vector2.ZERO)
+			_assert(tag, absf(absf(a0.angle_to(a1)) - deg_to_rad(sweep_angle)) < 0.01,
+				"sweep 两边界线夹角==sweep_angle %s" % sweep_angle)
+		"spike_trail":
+			var spike_count := clampi(int(skill.get("count", 6)), 2, 14)
+			var spike_radius := float(skill.get("radius", 34.0))
+			_assert(tag, _boss._telegraphs.size() == spike_count, "spike_trail 预告数量==count")
+			for i in spike_count:
+				var t: Dictionary = _boss._telegraphs[i]
+				_assert(tag, str(t.get("kind", "")) == "dot", "spike_trail 预告为 dot 伤害点")
+				_assert(tag, absf(float(t.get("radius", 0.0)) - spike_radius) < 0.01,
+					"spike_trail 预告半径==地刺伤害半径 %s" % spike_radius)
+				_assert(tag, (t.get("pos", Vector2.ZERO) - _boss._eruption_queue[i]).length() < 0.01,
+					"spike_trail 预告位置==爆炸结算位置")
+		"blink":
+			_assert(tag, _boss._telegraphs.size() == 2, "blink 预告数量==2（起点淡圈+落点红圈）")
+			var blink_radius := float(skill.get("radius", 90.0))
+			var st: Dictionary = _boss._telegraphs[0]
+			var lt: Dictionary = _boss._telegraphs[1]
+			_assert(tag, str(st.get("kind", "")) == "circle" and str(lt.get("kind", "")) == "circle",
+				"blink 双圈均为 circle")
+			_assert(tag, absf(float(st.get("radius", 0.0)) - blink_radius) < 0.01,
+				"blink 起点圈半径==伤害半径")
+			_assert(tag, absf(float(lt.get("radius", 0.0)) - blink_radius) < 0.01,
+				"blink 落点圈半径==伤害半径")
+			_assert(tag, (st.get("pos", Vector2.ZERO) - _boss.global_position).length() < 0.01,
+				"blink 起点圈圆心==Boss 当前位置")
+			_assert(tag, (lt.get("pos", Vector2.ZERO) - _boss._locked_target).length() < 0.01,
+				"blink 落点圈圆心==落点")
+			_assert(tag, float(st.get("alpha", 1.0)) < float(lt.get("alpha", 0.0)),
+				"blink 起点圈淡于落点圈")
+		"wall":
+			var wall_count := clampi(int(skill.get("count", 8)), 3, 16)
+			var wall_radius := float(skill.get("radius", 46.0))
+			_assert(tag, _boss._telegraphs.size() == wall_count, "wall 预告数量==count")
+			for i in wall_count:
+				var t: Dictionary = _boss._telegraphs[i]
+				_assert(tag, str(t.get("kind", "")) == "circle", "wall 预告为 circle")
+				_assert(tag, absf(float(t.get("radius", 0.0)) - wall_radius) < 0.01,
+					"wall 预告半径==爆炸伤害半径")
+				_assert(tag, (t.get("pos", Vector2.ZERO) - _boss._eruption_queue[i]).length() < 0.01,
+					"wall 预告位置==爆炸结算位置")
+			var same_x := true
+			var same_y := true
+			var anchor: Vector2 = _boss._telegraphs[0].get("pos", Vector2.ZERO)
+			for i in wall_count:
+				var p: Vector2 = _boss._telegraphs[i].get("pos", Vector2.ZERO)
+				if absf(p.x - anchor.x) > 0.01:
+					same_x = false
+				if absf(p.y - anchor.y) > 0.01:
+					same_y = false
+			_assert(tag, same_x or same_y, "wall 预告点共线（横向/纵向弹幕墙）")
 
 func _assert(tag: String, ok: bool, what: String) -> void:
 	if not ok:
@@ -325,6 +466,10 @@ func _test_real_boss_telegraphs() -> void:
 func _check_real_telegraph(tag: String, skill: Dictionary) -> void:
 	## 对 enemies.json 中真实 Boss 技能做预告==伤害 几何校验
 	var type: String = str(skill.get("type", ""))
+	if type in ["spiral", "homing_shot", "sweep", "spike_trail", "blink", "wall"]:
+		# 新类型预告几何校验与通用用例完全一致，直接复用
+		_check_telegraph(tag, skill)
+		return
 	if str(skill.get("telegraph", "")) == "":
 		if not _boss._telegraphs.is_empty():
 			_fail(tag + ": 无预告技能不应生成预警")
@@ -423,8 +568,76 @@ func _cast_estimate(skill: Dictionary) -> float:
 			return float(skill.get("duration", 2.0))
 		"lava_eruption", "meteor":
 			return float(skill.get("count", 3)) * 0.3 + 0.2
+		"spiral":
+			return float(skill.get("duration", 1.6))
+		"homing_shot":
+			return 0.2
+		"sweep":
+			return float(skill.get("duration", 1.6))
+		"spike_trail", "wall":
+			return float(skill.get("delay", 0.6)) \
+				+ float(skill.get("interval", 0.3)) * float(skill.get("count", 6)) + 0.3
+		"blink":
+			return 0.1
+		"enrage":
+			return 0.05
+		"split":
+			return 0.05
 		_:
 			return 0.05
+
+
+func _test_homing_flag() -> void:
+	## homing_shot 产生的弹幕必须带转向标志（enemy_bullet 只增不改的验证）
+	await _reset_scene()
+	var skill := {"id": "t_homing2", "type": "homing_shot", "count": 3,
+		"bullet_speed": 135.0, "turn_rate": 3.0, "lifetime": 4.0, "spread": 20.0,
+		"windup": 0.1, "telegraph": "dot", "cooldown": 1.0, "min_phase": 1}
+	_boss.debug_cast(skill)
+	await _physics_frames(15)  # 等 windup(0.1s) + cast 开始后子弹生成
+	var homing_count := 0
+	for child in get_tree().current_scene.get_children():
+		if child is Area2D and child.get_script() != null \
+				and str(child.get_script().resource_path).ends_with("enemy_bullet.gd"):
+			if child._homing:
+				homing_count += 1
+	if homing_count < 3:
+		_fail("homing_flag: 追踪弹未带转向标志 (%d)" % homing_count)
+	await _physics_frames(90)  # 等施法收尾，避免残留影响后续用例
+
+
+func _test_enrage_cooldown() -> void:
+	## enrage 后弹幕冷却 ×cd_mult（level=1 时关卡系数=1.0）
+	await _reset_scene()
+	_boss.debug_cast({"id": "t_er", "type": "enrage", "speed_mult": 1.3, "cd_mult": 0.7,
+		"windup": 0.1, "cooldown": 1.0, "min_phase": 1})
+	await _physics_frames(10)
+	if not _boss._enrage:
+		_fail("enrage_cd: 狂暴未触发")
+	_boss._start_skill({"id": "cd_probe", "type": "beam", "duration": 0.3,
+		"windup": 0.1, "cooldown": 10.0, "min_phase": 1})
+	var cd: float = float(_boss._skill_cds.get("cd_probe", -1.0))
+	if absf(cd - 7.0) > 0.01:
+		_fail("enrage_cd: 冷却未乘 cd_mult (%s != 7.0)" % cd)
+	await _physics_frames(60)
+
+
+func _test_boss_skill_counts() -> void:
+	## 需求：前 3 个 Boss 技能数 ≥3，后 3 个 Boss 技能数 ≥5
+	var bosses: Array = GameState.tables.get("enemies", {}).get("bosses", [])
+	var order: Array = ["slime_king", "tree_golem", "skeleton_king",
+		"imp_king", "ancient_guardian", "final_god"]
+	for i in order.size():
+		var boss_id: String = order[i]
+		var count := 0
+		for b in bosses:
+			if str(b.get("id", "")) == boss_id:
+				count = b.get("skills", []).size()
+		var min_need := 3 if i < 3 else 5
+		if count < min_need:
+			_fail("boss_skills_count: %s 技能数 %d < %d" % [boss_id, count, min_need])
+		else:
+			print("boss_skills_count: %s = %d (need >= %d) OK" % [boss_id, count, min_need])
 
 func _physics_frames(n: int) -> void:
 	for i in n:

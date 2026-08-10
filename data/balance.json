@@ -19,7 +19,7 @@
  "enemy_scaling": {
   "level_hp": 1.22,
   "level_atk": 0.16,
-  "level_num": 0.22,
+  "level_num": 0.26,
   "level_xp": 0.12,
   "loop_hp": 1.34,
   "loop_dmg": 1.24,

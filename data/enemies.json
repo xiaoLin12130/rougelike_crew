@@ -34,8 +34,8 @@
    "id": "slime",
    "name": "史莱姆",
    "hp": 45,
-   "attack": 7,
-   "speed": 55,
+   "attack": 9,
+   "speed": 62,
    "size": 1.0,
    "touch": true,
    "xp": 8,
@@ -46,14 +46,15 @@
     "flame",
     "lightning"
    ],
-   "behavior": "split"
+   "behavior": "split",
+   "atk_cd": 0.85
   },
   {
    "id": "bat",
    "name": "蝙蝠",
    "hp": 30,
-   "attack": 5,
-   "speed": 120,
+   "attack": 6,
+   "speed": 128,
    "size": 0.9,
    "touch": true,
    "xp": 6,
@@ -63,14 +64,16 @@
    "affix_pool": [
     "lightning"
    ],
-   "behavior": "swarm"
+   "behavior": "swarm",
+   "atk_cd": 0.8,
+   "dive_cd": 2.4
   },
   {
    "id": "ghost",
    "name": "幽灵",
    "hp": 60,
-   "attack": 8,
-   "speed": 70,
+   "attack": 10,
+   "speed": 78,
    "size": 1.0,
    "touch": true,
    "phase": true,
@@ -81,14 +84,15 @@
    "affix_pool": [
     "frost"
    ],
-   "behavior": "vanish"
+   "behavior": "vanish",
+   "atk_cd": 0.85
   },
   {
    "id": "goblin",
    "name": "哥布林",
    "hp": 70,
-   "attack": 10,
-   "speed": 80,
+   "attack": 13,
+   "speed": 88,
    "size": 1.0,
    "touch": true,
    "xp": 12,
@@ -99,19 +103,20 @@
     "flame",
     "stone"
    ],
-   "behavior": "rage"
+   "behavior": "rage",
+   "atk_cd": 0.85
   },
   {
    "id": "goblin_archer",
    "name": "哥布林弓手",
    "hp": 50,
-   "attack": 7,
-   "speed": 60,
+   "attack": 9,
+   "speed": 66,
    "size": 1.0,
    "range": 240,
    "projectile": true,
-   "fire_interval": 4.5,
-   "bullet_speed": 150,
+   "fire_interval": 3.8,
+   "bullet_speed": 190,
    "xp": 12,
    "gold": 3,
    "sprite": "res://assets/sprites/retro/goblin_archer_1.png",
@@ -119,14 +124,15 @@
    "affix_pool": [
     "lightning"
    ],
-   "behavior": "sniper"
+   "behavior": "sniper",
+   "sniper_speed": 340
   },
   {
    "id": "skeleton",
    "name": "骷髅",
    "hp": 90,
-   "attack": 12,
-   "speed": 60,
+   "attack": 15,
+   "speed": 66,
    "size": 1.0,
    "touch": true,
    "xp": 14,
@@ -137,19 +143,20 @@
     "stone",
     "frost"
    ],
-   "behavior": "leech"
+   "behavior": "leech",
+   "atk_cd": 0.85
   },
   {
    "id": "imp",
    "name": "小恶魔",
    "hp": 55,
-   "attack": 8,
-   "speed": 95,
+   "attack": 10,
+   "speed": 104,
    "size": 0.9,
    "range": 200,
    "projectile": true,
-   "fire_interval": 4.5,
-   "bullet_speed": 150,
+   "fire_interval": 4.0,
+   "bullet_speed": 170,
    "xp": 12,
    "gold": 3,
    "sprite": "res://assets/sprites/retro/imp_1.png",
@@ -163,13 +170,13 @@
    "id": "wizard",
    "name": "秘法巫师",
    "hp": 45,
-   "attack": 14,
-   "speed": 55,
+   "attack": 18,
+   "speed": 62,
    "size": 1.0,
    "range": 260,
    "projectile": true,
-   "fire_interval": 3.6,
-   "bullet_speed": 130,
+   "fire_interval": 3.2,
+   "bullet_speed": 165,
    "behavior": "cast",
    "xp": 15,
    "gold": 3,
@@ -183,8 +190,8 @@
    "id": "bomber",
    "name": "爆裂者",
    "hp": 40,
-   "attack": 10,
-   "speed": 85,
+   "attack": 13,
+   "speed": 93,
    "size": 1.0,
    "touch": true,
    "behavior": "bomb",
@@ -194,14 +201,15 @@
    "frames": 2,
    "affix_pool": [
     "flame"
-   ]
+   ],
+   "atk_cd": 0.85
   },
   {
    "id": "charger",
    "name": "冲锋兽",
    "hp": 80,
-   "attack": 14,
-   "speed": 90,
+   "attack": 18,
+   "speed": 98,
    "size": 1.1,
    "touch": true,
    "behavior": "charge",
@@ -211,14 +219,16 @@
    "frames": 2,
    "affix_pool": [
     "stone"
-   ]
+   ],
+   "atk_cd": 0.85,
+   "charge_cd": 2.6
   },
   {
    "id": "healer",
    "name": "幽暗巫医",
    "hp": 70,
-   "attack": 6,
-   "speed": 55,
+   "attack": 8,
+   "speed": 60,
    "size": 1.0,
    "touch": true,
    "behavior": "totem",
@@ -228,19 +238,20 @@
    "frames": 2,
    "affix_pool": [
     "lightning"
-   ]
+   ],
+   "atk_cd": 1.0
   },
   {
    "id": "crystal_sentry",
    "name": "水晶哨兵",
    "hp": 60,
-   "attack": 9,
-   "speed": 48,
+   "attack": 11,
+   "speed": 52,
    "size": 0.5,
    "range": 230,
    "projectile": true,
-   "fire_interval": 4.0,
-   "bullet_speed": 160,
+   "fire_interval": 3.6,
+   "bullet_speed": 180,
    "xp": 13,
    "gold": 3,
    "sprite": "res://assets/sprites/retro/crystal_1.png",
@@ -254,8 +265,8 @@
    "id": "spider",
    "name": "毒蛛",
    "hp": 50,
-   "attack": 7,
-   "speed": 95,
+   "attack": 8,
+   "speed": 104,
    "size": 0.5,
    "touch": true,
    "xp": 10,
@@ -266,14 +277,15 @@
     "lightning",
     "flame"
    ],
-   "behavior": "burrow"
+   "behavior": "burrow",
+   "atk_cd": 0.8
   },
   {
    "id": "mimic_block",
    "name": "魔像方块",
    "hp": 130,
-   "attack": 13,
-   "speed": 40,
+   "attack": 17,
+   "speed": 44,
    "size": 1.0,
    "touch": true,
    "xp": 16,
@@ -284,19 +296,20 @@
     "stone",
     "frost"
    ],
-   "behavior": "camouflage"
+   "behavior": "camouflage",
+   "atk_cd": 0.85
   },
   {
    "id": "specter",
    "name": "幽魂法师",
    "hp": 55,
-   "attack": 10,
-   "speed": 58,
+   "attack": 13,
+   "speed": 64,
    "size": 1.0,
    "range": 230,
    "projectile": true,
-   "fire_interval": 4.2,
-   "bullet_speed": 150,
+   "fire_interval": 3.8,
+   "bullet_speed": 175,
    "xp": 14,
    "gold": 3,
    "sprite": "res://assets/sprites/retro/specter_1.png",
@@ -366,6 +379,15 @@
      "count": 3,
      "cooldown": 9.0,
      "windup": 0.7,
+     "min_phase": 2
+    },
+    {
+     "id": "split_self",
+     "name": "????",
+     "type": "split",
+     "count": 2,
+     "cooldown": 10.0,
+     "windup": 0.6,
      "min_phase": 2
     }
    ]
@@ -440,6 +462,21 @@
      "cooldown": 12.0,
      "windup": 0.8,
      "min_phase": 2
+    },
+    {
+     "id": "root_spikes",
+     "name": "????",
+     "type": "spike_trail",
+     "count": 6,
+     "spacing": 64,
+     "radius": 34,
+     "delay": 0.6,
+     "interval": 0.12,
+     "damage_mult": 0.9,
+     "cooldown": 9.0,
+     "windup": 0.8,
+     "telegraph": "dot",
+     "min_phase": 1
     }
    ]
   },
@@ -502,6 +539,17 @@
      "cooldown": 10.0,
      "windup": 0.9,
      "telegraph": "circle",
+     "min_phase": 2
+    },
+    {
+     "id": "bone_sweep",
+     "name": "????",
+     "type": "sweep",
+     "duration": 1.6,
+     "sweep_angle": 120,
+     "cooldown": 10.0,
+     "windup": 1.0,
+     "telegraph": "line",
      "min_phase": 2
     }
    ]
@@ -578,6 +626,34 @@
      "cooldown": 12.0,
      "windup": 0.8,
      "min_phase": 2
+    },
+    {
+     "id": "flame_spiral",
+     "name": "????",
+     "type": "spiral",
+     "shots": 10,
+     "bullet_speed": 160,
+     "duration": 1.4,
+     "ring_interval": 0.14,
+     "offset": 18,
+     "cooldown": 10.0,
+     "windup": 0.9,
+     "telegraph": "dot",
+     "min_phase": 1
+    },
+    {
+     "id": "fire_wall",
+     "name": "????",
+     "type": "wall",
+     "count": 8,
+     "radius": 46,
+     "delay": 0.4,
+     "interval": 0.12,
+     "damage_mult": 1.0,
+     "cooldown": 11.0,
+     "windup": 0.9,
+     "telegraph": "circle",
+     "min_phase": 2
     }
    ]
   },
@@ -638,6 +714,30 @@
      "cooldown": 11.0,
      "windup": 0.8,
      "min_phase": 2
+    },
+    {
+     "id": "seeker_light",
+     "name": "????",
+     "type": "homing_shot",
+     "count": 4,
+     "bullet_speed": 135,
+     "turn_rate": 3.0,
+     "lifetime": 4.0,
+     "cooldown": 9.0,
+     "windup": 0.8,
+     "telegraph": "dot",
+     "min_phase": 2
+    },
+    {
+     "id": "guardian_blink",
+     "name": "????",
+     "type": "blink",
+     "radius": 110,
+     "damage_mult": 1.6,
+     "cooldown": 10.0,
+     "windup": 0.9,
+     "telegraph": "circle",
+     "min_phase": 1
     }
    ]
   },
@@ -710,6 +810,43 @@
      "cooldown": 8.5,
      "windup": 1.2,
      "telegraph": "circle",
+     "min_phase": 3
+    },
+    {
+     "id": "void_spiral",
+     "name": "????",
+     "type": "spiral",
+     "shots": 12,
+     "bullet_speed": 170,
+     "duration": 1.8,
+     "ring_interval": 0.12,
+     "offset": 15,
+     "cooldown": 10.0,
+     "windup": 1.0,
+     "telegraph": "dot",
+     "min_phase": 2
+    },
+    {
+     "id": "void_seeker",
+     "name": "????",
+     "type": "homing_shot",
+     "count": 3,
+     "bullet_speed": 140,
+     "turn_rate": 3.0,
+     "lifetime": 4.0,
+     "cooldown": 12.0,
+     "windup": 0.9,
+     "telegraph": "dot",
+     "min_phase": 3
+    },
+    {
+     "id": "ancient_enrage",
+     "name": "???",
+     "type": "enrage",
+     "speed_mult": 1.3,
+     "cd_mult": 0.7,
+     "cooldown": 0.5,
+     "windup": 0.1,
      "min_phase": 3
     }
    ]

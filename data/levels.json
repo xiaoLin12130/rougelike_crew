@@ -9,7 +9,7 @@
     {
      "time": 0,
      "spawn": {
-      "slime": 2,
+      "slime": 3,
       "bat": 1
      },
      "interval": 1.7,
@@ -18,7 +18,7 @@
     {
      "time": 21,
      "spawn": {
-      "slime": 3,
+      "slime": 4,
       "bat": 2
      },
      "interval": 1.3,
@@ -28,9 +28,9 @@
     {
      "time": 45,
      "spawn": {
-      "slime": 4,
+      "slime": 5,
       "bat": 3,
-      "goblin": 2,
+      "goblin": 3,
       "wizard": 1
      },
      "interval": 1.0,
@@ -49,7 +49,7 @@
     {
      "time": 0,
      "spawn": {
-      "goblin": 3,
+      "goblin": 4,
       "bat": 2
      },
      "interval": 1.2,
@@ -58,8 +58,8 @@
     {
      "time": 24,
      "spawn": {
-      "goblin": 4,
-      "goblin_archer": 2,
+      "goblin": 5,
+      "goblin_archer": 3,
       "ghost": 2,
       "charger": 1
      },
@@ -70,8 +70,8 @@
     {
      "time": 51,
      "spawn": {
-      "goblin": 5,
-      "goblin_archer": 3,
+      "goblin": 6,
+      "goblin_archer": 4,
       "slime": 4,
       "charger": 2,
       "specter": 1
@@ -92,7 +92,7 @@
     {
      "time": 0,
      "spawn": {
-      "skeleton": 3,
+      "skeleton": 4,
       "ghost": 2
      },
      "interval": 1.1,
@@ -101,8 +101,8 @@
     {
      "time": 24,
      "spawn": {
-      "skeleton": 5,
-      "ghost": 3,
+      "skeleton": 6,
+      "ghost": 4,
       "bat": 3,
       "wizard": 1
      },
@@ -113,9 +113,9 @@
     {
      "time": 51,
      "spawn": {
-      "skeleton": 6,
-      "ghost": 4,
-      "goblin_archer": 3,
+      "skeleton": 7,
+      "ghost": 5,
+      "goblin_archer": 4,
       "wizard": 2,
       "mimic_block": 1
      },
@@ -135,7 +135,7 @@
     {
      "time": 0,
      "spawn": {
-      "imp": 3,
+      "imp": 4,
       "slime": 3
      },
      "interval": 1.0,
@@ -144,8 +144,8 @@
     {
      "time": 24,
      "spawn": {
-      "imp": 4,
-      "ghost": 3,
+      "imp": 5,
+      "ghost": 4,
       "goblin": 3,
       "bomber": 1
      },
@@ -156,9 +156,9 @@
     {
      "time": 51,
      "spawn": {
-      "imp": 4,
-      "goblin_archer": 3,
-      "skeleton": 4,
+      "imp": 5,
+      "goblin_archer": 4,
+      "skeleton": 5,
       "bomber": 2,
       "spider": 1
      },
@@ -178,8 +178,8 @@
     {
      "time": 0,
      "spawn": {
-      "skeleton": 4,
-      "imp": 3,
+      "skeleton": 5,
+      "imp": 4,
       "ghost": 3
      },
      "interval": 0.85,
@@ -188,9 +188,9 @@
     {
      "time": 24,
      "spawn": {
-      "goblin_archer": 5,
-      "imp": 3,
-      "skeleton": 5,
+      "goblin_archer": 6,
+      "imp": 4,
+      "skeleton": 6,
       "healer": 1
      },
      "interval": 0.8,
@@ -200,10 +200,10 @@
     {
      "time": 51,
      "spawn": {
-      "skeleton": 5,
-      "imp": 5,
-      "goblin_archer": 4,
-      "ghost": 4,
+      "skeleton": 6,
+      "imp": 6,
+      "goblin_archer": 5,
+      "ghost": 5,
       "healer": 1,
       "bomber": 2,
       "crystal_sentry": 1

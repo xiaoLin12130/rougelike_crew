@@ -44,6 +44,15 @@ var _eruption_queue: Array = []
 var _eruption_timer := 0.0
 var _zones: Array = []
 
+# ---- 新技能 v2：spiral / homing_shot / sweep / spike_trail / blink / wall / enrage / split ----
+var _spiral_base := 0.0
+var _spiral_rings := 0
+var _sweep_start_angle := 0.0
+var _sweep_end_angle := 0.0
+var _enrage := false
+var _enrage_speed_mult := 1.0
+var _enrage_cd_mult := 1.0
+
 # ---- 增益 / 护盾 ----
 var _buff_armor := 0.0
 var _buff_left := 0.0
@@ -73,6 +82,9 @@ func setup_boss(boss_id: String, level: int, loop: int, final_boss: bool = false
 	_buff_armor = 0.0
 	_buff_left = 0.0
 	_shield_left = 0.0
+	_enrage = false
+	_enrage_speed_mult = 1.0
+	_enrage_cd_mult = 1.0
 	_invuln_left = 0.0
 	modulate = Color.WHITE
 	match boss_id:
@@ -134,10 +146,16 @@ func _draw() -> void:
 			draw_arc(tpos, float(t.get("radius", 80.0)), 0.0, TAU, 48,
 				Color(1.0, 0.28, 0.22, 0.85), 2.0)
 		elif kind == "dot":
-			# 发射点小圈（ring_barrage）：仅标记弹幕喷出位置，圈内无伤害，故不画"伤害区"大圈
 			var dr: float = float(t.get("radius", 6.0))
-			draw_circle(tpos, dr, Color(1.0, 0.78, 0.25, 0.32))
-			draw_arc(tpos, dr, 0.0, TAU, 14, Color(1.0, 0.9, 0.55, 0.9), 1.5)
+			if dr > 12.0:
+				# 伤害点（spike_trail 地刺）：红圈 == 实际伤害半径
+				draw_circle(tpos, dr, Color(1.0, 0.1, 0.08, 0.28))
+				draw_arc(tpos, dr, 0.0, TAU, 32, Color(1.0, 0.28, 0.22, 0.85), 2.0)
+				draw_circle(tpos, dr * 0.35, Color(1.0, 0.9, 0.6, 0.55))
+			else:
+				# 发射点小圈（ring_barrage/spiral/homing）：仅标记弹幕喷出位置，圈内无伤害
+				draw_circle(tpos, dr, Color(1.0, 0.78, 0.25, 0.32))
+				draw_arc(tpos, dr, 0.0, TAU, 14, Color(1.0, 0.9, 0.55, 0.9), 1.5)
 		else:
 			# line：宽度字段 = 实际伤害判定宽度（光束半宽×2 / 冲撞命中距离×2），画成半透明色带
 			var tend: Vector2 = tpos + t.get("dir", Vector2.RIGHT) * float(t.get("length", 300.0))
@@ -193,7 +211,8 @@ func _tick_boss(delta: float) -> void:
 func _update_approach(delta: float) -> void:
 	var to_player := _player.global_position - global_position
 	var dist := to_player.length()
-	var spd := speed * (0.5 if _freeze_left > 0.0 else 1.0) * (1.3 if phase >= 3 else 1.0)
+	var spd := speed * (0.5 if _freeze_left > 0.0 else 1.0) * (1.3 if phase >= 3 else 1.0) \
+		* (_enrage_speed_mult if _enrage else 1.0)
 	if dist > 40.0:
 		velocity = to_player.normalized() * spd
 	else:
@@ -212,6 +231,8 @@ func _pick_skill() -> Dictionary:
 	var pool: Array = []
 	for s in conf.get("skills", []):
 		var sd: Dictionary = s
+		if str(sd.get("type", "")) == "enrage":
+			continue  # enrage 为阶段被动，不占施法池
 		if int(sd.get("min_phase", 1)) <= phase and float(_skill_cds.get(str(sd.get("id", "")), 0.0)) <= 0.0:
 			pool.append(sd)
 	if pool.is_empty():
@@ -222,7 +243,8 @@ func _start_skill(skill: Dictionary) -> void:
 	_current_skill = skill
 	# 机制密度：关卡越高技能冷却越短（每关 -5%，最低 70%）
 	_skill_cds[str(skill.get("id", "skill"))] = float(skill.get("cooldown", 6.0)) \
-		* maxf(0.7, 1.0 - 0.05 * float(maxi(GameState.run.get("level", 1), 1) - 1))
+		* maxf(0.7, 1.0 - 0.05 * float(maxi(GameState.run.get("level", 1), 1) - 1)) \
+		* (_enrage_cd_mult if _enrage else 1.0)
 	_windup_left = float(skill.get("windup", 0.6))
 	_telegraphs.clear()
 	_eruption_queue.clear()
@@ -289,6 +311,77 @@ func _setup_telegraph(skill: Dictionary) -> void:
 			_telegraphs.append({"kind": "dot",
 				"pos": global_position + Vector2.from_angle(a) * BULLET_SPAWN_DIST,
 				"radius": 6.0})
+	elif type == "spiral":
+		# 旋转弹幕环：圈内无直接伤害（伤害来自子弹），画发射点小圈（与 ring_barrage 一致）
+		var shots := clampi(int(skill.get("shots", 12)), 4, 48)
+		for i in shots:
+			var a := TAU * float(i) / float(shots)
+			_telegraphs.append({"kind": "dot",
+				"pos": global_position + Vector2.from_angle(a) * BULLET_SPAWN_DIST,
+				"radius": 6.0})
+	elif type == "homing_shot":
+		# 追踪弹：圈内无直接伤害（伤害来自子弹命中），画发射点小圈
+		var count := clampi(int(skill.get("count", 4)), 1, 12)
+		var spread := float(skill.get("spread", 20.0))
+		var base := (_player.global_position - global_position).angle()
+		for i in count:
+			var off := 0.0 if count <= 1 else (i - (count - 1) / 2.0) * (spread / float(count - 1))
+			_telegraphs.append({"kind": "dot",
+				"pos": global_position + Vector2.from_angle(base + deg_to_rad(off)) * BULLET_SPAWN_DIST,
+				"radius": 6.0})
+	elif type == "sweep":
+		# 扇形激光扫：预告 = 起止两条边界线（宽度=判定宽度），实际伤害区=扫过的整个扇形
+		var base := (_player.global_position - global_position).angle()
+		var half := deg_to_rad(float(skill.get("sweep_angle", 120.0)) * 0.5)
+		_sweep_start_angle = base - half
+		_sweep_end_angle = base + half
+		_telegraphs.append({"kind": "line", "pos": global_position, "dir": Vector2.from_angle(_sweep_start_angle),
+			"length": BEAM_RANGE, "width": BEAM_HALF_WIDTH * 2.0})
+		_telegraphs.append({"kind": "line", "pos": global_position, "dir": Vector2.from_angle(_sweep_end_angle),
+			"length": BEAM_RANGE, "width": BEAM_HALF_WIDTH * 2.0})
+	elif type == "spike_trail":
+		# 地刺轨迹：沿玩家移动方向连续伤害点（dot 半径=伤害半径），延迟后逐点爆炸
+		var count := clampi(int(skill.get("count", 6)), 2, 14)
+		var spacing := float(skill.get("spacing", 64.0))
+		var radius := float(skill.get("radius", 34.0))
+		_locked_target = _player.global_position
+		var pdir: Vector2 = _player.velocity
+		if pdir.length() < 20.0:
+			pdir = (_player.global_position - global_position).normalized()
+		else:
+			pdir = pdir.normalized()
+		for i in count:
+			var p := _locked_target + pdir * (spacing * 0.5 + spacing * float(i))
+			p = p.clamp(ARENA.position + Vector2(24, 24), ARENA.end - Vector2(24, 24))
+			_eruption_queue.append(p)
+			_telegraphs.append({"kind": "dot", "pos": p, "radius": radius})
+	elif type == "blink":
+		# 闪现：双圈预告（起点淡圈 + 落点红圈），落点圈==实际爆炸伤害区
+		var radius := float(skill.get("radius", 90.0))
+		_locked_target = _player.global_position.clamp(ARENA.position, ARENA.end)
+		_telegraphs.append({"kind": "circle", "pos": global_position, "radius": radius, "alpha": 0.12})
+		_telegraphs.append({"kind": "circle", "pos": _locked_target, "radius": radius, "alpha": 0.34})
+	elif type == "wall":
+		# 弹幕墙：玩家所在行/列生成一排落点圈（==爆炸伤害区），逐点喷发
+		var radius := float(skill.get("radius", 46.0))
+		var count := clampi(int(skill.get("count", 8)), 3, 16)
+		var horizontal := randf() < 0.5
+		var lane: float
+		var start: float
+		var span: float
+		if horizontal:
+			lane = clampf(_player.global_position.y, ARENA.position.y + 50.0, ARENA.end.y - 50.0)
+			start = ARENA.position.x + 60.0
+			span = ARENA.size.x - 120.0
+		else:
+			lane = clampf(_player.global_position.x, ARENA.position.x + 50.0, ARENA.end.x - 50.0)
+			start = ARENA.position.y + 60.0
+			span = ARENA.size.y - 120.0
+		for i in count:
+			var t := span * float(i) / float(count - 1)
+			var p := Vector2(start + t, lane) if horizontal else Vector2(lane, start + t)
+			_eruption_queue.append(p)
+			_telegraphs.append({"kind": "circle", "pos": p, "radius": radius})
 
 func _random_arena_point() -> Vector2:
 	return Vector2(
@@ -305,7 +398,7 @@ func _begin_cast() -> void:
 	var type: String = str(_current_skill.get("type", ""))
 	# 落点类技能（lava_eruption/meteor）保留预告圈，逐点喷发时逐个移除，
 	# 让玩家在整个施法期间都能看到剩余危险区；其余技能施法瞬间清空预告。
-	if type != "lava_eruption" and type != "meteor":
+	if type != "lava_eruption" and type != "meteor" and type != "spike_trail" and type != "wall":
 		_telegraphs.clear()
 	velocity = Vector2.ZERO
 	_hit_timer = 0.0
@@ -328,6 +421,21 @@ func _begin_cast() -> void:
 		"lava_eruption", "meteor":
 			_eruption_timer = 0.0
 			_cast_left = float(_eruption_queue.size()) * 0.3 + 0.2
+		"spiral":
+			_spiral_rings = 0
+			_cast_left = float(_current_skill.get("duration", 1.6))
+		"homing_shot":
+			_cast_left = 0.2
+		"sweep":
+			_cast_left = float(_current_skill.get("duration", 1.6))
+		"spike_trail", "wall":
+			_eruption_timer = float(_current_skill.get("delay", 0.6))
+			_cast_left = float(_current_skill.get("delay", 0.6)) \
+				+ float(_current_skill.get("interval", 0.3)) * float(maxi(_eruption_queue.size(), 1)) + 0.3
+		"blink":
+			_cast_left = 0.1
+		"enrage":
+			_cast_left = 0.05
 		_:
 			_cast_left = 0.05
 	_execute_cast(_current_skill)
@@ -351,6 +459,18 @@ func _execute_cast(skill: Dictionary) -> void:
 			_cast_ring_barrage(skill)
 		"summon_wave":
 			_cast_summon_wave(skill)
+		"spiral":
+			_spiral_base = (_player.global_position - global_position).angle()
+			_fx_timer = float(skill.get("ring_interval", 0.14))
+			_cast_spiral_ring(skill, 0)
+		"homing_shot":
+			_cast_homing(skill)
+		"blink":
+			_blink_now()
+		"enrage":
+			_apply_enrage()
+		"split":
+			_cast_split(skill)
 		_:
 			pass
 
@@ -366,6 +486,12 @@ func _update_cast(delta: float) -> void:
 		"whirl_laser":
 			_update_whirl(delta)
 		"lava_eruption", "meteor":
+			_update_eruption(delta)
+		"spiral":
+			_update_spiral(delta)
+		"sweep":
+			_update_sweep(delta)
+		"spike_trail", "wall":
 			_update_eruption(delta)
 	_cast_left -= delta
 	if _cast_left <= 0.0 and not _leap_active:
@@ -407,10 +533,102 @@ func _cast_spread(skill: Dictionary) -> void:
 		var off := (i - (shots - 1) / 2.0) * (spread / (shots - 1))
 		_fire_bullet(Vector2.from_angle(base + deg_to_rad(off)), bullet_speed)
 
-func _fire_bullet(dir: Vector2, bullet_speed: float) -> void:
+func _fire_bullet(dir: Vector2, bullet_speed: float, homing: bool = false,
+		turn_rate: float = 3.0, lifetime: float = 4.0) -> void:
 	var bullet := BULLET_SCENE.instantiate()
-	bullet.setup(global_position + dir * BULLET_SPAWN_DIST, dir, bullet_speed, attack, 420.0)
+	bullet.setup(global_position + dir * BULLET_SPAWN_DIST, dir, bullet_speed, attack, 420.0,
+		homing, turn_rate, lifetime)
 	get_tree().current_scene.add_child(bullet)
+
+func _cast_spiral_ring(skill: Dictionary, ring: int) -> void:
+	## 旋转弹幕环：一圈 shots 发，角度 = 起始朝向 + 每圈偏移递进
+	var shots := clampi(int(skill.get("shots", 12)), 4, 48)
+	var bullet_speed := float(skill.get("bullet_speed", 170.0))
+	var offset := deg_to_rad(float(skill.get("offset", 18.0)))
+	var rot := _spiral_base + offset * float(ring)
+	for i in shots:
+		_fire_bullet(Vector2.from_angle(rot + TAU * float(i) / float(shots)), bullet_speed)
+
+func _update_spiral(delta: float) -> void:
+	## cast 期间按 ring_interval 连发多圈，每圈角度偏移递进
+	_fx_timer -= delta
+	if _fx_timer <= 0.0:
+		_fx_timer = float(_current_skill.get("ring_interval", 0.14))
+		_spiral_rings += 1
+		_cast_spiral_ring(_current_skill, _spiral_rings)
+
+func _cast_homing(skill: Dictionary) -> void:
+	## 追踪弹：小角度扇形发射 count 发，弹幕自带转向玩家（enemy_bullet.homing）
+	var count := clampi(int(skill.get("count", 4)), 1, 12)
+	var spread := float(skill.get("spread", 20.0))
+	var bullet_speed := float(skill.get("bullet_speed", 135.0))
+	var turn_rate := float(skill.get("turn_rate", 3.0))
+	var lifetime := float(skill.get("lifetime", 4.0))
+	var base := (_player.global_position - global_position).angle()
+	for i in count:
+		var off := 0.0 if count <= 1 else (i - (count - 1) / 2.0) * (spread / float(count - 1))
+		_fire_bullet(Vector2.from_angle(base + deg_to_rad(off)), bullet_speed, true, turn_rate, lifetime)
+
+func _update_sweep(delta: float) -> void:
+	## 扇形激光扫：角度从 _sweep_start_angle 插值到 _sweep_end_angle；
+	## 伤害语义=已扫过扇形内持续危险（与"起止边界线"预告几何一致）
+	var dur := maxf(float(_current_skill.get("duration", 1.6)), 0.1)
+	var t := 1.0 - clampf(_cast_left / dur, 0.0, 1.0)
+	var cur := lerpf(_sweep_start_angle, _sweep_end_angle, t)
+	var dir := Vector2.from_angle(cur)
+	_hit_timer -= delta
+	_fx_timer -= delta
+	if _hit_timer <= 0.0:
+		_hit_timer = 0.2
+		if _player_in_swept(global_position, cur, BEAM_RANGE):
+			EventBus.player_hit.emit(attack, global_position)
+	if _fx_timer <= 0.0:
+		_fx_timer = 0.1
+		EventBus.fx_explosion.emit(global_position + dir * 80.0, "lightning")
+
+func _player_in_swept(origin: Vector2, current_angle: float, length: float) -> bool:
+	## 玩家方向角落在 [起始角, 当前角] 已扫过扇形内，且距离在射程内
+	if not is_instance_valid(_player):
+		return false
+	var to_p := _player.global_position - origin
+	if to_p.length() > length:
+		return false
+	var span := absf(angle_difference(_sweep_start_angle, current_angle))
+	var rel := absf(angle_difference(_sweep_start_angle, to_p.angle()))
+	return rel <= span + 0.02
+
+func _blink_now() -> void:
+	## 闪现：cast 瞬间瞬移到落点并范围爆炸（复用 leap 落点结算几何）
+	global_position = _locked_target
+	var radius := float(_current_skill.get("radius", 90.0))
+	EventBus.fx_explosion.emit(_locked_target, "fire")
+	EventBus.screen_shake.emit(6.0)
+	if is_instance_valid(_player) and _player.global_position.distance_to(_locked_target) <= radius:
+		EventBus.player_hit.emit(int(attack * float(_current_skill.get("damage_mult", 1.5))), _locked_target)
+
+func _apply_enrage_from(skill: Dictionary) -> void:
+	## 狂暴（幂等）：移速 +speed_mult、弹幕冷却 ×cd_mult，转阶段自动触发
+	if _enrage:
+		return
+	_enrage = true
+	_enrage_speed_mult = float(skill.get("speed_mult", 1.3))
+	_enrage_cd_mult = float(skill.get("cd_mult", 0.7))
+	EventBus.fx_explosion.emit(global_position, "fire")
+	EventBus.screen_shake.emit(5.0)
+
+func _apply_enrage() -> void:
+	_apply_enrage_from(_current_skill)
+
+func _cast_split(skill: Dictionary) -> void:
+	## 分裂：原地弹开出生 count 只小怪（史莱姆王=小史莱姆）
+	var count := clampi(int(skill.get("count", 2)), 1, 5)
+	EventBus.fx_explosion.emit(global_position, "poison")
+	var scene := preload("res://scenes/game/enemy.tscn")
+	for i in count:
+		var e := scene.instantiate()
+		e.setup(_summon_enemy, GameState.run.level, GameState.run.loop, "")
+		e.global_position = global_position + Vector2(randf_range(-22, 22), randf_range(-22, 22))
+		get_tree().current_scene.add_child(e)
 
 func _cast_root_zone(skill: Dictionary) -> void:
 	var radius := float(skill.get("radius", 70.0))
@@ -511,14 +729,14 @@ func _update_whirl(delta: float) -> void:
 func _update_eruption(delta: float) -> void:
 	_eruption_timer -= delta
 	if _eruption_timer <= 0.0 and not _eruption_queue.is_empty():
-		_eruption_timer = 0.3
+		_eruption_timer = float(_current_skill.get("interval", 0.3))
 		var pos: Vector2 = _eruption_queue.pop_front()
 		_erupt_at(pos)
 
 func _erupt_at(pos: Vector2) -> void:
 	var type: String = str(_current_skill.get("type", "lava_eruption"))
 	var radius := float(_current_skill.get("radius", 40.0))
-	var dmg := int(attack * (2.0 if type == "meteor" else 1.2))
+	var dmg := int(attack * float(_current_skill.get("damage_mult", 2.0 if type == "meteor" else 1.2)))
 	# 喷发后移除对应预告圈（世界坐标匹配），保持"圈还在=危险还在"
 	for i in range(_telegraphs.size() - 1, -1, -1):
 		if Vector2(_telegraphs[i].get("pos", Vector2.ZERO)).distance_to(pos) < 1.0:
@@ -544,6 +762,17 @@ func _check_phase() -> void:
 	while phase <= _phases.size() and ratio <= float(_phases[phase - 1]):
 		phase += 1
 		_on_phase_up()
+	_check_enrage_trigger()
+
+func _check_enrage_trigger() -> void:
+	## 阶段被动：type==enrage 且 phase>=min_phase 时自动狂暴（幂等）
+	if _enrage:
+		return
+	for s in conf.get("skills", []):
+		var sd: Dictionary = s
+		if str(sd.get("type", "")) == "enrage" and phase >= int(sd.get("min_phase", 99)):
+			_apply_enrage_from(sd)
+			return
 
 func _on_phase_up() -> void:
 	_interrupt_cast()

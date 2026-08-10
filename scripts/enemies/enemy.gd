@@ -264,7 +264,7 @@ func _tick_skills(delta: float) -> void:
 			elif _skill_cd <= 0.0 and global_position.distance_to(_player.global_position) < 220.0:
 				_dive_dir = (_player.global_position - global_position).normalized()
 				_dive_time = 0.8
-				_skill_cd = 3.0
+				_skill_cd = float(conf.get("dive_cd", 3.0))
 		"phase":
 			# 幽灵相位：每 3.5s 无敌 0.7s
 			_phase_timer += delta
@@ -286,7 +286,7 @@ func _tick_skills(delta: float) -> void:
 			elif _charge_state == 0 and _skill_cd <= 0.0 and global_position.distance_to(_player.global_position) < 260.0:
 				_charge_state = 1
 				_charge_timer = 0.5
-				_skill_cd = 3.2
+				_skill_cd = float(conf.get("charge_cd", 3.2))
 			elif _charge_state == 2:
 				_charge_timer -= delta
 				if _charge_timer <= -0.9:
@@ -727,7 +727,7 @@ func _ai_melee(dist: float, to_player: Vector2, delta: float) -> void:
 	velocity = to_player.normalized() * spd if dist > 12.0 else Vector2.ZERO
 	move_and_slide()
 	if dist <= 14.0 and _atk_cd <= 0.0:
-		_atk_cd = 1.0
+		_atk_cd = float(conf.get("atk_cd", 1.0))
 		var dealt := int(attack * _atk_mult())
 		EventBus.player_hit.emit(dealt, global_position)
 		if behavior == "leech":
@@ -759,7 +759,7 @@ func _ai_ranged(dist: float, to_player: Vector2, delta: float) -> void:
 			t.timeout.connect(func():
 				if is_instance_valid(self) and not _dead:
 					var b := BULLET_SCENE.instantiate()
-					b.setup(global_position + dir * 14.0, dir, 130.0, int(attack * 1.8), 520.0)
+					b.setup(global_position + dir * 14.0, dir, float(conf.get("bullet_speed", 130.0)), int(attack * 1.8), 520.0)
 					b.scale = Vector2.ONE * 1.6
 					get_tree().current_scene.add_child(b))
 		elif behavior == "sniper":
@@ -769,7 +769,7 @@ func _ai_ranged(dist: float, to_player: Vector2, delta: float) -> void:
 			t2.timeout.connect(func():
 				if is_instance_valid(self) and not _dead:
 					var b2 := BULLET_SCENE.instantiate()
-					b2.setup(global_position + dir * 14.0, dir, 300.0, int(attack * 2.2), 620.0)
+					b2.setup(global_position + dir * 14.0, dir, float(conf.get("sniper_speed", 300.0)), int(attack * 2.2), 620.0)
 					b2.scale = Vector2.ONE * 1.4
 					get_tree().current_scene.add_child(b2))
 		else:

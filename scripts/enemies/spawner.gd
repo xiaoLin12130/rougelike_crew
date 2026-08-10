@@ -58,8 +58,12 @@ func _spawn_group(wave: Dictionary) -> void:
 		0.06 + 0.02 * float(GameState.run.level - 1) + 0.04 * float(_active_wave),
 		0.0, 0.15)
 	var elite_chance: float = float(wave.get("elite_chance", fallback))
+	# 小怪数量随关卡增长（balance.enemy_scaling.level_num，2026-08-10 minion_boost 接入）：
+	# 每级 +level_num，上限 ×1.5，避免后期波次数量爆炸
+	var ln: float = float(GameState.tables.get("balance", {}).get("enemy_scaling", {}).get("level_num", 0.0))
+	var num_mult: float = minf(1.0 + ln * float(maxi(GameState.run.level - 1, 0)), 1.5)
 	for enemy_id in spawns:
-		var count: int = int(spawns[enemy_id])
+		var count: int = int(roundi(float(spawns[enemy_id]) * num_mult))
 		for i in count:
 			_spawn_one(str(enemy_id), elite_chance)
 

@@ -35,7 +35,7 @@ const CATEGORIES: Array = [
 
 var _tab_idx := 0
 var _tabs: Array[Button] = []
-var _grid: GridContainer
+var _grid: Container  # 2026-08-10：HFlowContainer（填满宽度自动换行）
 var _progress: Label
 var _detail: PanelContainer
 var _detail_title: Label
@@ -99,11 +99,12 @@ func _ready() -> void:
 	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
 	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	main.add_child(scroll)
-	_grid = GridContainer.new()
-	_grid.columns = _grid_columns
+	# 2026-08-10?GridContainer ????????? ? ? HFlowContainer??????
+	# ????????????????????????PC/????????
+	_grid = HFlowContainer.new()
 	_grid.add_theme_constant_override("h_separation", 6)
 	_grid.add_theme_constant_override("v_separation", 6)
-	_grid.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	_grid.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	scroll.add_child(_grid)
 	var back := UiTheme.button("返回主菜单 (Esc)", Vector2(180, UiLayout.touch_min()))
 	back.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
@@ -115,7 +116,9 @@ func _ready() -> void:
 func _build_detail(root: Control) -> void:
 	## 已收集条目点击详情弹窗（名称/稀有度/描述；未收集条目不触发）
 	_detail = PanelContainer.new()
-	UiLayout.center_panel(_detail, 300.0, 200.0)
+	# 2026-08-10????? offsets???????????????????
+	# ???? + grow BOTH + min-size??????????????
+	_detail.set_anchors_preset(Control.PRESET_CENTER)
 	_detail.custom_minimum_size = Vector2(300, 200)
 	_detail.add_theme_stylebox_override("panel", UiTheme.style(Color(0.10, 0.08, 0.18, 0.96), UiTheme.BORDER, 2, 6))
 	_detail.visible = false
@@ -185,7 +188,7 @@ func _collected_count(category: String) -> int:
 
 func refresh() -> void:
 	var category := _category_key(_tab_idx)
-	_grid.columns = _grid_columns  # 切分类时保持平台列数（PC 4 / 手机 3）
+
 	for i in CATEGORIES.size():
 		var ck := _category_key(i)
 		var count := _collected_count(ck)
