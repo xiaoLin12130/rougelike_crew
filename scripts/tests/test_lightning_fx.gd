@@ -128,7 +128,7 @@ func _test_chain_bolts() -> void:
 		_fail("chain=3 应产生 3 条 LightningBolt，实际 %d" % bolts.size())
 	else:
 		for bolt in bolts:
-			if not (bolt is Node2D) or bolt.get("is_lightning_bolt", false) != true:
+			if not (bolt is Node2D) or bolt.is_lightning_bolt != true:
 				_fail("LightningBolt 节点属性异常")
 		if int(_fx.call("lightning_bolt_count")) != 3:
 			_fail("lightning_bolt_count() 与节点数不一致")
@@ -151,6 +151,12 @@ func _test_synergy_chain_bolts() -> void:
 	_thunder._chain_burst(Vector2(220, 380), 200.0, 3, 8.0, false, {})
 	await get_tree().physics_frame
 	await get_tree().physics_frame
+	print("[DBG] synergy fx children: ", _fx.get_children().map(func(c): return str(c.name)))
+	var alive := []
+	for c in get_children():
+		if c.has_method("take_damage"):
+			alive.append(str(c.name) + "@" + str(c.global_position))
+	print("[DBG] alive enemies: ", alive)
 	var n := _lightning_bolts().size()
 	if n != 3:
 		_fail("synergy 电弧 3 跳应产生 3 条连线，实际 %d" % n)
@@ -178,6 +184,8 @@ func _test_paralyze_visual() -> void:
 		_fail("麻痹附着应为 paralyze，实际 %s" % str(e._status_attach_kind))
 	if e.get_node_or_null("StatusAttach/ParalyzeIcon") == null:
 		_fail("缺少定身图标 ParalyzeIcon")
+	print("[DBG] enemy children: ", e.get_children().map(func(c): return str(c.name)))
+	print("[DBG] attach root: ", e.get_node_or_null("StatusAttach").get_children().map(func(c): return str(c.name)) if e.get_node_or_null("StatusAttach") else "MISSING")
 	var spr := e.get_node_or_null("AnimatedSprite2D") as Sprite2D
 	if spr == null:
 		_fail("敌人缺少 AnimatedSprite2D")
