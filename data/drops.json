@@ -12,8 +12,8 @@
  "boss_drops": {
   "legendary": 1,
   "rare": 2,
-  "gold_mult": 5,
-  "heal_pct": 0.3
+  "heal_pct": 0.3,
+  "_note": "gold_mult 已移除（2026-08-10）：Boss 金币按 enemies.json 的 gold 发放，无倍率"
  },
  "item_rarity_weights": {
   "common": 0.7,

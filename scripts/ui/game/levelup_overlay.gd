@@ -63,7 +63,14 @@ func show_choices(choices: Array) -> void:
 		name_l.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		name_l.custom_minimum_size = Vector2(0, 20)
 		info.add_child(name_l)
-		var desc := UiTheme.label(str(item.get("description", "")), 10, Color("#c8c0e0"))
+		# F 批：攻速类道具自动追加当前换算（攻速 X%，冷却 -Y%），与施法/近战公式 1/(1+as) 一致
+		var desc_text := str(item.get("description", ""))
+		if "attack_speed" in item.get("tags", []):
+			desc_text += "\n（当前攻速 %d%%，冷却 -%d%%）" % [
+				GameState.attack_speed_pct(),
+				GameState.attack_speed_cd_reduction_pct(),
+			]
+		var desc := UiTheme.label(desc_text, 10, Color("#c8c0e0"))
 		desc.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		desc.custom_minimum_size = Vector2(0, 46)  # 描述区固定高度 → 卡片文字高度一致
 		desc.size_flags_horizontal = Control.SIZE_EXPAND_FILL

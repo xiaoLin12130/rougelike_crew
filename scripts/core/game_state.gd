@@ -80,12 +80,14 @@ func add_xp(n: int) -> void:
 	EventBus.player_stats_changed.emit()
 
 func xp_to_next(level: int) -> int:
-	# 平滑升级曲线：L1≈50(约6只怪) → L5≈220 → L10≈455，增幅逐级微增
+	# 平滑升级曲线：L1-3 加速（30/60/100，更快形成构筑，2026-08-10），
+	# L4+ 原公式（40+30(L-1)+5(L-1)²：L4=175 → L5=240 → L10=715）
 	var l := maxi(level, 1)
+	if l <= 3:
+		return 30 + 25 * (l - 1) + 5 * (l - 1) * (l - 1)
 	var xp: Dictionary = balance().get("xp", {})
 	return int(xp.get("base", 50)) + int(xp.get("per_level", 30)) * (l - 1) \
 		+ int(xp.get("quad", 5)) * (l - 1) * (l - 1)
-
 func level_factor(level: int) -> float:
 	return pow(1.18, level - 1)
 
@@ -166,21 +168,28 @@ func roll_item_choices(count: int = 3) -> Array:
 	if filtered_pool.size() >= count:
 		pool = filtered_pool
 	var main_el := _main_element(holdings)
-	# 非主流元素保底池（仅当存在主流元素且有非主流选项时生效）
-	var off_pool: Array = []
-	if main_el != "":
+	# 主流派保底池（2026-08-10）：持有 ≥3 件某流派时，选项池至少 1 个来自该流派
+	var main_pool: Array = []
+	var main_n := int(holdings.get(main_el, 0)) if main_el != "" else 0
+	if main_el != "" and main_n >= 3:
 		for it in pool:
-			if _element_key(it) != "" and _element_key(it) != main_el:
-				off_pool.append(it)
+			if _element_key(it) == main_el:
+				main_pool.append(it)
 	var spell_choice := _make_spell_choice()
 	if not spell_choice.is_empty():
 		choices.append(spell_choice)
-	# 保底：从非主流池取 1 个（若池非空且尚未被法术部件占用）
-	if not off_pool.is_empty() and choices.size() < count and not _choice_is_off(spell_choice, main_el):
-		var pick = off_pool[randi() % off_pool.size()]
-		choices.append(pick)
-		pool.erase(pick)
-		off_pool.erase(pick)
+	# 保底：choices 中尚无主流派选项时，从主流派池取 1 个
+	if main_n >= 3 and not main_pool.is_empty() and choices.size() < count:
+		var has_main := false
+		for ch in choices:
+			if _element_key(ch) == main_el:
+				has_main = true
+				break
+		if not has_main:
+			var pick = main_pool[randi() % main_pool.size()]
+			choices.append(pick)
+			pool.erase(pick)
+			main_pool.erase(pick)
 	while choices.size() < count and not pool.is_empty():
 		var total := 0.0
 		for it in pool:
@@ -247,7 +256,7 @@ func _element_weight(def: Dictionary, base_weights: Dictionary, holdings: Dictio
 	if el != "" and holdings.has(el):
 		var n: int = int(holdings[el])
 		if n > 0:
-			w *= minf(1.0 + 0.02 * float(n) * lv_factor, 1.6)  # 上限 +60%
+			w *= minf(1.0 + 0.10 * float(n) * lv_factor, 2.5)  # 2026-08-10 流派聚焦强化: +10%/件/关, 上限 +150%
 	return w
 
 func _choice_is_off(def: Dictionary, main_el: String) -> bool:
@@ -433,6 +442,47 @@ func aggregate_bonus(tag: String) -> float:
 	# 流派成型奖励叠加（F10）
 	sum += float(run.get("synergy_bonus", {}).get(tag, 0.0))
 	return sum
+
+## ===== 攻速展示换算（F 批，只读查询，2026-08-10）=====
+
+## 攻速流派贡献读取点（与 spell_caster._SYNERGY_AS_KEYS / melee_attack 同步维护）：
+## 运行时总攻速 = 基础聚合 run.attack_speed_bonus（apply_item_effects_to_stats 写入）
+## + 下列键求和；施法冷却与近战攻击间隔均按 1/(1+总攻速) 计算。
+const AS_SYNERGY_KEYS := [
+	"fire_m2_atk_speed",   ## 火M2 薪火相传
+	"melee_m3_as_bonus",   ## 近M3 血之狂暴
+	"melee_m9_as_bonus",   ## 近M9 狂化
+	"wind_as_bonus",       ## 移2/移5 移速→攻速联动
+	"wind_m2_atk_speed",   ## 移M2 踏风
+	"wind_m10_as_bonus",   ## 移M10 暴走
+]
+
+func total_attack_speed_bonus() -> float:
+	## 总攻速加成（小数，0.5 = 50%），与 spell_caster._total_attack_speed 同口径。
+	## 未聚合时（新局/测试）回退道具聚合，保证显示值与运行时一致。
+	var base: float = float(run.get("attack_speed_bonus", -1.0))
+	if base < 0.0:
+		base = aggregate_bonus("attack_speed")
+	var total := maxf(base, 0.0)
+	for key in AS_SYNERGY_KEYS:
+		total += maxf(float(run.get(key, 0.0)), 0.0)
+	return total
+
+func attack_speed_pct() -> int:
+	## 攻速加成百分比（0/50/100…），供 HUD/卡片/面板展示。
+	return int(round(total_attack_speed_bonus() * 100.0))
+
+func attack_speed_cd_reduction_pct(as_bonus: float = -1.0) -> int:
+	## 攻速 → 施法冷却/攻击间隔缩短百分比：cd_mult = 1/(1+as)，缩短 = 1 - 1/(1+as)。
+	## 不传参时按当前总攻速换算；传入数值可预览（如升级卡片）。
+	var as_total := total_attack_speed_bonus() if as_bonus < 0.0 else maxf(as_bonus, 0.0)
+	return int(round((1.0 - 1.0 / (1.0 + as_total)) * 100.0))
+
+func attack_speed_summary() -> String:
+	## 直白文案："攻速 +50%：施法更快，冷却缩短 33%"（构筑面板统计区用）。
+	var pct := attack_speed_pct()
+	var cd := attack_speed_cd_reduction_pct()
+	return "攻速 +%d%%：施法更快，冷却缩短 %d%%" % [pct, cd]
 
 ## ===== 流派成型检测（F10）=====
 

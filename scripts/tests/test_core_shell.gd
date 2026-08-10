@@ -7,6 +7,8 @@ extends Node2D
 ## ④ 旋风刃×分裂（问题13）：小弹保底速度 >= 240（修复 1px/s 蠕动 bug）；
 ## 附 ⑤ AOE核×穿透（问题1）：爆炸后弹体保留继续飞行、二次接触再次爆炸；
 ## 附 ⑥ 闪光×爆发（问题10）：盲爆半径 ×aoe_mult 兑现"范围翻倍"。
+## 附 ⑦ 瞬发核落点追踪（体验报告 P1-2）：闪光/毒雾/火柱落点=射程内最近敌人当前位置，
+##    四距离 80/150/200 命中、320 超射程不命中（保持方向线末端）。
 ## Run: godot --headless --path . res://scripts/tests/test_core_shell.tscn
 
 const PROJECTILE_SCENE := preload("res://scenes/game/projectile.tscn")
@@ -32,6 +34,7 @@ func _ready() -> void:
 	await _test_whirl_split_speed()
 	await _test_aoe_pierce_continue()
 	await _test_flash_burst_radius()
+	await _test_instant_track()
 	if _failures.is_empty():
 		print("[TEST] CORE SHELL OK")
 		get_tree().quit(0)
@@ -331,5 +334,68 @@ func _test_flash_burst_radius() -> void:
 	else:
 		if e._blind_left <= 0.0:
 			_fail("flash burst: blind not applied")
-	await _clear_projectiles()
+		await _clear_projectiles()
 	await _clear_enemies()
+
+
+# ================= 附⑦ 瞬发核落点追踪：近身不再脱靶 =================
+
+func _test_instant_track() -> void:
+	## 体验报告 P1-2：瞬发核（speed=0）落点固定在方向线末端，近身（<100px）必脱靶。
+	## 修复后：落点 = 射程内最近敌人当前位置（闪光自动追踪敌人）；
+	## 无敌人或超射程时保持方向线末端，超程依旧不命中。
+	await _clear_enemies()
+	await _clear_projectiles()
+	var spawn := Vector2(400, 560)
+	for cid in ["flash", "poison_cloud", "inferno"]:
+		var core := _core(cid)
+		var rng := float(core.get("range", 200.0))
+		var status: Dictionary = {}
+		for k in ["burn", "slow", "root", "poison", "blind"]:
+			if core.has(k):
+				status[k] = float(core.get(k, 0.0))
+		var params := {
+			"position": spawn, "direction": Vector2.RIGHT, "speed": 0.0,
+			"range": rng, "damage": float(core.get("base_damage", 6.0)),
+			"element": str(core.get("element", "fire")),
+			"aoe": float(core.get("aoe", 0.0)),
+			"mods": {}, "status": status, "chain": 0,
+		}
+		# 近身/中距：80/150/200 全部命中（修复前 80 必脱靶、150 视窗口而定）
+		for d in [80.0, 150.0, 200.0]:
+			await _clear_enemies()
+			var e := _spawn_enemy(spawn + Vector2(d, 0))
+			_fire(params)
+			if not await _wait_hit(e):
+				_fail("%s d=%d 在射程内必须命中（落点追踪）" % [cid, int(d)])
+			else:
+				print("[TEST] %s d=%d 命中（hp=%.0f/%.0f）→ PASS" % [cid, int(d), e.hp, e.max_hp])
+		# 超射程：320px 超出所有瞬发核 range，落点保持方向线末端 → 不命中
+		await _clear_enemies()
+		var e320 := _spawn_enemy(spawn + Vector2(320.0, 0))
+		_fire(params)
+		for i in 4:
+			await get_tree().physics_frame
+		if e320.hp < e320.max_hp - 0.5:
+			_fail("%s d=320 超射程不应命中（got hp=%s/%s）" % [cid, str(e320.hp), str(e320.max_hp)])
+		else:
+			print("[TEST] %s d=320 超射程未命中（hp=%.0f/%.0f）→ PASS" % [cid, e320.hp, e320.max_hp])
+	# 追踪语义：敌人不在瞄准方向（方向反指）仍命中 → 闪光自动追踪最近敌人
+	await _clear_enemies()
+	var flash := _core("flash")
+	var e := _spawn_enemy(spawn + Vector2(80.0, 0))
+	_fire({
+		"position": spawn, "direction": Vector2.LEFT, "speed": 0.0,
+		"range": float(flash.get("range", 200.0)), "damage": float(flash.get("base_damage", 6.0)),
+		"element": "light", "aoe": 0.0, "mods": {},
+		"status": {"blind": 2.0}, "chain": 0,
+	})
+	if not await _wait_hit(e):
+		_fail("flash 反向瞄准 d=80 仍应命中（自动追踪最近敌人）")
+	else:
+		if e._blind_left <= 0.0:
+			_fail("flash 追踪命中未致盲")
+		else:
+			print("[TEST] flash 反向瞄准 d=80 命中+致盲 → PASS")
+	await _clear_enemies()
+	await _clear_projectiles()

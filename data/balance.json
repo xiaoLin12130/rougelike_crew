@@ -18,8 +18,8 @@
   "level_atk": 0.12,
   "level_num": 0.22,
   "level_xp": 0.12,
-  "loop_hp": 1.35,
-  "loop_dmg": 1.45,
+  "loop_hp": 1.3,
+  "loop_dmg": 1.18,
   "loop_num": 1.25,
   "loop_xp": 1.35
  },
@@ -43,7 +43,7 @@
   "base_mult": 1.5,
   "per_crit_dmg": 0.1
  },
- "levelup_choices": 3,
+ "levelup_choices": 4,
  "max_grid_slots": 5,
  "trinket_slots": 3
 }

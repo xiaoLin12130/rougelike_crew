@@ -145,7 +145,7 @@ func _refresh_stats() -> void:
 	_stats_label.text = "生命 %d/%d · 攻击 +%d%% · 攻速 +%d%%\n暴击 %.0f%% · 暴伤 +%d%% · 移速 +%d%%\n减伤 %.0f%% · 反弹 %.0f%% · 吸血 %.1f%% · 范围 +%d%%" % [
 		run.get("hp", 0), run.get("max_hp", 100),
 		int(GameState.aggregate_bonus("atk") * 100),
-		int(GameState.aggregate_bonus("attack_speed") * 100),
+		GameState.attack_speed_pct(),
 		float(run.get("crit_chance", 0.03)) * 100,
 		int((float(run.get("crit_dmg_bonus", 1.5)) - 1.0) * 100),
 		int(GameState.aggregate_bonus("speed") * 100),
@@ -154,6 +154,8 @@ func _refresh_stats() -> void:
 		float(run.get("lifesteal", 0.0)) * 100,
 		int(GameState.aggregate_bonus("area") * 100),
 	]
+	# F 批：攻速实时换算行（与施法/近战冷却公式 1/(1+as) 一致）
+	_stats_label.text += "\n" + GameState.attack_speed_summary()
 
 func _refresh_wand() -> void:
 	for c in _wand_box.get_children():

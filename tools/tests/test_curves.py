@@ -170,6 +170,7 @@ def main():
         check(d["type"] != "heal", "普通小怪不再掉落回血（回血只来自精英/Boss 血包）")
     check(abs(drops["elite_drops"]["heal_pct"] - 0.10) < 1e-9, "elite heal pack = 10%")
     check(abs(drops["boss_drops"]["heal_pct"] - 0.30) < 1e-9, "boss heal pack = 30%")
+    check("gold_mult" not in drops["boss_drops"], "boss_drops.gold_mult 已移除（Boss 金币按 enemies.json gold 发放）")
     # 全局吸血上限 4%（GameState 钳制）；吸血牙单件封顶 3% 必须低于全局上限
     check(vamp["curve"].get("cap", 0) < 0.04, "vampire_fang cap < 全局吸血上限 4%")
     rw = drops["item_rarity_weights"]
@@ -222,10 +223,18 @@ def main():
     atk_l1 = slime["attack"] * (1 + 0.12 * 0)
     atk_l5 = slime["attack"] * (1 + 0.12 * 4)
     check(abs(atk_l5 / atk_l1 - (1 + 0.48)) < 1e-9, "atk scaling level factor")
+    # --- loop 系数与 GameState 硬编码一致（2026-08-10 表值对齐）---
+    check(abs(b["loop_hp"] - 1.30) < 1e-9, "balance loop_hp = 1.30 (GameState.loop_factor_hp)")
+    check(abs(b["loop_dmg"] - 1.18) < 1e-9, "balance loop_dmg = 1.18 (GameState.loop_factor_dmg)")
 
     # --- xp curve (GameState.xp_to_next 公式一致性) ---
     xp = balance["xp"]
-    check(xp["base"] + xp["per_level"] * 0 == 40, "xp L1 = 40")
+    # 2026-08-10: L1-3 ????30/60/100?? GameState.xp_to_next ?????
+    # L4+ ? balance ????base 40 + per_level 30 + quad 5?
+    check(30 + 25 * 0 + 5 * 0 == 30, "xp L1 = 30 (???)")
+    check(30 + 25 * 1 + 5 * 1 == 60, "xp L2 = 60 (???)")
+    check(30 + 25 * 2 + 5 * 4 == 100, "xp L3 = 100 (???)")
+    check(xp["base"] + xp["per_level"] * 3 + xp["quad"] * 9 == 175, "xp L4 = 175 (???)")
     check(xp["base"] + xp["per_level"] * 3 + xp["quad"] * 9 == 175, "xp L4 = 175")
     check(xp["base"] + xp["per_level"] * 4 + xp["quad"] * 16 == 240, "xp L5 = 240")
     # 增幅逐级增加 → 曲线平滑且单调

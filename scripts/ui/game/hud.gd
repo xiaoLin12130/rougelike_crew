@@ -19,6 +19,7 @@ var _xp_bar: ProgressBar
 var _lv_label: Label
 var _gold_label: Label
 var _dps_label: Label
+var _as_label: Label  # F 批：DPS 行旁攻速加成小字
 var _level_label: Label
 var _res_box: BoxContainer
 var _wave_label: Label
@@ -116,6 +117,9 @@ func _build_resources(root: Control) -> void:
 	stat_row.add_child(_gold_label)
 	_dps_label = UiTheme.label("DPS 0", dps_size, Color("#9d8fc4"), true)
 	stat_row.add_child(_dps_label)
+	# F 批：DPS 行旁小字显示攻速加成（攻速 0 时留空，不占视觉噪音）
+	_as_label = UiTheme.label("", dps_size, Color("#9d8fc4"))
+	stat_row.add_child(_as_label)
 	# 第 3 行：当前关卡
 	_level_label = UiTheme.label("第 1 关", stat_size, Color("#9d8fc4"))
 	_res_box.add_child(_level_label)
@@ -276,6 +280,9 @@ func _refresh() -> void:
 		_xp_bar.max_value = maxf(need, 1)
 		_xp_bar.value = xp
 	_gold_label.text = "金币 %d" % GameState.run.get("gold", 0)
+	if _as_label != null:
+		var as_pct: int = GameState.attack_speed_pct()
+		_as_label.text = "攻速+%d%%" % as_pct if as_pct > 0 else ""
 	if _level_label != null:
 		var lvl: int = GameState.run.get("level", 1)
 		_level_label.text = "第 %d 关" % lvl

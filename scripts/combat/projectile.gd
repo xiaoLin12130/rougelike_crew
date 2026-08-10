@@ -99,7 +99,7 @@ func _physics_process(delta: float) -> void:
 		_orbit_step(delta)
 		return
 	if _instant:
-		global_position = _spawn_pos + _dir * _range
+		global_position = _instant_landing()
 		_explode_at(global_position)
 		return
 	_move_step(delta)
@@ -411,6 +411,17 @@ func _nearest_enemy() -> Node:
 			best_d = d
 			best = e
 	return best
+
+
+## 瞬发核落点（体验报告 P1-2 修复：闪光/毒雾/火柱近身必脱靶）：
+## 射程内存在最近敌人时，落点 = 敌人当前位置（闪光自动追踪敌人，用户原始反馈）；
+## 无敌人或敌人超射程时保持方向线末端（spawn + dir × range），超程不脱靶逻辑不变。
+## 敌人体型由爆炸半径兜底（毒雾 48/火柱 64/闪光盲爆 90），命中判定在 _explode_at。
+func _instant_landing() -> Vector2:
+	var target := _nearest_enemy()
+	if target != null and _spawn_pos.distance_to(target.global_position) <= _range:
+		return target.global_position
+	return _spawn_pos + _dir * _range
 
 
 func _enemies_in_radius(center: Vector2, radius: float) -> Array:
