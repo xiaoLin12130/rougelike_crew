@@ -72,7 +72,7 @@
   "kill_drops": [{"type": "gold", "prob": 0.80}, {"type": "item", "prob": 0.08},
                  {"type": "spell_part", "prob": 0.07}, {"type": "trinket", "prob": 0.05}],
   "pity_threshold": 8,
-  "boss_drops": {"legendary": 1, "rare": 2, "gold_mult": 5}
+  "boss_drops": {"legendary": 1, "rare": 2}
 }
 ```
 

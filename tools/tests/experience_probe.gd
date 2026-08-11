@@ -112,11 +112,11 @@ func _check_hit(label: String, e: Node, expect_hit: bool) -> void:
 		print("[PROBE] %-34s 期望=%-5s 实测=%s → FAIL" % [label, str(expect_hit), str(hit)])
 
 func _test_flash() -> void:
-	print("[PROBE] == flash 闪光（range=200 瞬发，盲半径兜底90 → 命中窗口 d∈[102,298]）==")
-	# 近身：d=80 < 102 → 必脱靶（用户反馈"闪光不命中"主因）
+	print("[PROBE] == flash 闪光（range=200 瞬发 → 落点=射程内最近敌人，d≤200 命中；d>200 超程脱靶）==")
+	# 近身：d=80 ≤ 200 → 落点=最近敌人位置 → 命中（Sartre 修复：瞬发核落点=射程内最近敌人）
 	var e := await _cast("flash", "", 80.0)
 	await _wait_frames(3)
-	_check_hit("flash d=80 (近身)", e, false)
+	_check_hit("flash d=80 (近身)", e, true)
 	await _clear_enemies()
 	# 中距：d=200 落点正对 → 命中 + 致盲
 	e = await _cast("flash", "", 200.0)
@@ -127,14 +127,14 @@ func _test_flash() -> void:
 	if not blind:
 		_failures.append("flash 致盲未生效")
 	await _clear_enemies()
-	# 远距：d=320 > 298 → 脱靶
+	# 远距：d=320 > 200 → 超射程，落点回退方向线末端 → 脱靶
 	e = await _cast("flash", "", 320.0)
 	await _wait_frames(3)
 	_check_hit("flash d=320 (超射程)", e, false)
 	await _clear_enemies()
 
 func _test_lightning() -> void:
-	print("[PROBE] == lightning 闪电（落点固定260px，但 chain=2 链跳160px 兜底 → 实测有效范围远超窗口）==")
+	print("[PROBE] == lightning 闪电（落点=射程内最近敌人(≤260)，chain=2 链跳160px 兜底 → 超程仍可命中）==")
 	var e := await _cast("lightning", "", 150.0)
 	await _wait_frames(3)
 	_check_hit("lightning d=150 (链跳兜底)", e, true)
@@ -149,10 +149,10 @@ func _test_lightning() -> void:
 	await _clear_enemies()
 
 func _test_poison_cloud() -> void:
-	print("[PROBE] == poison_cloud 毒雾（range=200 aoe=48 → 窗口[144,256]）==")
+	print("[PROBE] == poison_cloud 毒雾（range=200 → 落点=最近敌人，d≤200 命中）==")
 	var e := await _cast("poison_cloud", "", 100.0)
 	await _wait_frames(3)
-	_check_hit("poison_cloud d=100 (过近)", e, false)
+	_check_hit("poison_cloud d=100 (近身)", e, true)
 	await _clear_enemies()
 	e = await _cast("poison_cloud", "", 200.0)
 	await _wait_frames(3)
@@ -160,10 +160,10 @@ func _test_poison_cloud() -> void:
 	await _clear_enemies()
 
 func _test_inferno() -> void:
-	print("[PROBE] == inferno 火柱（range=220 aoe=64 → 窗口[148,292]）==")
+	print("[PROBE] == inferno 火柱（range=220 → 落点=最近敌人，d≤220 命中）==")
 	var e := await _cast("inferno", "", 100.0)
 	await _wait_frames(3)
-	_check_hit("inferno d=100 (过近)", e, false)
+	_check_hit("inferno d=100 (近身)", e, true)
 	await _clear_enemies()
 	e = await _cast("inferno", "", 220.0)
 	await _wait_frames(3)
@@ -171,7 +171,7 @@ func _test_inferno() -> void:
 	await _clear_enemies()
 
 func _test_fireball_homing() -> void:
-	print("[PROBE] == fireball 火球（弹道：接触即入 _hit_enemies → 爆炸跳过直击目标，仅溅射邻敌 → 单体 0 伤害 P0 BUG）==")
+	print("[PROBE] == fireball 火球（弹道：接触即入 _hit_enemies，爆炸结算含接触敌人 → 直击命中）==")
 	_dmg_signals.clear()
 	_status_signals.clear()
 	_fx_signals.clear()
@@ -180,7 +180,7 @@ func _test_fireball_homing() -> void:
 	_caster._cds.clear()
 	_caster._cds.append(999.0)
 	await _wait_frames(70)
-	_check_hit("fireball d=200 [P0:直击0伤]", e, false)
+	_check_hit("fireball d=200 (直击)", e, true)
 	print("[PROBE] fireball fx=%s" % str(_fx_signals))
 	await _clear_enemies()
 	# 点射：d=40（出生点 12px 外，2 帧内接触）
@@ -190,7 +190,7 @@ func _test_fireball_homing() -> void:
 	_caster._cds.clear()
 	_caster._cds.append(999.0)
 	await _wait_frames(70)
-	_check_hit("fireball d=40 [P0:直击0伤]", e, false)
+	_check_hit("fireball d=40 (点射直击)", e, true)
 	print("[PROBE] fireball pointblank fx=%s" % str(_fx_signals))
 	await _clear_enemies()
 	# homing 外壳
@@ -200,12 +200,12 @@ func _test_fireball_homing() -> void:
 	_caster._cds.clear()
 	_caster._cds.append(999.0)
 	await _wait_frames(90)
-	_check_hit("fireball+homing d=260 [P0:直击0伤]", e, false)
+	_check_hit("fireball+homing d=260 (直击)", e, true)
 	await _clear_enemies()
-	# homing 外壳 + 瞬发核：落点仍是固定射程（homing 对瞬发无效）
+	# homing 外壳 + 瞬发核：落点=射程内最近敌人（homing 仅对弹道核有额外价值），d=80 命中
 	e = await _cast("flash", "homing", 80.0)
 	await _wait_frames(3)
-	_check_hit("flash+homing d=80 (仍脱靶)", e, false)
+	_check_hit("flash+homing d=80 (近身)", e, true)
 	await _clear_enemies()
 
 func _test_whirl_blade() -> void:

@@ -226,8 +226,8 @@ def main():
         gold_by_enemy.setdefault(e["gold"], []).append(e["id"])
     for g in sorted(gold_by_enemy):
         print("    每击杀金币=%d：%s" % (g, ", ".join(gold_by_enemy[g])))
-    print("    Boss 金币：%s（drops.boss_drops.gold_mult=%d 在代码中未引用，实际用 enemies.json 的 gold）" % (
-        {b["id"]: b["gold"] for b in enemies["bosses"]}, drops["boss_drops"].get("gold_mult")))
+    print("    Boss 金币：%s（drops.boss_drops.gold_mult=%d 已移除/未引用，实际用 enemies.json 的 gold）" % (
+        {b["id"]: b["gold"] for b in enemies["bosses"]}, drops["boss_drops"].get("gold_mult", 0)))
     print("    稀有度权重：%s" % drops["item_rarity_weights"])
     print("    保底：连续 %d 次击杀无道具 → 必掉" % drops["pity_threshold"])
 
@@ -289,7 +289,7 @@ def main():
         print("    %s  vs  %s → %s" % (table_v, code_v, "一致" if ok else "漂移(表值未被使用)"))
         if not ok:
             warnings.append("%s 与代码 %s 不一致" % (table_v, code_v))
-    print("    drops.boss_drops.gold_mult=5 → 代码无引用（Boss 金币按 enemies.json gold 发放）")
+    print("    drops.boss_drops.gold_mult 已移除（2026-08-10）→ 代码无引用（Boss 金币按 enemies.json gold 发放）")
 
     # ---------- 汇总 ----------
     print("\n" + "=" * 78)
