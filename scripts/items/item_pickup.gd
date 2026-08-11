@@ -70,7 +70,9 @@ func _pickup(_player: Node) -> void:
 			GameState.add_spell_part(
 				parts[0] if parts.size() > 0 else "",
 				parts[1] if parts.size() > 1 else "")
-			EventBus.fx_explosion.emit(global_position, "lightning")
+			## 落雷误触发修复：拾取特效按法术核心元素取色（无雷核心不再闪雷）
+			var core_el := GameState.spell_core_element(parts[0] if parts.size() > 0 else "")
+			EventBus.fx_explosion.emit(global_position, core_el if not core_el.is_empty() else "gold")
 		"trinket":
 			GameState.add_trinket(_payload)
 			EventBus.fx_explosion.emit(global_position, "blade")

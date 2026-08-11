@@ -158,8 +158,12 @@ func _on_projectile_hit(ctx: Dictionary) -> void:
 		m1_extra = maxi(int(M1_DMG + M1_DMG_K * float(maxi(power - 1, 0))), 1)
 	## 综合附加伤害（近1/近10/近M2/近M4/近7/近8）
 	var extra := _blade_extra(ctx, dmg, power)
-	if extra > 0 and enemy.has_method("take_damage"):
-		enemy.take_damage(extra, "blade", bool(ctx.get("crit", false)))
+	if extra > 0:
+		## 递归修复（2026-08-11）：enemy_hit 钩子内追加伤害走 _take_raw（防无限链）
+		if enemy.has_method("_take_raw"):
+			enemy.call("_take_raw", extra)
+		elif enemy.has_method("take_damage"):
+			enemy.take_damage(extra, "blade", bool(ctx.get("crit", false)))
 		EventBus.damage_dealt.emit(extra, pos, bool(ctx.get("crit", false)))
 		EventBus.fx_hit_flash.emit(enemy)
 	## 近M1 旋风斩：命中点扩散扫击（模拟大刃盘旋转半径 +30% 的持续命中）

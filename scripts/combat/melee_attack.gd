@@ -96,6 +96,12 @@ func _swing(player: Node2D, enemy: Node) -> void:
 		atk_bonus = maxf(float(GameState.aggregate_bonus("atk")), 0.0)
 	var dmg := maxi(roundi(BASE_DAMAGE * (1.0 + atk_bonus) * mult), 1)
 	EventBus.fx_cast.emit(player.global_position, "blade", dir)
+	## 近战范围可视化：朝向目标方向的弧形刀光（半径=攻击范围，随范围/攻速联动缩放）
+	var scene := player.get_tree().current_scene
+	if scene != null:
+		var fx := scene.get_node_or_null("FxManager")
+		if fx != null and fx.has_method("spawn_melee_arc"):
+			fx.spawn_melee_arc(player.global_position, dir, MELEE_RADIUS)
 	## 与 projectile._hit_enemy 同序：先触发钩子（melee_synergy 在此聚合 melee_1 等），再结算本体
 	if SynergyRegistry != null:
 		SynergyRegistry.trigger("projectile_hit", {

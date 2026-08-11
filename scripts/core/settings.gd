@@ -3,9 +3,9 @@ extends Node
 
 const SETTINGS_PATH := "user://settings.json"
 const ZOOM_MIN := 0.7
-const ZOOM_MAX := 1.8
-const ZOOM_PORTRAIT_DEFAULT := 1.3   # 手机（竖屏）默认视角
-const ZOOM_LANDSCAPE_DEFAULT := 1.8  # PC（横屏）默认视角
+const ZOOM_MAX := 2.2
+const ZOOM_PORTRAIT_DEFAULT := 1.1   # 手机（竖屏）默认视角（用户要求 1.1）
+const ZOOM_LANDSCAPE_DEFAULT := 1.5  # PC（横屏）默认视角（用户要求 1.5）
 
 var camera_zoom_portrait: float = ZOOM_PORTRAIT_DEFAULT
 var camera_zoom_landscape: float = ZOOM_LANDSCAPE_DEFAULT

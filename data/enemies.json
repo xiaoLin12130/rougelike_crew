@@ -47,7 +47,8 @@
     "lightning"
    ],
    "behavior": "split",
-   "atk_cd": 0.85
+   "atk_cd": 0.85,
+   "skill_cd": 7.0
   },
   {
    "id": "bat",
@@ -64,9 +65,11 @@
    "affix_pool": [
     "lightning"
    ],
-   "behavior": "swarm",
+   "behavior": "scream",
    "atk_cd": 0.8,
-   "dive_cd": 2.4
+   "dive_cd": 2.4,
+   "skill_cd": 5.0,
+   "bullet_speed": 150
   },
   {
    "id": "ghost",
@@ -84,8 +87,9 @@
    "affix_pool": [
     "frost"
    ],
-   "behavior": "vanish",
-   "atk_cd": 0.85
+   "behavior": "phase",
+   "atk_cd": 0.85,
+   "skill_cd": 3.5
   },
   {
    "id": "goblin",
@@ -103,8 +107,9 @@
     "flame",
     "stone"
    ],
-   "behavior": "rage",
-   "atk_cd": 0.85
+   "behavior": "rock",
+   "atk_cd": 0.85,
+   "skill_cd": 4.5
   },
   {
    "id": "goblin_archer",
@@ -116,7 +121,7 @@
    "range": 240,
    "projectile": true,
    "fire_interval": 3.8,
-   "bullet_speed": 190,
+   "bullet_speed": 170,
    "xp": 12,
    "gold": 3,
    "sprite": "res://assets/sprites/retro/goblin_archer_1.png",
@@ -124,8 +129,9 @@
    "affix_pool": [
     "lightning"
    ],
-   "behavior": "sniper",
-   "sniper_speed": 340
+   "behavior": "multi",
+   "sniper_speed": 340,
+   "skill_cd": 5.0
   },
   {
    "id": "skeleton",
@@ -143,8 +149,9 @@
     "stone",
     "frost"
    ],
-   "behavior": "leech",
-   "atk_cd": 0.85
+   "behavior": "shield",
+   "atk_cd": 0.85,
+   "skill_cd": 6.0
   },
   {
    "id": "imp",
@@ -164,7 +171,8 @@
    "affix_pool": [
     "flame"
    ],
-   "behavior": "burn"
+   "behavior": "triple",
+   "skill_cd": 4.5
   },
   {
    "id": "wizard",
@@ -184,7 +192,8 @@
    "frames": 2,
    "affix_pool": [
     "frost"
-   ]
+   ],
+   "skill_cd": 4.0
   },
   {
    "id": "bomber",
@@ -202,7 +211,8 @@
    "affix_pool": [
     "flame"
    ],
-   "atk_cd": 0.85
+   "atk_cd": 0.85,
+   "skill_cd": 5.0
   },
   {
    "id": "charger",
@@ -212,7 +222,7 @@
    "speed": 98,
    "size": 1.1,
    "touch": true,
-   "behavior": "charge",
+   "behavior": "stomp",
    "xp": 14,
    "gold": 3,
    "sprite": "res://assets/sprites/retro/charger_1.png",
@@ -221,7 +231,8 @@
     "stone"
    ],
    "atk_cd": 0.85,
-   "charge_cd": 2.6
+   "charge_cd": 2.6,
+   "skill_cd": 6.0
   },
   {
    "id": "healer",
@@ -231,7 +242,7 @@
    "speed": 60,
    "size": 1.0,
    "touch": true,
-   "behavior": "totem",
+   "behavior": "curse",
    "xp": 16,
    "gold": 3,
    "sprite": "res://assets/sprites/retro/healer_1.png",
@@ -239,7 +250,8 @@
    "affix_pool": [
     "lightning"
    ],
-   "atk_cd": 1.0
+   "atk_cd": 1.0,
+   "skill_cd": 6.0
   },
   {
    "id": "crystal_sentry",
@@ -259,7 +271,9 @@
    "affix_pool": [
     "frost",
     "lightning"
-   ]
+   ],
+   "behavior": "sniper",
+   "skill_cd": 5.0
   },
   {
    "id": "spider",
@@ -277,8 +291,9 @@
     "lightning",
     "flame"
    ],
-   "behavior": "burrow",
-   "atk_cd": 0.8
+   "behavior": "web",
+   "atk_cd": 0.8,
+   "skill_cd": 6.0
   },
   {
    "id": "mimic_block",
@@ -296,8 +311,10 @@
     "stone",
     "frost"
    ],
-   "behavior": "camouflage",
-   "atk_cd": 0.85
+   "behavior": "burst",
+   "atk_cd": 0.85,
+   "skill_cd": 6.0,
+   "bullet_speed": 120
   },
   {
    "id": "specter",
@@ -318,7 +335,8 @@
     "frost",
     "flame"
    ],
-   "behavior": "cast"
+   "behavior": "vanish",
+   "skill_cd": 4.5
   }
  ],
  "bosses": [
@@ -744,9 +762,9 @@
   {
    "id": "final_god",
    "name": "古神",
-   "hp": 3000,
-   "attack": 34,
-   "speed": 60,
+   "hp": 5000,
+   "attack": 52,
+   "speed": 70,
    "size": 2.4,
    "touch": true,
    "xp": 500,
@@ -849,7 +867,15 @@
      "windup": 0.1,
      "min_phase": 3
     }
-   ]
+   ],
+   "regen": {
+    "phase": 2,
+    "per_sec": 0.004
+   },
+   "defense": {
+    "phase": 2,
+    "reduce": 0.2
+   }
   }
  ]
 }

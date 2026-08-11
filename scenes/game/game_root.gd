@@ -468,8 +468,23 @@ func _on_level_cleared(_level_id: String) -> void:
 		loop_choice.show()
 	else:
 		GameState.run.level += 1
-		EventBus.fx_explosion.emit(Vector2(320, 180), "lightning")
+		## 落雷误触发修复（Beauvoir 报告 P1）：切关特效按主流派取色，无雷构筑不再闪雷
+		var school := _top_school()
+		EventBus.fx_explosion.emit(Vector2(320, 180), school)
 		_start_level()
+
+
+func _top_school() -> String:
+	## 主流派取色（切关/清屏特效用）：取持有数最高的流派元素，无构筑默认 fire
+	var holdings: Dictionary = GameState.school_holdings()
+	var best := "fire"
+	var best_n := 0
+	for s in holdings:
+		var n: int = int(holdings[s])
+		if n > best_n:
+			best = str(s)
+			best_n = n
+	return best
 
 func _on_loop_choice(choice: String) -> void:
 	loop_choice.hide()

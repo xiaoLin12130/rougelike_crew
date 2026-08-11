@@ -243,7 +243,12 @@ func _on_enemy_hit(ctx: Dictionary) -> void:
 		vuln += minf(0.04 * float(_stacks(N9)), 0.20)
 		if vuln > 0.0 and dmg > 0 and enemy.has_method("take_damage"):
 			var extra := maxi(roundi(float(dmg) * vuln), 1)
-			enemy.call("take_damage", extra, "light", false)
+			## 递归修复（2026-08-11）：追加伤害走 _take_raw 直接扣血——
+			## 原 take_damage 会再触发 enemy_hit 钩子 → 圣印再追加 → 无限递归（实测 180+ 层堆栈）
+			if enemy.has_method("_take_raw"):
+				enemy.call("_take_raw", extra)
+			else:
+				enemy.call("take_damage", extra, "light", false)
 			EventBus.damage_dealt.emit(extra, enemy.global_position, false)
 	# 叠层（上限 5，刷新时长）
 	m["stacks"] = mini(int(m.get("stacks", 0)) + 1, MARK_STACKS_MAX)
@@ -353,7 +358,10 @@ func _on_projectile_hit(ctx: Dictionary) -> void:
 		var target := _nearest_other_enemy(enemy, PIERCE_RADIUS)
 		if target != null:
 			var extra := maxi(roundi(float(dmg) * PIERCE_DMG), 1)
-			if target.has_method("take_damage"):
+			## 递归修复（2026-08-11）：钩子内追加伤害走 _take_raw（防光矛→圣印→追加→无限链）
+			if target.has_method("_take_raw"):
+				target.call("_take_raw", extra)
+			elif target.has_method("take_damage"):
 				target.call("take_damage", extra, "light", false)
 			EventBus.damage_dealt.emit(extra, target.global_position, false)
 

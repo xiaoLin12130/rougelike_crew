@@ -212,7 +212,7 @@ func _apply_elite_visual(s: Node) -> void:
 	var spr := s.get_node_or_null("AnimatedSprite2D") as AnimatedSprite2D
 	if spr != null:
 		spr.modulate = Color(1.0, 0.85, 0.35, 1.0)
-	EventBus.fx_explosion.emit(s.global_position, "lightning")
+	EventBus.fx_explosion.emit(s.global_position, "gold")  # 落雷误触发修复：召唤精英化改金色
 
 
 func _apply_summon_stats(s: Node, horn: int, whip: int, rune: int, delta: float) -> void:

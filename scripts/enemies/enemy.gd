@@ -29,6 +29,9 @@ var _burn_left := 0.0
 var _burn_dps := 0.0
 var _dead := false
 var behavior := ""
+var _ai_skill_cd := 0.0     ## 问题5：小怪独特技能冷却
+var _armor_bonus := 0.0     ## 问题5：骷髅盾反临时护甲
+var _ai_shield_left := 0.0  ## 问题5：骷髅盾反状态剩余时间（避免与 Boss 的 _shield_left 重名）
 var _elite_skills: Array = []
 var _elite_cd := 0.0
 var _elite_frenzy_left := 0.0
@@ -41,7 +44,9 @@ var _hp_bar_left := 0.0  # 受击血条剩余显示时间（秒）
 
 const HP_BAR_W := 26.0
 const HP_BAR_H := 3.0
-const KNOCKBACK := 9.0
+const KNOCKBACK := 90.0   ## 打击感 P0：击退初速（px/s），velocity 式衰减（12px 位移带惯性）
+const KNOCKBACK_DECAY := 10.0
+var _knock_vel := Vector2.ZERO  ## 打击感 P0：击退惯性速度
 const DOT_FX_INTERVAL := 0.35  # status DOT particle throttle (sec)
 const FX_MANAGER := preload("res://scripts/fx/fx_manager.gd")
 const ATTACH_ARC_INTERVAL := 0.07  # lightning arc redraw interval (sec)
@@ -181,6 +186,10 @@ func _sprite_content_offset(tex: Texture2D) -> Vector2:
 func _physics_process(delta: float) -> void:
 	if _dead:
 		return
+	## 打击感 P0：击退惯性衰减（velocity 式，精英/Boss 霸体不击退）
+	if _knock_vel.length_squared() > 0.01:
+		global_position += _knock_vel * delta
+		_knock_vel = _knock_vel.lerp(Vector2.ZERO, KNOCKBACK_DECAY * delta)
 	if not is_instance_valid(_player):
 		_player = get_tree().get_first_node_in_group("player")
 		if _player == null:
@@ -188,6 +197,7 @@ func _physics_process(delta: float) -> void:
 	_tick(delta)
 	_update_status_attachments(delta)
 	_tick_skills(delta)
+	_tick_ai_skills(delta)
 	_tick_separation(delta)
 	# 状态效果：灼烧 DOT / 致盲（不攻击）
 	if _burn_left > 0.0:
@@ -227,6 +237,9 @@ func _physics_process(delta: float) -> void:
 func _tick(delta: float) -> void:
 	_atk_cd = maxf(_atk_cd - delta, 0.0)
 	_shoot_cd = maxf(_shoot_cd - delta, 0.0)
+	_ai_shield_left = maxf(_ai_shield_left - delta, 0.0)
+	if _ai_shield_left <= 0.0 and _armor_bonus > 0.0:
+		_armor_bonus = 0.0
 	_freeze_left = maxf(_freeze_left - delta, 0.0)
 	_slow_left = maxf(_slow_left - delta, 0.0)
 	_root_left = maxf(_root_left - delta, 0.0)
@@ -349,6 +362,101 @@ func _tick_skills(delta: float) -> void:
 				_totem_cd = 8.0
 				_spawn_totem()
 
+
+## ===== 问题5：小怪独特技能（Popper 方案落地，enemies.json behavior 配置）=====
+func _tick_ai_skills(delta: float) -> void:
+	## 按 behavior 执行小怪独特技能（与普攻 AI 分离的独立节奏，全部有 CD）
+	if _dead or not is_instance_valid(_player):
+		return
+	_ai_skill_cd = maxf(_ai_skill_cd - delta, 0.0)
+	if _ai_skill_cd > 0.0:
+		return
+	var cd: float = float(conf.get("skill_cd", 6.0))
+	match behavior:
+		"split":
+			# 史莱姆分裂增殖：主动分裂 2 只弱化小怪（Popper 方案）
+			if hp < max_hp * 0.5:
+				_spawn_elite_minion()
+				_spawn_elite_minion()
+				_ai_skill_cd = cd
+		"shield":
+			# 骷髅盾反：1.2s 高甲，近战受击反弹 1.0x（Popper 方案）
+			_armor_bonus = 0.7
+			_ai_shield_left = 1.2
+			EventBus.fx_explosion.emit(global_position, "blade")
+			_ai_skill_cd = cd
+		"rock":
+			# 哥布林投石：远程落点圈逼迫走位（Popper 方案）
+			if global_position.distance_to(_player.global_position) < 300.0:
+				var target: Vector2 = _player.global_position
+				EventBus.fx_explosion.emit(target, "fire")
+				EventBus.player_hit.emit(int(attack * 0.8), target)
+				_ai_skill_cd = cd
+		"web":
+			# 毒蛛毒网：减速 45% 地面圈（Popper 方案）
+			var zone := _make_slow_zone(_player.global_position, 70.0, 3.0)
+			if zone != null:
+				get_parent().add_child(zone)
+			_ai_skill_cd = cd
+		"burst":
+			# 魔像方块陷阱爆发：自身周围 8 点环形爆发（Popper 方案）
+			for i in 8:
+				var dir := Vector2.from_angle(TAU * float(i) / 8.0)
+				_fire_bullet(dir, float(conf.get("bullet_speed", 120.0)))
+			EventBus.fx_explosion.emit(global_position, "blade")
+			_ai_skill_cd = cd
+		"scream":
+			# 蝙蝠超声尖啸：5 发扇形音波（Popper 方案）
+			var dir := (_player.global_position - global_position).normalized()
+			for i in 5:
+				_fire_bullet(dir.rotated(deg_to_rad((i - 2) * 14.0)), float(conf.get("bullet_speed", 150.0)))
+			EventBus.fx_explosion.emit(global_position, "wind")
+			_ai_skill_cd = cd
+		"multi":
+			# 哥布林弓手多重箭：5 箭扇形（Popper 方案）
+			if global_position.distance_to(_player.global_position) < 300.0:
+				var dir2 := (_player.global_position - global_position).normalized()
+				for i in 5:
+					_fire_bullet(dir2.rotated(deg_to_rad((i - 2) * 12.0)), float(conf.get("bullet_speed", 170.0)))
+				_ai_skill_cd = cd
+		"stomp":
+			# 冲锋兽践踏震击：脚下减速圈封侧闪（Popper 方案）
+			var zone2 := _make_slow_zone(global_position, 80.0, 2.5)
+			if zone2 != null:
+				get_parent().add_child(zone2)
+			EventBus.fx_explosion.emit(global_position, "blade")
+			_ai_skill_cd = cd
+		"curse":
+			# 巫医死亡诅咒：追踪弹让治疗者不可无视（Popper 方案）
+			var dir3 := (_player.global_position - global_position).normalized()
+			_fire_bullet(dir3, float(conf.get("bullet_speed", 160.0)))
+			_ai_skill_cd = cd
+
+
+func _make_slow_zone(center: Vector2, radius: float, duration: float) -> Node2D:
+	## 减速地面圈（毒网/践踏）：圈内玩家减速 45%，纯 Area2D 无伤害
+	var zone := Area2D.new()
+	zone.name = "EnemySlowZone"
+	zone.global_position = center
+	var shape := CircleShape2D.new()
+	shape.radius = radius
+	var col := CollisionShape2D.new()
+	col.shape = shape
+	zone.add_child(col)
+	zone.monitoring = true
+	zone.collision_layer = 0
+	zone.collision_mask = 1  # player 层
+	var alive := true
+	var t := 0.0
+	zone.body_entered.connect(func(body: Node):
+		if body.is_in_group("player") and body.has_method("apply_slow"):
+			body.apply_slow(0.45, duration))
+	var timer := get_tree().create_timer(duration)
+	timer.timeout.connect(func():
+		if is_instance_valid(zone):
+			zone.queue_free())
+	return zone
+
 func _tick_elite_skills(delta: float) -> void:
 	if not is_elite or _elite_skills.is_empty() or _dead:
 		return
@@ -384,7 +492,7 @@ func _try_elite_skill(skill: String) -> bool:
 			var dir := (_player.global_position - global_position).normalized()
 			for i in 3:
 				_fire_bullet(dir.rotated(deg_to_rad((i - 1) * 12.0)), float(conf.get("bullet_speed", 150.0)))
-			EventBus.fx_explosion.emit(global_position, "lightning")
+			EventBus.fx_explosion.emit(global_position, "fire")  # 落雷误触发修复：敌人技能改红色系
 			return true
 		"heal":
 			# 精英治疗：回 3% 最大生命（B- 平衡调整，12%→3%；巫医 5% 与图腾 2% 不受影响）
@@ -764,7 +872,7 @@ func _ai_ranged(dist: float, to_player: Vector2, delta: float) -> void:
 					get_tree().current_scene.add_child(b))
 		elif behavior == "sniper":
 			# 弓手狙击：蓄力红光 → 高伤穿透弹
-			EventBus.fx_explosion.emit(global_position + dir * 10.0, "lightning")
+			EventBus.fx_explosion.emit(global_position + dir * 10.0, "fire")  # 落雷误触发修复：蓄力改红色系
 			var t2 := get_tree().create_timer(0.9)
 			t2.timeout.connect(func():
 				if is_instance_valid(self) and not _dead:
@@ -780,18 +888,22 @@ func _fire_bullet(dir: Vector2, speed: float) -> void:
 	bullet.setup(global_position + dir * 12.0, dir, speed, int(attack * _atk_mult()), 420.0)
 	get_tree().current_scene.add_child(bullet)
 
-func take_damage(dmg: int, _element: String, _is_crit: bool) -> void:
+func take_damage(dmg: int, _element: String, is_crit: bool) -> void:
 	if _dead or _invuln_left > 0.0:
 		return
-	SynergyRegistry.trigger("enemy_hit", {"enemy": self, "dmg": dmg, "element": _element, "crit": _is_crit})
+	SynergyRegistry.trigger("enemy_hit", {"enemy": self, "dmg": dmg, "element": _element, "crit": is_crit})
 	# 受击击退（小怪）：精英/Boss 霸体不被击退
 	if not is_elite and not is_boss and dmg > 0:
 		var p := get_tree().get_first_node_in_group("player") as Node2D
 		if is_instance_valid(p):
 			var dir := (global_position - p.global_position).normalized()
 			if dir.length_squared() > 0.01:
-				global_position += dir * KNOCKBACK
-	var reduced := int(dmg * (1.0 - armor))
+				## 打击感 P0：击退改 velocity 惯性式（暴击 ×1.6），冻结/定身清零
+				if _freeze_left > 0.0 or _root_left > 0.0:
+					_knock_vel = Vector2.ZERO
+				else:
+					_knock_vel = dir * KNOCKBACK * (1.6 if is_crit else 1.0)
+	var reduced := int(dmg * (1.0 - minf(armor + _armor_bonus, 0.9)))
 	if behavior == "shield" and _rng.randf() < 0.25:
 		reduced = int(reduced * 0.3)  # 骷髅格挡
 	_take_raw(reduced)

@@ -262,7 +262,11 @@ func _on_projectile_hit(ctx: Dictionary) -> void:
 		if GameState != null:
 			crit_bonus = float(GameState.run.get("crit_dmg_bonus", 1.5)) - 1.0
 		var extra := maxi(int(dmg * crit_bonus), 1)
-		if enemy.has_method("take_damage"):
+		## 递归修复（2026-08-11）：enemy_hit 钩子内追加伤害走 _take_raw，
+		## 原 take_damage 会再触发 enemy_hit → 无限递归（与圣印同根因）
+		if enemy.has_method("_take_raw"):
+			enemy.call("_take_raw", extra)
+		elif enemy.has_method("take_damage"):
 			enemy.call("take_damage", extra, "curse", true)
 		EventBus.damage_dealt.emit(extra, enemy.global_position, true)
 

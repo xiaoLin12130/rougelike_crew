@@ -8,14 +8,54 @@ const PROJECTILE_SCRIPT := preload("res://scripts/combat/projectile.gd")  # 清�
 var run: Dictionary = {}
 var tables: Dictionary = {}  # items/spells/enemies/levels/drops/balance
 var collection: Dictionary = {}  # 图鉴收集进度（跨局持久化，与 run 分离）
+## 实测 DPS 滑动窗口（问题6/Mendel 方案）：5 秒窗口内实际伤害求和
+const DPS_WINDOW_SEC := 5.0
+var _dps_times: Array[float] = []
+var _dps_amounts: Array[float] = []
+var _dps_sum := 0.0
 
 ## 图鉴分类（P3）：条目来源 = data JSON 只读表，收集状态存 user://collection.json
 const COLLECTION_CATEGORIES: Array = ["items", "wands", "cores", "shells", "summons"]
 
 func _ready() -> void:
+	EventBus.damage_dealt.connect(_on_damage_dealt)
 	load_tables()
 	load_collection()
 	new_run()
+
+
+func _on_damage_dealt(dmg: int, _pos: Vector2, _is_crit: bool) -> void:
+	## 问题6：实测 DPS 事件写入（滑动窗口），窗口外数据惰性弹出
+	if dmg <= 0:
+		return
+	var t: float = run.get("time", 0.0) if run.has("time") else 0.0
+	_dps_times.append(t)
+	_dps_amounts.append(float(dmg))
+	_dps_sum += float(dmg)
+	_prune_dps_window(t)
+
+
+func _prune_dps_window(t: float) -> void:
+	while not _dps_times.is_empty() and t - _dps_times[0] > DPS_WINDOW_SEC:
+		_dps_times.pop_front()
+		_dps_sum -= _dps_amounts.pop_front()
+
+
+func measured_dps() -> float:
+	## 问题6：实测 DPS（窗口伤害和 ÷ 窗口跨度）；冷启动不足窗口按实际跨度
+	if _dps_times.is_empty():
+		return 0.0
+	var t: float = run.get("time", 0.0) if run.has("time") else 0.0
+	var span: float = minf(t - _dps_times[0], DPS_WINDOW_SEC)
+	if span <= 0.01:
+		return _dps_sum
+	return _dps_sum / span
+
+
+func reset_dps_window() -> void:
+	_dps_times.clear()
+	_dps_amounts.clear()
+	_dps_sum = 0.0
 
 ## ===== 图鉴收集记录（P3，只增不改既有接口）=====
 ## 触发点：add_item/add_trinket（道具）、add_wand/replace_wand（法杖）、
@@ -85,14 +125,15 @@ func load_tables() -> void:
 			tables[t] = {}
 
 func new_run() -> void:
+	reset_dps_window()
 	run = {
 		"loop": 1,
 		"level": 1,
 		"gold": 0,
 		"xp": 0,
 		"player_level": 1,
-		"hp": 100,
-		"max_hp": 100,
+		"hp": int(tables.get("balance", {}).get("player", {}).get("hp", 100)),
+		"max_hp": int(tables.get("balance", {}).get("player", {}).get("hp", 100)),
 		"dps_estimate": 0.0,
 		"items": {},
 		"trinkets": [],
@@ -104,12 +145,17 @@ func new_run() -> void:
 		"pity": 0,
 		"level_elapsed": 0.0,  # 本关已过时间（存档续波次用）
 	}
-	# 初始构筑：保证开局可战（DEMO 数值：两格法术 + 一件道具）
+	# 初始构筑（需求5）：火球/旋风刃随机外壳（不再固定），去掉默认装备
+	var shells: Array = tables.get("spells", {}).get("shells", [])
+	var shell_a: Dictionary = {}
+	var shell_b: Dictionary = {}
+	if not shells.is_empty():
+		shell_a = shells[randi() % shells.size()]
+		shell_b = shells[randi() % shells.size()]
 	run.grid = [
-		{"core": "fireball", "shell": ""},
-		{"core": "whirl_blade", "shell": "rapid"},
+		{"core": "fireball", "shell": str(shell_a.get("id", ""))},
+		{"core": "whirl_blade", "shell": str(shell_b.get("id", ""))},
 	]
-	add_item("attack_speed_potion")
 
 func add_item(item_id: String) -> void:
 	run.items[item_id] = run.items.get(item_id, 0) + 1
@@ -149,7 +195,13 @@ func xp_to_next(level: int) -> int:
 	return int(xp.get("base", 50)) + int(xp.get("per_level", 30)) * (l - 1) \
 		+ int(xp.get("quad", 5)) * (l - 1) * (l - 1)
 func level_factor(level: int) -> float:
-	return pow(1.22, level - 1)
+	## 难度曲线（问题11：前期不变、后期加速）：1-3 关维持 base^（level-1），
+	## 4 关起额外阶梯加速 ×1.30/关（敌人更强，避免后期站撸无压力）
+	var base: float = float(tables.get("balance", {}).get("enemy_scaling", {}).get("level_hp", 1.22))
+	var v: float = pow(base, maxi(level - 1, 0))
+	if level > 3:
+		v *= pow(1.30, level - 3)
+	return v
 
 func loop_factor_hp(loop: int) -> float:
 	return pow(1.34, loop - 1)
@@ -164,7 +216,12 @@ func enemy_hp(base: float, level: int, loop: int) -> float:
 	return base * level_factor(level) * loop_factor_hp(loop)
 
 func enemy_atk(base: float, level: int, loop: int) -> float:
-	return base * (1.0 + 0.16 * (level - 1)) * loop_factor_dmg(loop)
+	## 攻击同样后期加速（问题11：4 关起每关 +8% 额外攻击成长）
+	var atk_growth: float = float(tables.get("balance", {}).get("enemy_scaling", {}).get("level_atk", 0.16))
+	var v: float = base * (1.0 + atk_growth * (level - 1))
+	if level > 3:
+		v *= pow(1.08, level - 3)
+	return v * loop_factor_dmg(loop)
 
 func enemy_xp(base: float, level: int, loop: int) -> int:
 	# 经验随关卡递增（与敌人强度同节奏），保证后期升级不至于过慢
@@ -203,6 +260,14 @@ func item_def(item_id: String) -> Dictionary:
 		if str(it.get("id", "")) == item_id:
 			return it
 	return {}
+
+
+func spell_core_element(core_id: String) -> String:
+	## 查询法术核心元素（拾取特效取色用）；未知名返回空
+	for c in tables.get("spells", {}).get("cores", []):
+		if str(c.get("id", "")) == core_id:
+			return str(c.get("element", ""))
+	return ""
 
 func roll_item_choices(count: int = 3) -> Array:
 	## 升级三选一：混合法术部件与数值道具（用户需求：三选一既有技能又有物品）
@@ -350,6 +415,16 @@ func current_wands() -> Array:
 		run["wands"] = valid
 	return valid
 
+
+func max_wand_slots() -> int:
+	## 问题14：法杖槽上限 = 3 + 法杖扩容卷轴（传说饰品，最多 1 件生效）
+	var extra := 0
+	for t in run.get("trinkets", []):
+		if str(t) == "wand_expander":
+			extra = 1
+			break
+	return 3 + extra
+
 func current_wand() -> Dictionary:
 	## 主法杖（第一把）：旧接口兼容（新 UI 用 current_wands）
 	var ids := current_wands()
@@ -358,9 +433,9 @@ func current_wand() -> Dictionary:
 	return wand_def(str(ids[0]))
 
 func add_wand(wand_id: String) -> void:
-	## 装备新法杖（上限 3 把，超过需要先替换）
+	## 装备新法杖（上限 max_wand_slots 把，超过需要先替换）
 	var ids: Array = current_wands()
-	if ids.size() >= 3:
+	if ids.size() >= max_wand_slots():
 		return
 	ids.append(wand_id)
 	run["wands"] = ids
@@ -392,6 +467,7 @@ func sell_wand(idx: int) -> int:
 
 func _make_spell_choice() -> Dictionary:
 	## 随机法术部件选项：核心×外壳（网格满时仍返回选项，选中后由 game_root 弹替换界面）
+	## 落雷误触发修复（Beauvoir P1）：无某元素构筑时不出该元素法术（与 N2 物品过滤对齐）
 	## 组合有效性过滤（docs/design/核心外壳组合审计.md 修复）：随机 core×shell 后经
 	## _invalid_combo 校验，无效组合重抽（最多 8 次防死循环）；仍无有效组合时退化为
 	## "原生"（无外壳）——生成池绝不出现"选了没效果"的组合。
@@ -400,16 +476,23 @@ func _make_spell_choice() -> Dictionary:
 	if cores.is_empty():
 		return {}
 	var shells: Array = spells.get("shells", [])
+	var holdings := _element_holdings()
 	var core: Dictionary = {}
 	var shell: Dictionary = {}
 	for _attempt in 8:
 		core = cores[randi() % cores.size()]
+		## 元素门控：核心元素未被持有（且非通用 blade）时重抽；通用/保底失败保留原生
+		var el := str(core.get("element", ""))
+		if el != "" and el != "blade" and not holdings.has(el):
+			continue
 		if shells.is_empty():
 			shell = {}
 			break
 		shell = shells[randi() % shells.size()]
 		if not _invalid_combo(core, shell):
 			break
+		shell = {}
+	if not shell.is_empty() and _invalid_combo(core, shell):
 		shell = {}
 	var shell_name: String = str(shell.get("name", "原生"))
 	return {

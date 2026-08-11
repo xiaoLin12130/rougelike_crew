@@ -132,11 +132,23 @@ func _on_player_hit(ctx: Dictionary) -> void:
 	_on_m9(reflected)                      ## 防M9 复仇：反弹叠暴击
 	_on_m1(ctx, reflected)                 ## 防M1 荆棘领域：反弹传染
 	var remaining := _on_m7(taken)         ## 防M7 硬化：下一次攻击 -50%
+	_on_n8_battery(taken)                  ## 防8 护盾电池：受击伤害转护盾（问题4：护盾无填充源）
 	remaining = _on_m6_m3(remaining, reflected, pos)  ## 防M6 吸收 + 防M3 护盾回响
 	_on_m5()                               ## 防M5 磐石不破：减伤≥30% 免疫击退
 	_on_m8(pos)                            ## 防M8 嘲讽：吸引周围敌人
 	_on_m2_arm()                           ## 防M2 盾反：2s 全伤害 +25%
 	_on_m10(hp_after_hit, taken, pos)      ## 防M10 金身：低血 3s 无敌
+
+
+## ===== 防8 护盾电池：受击伤害 X% 转护盾（护盾池通用填充源）=====
+## 问题4 修复：此前护盾只有防M6 盾反能填充，玩家不拿 M6 永远看不到护盾灰色层；
+## 护盾电池作为防御流通用护盾来源：每层 20% 受击伤害转护盾（上限受 M6_SHIELD_CAP 约束）。
+func _on_n8_battery(taken: float) -> void:
+	var stacks := _stacks(N8)
+	if stacks <= 0 or taken <= 0.0:
+		return
+	var convert := minf(0.20 + 0.10 * float(stacks - 1), 0.60)
+	_add_shield(taken * convert)
 
 
 ## ===== 防M1 荆棘领域：反弹伤害 12% 概率传染给附近敌人 =====
@@ -242,8 +254,9 @@ func _on_m6_m3(remaining: float, reflected: int, pos: Vector2) -> float:
 func _add_shield(amount: float) -> void:
 	if amount <= 0.0 or GameState == null:
 		return
-	## 护盾池硬上限 25% 最大生命（克制约束；防8 护盾电池待主线程护盾系统接入）
-	var cap := float(GameState.run.get("max_hp", 100)) * M6_SHIELD_CAP
+	## 护盾池上限：基础 25% 最大生命（克制约束）+ 防8 护盾电池每层 +15%（问题4：让护盾电池名副其实）
+	var cap_pct := M6_SHIELD_CAP + 0.15 * float(_stacks(N8))
+	var cap := float(GameState.run.get("max_hp", 100)) * cap_pct
 	_shield = minf(_shield + amount, cap)
 
 
@@ -338,7 +351,7 @@ func _on_m10(hp_after_hit: int, taken: float, pos: Vector2) -> void:
 		var invuln = player.get("_invuln_left")
 		if invuln != null:
 			player.set("_invuln_left", maxf(float(invuln), M10_DURATION))
-	EventBus.fx_explosion.emit(pos, "lightning")
+	EventBus.fx_explosion.emit(pos, "gold")  # 落雷误触发修复：金身触发改金色（非雷系）
 
 
 ## ===== 反弹体系：旧 id 由 game_root 结算，新构筑由本脚本补发 =====

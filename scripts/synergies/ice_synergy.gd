@@ -134,10 +134,15 @@ func _on_enemy_hit(ctx: Dictionary) -> void:
 	if dmg <= 0:
 		return
 	_vuln_active[id] = true
-	if e.has_method("take_damage"):
+	if e.has_method("_take_raw"):
+		## 递归防御（2026-08-11）：enemy_hit 钩子内追加伤害走 _take_raw，防与圣印/诅咒互触
 		var bonus := maxi(int(dmg * DEEP_VULN), 1)
-		e.take_damage(bonus, "ice", bool(ctx.get("crit", false)))
+		e.call("_take_raw", bonus)
 		EventBus.damage_dealt.emit(bonus, e.global_position, false)
+	elif e.has_method("take_damage"):
+		var bonus2 := maxi(int(dmg * DEEP_VULN), 1)
+		e.take_damage(bonus2, "ice", bool(ctx.get("crit", false)))
+		EventBus.damage_dealt.emit(bonus2, e.global_position, false)
 	_vuln_active.erase(id)
 
 

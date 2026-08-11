@@ -46,7 +46,7 @@ func _ready() -> void:
 	main.add_theme_constant_override("separation", 8)
 	main.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	scroll.add_child(main)
-	_section(main, "法杖（最多装备 1 把，Boss 战后可用金币购买）")
+	_section(main, "法杖（最多装备 3 把，Boss 战后可用金币购买/强化）")
 	_wand_box = HBoxContainer.new()
 	_wand_box.add_theme_constant_override("separation", 6)
 	_wand_box.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
@@ -156,6 +156,8 @@ func _refresh_stats() -> void:
 	]
 	# F 批：攻速实时换算行（与施法/近战冷却公式 1/(1+as) 一致）
 	_stats_label.text += "\n" + GameState.attack_speed_summary()
+	## 问题6：构筑面板展示理论 DPS（估算），与 HUD 实测值语义分开
+	_stats_label.text += "\n理论 DPS（估算）：%d" % int(GameState.estimate_dps())
 
 func _refresh_wand() -> void:
 	for c in _wand_box.get_children():
@@ -246,7 +248,14 @@ func _icon_slot(def: Dictionary, count: int, tooltip: String) -> Control:
 		syn.add_theme_constant_override("outline_size", 3)
 		syn.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		box.add_child(syn)
+	## 装备流派标签（用户需求）：名称前显示【火】【防御】等
 	var title := str(def.get("name", "?"))
+	var schools := GameState.schools_of_item(def)
+	if not schools.is_empty():
+		var names: Array = []
+		for s in schools:
+			names.append(GameState.SCHOOL_NAMES.get(str(s), str(s)))
+		title = "【" + "、".join(names) + "】" + title
 	var body := str(def.get("description", ""))
 	if count > 1:
 		title = "%s ×%d" % [title, count]

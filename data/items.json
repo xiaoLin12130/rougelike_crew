@@ -6,7 +6,7 @@
     "k": 0.15,
     "type": "linear"
    },
-   "description": "攻击速度 +15%（每层 +15%）",
+   "description": "攻击速度 +8%（每层 +8%）",
    "icon": "res://assets/icons/verarc/attack_speed_boost.png",
    "id": "attack_speed_potion",
    "name": "攻速药水",
@@ -532,7 +532,7 @@
     "k": 0.06,
     "type": "linear"
    },
-   "description": "攻击速度 +6%（每层 +6%）",
+   "description": "攻击速度 +4%（每层 +4%）",
    "icon": "res://assets/icons/verarc/attack_speed_boost.png",
    "id": "vigor_potion",
    "name": "活力药剂",
@@ -673,7 +673,7 @@
     "k": 0.08,
     "type": "linear"
    },
-   "description": "攻击速度 +8%（每层）",
+   "description": "攻击速度 +5%（每层）",
    "icon": "res://assets/icons/shikashi/shikashi_r9_c4.png",
    "id": "fire_attack_potion",
    "name": "火攻药",
@@ -2066,7 +2066,7 @@
     "k": 0.08,
     "type": "linear"
    },
-   "description": "雷系攻速 +8%（每层 +8%）",
+   "description": "雷系攻速 +5%（每层 +5%）",
    "icon": "res://assets/icons/willibab/STAFFS_6.png",
    "id": "thunder_5",
    "name": "雷暴术架",
@@ -2255,7 +2255,7 @@
     "k": 0.06,
     "type": "linear"
    },
-   "description": "暴击系攻速 +6%（每层，上限 30%）",
+   "description": "暴击系攻速 +4%（每层，上限 30%）",
    "icon": "res://assets/icons/willibab/STAFFS_46.png",
    "id": "crit_staff",
    "name": "暴击术架",
@@ -2402,7 +2402,7 @@
     "k": 0.08,
     "type": "linear"
    },
-   "description": "诅咒系攻速 +8%（每层）",
+   "description": "诅咒系攻速 +5%（每层）",
    "icon": "res://assets/icons/willibab/STAFFS_42.png",
    "id": "curse_rack",
    "name": "恶咒术架",
@@ -2805,7 +2805,7 @@
     "k": 0.08,
     "type": "linear"
    },
-   "description": "攻击速度 +8%（每层）",
+   "description": "攻击速度 +5%（每层）",
    "icon": "res://assets/icons/willibab/STAFFS_38.png",
    "id": "defense_guard_staff",
    "name": "守御术架",
@@ -3108,7 +3108,7 @@
     "k": 0.1,
     "type": "linear"
    },
-   "description": "近战攻速 +10%（每层）",
+   "description": "近战攻速 +6%（每层）",
    "icon": "res://assets/icons/willibab/SWORDS_52.png",
    "id": "melee_2",
    "name": "磨刀石",
@@ -3509,7 +3509,7 @@
     "k": 0.08,
     "type": "linear"
    },
-   "description": "水系攻速 +8%（每层）",
+   "description": "水系攻速 +5%（每层）",
    "icon": "res://assets/icons/willibab/STAFFS_31.png",
    "id": "water_curtain_frame",
    "name": "水幕术架",
@@ -3914,7 +3914,7 @@
     "k": 0.08,
     "type": "linear"
    },
-   "description": "移速流派攻速 +8%（每层）",
+   "description": "移速流派攻速 +5%（每层）",
    "icon": "res://assets/icons/willibab/STAFFS_35.png",
    "id": "wind_grimoire",
    "name": "疾风术架",
@@ -4946,7 +4946,7 @@
     "k": 0.1,
     "type": "linear"
    },
-   "description": "攻速 +10%（每层，tag 聚合，法术与近战同公式）；冰M5 冰刃联动：冻结目标 +40% 独立乘区（与燃烧增伤互不干扰）",
+   "description": "攻速 +6%（每层，tag 聚合，法术与近战同公式）；冰M5 冰刃联动：冻结目标 +40% 独立乘区（与燃烧增伤互不干扰）",
    "icon": "res://assets/icons/willibab/SWORDS_51.png",
    "id": "ice_glacial_haste",
    "name": "冰霜迅捷",
@@ -5126,7 +5126,7 @@
     "k": 0.08,
     "type": "linear"
    },
-   "description": "攻击速度 +8%（每层）",
+   "description": "攻击速度 +5%（每层）",
    "icon": "res://assets/icons/shikashi/shikashi_r10_c13.png",
    "id": "holy_6",
    "name": "圣光术架",
@@ -5437,6 +5437,25 @@
     "speed"
    ],
    "type": "item"
+  },
+  {
+   "id": "wand_expander",
+   "name": "??????",
+   "type": "trinket",
+   "rarity": "legendary",
+   "slot": "trinket",
+   "tags": [
+    "wand_slot",
+    "defense"
+   ],
+   "curve": {
+    "type": "threshold",
+    "base": 1,
+    "step": 1,
+    "threshold": 1
+   },
+   "icon": "res://assets/icons/scroll.svg",
+   "description": "??????? +1??? 4 ?????????????"
   }
  ]
 }

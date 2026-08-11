@@ -17,12 +17,27 @@ func init_level(id: String) -> void:
 	_boss_id = str(lv.get("boss", ""))
 	_build_scene_background(str(lv.get("theme", "grass")))
 	_build_walls()
+	## 问题18：决战古神模式跳过小怪波次，直接进入 Boss 战
+	var is_final := bool(GameState.run.get("final_boss_mode", false))
 	var spawner := SPAWNER_SCRIPT.new()
 	spawner.name = "Spawner"
-	spawner.setup(lv.get("waves", []))
+	spawner.setup([] if is_final else lv.get("waves", []))
 	add_child(spawner)
 	EventBus.enemy_died.connect(_on_enemy_died)
 	EventBus.wave_state_changed.connect(_on_wave_state)
+	if is_final:
+		# 决战：空波次 → 直接出 Boss（0.8s 演出延迟后降临）
+		EventBus.wave_state_changed.emit("古神降临！")
+		## 修复（2026-08-11）：init_level 在 add_child 前调用，get_tree() 为 null，
+		## create_timer 直接崩溃 → 决战 Boss 永不生成。deferred 到入树后再启动。
+		call_deferred("_start_final_boss_delayed")
+
+
+func _start_final_boss_delayed() -> void:
+	## 决战：入树后 0.8s 演出延迟再出 Boss
+	if not is_inside_tree():
+		return
+	get_tree().create_timer(0.8).timeout.connect(_spawn_boss)
 
 func _find_level(id: String) -> Dictionary:
 	for l in GameState.tables.get("levels", {}).get("levels", []):
@@ -92,6 +107,7 @@ func _on_wave_state(state: String) -> void:
 		_spawn_boss()
 
 func _spawn_boss() -> void:
+	_boss_spawned = true
 	var boss := BOSS_SCENE.instantiate()
 	var final_boss: bool = GameState.run.get("final_boss_mode", false)
 	var boss_id := _boss_id

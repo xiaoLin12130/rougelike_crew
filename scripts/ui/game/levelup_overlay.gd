@@ -60,7 +60,15 @@ func show_choices(choices: Array) -> void:
 		info.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		info.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 		row.add_child(info)
-		var name_l := UiTheme.label(str(item.get("name", "")), 14, UiTheme.RARITY.get(rarity, UiTheme.WHITE))
+		## 装备流派标签：名称前显示【火】【防御】等（用户需求：装备给标签）
+		var schools := GameState.schools_of_item(item)
+		var school_tag := ""
+		if not schools.is_empty():
+			var names: Array = []
+			for s in schools:
+				names.append(GameState.SCHOOL_NAMES.get(str(s), str(s)))
+			school_tag = "【" + "、".join(names) + "】"
+		var name_l := UiTheme.label(school_tag + str(item.get("name", "")), 14, UiTheme.RARITY.get(rarity, UiTheme.WHITE))
 		name_l.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		name_l.custom_minimum_size = Vector2(0, 20)
 		info.add_child(name_l)

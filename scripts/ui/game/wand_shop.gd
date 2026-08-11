@@ -15,6 +15,7 @@ signal shop_closed
 const HEAL_POTION_PRICE := 120
 const HEAL_PCT := 0.25
 const REFRESH_PRICE := 80
+const REFRESH_PRICE_MAX := 480  # 问题16：刷新费递增上限（80→160→320→480 封顶）
 const BTN_H := 44.0
 ## 稀有度加权抽取：基础权重 common 60 / rare 25 / legendary 15；
 ## lucky（tag=lucky 道具总层数，当前仅 crit_lucky「幸运」）按稀有度梯度放大：
@@ -27,6 +28,7 @@ const LUCKY_PER_STACK := 0.06
 const PAGE_MENU := "menu"
 const PAGE_ENHANCE := "enhance"
 const PAGE_BUY := "buy"
+const PAGE_BUILD := "build"  # 问题15：商店购买构筑页
 
 var _mobile := false
 var _card_w := 296.0
@@ -40,6 +42,7 @@ var _content: VBoxContainer
 var _menu_box: VBoxContainer
 var _enhance_section: VBoxContainer
 var _buy_section: VBoxContainer
+var _build_section: VBoxContainer
 var _box: VBoxContainer
 var _owned_box: Container
 var _gold_label: Label
@@ -49,6 +52,11 @@ var _shop_open := false
 var _offers: Array = []
 var _replace_mode := false
 var _pending_wand := ""
+var _refresh_count := 0  # 问题16：本店刷新次数（刷新费递增）
+var _build_offers: Array = []  # 问题15：本店构筑购买选项
+const BUILD_ITEM_PRICE := 120   # 构筑购买单价（传说/稀有按稀有度加价见 _build_price）
+var _build_box: VBoxContainer
+const BUILD_REROLL_PRICE := 60  # 构筑换一批价格
 
 func _ready() -> void:
 	_mobile = UiLayout.is_mobile()
@@ -107,22 +115,21 @@ func _build_ui() -> void:
 	_buy_section.add_theme_constant_override("separation", 8)
 	_buy_section.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	_content.add_child(_buy_section)
+	_build_section = VBoxContainer.new()
+	_build_section.add_theme_constant_override("separation", 8)
+	_build_section.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	_content.add_child(_build_section)
 	_build_menu_page()
 	_build_enhance_page()
 	_build_buy_page()
+	_build_build_page()
 
 func _build_menu_page() -> void:
-	## 选择页（2026-08-10 用户确认）：三个大按钮 = 强化法杖 / 购买法杖 / 回血；
-	## 刷新移入购买页；右上角小 × 关闭（手机无 Esc 时仍可离开）
+	## 选择页（2026-08-11 用户确认）：五个按钮 = 强化法杖 / 购买法杖 / 回血 / 购买构筑 / 关闭
 	var hint := UiTheme.label("请选择商店功能", 12, Color("#9d8fc4"))
 	hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_menu_box.add_child(hint)
 	var btn_w: float = 260.0 if _mobile else 220.0
-	var close := UiTheme.button("×", Vector2(44, 44))
-	close.name = "CloseBtn"
-	close.size_flags_horizontal = Control.SIZE_SHRINK_END
-	close.pressed.connect(_close_shop)
-	_menu_box.add_child(close)
 	var enhance := UiTheme.button("强化法杖", Vector2(btn_w, 64))
 	enhance.name = "EnhanceBtn"
 	enhance.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
@@ -138,6 +145,16 @@ func _build_menu_page() -> void:
 	pot.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	pot.pressed.connect(_buy_potion)
 	_menu_box.add_child(pot)
+	var build := UiTheme.button("购买构筑", Vector2(btn_w, 64))
+	build.name = "BuildBtn"
+	build.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	build.pressed.connect(_goto_build)
+	_menu_box.add_child(build)
+	var close := UiTheme.button("关闭", Vector2(btn_w, 64))
+	close.name = "CloseBtn"
+	close.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	close.pressed.connect(_close_shop)
+	_menu_box.add_child(close)
 
 func _build_enhance_page() -> void:
 	## 强化页：返回按钮 + 已持有法杖强化卡（售出 50% 返还 / 强化 +8% 每级）
@@ -169,6 +186,7 @@ func _build_buy_page() -> void:
 	_buy_section.add_child(back)
 	var refresh := UiTheme.button("刷新（%d金）" % REFRESH_PRICE, Vector2(_card_w, BTN_H))
 	refresh.name = "RefreshBtn"
+	refresh.text = "刷新（%d金）" % _refresh_price()
 	refresh.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	refresh.pressed.connect(_refresh_offers)
 	_buy_section.add_child(refresh)
@@ -179,6 +197,27 @@ func _build_buy_page() -> void:
 	_box.add_theme_constant_override("separation", 8)
 	_box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	_buy_section.add_child(_box)
+
+
+func _build_build_page() -> void:
+	## 问题15：购买构筑独立页——随机 3 个构筑选项（稀有度加权），金币购买
+	var back := UiTheme.button("← 返回选择页", Vector2(_card_w, BTN_H))
+	back.name = "BackBtnBuild"
+	back.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	back.pressed.connect(_goto_menu)
+	_build_section.add_child(back)
+	var title := UiTheme.label("构筑商店（金币购买构筑）", 11, Color("#9d8fc4"))
+	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_build_section.add_child(title)
+	_build_box = VBoxContainer.new()
+	_build_box.add_theme_constant_override("separation", 8)
+	_build_box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_build_section.add_child(_build_box)
+	var reroll := UiTheme.button("换一批（%d金）" % BUILD_REROLL_PRICE, Vector2(_card_w, BTN_H))
+	reroll.name = "BuildRerollBtn"
+	reroll.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	reroll.pressed.connect(_reroll_build_offers)
+	_build_section.add_child(reroll)
 
 func _section_scroll_y(section: Control) -> int:
 	## 区块相对滚动内容顶部的偏移（页面切换用）
@@ -206,6 +245,15 @@ func _goto_buy() -> void:
 	_refresh()
 	_scroll.scroll_vertical = 0
 
+func _goto_build() -> void:
+	## 问题15：进入构筑购买页（首次进入生成选项）
+	if _build_offers.is_empty():
+		_roll_build_offers()
+	_page = PAGE_BUILD
+	_apply_page()
+	_refresh()
+	_scroll.scroll_vertical = 0
+
 func _apply_page() -> void:
 	## 页面切换：显式控制区块可见性（2026-08-10 修复——此前仅靠滚动定位切换，
 	## 内容总高 ≤ 视口时滚动范围为零，选择页与购买页同时可见）
@@ -214,12 +262,15 @@ func _apply_page() -> void:
 	_menu_box.visible = (_page == PAGE_MENU)
 	_enhance_section.visible = (_page == PAGE_ENHANCE)
 	_buy_section.visible = (_page == PAGE_BUY)
+	_build_section.visible = (_page == PAGE_BUILD)
 
 func show_shop() -> void:
 	_pot_bought = false
 	_upgraded = false
 	_replace_mode = false
 	_pending_wand = ""
+	_refresh_count = 0  # 问题16：每次开店刷新费重置
+	_build_offers = []   # 问题15：每次开店重新生成构筑货架
 	_shop_open = true
 	_roll_offers()
 	_page = PAGE_MENU
@@ -381,6 +432,118 @@ func _refresh() -> void:
 			slot.text = "替换：%s" % str(od.get("name", "?"))
 			slot.pressed.connect(_replace_slot.bind(i))
 			_box.add_child(slot)
+	_refresh_build()
+
+
+func _roll_build_offers() -> void:
+	## 问题15：构筑商店选项 = 升级三选一生成器（稀有度加权 + 元素联动），过滤已持有满层的
+	var offers: Array = GameState.roll_item_choices(4)
+	var kept: Array = []
+	for it in offers:
+		var id: String = str(it.get("id", ""))
+		if id.begins_with("spell_part:"):
+			kept.append(it)
+			continue
+		var stacks: int = GameState.total_stacks(id)
+		if stacks < 5:  # 已满 5 层的构筑不再上架（避免买了没用）
+			kept.append(it)
+	_build_offers = kept
+
+
+func _reroll_build_offers() -> void:
+	## 问题15：构筑换一批（花费递增同法杖刷新）
+	var price := _refresh_price()
+	if GameState.run.get("gold", 0) < price:
+		return
+	GameState.run.gold -= price
+	_refresh_count += 1
+	_roll_build_offers()
+	_refresh()
+
+
+func _build_price(def: Dictionary) -> int:
+	## 问题15：构筑价格按稀有度（common 80 / rare 140 / legendary 240），比法杖便宜鼓励消费
+	var rarity: String = str(def.get("rarity", "common"))
+	match rarity:
+		"legendary":
+			return 240
+		"rare":
+			return 140
+	return 80
+
+
+func _buy_build_item(def: Dictionary) -> void:
+	## 问题15：购买构筑——法术部件走 add_spell_part，道具走 add_item
+	var price := _build_price(def)
+	if GameState.run.get("gold", 0) < price:
+		return
+	GameState.run.gold -= price
+	var id: String = str(def.get("id", ""))
+	if id.begins_with("spell_part:"):
+		var parts := id.split(":")
+		GameState.add_spell_part(
+			parts[1] if parts.size() > 1 else "",
+			parts[2] if parts.size() > 2 else "")
+	else:
+		GameState.add_item(id)
+	EventBus.fx_explosion.emit(Vector2(320, 180), "gold")
+	_roll_build_offers()  # 买一件换一件，保持货架 3-4 件
+	_refresh()
+
+
+func _refresh_build() -> void:
+	## 问题15：构筑购买页卡片（图标+名称+流派标签+价格按钮）
+	if _build_box == null:
+		return
+	for c in _build_box.get_children():
+		c.queue_free()
+	if _build_offers.is_empty():
+		_build_box.add_child(UiTheme.label("（没有可购买的构筑）", 11, Color("#5a5278")))
+		return
+	for def in _build_offers:
+		var card := PanelContainer.new()
+		card.custom_minimum_size = Vector2(_card_w, 92)
+		var border: Color = UiTheme.RARITY.get(str(def.get("rarity", "common")), UiTheme.BORDER)
+		card.add_theme_stylebox_override("panel", UiTheme.style(Color("#1b1430"), border, 2, 5))
+		var row := HBoxContainer.new()
+		row.add_theme_constant_override("separation", 8)
+		card.add_child(row)
+		var tex := TextureRect.new()
+		tex.texture = UiTheme.icon_texture(str(def.get("icon", "")))
+		tex.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+		tex.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		tex.custom_minimum_size = Vector2(_icon_sz, _icon_sz)
+		tex.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+		tex.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		row.add_child(tex)
+		var info := VBoxContainer.new()
+		info.add_theme_constant_override("separation", 2)
+		info.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		info.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+		row.add_child(info)
+		## 流派标签（用户需求）：名称前显示【火】【防御】等
+		var schools := GameState.schools_of_item(def)
+		var tag := ""
+		if not schools.is_empty():
+			var names: Array = []
+			for s in schools:
+				names.append(GameState.SCHOOL_NAMES.get(str(s), str(s)))
+			tag = "【" + "、".join(names) + "】"
+		var name_l := UiTheme.label(tag + str(def.get("name", "?")), _name_sz, UiTheme.RARITY.get(str(def.get("rarity", "common")), UiTheme.WHITE))
+		name_l.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		info.add_child(name_l)
+		var desc := UiTheme.label(str(def.get("description", "")), _desc_sz, Color("#c8c0e0"))
+		desc.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		desc.custom_minimum_size = Vector2(180, 26)
+		desc.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		info.add_child(desc)
+		var price := _build_price(def)
+		var buy := UiTheme.button("%d金·购买" % price, Vector2(120, BTN_H))
+		buy.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+		buy.disabled = GameState.run.get("gold", 0) < price
+		buy.pressed.connect(_buy_build_item.bind(def))
+		info.add_child(buy)
+		_build_box.add_child(card)
 
 func _sell_slot(idx: int) -> void:
 	var refund: int = GameState.sell_wand(idx)
@@ -405,8 +568,8 @@ func _buy_wand(wand_id: String) -> void:
 	var price := int(def.get("price", 0))
 	if GameState.run.get("gold", 0) < price:
 		return
-	# 已满 3 把：进入替换模式，选择要替换的槽位
-	if GameState.current_wands().size() >= 3:
+	# 已满槽位上限（问题14：3 + 扩容饰品）：进入替换模式，选择要替换的槽位
+	if GameState.current_wands().size() >= GameState.max_wand_slots():
 		_replace_mode = true
 		_pending_wand = wand_id
 		_refresh()
@@ -477,11 +640,18 @@ func _buy_potion() -> void:
 	_refresh()
 
 func _refresh_offers() -> void:
-	if GameState.run.get("gold", 0) < REFRESH_PRICE:
+	var price := _refresh_price()
+	if GameState.run.get("gold", 0) < price:
 		return
-	GameState.run.gold -= REFRESH_PRICE
+	GameState.run.gold -= price
+	_refresh_count += 1
 	_roll_offers()
 	_refresh()
+
+
+func _refresh_price() -> int:
+	## 问题16：刷新费递增（每次 ×2，封顶 480），鼓励玩家一次买齐
+	return mini(REFRESH_PRICE * (1 << _refresh_count), REFRESH_PRICE_MAX)
 
 func _close_shop() -> void:
 	if not _shop_open:

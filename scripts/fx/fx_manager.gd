@@ -321,6 +321,7 @@ var _firework_timer := 0.0
 var _aura_timer := 0.0
 var _summon_auras: Dictionary = {}  # summon instance_id -> aura Node2D
 var _chain_bolts: Array = []  # 链跳闪电连线池（LightningBolt，上限 CHAIN_BOLT_MAX）
+var _hitstop_cd := 0.0  ## 打击感 P1：顿帧冷却（150ms 防高攻速连发卡手）
 
 func _ready() -> void:
 	EventBus.fx_explosion.connect(_on_fx_explosion)
@@ -329,6 +330,7 @@ func _ready() -> void:
 	EventBus.fx_hit.connect(_on_fx_hit)
 	EventBus.damage_dealt.connect(_on_damage_dealt)
 	EventBus.fx_hit_flash.connect(_on_fx_hit_flash)
+	EventBus.fx_hit_slow.connect(_on_fx_hit_slow)
 	EventBus.fx_heal_text.connect(_on_fx_heal_text)
 	EventBus.fx_dot_text.connect(_on_fx_dot_text)
 	EventBus.screen_shake.connect(_on_screen_shake)
@@ -338,6 +340,7 @@ func _ready() -> void:
 	EventBus.player_hit.connect(_on_player_hit)
 
 func _process(delta: float) -> void:
+	_hitstop_cd = maxf(_hitstop_cd - delta, 0.0)
 	# 爽感档位（F11）：按 DPS 分档，档位越高特效越足
 	_tier_timer -= delta
 	if _tier_timer <= 0.0:
@@ -357,7 +360,9 @@ func _process(delta: float) -> void:
 			_firework_timer = 2.5
 			EventBus.fx_explosion.emit(Vector2(randf_range(100, 1180), randf_range(80, 640)), "gold")
 			if _dps_tier >= 3:
-				EventBus.fx_explosion.emit(Vector2(randf_range(100, 1180), randf_range(80, 640)), "lightning")
+				## 落雷误触发修复（Beauvoir 报告 P0-1）：无雷系构筑时高 DPS 不再随机落雷
+				if _school_holdings_of("lightning") > 0:
+					EventBus.fx_explosion.emit(Vector2(randf_range(100, 1180), randf_range(80, 640)), "lightning")
 	# A2 summon aura: refresh tier every 0.5s by summon school holdings (3/6/9)
 	_aura_timer -= delta
 	if _aura_timer <= 0.0:
@@ -601,6 +606,38 @@ static func _ring_points(radius: float, segments: int) -> PackedVector2Array:
 		var a := TAU * float(i) / float(segments)
 		pts.append(Vector2(cos(a), sin(a)) * radius)
 	return pts
+
+## 近战挥砍弧光：固定朝向 dir 的弧形刀光（范围可视化，半径=近战攻击范围）。
+## 双层绘制：外层淡色弧 + 内层亮芯弧，快速展开 + 渐隐，寿命 ~0.18s。
+func spawn_melee_arc(pos: Vector2, dir: Vector2, radius: float) -> void:
+	var arc := Node2D.new()
+	arc.position = pos
+	arc.z_index = 10
+	add_child(arc)
+	var color := Color(0.92, 0.94, 1.0)
+	for spec in [{"w": 5.0, "c": Color(color, 0.45), "r": radius * 1.02},
+	             {"w": 2.2, "c": Color(1.0, 1.0, 1.0, 0.95), "r": radius}]:
+		var line := Line2D.new()
+		line.width = float(spec["w"])
+		line.default_color = spec["c"]
+		line.antialiased = true
+		var pts := PackedVector2Array()
+		var steps: int = 12
+		for i in steps + 1:
+			var t := float(i) / float(steps)
+			# 弧：从 -70° 扫到 +70°，开口朝向 dir
+			var a := -deg_to_rad(70.0) + deg_to_rad(140.0) * t
+			pts.append(Vector2(cos(a), sin(a)) * float(spec["r"]))
+		line.points = pts
+		line.position = Vector2.ZERO
+		arc.add_child(line)
+	arc.rotation = dir.angle()
+	arc.modulate = Color(1, 1, 1, 0.0)
+	var tween: Tween = arc.create_tween()
+	tween.tween_property(arc, "modulate:a", 1.0, 0.045)
+	tween.parallel().tween_property(arc, "scale", Vector2.ONE * 1.18, 0.18).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+	tween.parallel().tween_property(arc, "modulate:a", 0.0, 0.18).set_delay(0.06)
+	tween.tween_callback(arc.queue_free)
 
 ## 两点间锯齿折线（闪电主路径 / 分叉共用）。
 static func _zigzag(from: Vector2, to: Vector2, steps: int, jitter: float) -> PackedVector2Array:
@@ -1257,6 +1294,15 @@ func _on_slow_mo(factor: float, duration: float) -> void:
 	_slow_mo_tween = create_tween().set_process_mode(Tween.TWEEN_PROCESS_IDLE)
 	_slow_mo_tween.set_ignore_time_scale(true)
 	_slow_mo_tween.tween_property(Engine, "time_scale", 1.0, d)
+
+
+func _on_fx_hit_slow(_target: Node) -> void:
+	## 打击感 P1（McClintock 方案）：顿帧 hitstop——暴击/Boss 命中/击杀触发，
+	## 因子 0.05、时长 60ms、冷却 150ms（复用 slow_mo 时间轴控制器）
+	if _hitstop_cd > 0.0:
+		return
+	_hitstop_cd = 0.15
+	EventBus.slow_mo.emit(0.05, 0.06)
 
 func _on_screen_shake(power: float) -> void:
 	var camera := get_tree().get_first_node_in_group("camera")

@@ -353,7 +353,8 @@ func _dump_layout() -> void:
 func _refresh_dps() -> void:
 	if GameState.run.is_empty():
 		return
-	_dps_label.text = "DPS %d" % int(GameState.estimate_dps())
+	## 问题6：HUD 显示实测 DPS（5s 滑动窗口），构筑面板保留理论估算
+	_dps_label.text = "DPS %d" % int(GameState.measured_dps())
 	_update_shield_display()  # 护盾池可能在无 player_stats_changed 的路径变化（如换局重置），0.5s 定时兜底
 
 

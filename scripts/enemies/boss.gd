@@ -202,6 +202,14 @@ func _tick_boss(delta: float) -> void:
 	_tick(delta)  # 基类状态效果（灼烧/毒 DOT、减速、无敌递减等）
 	_buff_left = maxf(_buff_left - delta, 0.0)
 	_shield_left = maxf(_shield_left - delta, 0.0)
+	## 问题18：古神二阶段回血（enemies.json regen：phase 门槛 + 每秒百分比）
+	var regen: Dictionary = conf.get("regen", {})
+	if not regen.is_empty() and phase >= int(regen.get("phase", 99)):
+		hp = minf(hp + max_hp * float(regen.get("per_sec", 0.0)) * delta, max_hp)
+	## 问题18：古神阶段防御（enemies.json defense：phase 门槛 + 减伤比例）
+	var defs: Dictionary = conf.get("defense", {})
+	if not defs.is_empty() and phase >= int(defs.get("phase", 99)):
+		armor = clampf(float(defs.get("reduce", 0.0)), 0.0, 0.6)
 	if _buff_left <= 0.0 and _buff_armor > 0.0:
 		_buff_armor = 0.0
 		modulate = Color.WHITE
@@ -241,9 +249,10 @@ func _pick_skill() -> Dictionary:
 
 func _start_skill(skill: Dictionary) -> void:
 	_current_skill = skill
-	# 机制密度：关卡越高技能冷却越短（每关 -5%，最低 70%）
+	# 机制密度（问题13：按关卡阶梯加强，幅度加大）：每关 -8% 冷却，最低 55%；
+	# 弹幕密度/范围在 _setup_telegraph 与施法处按 level 缩放（见 _level_density_mult）
 	_skill_cds[str(skill.get("id", "skill"))] = float(skill.get("cooldown", 6.0)) \
-		* maxf(0.7, 1.0 - 0.05 * float(maxi(GameState.run.get("level", 1), 1) - 1)) \
+		* maxf(0.55, 1.0 - 0.08 * float(maxi(GameState.run.get("level", 1), 1) - 1)) \
 		* (_enrage_cd_mult if _enrage else 1.0)
 	_windup_left = float(skill.get("windup", 0.6))
 	_telegraphs.clear()
@@ -516,8 +525,18 @@ func _update_recover(delta: float) -> void:
 
 # ---------- 技能实现 ----------
 
+func _level_density_mult() -> float:
+	## 问题13：弹幕密度随关卡阶梯加强——第 2 关起 +12%/关，4 关起累计 +25%/关（幅度大）
+	var level := maxi(int(GameState.run.get("level", 1)), 1)
+	var mult := 1.0
+	if level >= 2:
+		mult += 0.12 * float(level - 1)
+	if level >= 4:
+		mult += 0.13 * float(level - 3)
+	return mult
+
 func _cast_spread(skill: Dictionary) -> void:
-	var shots := int(skill.get("shots", 5))
+	var shots := maxi(int(roundi(float(skill.get("shots", 5)) * _level_density_mult())), 1)
 	var spread := float(skill.get("spread", 24.0))
 	var bullet_speed := float(skill.get("bullet_speed", 180.0))
 	if spread >= 360.0:
@@ -542,7 +561,7 @@ func _fire_bullet(dir: Vector2, bullet_speed: float, homing: bool = false,
 
 func _cast_spiral_ring(skill: Dictionary, ring: int) -> void:
 	## 旋转弹幕环：一圈 shots 发，角度 = 起始朝向 + 每圈偏移递进
-	var shots := clampi(int(skill.get("shots", 12)), 4, 48)
+	var shots := clampi(int(roundi(float(skill.get("shots", 12)) * _level_density_mult())), 4, 72)
 	var bullet_speed := float(skill.get("bullet_speed", 170.0))
 	var offset := deg_to_rad(float(skill.get("offset", 18.0)))
 	var rot := _spiral_base + offset * float(ring)
@@ -559,7 +578,7 @@ func _update_spiral(delta: float) -> void:
 
 func _cast_homing(skill: Dictionary) -> void:
 	## 追踪弹：小角度扇形发射 count 发，弹幕自带转向玩家（enemy_bullet.homing）
-	var count := clampi(int(skill.get("count", 4)), 1, 12)
+	var count := clampi(int(roundi(float(skill.get("count", 4)) * _level_density_mult())), 1, 16)
 	var spread := float(skill.get("spread", 20.0))
 	var bullet_speed := float(skill.get("bullet_speed", 135.0))
 	var turn_rate := float(skill.get("turn_rate", 3.0))
@@ -584,7 +603,7 @@ func _update_sweep(delta: float) -> void:
 			EventBus.player_hit.emit(attack, global_position)
 	if _fx_timer <= 0.0:
 		_fx_timer = 0.1
-		EventBus.fx_explosion.emit(global_position + dir * 80.0, "lightning")
+		EventBus.fx_explosion.emit(global_position + dir * 80.0, "fire")  # 落雷误触发修复：敌意激光改红色系
 
 func _player_in_swept(origin: Vector2, current_angle: float, length: float) -> bool:
 	## 玩家方向角落在 [起始角, 当前角] 已扫过扇形内，且距离在射程内
@@ -641,16 +660,16 @@ func _cast_root_zone(skill: Dictionary) -> void:
 	_zones.append(zone)
 
 func _cast_summon(skill: Dictionary) -> void:
-	_spawn_minions(int(skill.get("count", 2)), bool(skill.get("elite", false)))
+	_spawn_minions(maxi(int(roundi(float(skill.get("count", 2)) * _level_density_mult())), 1), bool(skill.get("elite", false)))
 
 func _cast_summon_wave(skill: Dictionary) -> void:
 	## 召唤波：普通小怪 + 精英混召
-	_spawn_minions(int(skill.get("count", 3)), false)
-	_spawn_minions(int(skill.get("elite_count", 1)), true)
+	_spawn_minions(maxi(int(roundi(float(skill.get("count", 3)) * _level_density_mult())), 1), false)
+	_spawn_minions(maxi(int(roundi(float(skill.get("elite_count", 1)) * _level_density_mult())), 1), true)
 
 func _cast_ring_barrage(skill: Dictionary) -> void:
 	## 天女散花：360° 环形弹幕，多圈错相，施放瞬间全部发射
-	var shots := clampi(int(skill.get("shots", 16)), 4, 48)
+	var shots := clampi(int(roundi(float(skill.get("shots", 16)) * _level_density_mult())), 4, 72)
 	var waves := clampi(int(skill.get("waves", 1)), 1, 4)
 	var bullet_speed := float(skill.get("bullet_speed", 180.0))
 	for w in waves:
@@ -667,7 +686,7 @@ func _cast_buff(skill: Dictionary) -> void:
 
 func _cast_shield(skill: Dictionary) -> void:
 	_shield_left = float(skill.get("duration", 4.0))
-	EventBus.fx_explosion.emit(global_position, "lightning")
+	EventBus.fx_explosion.emit(global_position, "buff")  # 落雷误触发修复：护盾不再闪雷
 
 func _update_leap(delta: float) -> void:
 	if not _leap_active:
@@ -711,7 +730,7 @@ func _update_beam(delta: float) -> void:
 			EventBus.player_hit.emit(attack, global_position)
 	if _fx_timer <= 0.0:
 		_fx_timer = 0.12
-		EventBus.fx_explosion.emit(global_position + _beam_dir * 60.0, "lightning")
+		EventBus.fx_explosion.emit(global_position + _beam_dir * 60.0, "fire")  # 落雷误触发修复：敌意光束改红色系
 
 func _update_whirl(delta: float) -> void:
 	_whirl_angle += WHIRL_SPEED * delta
@@ -724,7 +743,7 @@ func _update_whirl(delta: float) -> void:
 			EventBus.player_hit.emit(attack, global_position)
 	if _fx_timer <= 0.0:
 		_fx_timer = 0.1
-		EventBus.fx_explosion.emit(global_position + dir * 90.0, "lightning")
+		EventBus.fx_explosion.emit(global_position + dir * 90.0, "fire")  # 落雷误触发修复：旋激光改红色系
 
 func _update_eruption(delta: float) -> void:
 	_eruption_timer -= delta
@@ -777,16 +796,17 @@ func _check_enrage_trigger() -> void:
 func _on_phase_up() -> void:
 	_interrupt_cast()
 	_invuln_left = 0.8  # 转阶段无敌（EnemyBase.take_damage 直接免疫）
-	EventBus.fx_explosion.emit(global_position, "lightning")
-	EventBus.fx_explosion.emit(_player.global_position, "lightning")
-	# 全屏闪光：四角 + 中央
+	## 落雷误触发修复（Beauvoir 报告 P0-2）：转阶段视觉改金色冲击（不再是雷系技能视觉）
+	EventBus.fx_explosion.emit(global_position, "gold")
+	EventBus.fx_explosion.emit(_player.global_position, "gold")
+	# 全屏金色闪光：四角 + 中央
 	for corner in [
 		ARENA.position,
 		ARENA.position + Vector2(ARENA.size.x, 0.0),
 		ARENA.position + Vector2(0.0, ARENA.size.y),
 		ARENA.end,
 	]:
-		EventBus.fx_explosion.emit(corner, "lightning")
+		EventBus.fx_explosion.emit(corner, "gold")
 	EventBus.screen_shake.emit(10.0)
 	# 清屏冲击波：对场上其他敌人造成伤害
 	var shock := int(max_hp * 0.2)
@@ -794,7 +814,7 @@ func _on_phase_up() -> void:
 		if e == self or not is_instance_valid(e):
 			continue
 		if e.has_method("take_damage"):
-			e.take_damage(shock, "lightning", false)
+			e.take_damage(shock, "void", false)
 	# 转阶段自动补召一波小怪（普通）
 	_spawn_minions(3, false)
 
@@ -837,6 +857,8 @@ func _enemy_conf(enemy_id: String) -> Dictionary:
 func _die() -> void:
 	_dead = true
 	EventBus.boss_died.emit(global_position)
+	## 问题9：Boss 死亡先清技能产物（弹幕/地面圈/召唤残留），避免商店界面残留伤害特效
+	_clear_skill_leftovers()
 	var gold: int = int(conf.get("gold", 100))
 	var xp: int = GameState.enemy_xp(float(conf.get("xp", 200)), GameState.run.level, GameState.run.loop)
 	if _is_final:
@@ -844,9 +866,23 @@ func _die() -> void:
 		xp *= 3
 	EventBus.enemy_died.emit(enemy_id, global_position, xp, gold, false)
 	EventBus.fx_explosion.emit(global_position, "fire")
-	EventBus.fx_explosion.emit(global_position, "lightning")
+	EventBus.fx_explosion.emit(global_position, "gold")  # 落雷误触发修复：死亡爆改金色（无雷系语义）
 	EventBus.screen_shake.emit(12.0)
 	queue_free()
+
+func _clear_skill_leftovers() -> void:
+	## 清掉该 Boss 遗留的弹幕（enemy_bullet 无 group，按脚本路径扫描）与地面圈（BossGroundZone）
+	var scene := get_tree().current_scene
+	if scene == null:
+		return
+	# 1) Boss 地面圈（root_zone/spike 等，命名 BossGroundZone）
+	for n in scene.get_children():
+		if n.name == "BossGroundZone":
+			n.queue_free()
+	# 2) 场景中仍在飞行的敌方弹幕（按脚本路径判断，避免误杀召唤物/玩家弹幕）
+	for n in scene.get_children():
+		if n.get_script() != null and str(n.get_script().resource_path).ends_with("enemy_bullet.gd"):
+			n.queue_free()
 
 ## 持续地面伤害圈（root_zone）：duration 内对圈内玩家造成 dps 伤害
 class GroundZone:
