@@ -118,6 +118,9 @@ func _swing(player: Node2D, enemy: Node) -> void:
 	EventBus.damage_dealt.emit(dmg, hit_pos, crit)
 	EventBus.fx_hit_flash.emit(enemy)
 	EventBus.fx_hit.emit(hit_pos, "blade")
+	# 打击感 G-1/G-4：近战命中音效 + 顿帧（暴击 60ms/普通 30ms/Boss 80ms）
+	SfxBus.play_hit(SfxBus.hit_kind_for(enemy, crit))
+	EventBus.fx_hit_slow.emit(enemy, crit)
 
 
 ## 暴击判定：run.crit_chance（含 crit_glasses 等）+ 四叶草重掷，与 projectile._roll_crit 一致

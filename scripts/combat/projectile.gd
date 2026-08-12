@@ -377,6 +377,9 @@ func _hit_enemy(enemy: Node, dmg_mult: float = 1.0, direct_hit: bool = false) ->
 		enemy.take_damage(final_dmg, _element, crit)
 	EventBus.damage_dealt.emit(final_dmg, enemy.global_position, crit)
 	EventBus.fx_hit_flash.emit(enemy)
+	# 打击感 G-1/G-4：命中音效（暴击/精英/Boss 分级更响）+ 顿帧（暴击 60ms/普通 30ms/Boss 80ms）
+	SfxBus.play_hit(SfxBus.hit_kind_for(enemy, crit))
+	EventBus.fx_hit_slow.emit(enemy, crit)
 	# 特效分级：普通直击走轻量命中（无扩散环）；aoe/instant 爆炸由 _explode_at 走 fx_explosion
 	if direct_hit:
 		EventBus.fx_hit.emit(enemy.global_position, _element)

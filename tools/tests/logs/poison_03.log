@@ -1,0 +1,2533 @@
+Godot Engine v4.7.1.stable.official.a13da4feb - https://godotengine.org
+
+ERROR: Failed to read the root certificate store.
+   at: get_system_ca_certificates (platform/windows/os_windows.cpp:2582)
+[SYNERGY] crit_synergy registered
+[SYNERGY] loaded: crit_synergy.gd
+[SYNERGY] curse_synergy registered
+[SYNERGY] loaded: curse_synergy.gd
+[SYNERGY] defense_synergy registered
+[SYNERGY] loaded: defense_synergy.gd
+[SYNERGY] fire_synergy registered
+[SYNERGY] loaded: fire_synergy.gd
+[SYNERGY] holy registered
+[SYNERGY] loaded: holy_synergy.gd
+[SYNERGY] ice_synergy registered
+[SYNERGY] loaded: ice_synergy.gd
+[SYNERGY] mech_items registered
+[SYNERGY] loaded: mech_items.gd
+[SYNERGY] melee_synergy registered
+[SYNERGY] loaded: melee_synergy.gd
+[SYNERGY] loaded: poison_synergy.gd
+[SYNERGY] loaded: summon_synergy.gd
+[SYNERGY] loaded: thunder_synergy.gd
+[SYNERGY] water_synergy registered
+[SYNERGY] loaded: water_synergy.gd
+[SYNERGY] wind_synergy registered
+[SYNERGY] loaded: wind_synergy.gd
+[AUTOPLAY] school=poison tags=["poison"] elements=["poison"]
+[AUTOPLAY] started
+[AUTOPLAY] started instances=1
+[FONT] cn loaded=true path=res://assets/fonts/LXGWWenKai_subset.ttf
+[SPAWNER] setup at run.time=0.0 waves=3
+[SPAWNER] wave 1 active rel=0.0 abs=0.0 level_start=0.0
+[HB] t=1.0 paused=false frames=60 fps_now=60 hp=105 kills=0
+[HB] t=2.0 paused=false frames=121 fps_now=61 hp=105 kills=0
+[HB] t=3.0 paused=false frames=182 fps_now=61 hp=105 kills=0
+[HB] t=4.0 paused=false frames=243 fps_now=61 hp=105 kills=0
+[AUTOPLAY] t=5 hp=105 lv=1 kills=0 enemies=8 dps=12 grid=2 items=0 wave=1 dist=79 player=(431.5205, 380.5186) enemy=(509.3599, 395.0763) mv=(0.994556, 0.104206) aim=(0.983527, 0.18076)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "slime": 6, "bat": 2 }
+[HB] t=5.1 paused=false frames=304 fps_now=61 hp=105 kills=0
+[HB] t=6.1 paused=false frames=365 fps_now=61 hp=105 kills=0
+[HB] t=7.1 paused=false frames=426 fps_now=61 hp=105 kills=0
+[HB] t=8.1 paused=false frames=487 fps_now=61 hp=105 kills=5
+[HB] t=9.1 paused=false frames=549 fps_now=62 hp=96 kills=5
+[AUTOPLAY] t=10 hp=96 lv=1 kills=5 enemies=19 dps=12 grid=2 items=0 wave=1 dist=127 player=(972.2274, 624.0963) enemy=(1079.274, 555.8049) mv=(0.638733, -0.769428) aim=(0.83859, -0.544763)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "slime": 15, "bat": 4 }
+[HB] t=10.1 paused=false frames=609 fps_now=60 hp=96 kills=5
+[HB] t=11.1 paused=false frames=671 fps_now=62 hp=96 kills=5
+[AUTOPLAY] choices: 余烬指环=110, 暴风眼=150, 延时·火柱=285
+[SYNERGY] formed: 燃烧流
+[AUTOPLAY] levelup -> 延时·火柱 score=285
+[AUTOPLAY] levelup -> 延时·火柱 score=285
+[HB] t=12.1 paused=false frames=733 fps_now=62 hp=105 kills=6
+[HB] t=13.1 paused=false frames=796 fps_now=63 hp=99 kills=6
+[HB] t=14.1 paused=false frames=858 fps_now=62 hp=99 kills=6
+[AUTOPLAY] choices: 寒风=57, 燃烧符=110, 原生·藤蔓=120
+[AUTOPLAY] levelup -> 原生·藤蔓 score=120
+[AUTOPLAY] levelup -> 原生·藤蔓 score=120
+[AUTOPLAY] t=15 hp=115 lv=3 kills=27 enemies=35 dps=28 grid=4 items=0 wave=1 dist=92 player=(945.7239, 143.3401) enemy=(931.7327, 233.9471) mv=(-0.921343, 0.388751) aim=(-0.181369, 0.983415)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "slime": 31, "bat": 4 }
+[HB] t=15.1 paused=false frames=922 fps_now=64 hp=115 kills=27
+[HB] t=16.1 paused=false frames=984 fps_now=62 hp=115 kills=27
+[AUTOPLAY] choices: 分裂·火球=237, 血怒=50, 暴击眼镜=111
+[AUTOPLAY] levelup -> 分裂·火球 score=237
+[AUTOPLAY] levelup -> 分裂·火球 score=237
+[HB] t=17.1 paused=false frames=1047 fps_now=63 hp=125 kills=36
+[HB] t=18.2 paused=false frames=1111 fps_now=64 hp=125 kills=49
+[HB] t=19.2 paused=false frames=1172 fps_now=61 hp=125 kills=52
+[AUTOPLAY] choices: 纵火狂=120, 诅咒墨水=50, 吸血·火柱=195
+[AUTOPLAY] levelup -> 吸血·火柱 score=195
+[AUTOPLAY] levelup -> 吸血·火柱 score=195
+[AUTOPLAY] self-heal unpause
+[AUTOPLAY] spell replace -> slot 3 score=245
+[AUTOPLAY] spell replace -> slot 0 (fallback)
+[AUTOPLAY] t=20 hp=135 lv=5 kills=63 enemies=40 dps=41 grid=5 items=0 wave=1 dist=139 player=(813.7207, 644.9133) enemy=(787.3587, 508.0564) mv=(0.996046, -0.088834) aim=(-0.165869, -0.986148)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "slime": 40 }
+[HB] t=20.2 paused=false frames=1235 fps_now=63 hp=135 kills=63
+[SPAWNER] wave 2 active rel=21.0 abs=21.0 level_start=0.0
+[HB] t=21.2 paused=false frames=1297 fps_now=62 hp=145 kills=71
+[HB] t=22.2 paused=false frames=1359 fps_now=62 hp=145 kills=89
+[HB] t=23.2 paused=false frames=1420 fps_now=61 hp=145 kills=89
+[AUTOPLAY] choices: 齐射·火球=385, 血怒=50, 折磨循环=60
+[AUTOPLAY] levelup -> 齐射·火球 score=385
+[AUTOPLAY] levelup -> 齐射·火球 score=385
+[AUTOPLAY] self-heal unpause
+[AUTOPLAY] spell replace -> slot 1 score=449
+[AUTOPLAY] spell replace -> slot 0 (fallback)
+[HB] t=24.2 paused=false frames=1484 fps_now=64 hp=145 kills=108
+[AUTOPLAY] t=25 hp=145 lv=6 kills=125 enemies=49 dps=72 grid=5 items=0 wave=2 dist=124 player=(720.6545, 223.9441) enemy=(837.1016, 265.1587) mv=(-0.848193, 0.529687) aim=(0.935518, 0.353279)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "slime": 49 }
+[HB] t=25.2 paused=false frames=1548 fps_now=64 hp=145 kills=125
+[HB] t=26.2 paused=false frames=1611 fps_now=63 hp=155 kills=150
+[AUTOPLAY] choices: 先祖图腾=50, 齐射·火球=314, 守御术架=96
+[AUTOPLAY] levelup -> 齐射·火球 score=314
+[AUTOPLAY] levelup -> 齐射·火球 score=314
+[AUTOPLAY] self-heal unpause
+[AUTOPLAY] spell replace -> slot 0 score=449
+[AUTOPLAY] spell replace -> slot 0 (fallback)
+[HB] t=27.2 paused=false frames=1674 fps_now=63 hp=155 kills=171
+[HB] t=28.3 paused=false frames=1736 fps_now=62 hp=165 kills=186
+[HB] t=29.3 paused=false frames=1800 fps_now=64 hp=156 kills=207
+[AUTOPLAY] t=30 hp=156 lv=7 kills=208 enemies=21 dps=99 grid=5 items=0 wave=2 dist=69 player=(1240.867, 671.8856) enemy=(1171.89, 672.4185) mv=(0.0, 1.0) aim=(-0.999992, -0.003987)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "slime": 18, "bat": 3 }
+[HB] t=30.3 paused=false frames=1861 fps_now=61 hp=156 kills=208
+[HB] t=31.3 paused=false frames=1923 fps_now=62 hp=165 kills=214
+[HB] t=32.3 paused=false frames=1985 fps_now=62 hp=165 kills=220
+[HB] t=33.3 paused=false frames=2047 fps_now=62 hp=165 kills=226
+[HB] t=34.3 paused=false frames=2109 fps_now=62 hp=158 kills=229
+[AUTOPLAY] t=35 hp=152 lv=7 kills=229 enemies=32 dps=99 grid=5 items=0 wave=2 dist=10 player=(878.6094, 209.7607) enemy=(883.6672, 218.5036) mv=(-1.0, 0.0) aim=(0.266059, 0.963957)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "slime": 28, "bat": 4 }
+[HB] t=35.3 paused=false frames=2171 fps_now=62 hp=165 kills=230
+[AUTOPLAY] choices: 迅捷=50, 齐射·旋风刃=15, 引燃粉=110
+[AUTOPLAY] levelup -> 引燃粉 score=110
+[AUTOPLAY] levelup -> 引燃粉 score=110
+[HB] t=36.3 paused=false frames=2233 fps_now=62 hp=165 kills=238
+[HB] t=37.3 paused=false frames=2296 fps_now=63 hp=175 kills=240
+[HB] t=38.3 paused=false frames=2359 fps_now=63 hp=175 kills=251
+[HB] t=39.3 paused=false frames=2421 fps_now=62 hp=175 kills=262
+[AUTOPLAY] t=40 hp=175 lv=8 kills=278 enemies=26 dps=99 grid=5 items=1 wave=2 dist=123 player=(1126.345, 573.2349) enemy=(1056.116, 471.8536) mv=(0.790914, -0.611927) aim=(-0.547259, -0.836963)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "slime": 26 }
+[HB] t=40.4 paused=false frames=2484 fps_now=63 hp=175 kills=278
+[HB] t=41.4 paused=false frames=2548 fps_now=64 hp=175 kills=291
+[HB] t=42.4 paused=false frames=2609 fps_now=61 hp=166 kills=293
+[HB] t=43.4 paused=false frames=2672 fps_now=63 hp=175 kills=307
+[HB] t=44.4 paused=false frames=2735 fps_now=63 hp=175 kills=322
+[SPAWNER] wave 3 active rel=45.0 abs=45.0 level_start=0.0
+[AUTOPLAY] t=45 hp=175 lv=8 kills=324 enemies=23 dps=99 grid=5 items=1 wave=3 dist=119 player=(680.3464, 241.0176) enemy=(788.9528, 290.2782) mv=(-0.789551, 0.613685) aim=(0.900283, 0.435306)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "slime": 20, "bat": 3 }
+[AUTOPLAY] choices: 纵火狂=120, 追踪·火球=5, 暴击风暴=638
+[AUTOPLAY] levelup -> 暴击风暴 score=638
+[AUTOPLAY] levelup -> 暴击风暴 score=638
+[HB] t=45.4 paused=false frames=2797 fps_now=62 hp=175 kills=326
+[HB] t=46.4 paused=false frames=2863 fps_now=66 hp=175 kills=333
+[HB] t=47.4 paused=false frames=2926 fps_now=63 hp=175 kills=336
+[HB] t=48.4 paused=false frames=2988 fps_now=62 hp=185 kills=347
+[HB] t=49.4 paused=false frames=3052 fps_now=64 hp=185 kills=353
+[AUTOPLAY] t=50 hp=185 lv=9 kills=353 enemies=32 dps=99 grid=5 items=2 wave=3 dist=90 player=(667.791, 672.5925) enemy=(744.3115, 624.5618) mv=(1.0, 0.0) aim=(0.856713, -0.515794)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "slime": 29, "bat": 3 }
+[HB] t=50.4 paused=false frames=3114 fps_now=62 hp=185 kills=355
+[HB] t=51.4 paused=false frames=3177 fps_now=63 hp=185 kills=359
+[HB] t=52.5 paused=false frames=3238 fps_now=61 hp=185 kills=359
+[HB] t=53.5 paused=false frames=3301 fps_now=63 hp=185 kills=371
+[HB] t=54.5 paused=false frames=3364 fps_now=63 hp=185 kills=378
+[AUTOPLAY] t=55 hp=185 lv=9 kills=382 enemies=35 dps=99 grid=5 items=2 wave=3 dist=54 player=(765.7607, 209.5878) enemy=(776.2787, 262.336) mv=(-1.0, 0.0) aim=(0.04312, 0.99907)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "slime": 35 }
+[HB] t=55.5 paused=false frames=3428 fps_now=64 hp=185 kills=383
+[HB] t=56.5 paused=false frames=3493 fps_now=65 hp=185 kills=391
+[HB] t=57.5 paused=false frames=3555 fps_now=62 hp=185 kills=396
+[HB] t=58.5 paused=false frames=3618 fps_now=63 hp=185 kills=409
+[HB] t=59.5 paused=false frames=3681 fps_now=63 hp=185 kills=414
+[AUTOPLAY] t=60 hp=185 lv=9 kills=419 enemies=32 dps=99 grid=5 items=2 wave=3 dist=148 player=(438.4654, 647.9819) enemy=(586.6951, 654.9545) mv=(0.788919, 0.614497) aim=(0.998285, 0.058546)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "slime": 32 }
+[HB] t=60.5 paused=false frames=3743 fps_now=62 hp=185 kills=420
+[AUTOPLAY] choices: 纵火狂=120, 烈焰棱镜=199, 齐射·旋风刃=15
+[AUTOPLAY] levelup -> 烈焰棱镜 score=199
+[AUTOPLAY] levelup -> 烈焰棱镜 score=199
+[HB] t=61.5 paused=false frames=3807 fps_now=64 hp=185 kills=438
+[HB] t=62.5 paused=false frames=3868 fps_now=61 hp=180 kills=440
+[HB] t=63.5 paused=false frames=3933 fps_now=65 hp=180 kills=453
+[HB] t=64.5 paused=false frames=3995 fps_now=62 hp=180 kills=457
+[AUTOPLAY] t=65 hp=195 lv=10 kills=463 enemies=32 dps=99 grid=5 items=3 wave=3 dist=153 player=(785.533, 289.7084) enemy=(774.1994, 442.5593) mv=(-0.975421, -0.220349) aim=(-0.095246, 0.995454)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "slime": 28, "bat": 3, "goblin": 1 }
+[HB] t=65.6 paused=false frames=4058 fps_now=63 hp=195 kills=469
+[HB] t=66.6 paused=false frames=4120 fps_now=62 hp=195 kills=475
+[HB] t=67.6 paused=false frames=4183 fps_now=63 hp=195 kills=484
+[HB] t=68.6 paused=false frames=4245 fps_now=62 hp=191 kills=486
+[HB] t=69.6 paused=false frames=4307 fps_now=62 hp=195 kills=492
+[AUTOPLAY] t=70 hp=195 lv=10 kills=504 enemies=30 dps=99 grid=5 items=3 wave=3 dist=164 player=(159.0145, 669.6656) enemy=(212.0608, 514.3397) mv=(0.810323, 0.585984) aim=(0.340209, -0.94035)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "slime": 27, "bat": 2, "goblin": 1 }
+[HB] t=70.6 paused=false frames=4373 fps_now=66 hp=195 kills=512
+[HB] t=71.6 paused=false frames=4436 fps_now=63 hp=185 kills=516
+[HB] t=72.6 paused=false frames=4499 fps_now=63 hp=191 kills=519
+[HB] t=73.6 paused=false frames=4562 fps_now=63 hp=191 kills=530
+[HB] t=74.6 paused=false frames=4625 fps_now=63 hp=193 kills=539
+[AUTOPLAY] t=75 hp=193 lv=10 kills=546 enemies=28 dps=99 grid=5 items=3 wave=3 dist=269 player=(877.2186, 290.1696) enemy=(753.0001, 529.2781) mv=(-0.958139, -0.286302) aim=(-0.470749, 0.882267)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "slime": 28 }
+[HB] t=75.7 paused=false frames=4689 fps_now=64 hp=193 kills=546
+[HB] t=76.7 paused=false frames=4752 fps_now=63 hp=193 kills=556
+[AUTOPLAY] choices: 原生·圣光=-215, 闪光粉=50, 火山核心=238
+[AUTOPLAY] levelup -> 火山核心 score=238
+[AUTOPLAY] levelup -> 火山核心 score=238
+[HB] t=77.7 paused=false frames=4818 fps_now=66 hp=195 kills=579
+[HB] t=78.7 paused=false frames=4881 fps_now=63 hp=195 kills=593
+[HB] t=79.7 paused=false frames=4943 fps_now=62 hp=205 kills=598
+[AUTOPLAY] t=80 hp=205 lv=11 kills=598 enemies=1 dps=99 grid=5 items=4 wave=3 dist=169 player=(512.36, 208.6088) enemy=(639.1674, 319.965) mv=(1.0, 0.0) aim=(0.759813, 0.650141)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "slime_king": 1, "slime_king_hp": "566/600" }
+[HB] t=80.7 paused=false frames=5005 fps_now=62 hp=205 kills=598
+[HB] t=81.7 paused=false frames=5067 fps_now=62 hp=205 kills=598
+[HB] t=82.7 paused=false frames=5130 fps_now=63 hp=205 kills=601
+[HB] t=83.7 paused=false frames=5194 fps_now=64 hp=205 kills=612
+[HB] t=84.7 paused=false frames=5257 fps_now=63 hp=205 kills=624
+[AUTOPLAY] t=85 hp=205 lv=11 kills=624 enemies=1 dps=99 grid=5 items=4 wave=3 dist=151 player=(211.2115, 208.3179) enemy=(307.2898, 325.0365) mv=(1.0, 0.0) aim=(0.646373, 0.763022)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "slime_king": 1, "slime_king_hp": "218/600" }
+[HB] t=85.7 paused=false frames=5318 fps_now=61 hp=205 kills=624
+[HB] t=86.7 paused=false frames=5381 fps_now=63 hp=205 kills=628
+[HB] t=87.8 paused=false frames=5445 fps_now=64 hp=205 kills=638
+[AUTOPLAY] self-heal unpause
+[AUTOPLAY] wand shop handled
+[AUTOPLAY] wand shop handled
+[SPAWNER] setup at run.time=88.5 waves=3
+[AUTOPLAY] wand shop handled
+[SPAWNER] wave 1 active rel=0.0 abs=88.5 level_start=88.5
+[HB] t=88.8 paused=false frames=5507 fps_now=62 hp=205 kills=639
+[HB] t=89.8 paused=false frames=5568 fps_now=61 hp=205 kills=639
+[AUTOPLAY] t=90 hp=205 lv=11 kills=639 enemies=7 dps=107 grid=5 items=4 wave=0 dist=434 player=(716.4702, 400.7845) enemy=(965.3452, 45.0962) mv=(0.882353, 0.470588) aim=(0.579499, -0.814973)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "goblin": 5, "bat": 2 }
+[HB] t=90.8 paused=false frames=5629 fps_now=61 hp=205 kills=639
+[HB] t=91.8 paused=false frames=5691 fps_now=62 hp=199 kills=639
+[HB] t=92.8 paused=false frames=5754 fps_now=63 hp=187 kills=641
+[HB] t=93.8 paused=false frames=5817 fps_now=63 hp=166 kills=642
+[HB] t=94.8 paused=false frames=5880 fps_now=63 hp=154 kills=644
+[AUTOPLAY] t=95 hp=205 lv=11 kills=644 enemies=30 dps=107 grid=5 items=4 wave=0 dist=25 player=(229.2217, 206.3688) enemy=(248.1655, 190.0863) mv=(-1.0, 0.0) aim=(0.696287, -0.717763)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "goblin": 23, "bat": 7 }
+[HB] t=95.9 paused=false frames=5942 fps_now=62 hp=205 kills=646
+[HB] t=96.9 paused=false frames=6007 fps_now=65 hp=205 kills=648
+[HB] t=97.9 paused=false frames=6070 fps_now=63 hp=193 kills=651
+[HB] t=98.9 paused=false frames=6133 fps_now=63 hp=170 kills=653
+[HB] t=99.9 paused=false frames=6196 fps_now=63 hp=158 kills=655
+[AUTOPLAY] t=100 hp=158 lv=11 kills=656 enemies=31 dps=107 grid=5 items=4 wave=0 dist=53 player=(542.981, 674.0476) enemy=(494.5105, 652.3906) mv=(1.0, 0.0) aim=(0.951644, -0.307202)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "goblin": 26, "bat": 5 }
+[HB] t=100.9 paused=false frames=6257 fps_now=61 hp=146 kills=656
+[HB] t=101.9 paused=false frames=6320 fps_now=63 hp=140 kills=661
+[HB] t=102.9 paused=false frames=6383 fps_now=63 hp=140 kills=662
+[HB] t=103.9 paused=false frames=6445 fps_now=62 hp=136 kills=663
+[HB] t=104.9 paused=false frames=6507 fps_now=62 hp=112 kills=665
+[AUTOPLAY] t=105 hp=112 lv=11 kills=665 enemies=31 dps=107 grid=5 items=4 wave=0 dist=101 player=(542.3174, 209.998) enemy=(532.9298, 310.8358) mv=(-1.0, 0.0) aim=(-0.124699, 0.992195)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "goblin": 28, "bat": 3 }
+[HB] t=106.0 paused=false frames=6571 fps_now=64 hp=116 kills=665
+[AUTOPLAY] choices: 冰锥术架=50, 分裂·火柱=22, 纵火狂=120
+[AUTOPLAY] levelup -> 纵火狂 score=120
+[AUTOPLAY] levelup -> 纵火狂 score=120
+[HB] t=107.0 paused=false frames=6634 fps_now=63 hp=205 kills=671
+[HB] t=108.0 paused=false frames=6697 fps_now=63 hp=193 kills=675
+[HB] t=109.0 paused=false frames=6760 fps_now=63 hp=194 kills=676
+[HB] t=110.0 paused=false frames=6823 fps_now=63 hp=194 kills=682
+[AUTOPLAY] t=110 hp=182 lv=12 kills=683 enemies=29 dps=107 grid=5 items=5 wave=0 dist=248 player=(148.0777, 669.802) enemy=(52.93729, 440.9204) mv=(0.866238, -0.499631) aim=(-0.371582, -0.9284)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "goblin": 28, "bat": 1 }
+[HB] t=111.0 paused=false frames=6886 fps_now=63 hp=215 kills=689
+[HB] t=112.0 paused=false frames=6948 fps_now=62 hp=215 kills=692
+[SPAWNER] wave 2 active rel=24.0 abs=112.5 level_start=88.5
+[HB] t=113.0 paused=false frames=7011 fps_now=63 hp=203 kills=694
+[HB] t=114.0 paused=false frames=7073 fps_now=62 hp=208 kills=697
+[HB] t=115.0 paused=false frames=7137 fps_now=64 hp=196 kills=698
+[AUTOPLAY] t=115 hp=196 lv=12 kills=699 enemies=30 dps=107 grid=5 items=5 wave=0 dist=23 player=(1070.176, 695.5236) enemy=(1092.241, 700.618) mv=(1.0, 0.0) aim=(0.98062, 0.195921)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "goblin": 24, "goblin_archer": 4, "ghost": 1, "charger": 1 }
+[HB] t=116.0 paused=false frames=7200 fps_now=63 hp=201 kills=699
+[HB] t=117.1 paused=false frames=7264 fps_now=64 hp=189 kills=703
+[HB] t=118.1 paused=false frames=7327 fps_now=63 hp=187 kills=706
+[HB] t=119.1 paused=false frames=7388 fps_now=61 hp=162 kills=711
+[HB] t=120.1 paused=false frames=7450 fps_now=62 hp=145 kills=712
+[AUTOPLAY] t=120 hp=145 lv=12 kills=712 enemies=31 dps=107 grid=5 items=5 wave=0 dist=143 player=(687.254, 215.1927) enemy=(568.094, 294.1269) mv=(-0.942663, 0.333745) aim=(-0.836399, 0.548122)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "goblin": 29, "ghost": 1, "charger": 1 }
+[HB] t=121.1 paused=false frames=7513 fps_now=63 hp=150 kills=713
+[HB] t=122.1 paused=false frames=7574 fps_now=61 hp=126 kills=713
+[HB] t=123.1 paused=false frames=7637 fps_now=63 hp=131 kills=715
+[HB] t=124.1 paused=false frames=7699 fps_now=62 hp=118 kills=718
+[HB] t=125.1 paused=false frames=7761 fps_now=62 hp=139 kills=718
+[AUTOPLAY] t=125 hp=139 lv=12 kills=718 enemies=32 dps=107 grid=5 items=5 wave=0 dist=148 player=(356.3813, 605.46) enemy=(335.8397, 458.7086) mv=(0.910465, 0.413587) aim=(-0.119973, -0.992777)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "goblin": 30, "ghost": 1, "charger": 1 }
+[HB] t=126.1 paused=false frames=7823 fps_now=62 hp=180 kills=723
+[HB] t=127.1 paused=false frames=7884 fps_now=61 hp=180 kills=724
+[HB] t=128.1 paused=false frames=7947 fps_now=63 hp=173 kills=727
+[HB] t=129.1 paused=false frames=8010 fps_now=63 hp=194 kills=729
+[HB] t=130.1 paused=false frames=8071 fps_now=61 hp=192 kills=731
+[AUTOPLAY] t=130 hp=192 lv=12 kills=731 enemies=30 dps=107 grid=5 items=5 wave=0 dist=159 player=(1256.316, 503.0946) enemy=(1174.577, 366.6428) mv=(0.0, -1.0) aim=(-0.505003, -0.863118)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "goblin": 29, "charger": 1 }
+[HB] t=131.1 paused=false frames=8133 fps_now=62 hp=192 kills=735
+[HB] t=132.1 paused=false frames=8195 fps_now=62 hp=168 kills=736
+[HB] t=133.1 paused=false frames=8257 fps_now=62 hp=169 kills=737
+[HB] t=134.1 paused=false frames=8320 fps_now=63 hp=166 kills=738
+[HB] t=135.2 paused=false frames=8383 fps_now=63 hp=215 kills=742
+[AUTOPLAY] t=135 hp=215 lv=12 kills=742 enemies=30 dps=107 grid=5 items=5 wave=0 dist=16 player=(905.6106, 130.1575) enemy=(919.2301, 138.7316) mv=(-1.0, 0.0) aim=(0.782286, 0.622919)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "goblin": 29, "charger": 1 }
+[AUTOPLAY] choices: 圣盾护佑=110, 风切=110, 分裂·火柱=22
+[AUTOPLAY] levelup -> 圣盾护佑 score=110
+[AUTOPLAY] levelup -> 圣盾护佑 score=110
+[HB] t=136.2 paused=false frames=8445 fps_now=62 hp=215 kills=758
+[HB] t=137.2 paused=false frames=8506 fps_now=61 hp=195 kills=759
+[HB] t=138.2 paused=false frames=8570 fps_now=64 hp=208 kills=762
+[HB] t=139.2 paused=false frames=8631 fps_now=61 hp=200 kills=762
+[SPAWNER] wave 3 active rel=51.0 abs=139.5 level_start=88.5
+[HB] t=140.2 paused=false frames=8693 fps_now=62 hp=202 kills=762
+[AUTOPLAY] t=140 hp=202 lv=13 kills=762 enemies=23 dps=107 grid=5 items=6 wave=0 dist=76 player=(759.3953, 673.0538) enemy=(756.0371, 597.407) mv=(1.0, 0.0) aim=(-0.931479, -0.363796)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "charger": 2, "goblin": 15, "goblin_archer": 4, "ghost": 2 }
+[HB] t=141.2 paused=false frames=8756 fps_now=63 hp=185 kills=766
+[HB] t=142.2 paused=false frames=8819 fps_now=63 hp=164 kills=766
+[HB] t=143.2 paused=false frames=8880 fps_now=61 hp=161 kills=767
+[HB] t=144.2 paused=false frames=8942 fps_now=62 hp=140 kills=768
+[HB] t=145.2 paused=false frames=9003 fps_now=61 hp=194 kills=768
+[AUTOPLAY] t=145 hp=194 lv=13 kills=768 enemies=32 dps=107 grid=5 items=6 wave=0 dist=130 player=(967.5804, 209.7386) enemy=(1019.774, 328.5914) mv=(-1.0, 0.0) aim=(0.380246, 0.924885)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "goblin": 24, "goblin_archer": 6, "ghost": 1, "charger": 1 }
+[HB] t=146.2 paused=false frames=9067 fps_now=64 hp=174 kills=772
+[HB] t=147.2 paused=false frames=9130 fps_now=63 hp=174 kills=774
+[HB] t=148.3 paused=false frames=9192 fps_now=62 hp=174 kills=778
+[HB] t=149.3 paused=false frames=9256 fps_now=64 hp=174 kills=778
+[AUTOPLAY] t=150 hp=225 lv=13 kills=786 enemies=26 dps=107 grid=5 items=6 wave=0 dist=132 player=(596.7536, 536.1838) enemy=(648.1413, 414.0572) mv=(-0.998497, -0.054809) aim=(0.153236, -0.98819)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "goblin": 23, "goblin_archer": 3 }
+[HB] t=150.3 paused=false frames=9320 fps_now=64 hp=225 kills=786
+[HB] t=151.3 paused=false frames=9382 fps_now=62 hp=225 kills=789
+[HB] t=152.3 paused=false frames=9444 fps_now=62 hp=224 kills=790
+[HB] t=153.3 paused=false frames=9508 fps_now=64 hp=224 kills=791
+[HB] t=154.3 paused=false frames=9570 fps_now=62 hp=216 kills=792
+[AUTOPLAY] t=155 hp=225 lv=13 kills=793 enemies=31 dps=107 grid=5 items=6 wave=0 dist=77 player=(1228.449, 239.5499) enemy=(1153.465, 258.6974) mv=(-0.168066, -0.985776) aim=(-0.549835, 0.835273)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "goblin": 28, "goblin_archer": 3 }
+[HB] t=155.3 paused=false frames=9633 fps_now=63 hp=225 kills=793
+[HB] t=156.3 paused=false frames=9695 fps_now=62 hp=217 kills=794
+[HB] t=157.3 paused=false frames=9757 fps_now=62 hp=211 kills=795
+[HB] t=158.3 paused=false frames=9820 fps_now=63 hp=211 kills=798
+[HB] t=159.3 paused=false frames=9881 fps_now=61 hp=222 kills=799
+[AUTOPLAY] t=160 hp=222 lv=13 kills=802 enemies=29 dps=107 grid=5 items=6 wave=0 dist=111 player=(500.8789, 521.8696) enemy=(495.5313, 411.1071) mv=(0.545934, 0.837828) aim=(0.844668, -0.535291)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "goblin": 26, "goblin_archer": 3 }
+[HB] t=160.4 paused=false frames=9942 fps_now=61 hp=222 kills=802
+[HB] t=161.4 paused=false frames=10005 fps_now=63 hp=214 kills=802
+[HB] t=162.4 paused=false frames=10068 fps_now=63 hp=203 kills=803
+[HB] t=163.4 paused=false frames=10130 fps_now=62 hp=203 kills=806
+[HB] t=164.4 paused=false frames=10192 fps_now=62 hp=225 kills=808
+[AUTOPLAY] t=165 hp=217 lv=13 kills=811 enemies=31 dps=107 grid=5 items=6 wave=0 dist=147 player=(1116.139, 450.2972) enemy=(1220.645, 553.0096) mv=(-0.831567, 0.555425) aim=(-0.831567, 0.555425)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "goblin": 29, "goblin_archer": 2 }
+[HB] t=165.4 paused=false frames=10256 fps_now=64 hp=217 kills=811
+[HB] t=166.4 paused=false frames=10319 fps_now=63 hp=225 kills=812
+[HB] t=167.4 paused=false frames=10381 fps_now=62 hp=225 kills=813
+[HB] t=168.4 paused=false frames=10442 fps_now=61 hp=225 kills=814
+[HB] t=169.4 paused=false frames=10505 fps_now=63 hp=216 kills=815
+[AUTOPLAY] t=170 hp=208 lv=13 kills=822 enemies=21 dps=107 grid=5 items=6 wave=0 dist=112 player=(532.2101, 539.7143) enemy=(472.7168, 444.9207) mv=(0.303638, 0.952787) aim=(0.870652, -0.491899)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "goblin": 19, "goblin_archer": 2 }
+[HB] t=170.4 paused=false frames=10568 fps_now=63 hp=208 kills=822
+[HB] t=171.5 paused=false frames=10629 fps_now=61 hp=220 kills=823
+[AUTOPLAY] choices: 暴击术架=132, 火攻药=178, 延时·火柱=10
+[AUTOPLAY] levelup -> 火攻药 score=178
+[AUTOPLAY] levelup -> 火攻药 score=178
+[HB] t=172.5 paused=false frames=10691 fps_now=62 hp=225 kills=826
+[HB] t=173.5 paused=false frames=10754 fps_now=63 hp=235 kills=832
+[HB] t=174.5 paused=false frames=10818 fps_now=64 hp=227 kills=840
+[AUTOPLAY] t=175 hp=235 lv=14 kills=843 enemies=1 dps=116 grid=5 items=7 wave=0 dist=210 player=(841.3985, 382.5803) enemy=(640.6506, 320.1452) mv=(-0.478482, 0.878098) aim=(-0.966284, -0.25748)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "tree_golem": 1, "tree_golem_hp": "1220/1220" }
+[HB] t=175.5 paused=false frames=10879 fps_now=61 hp=235 kills=843
+[HB] t=176.5 paused=false frames=10942 fps_now=63 hp=235 kills=843
+[HB] t=177.5 paused=false frames=11003 fps_now=61 hp=227 kills=844
+[HB] t=178.5 paused=false frames=11067 fps_now=64 hp=235 kills=847
+[HB] t=179.5 paused=false frames=11130 fps_now=63 hp=214 kills=847
+[AUTOPLAY] t=180 hp=235 lv=14 kills=848 enemies=3 dps=116 grid=5 items=7 wave=0 dist=7 player=(529.6359, 207.8757) enemy=(534.8271, 212.6498) mv=(-1.0, 0.0) aim=(0.787019, 0.616929)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "tree_golem": 1, "tree_golem_hp": "707/1220", "goblin": 2 }
+[HB] t=180.5 paused=false frames=11191 fps_now=61 hp=235 kills=850
+[HB] t=181.5 paused=false frames=11252 fps_now=61 hp=235 kills=850
+[HB] t=182.5 paused=false frames=11313 fps_now=61 hp=220 kills=850
+[HB] t=183.5 paused=false frames=11376 fps_now=63 hp=217 kills=852
+[HB] t=184.6 paused=false frames=11439 fps_now=63 hp=200 kills=853
+[AUTOPLAY] t=185 hp=188 lv=14 kills=853 enemies=1 dps=116 grid=5 items=7 wave=0 dist=150 player=(517.3584, 207.8757) enemy=(632.3448, 304.3419) mv=(1.0, 0.0) aim=(0.756694, 0.653769)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "tree_golem": 1, "tree_golem_hp": "181/1220" }
+[HB] t=185.6 paused=false frames=11501 fps_now=62 hp=188 kills=853
+[AUTOPLAY] self-heal unpause
+[AUTOPLAY] wand shop handled
+[SPAWNER] setup at run.time=186.3 waves=3
+[AUTOPLAY] wand shop handled
+[SPAWNER] wave 1 active rel=0.0 abs=186.3 level_start=186.3
+[HB] t=186.6 paused=false frames=11563 fps_now=62 hp=235 kills=854
+[HB] t=187.6 paused=false frames=11623 fps_now=60 hp=235 kills=854
+[HB] t=188.6 paused=false frames=11683 fps_now=60 hp=235 kills=854
+[HB] t=189.6 paused=false frames=11745 fps_now=62 hp=235 kills=854
+[AUTOPLAY] t=190 hp=235 lv=14 kills=854 enemies=27 dps=124 grid=5 items=7 wave=1 dist=70 player=(453.43, 450.7227) enemy=(386.3192, 468.9255) mv=(-0.983877, -0.178846) aim=(-0.968636, 0.248486)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "skeleton": 18, "ghost": 9 }
+[HB] t=190.6 paused=false frames=11809 fps_now=64 hp=235 kills=854
+[HB] t=191.6 paused=false frames=11870 fps_now=61 hp=235 kills=854
+[HB] t=192.6 paused=false frames=11932 fps_now=62 hp=235 kills=857
+[HB] t=193.6 paused=false frames=11995 fps_now=63 hp=220 kills=858
+[HB] t=194.6 paused=false frames=12056 fps_now=61 hp=235 kills=860
+[AUTOPLAY] t=195 hp=235 lv=14 kills=860 enemies=32 dps=124 grid=5 items=7 wave=1 dist=73 player=(46.57537, 241.8534) enemy=(95.88137, 296.1239) mv=(0.0, 1.0) aim=(0.65059, 0.759429)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "skeleton": 26, "ghost": 6 }
+[HB] t=195.6 paused=false frames=12118 fps_now=62 hp=235 kills=861
+[HB] t=196.6 paused=false frames=12180 fps_now=62 hp=235 kills=864
+[HB] t=197.7 paused=false frames=12245 fps_now=65 hp=235 kills=864
+[HB] t=198.7 paused=false frames=12306 fps_now=61 hp=235 kills=865
+[HB] t=199.7 paused=false frames=12369 fps_now=63 hp=235 kills=866
+[AUTOPLAY] t=200 hp=235 lv=14 kills=867 enemies=31 dps=124 grid=5 items=7 wave=1 dist=65 player=(758.9564, 528.6716) enemy=(795.3585, 474.6453) mv=(0.856427, -0.516267) aim=(0.574894, -0.818228)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "skeleton": 28, "ghost": 3 }
+[HB] t=200.7 paused=false frames=12432 fps_now=63 hp=235 kills=867
+[HB] t=201.7 paused=false frames=12495 fps_now=63 hp=235 kills=868
+[HB] t=202.7 paused=false frames=12557 fps_now=62 hp=235 kills=869
+[HB] t=203.7 paused=false frames=12621 fps_now=64 hp=220 kills=869
+[HB] t=204.7 paused=false frames=12682 fps_now=61 hp=220 kills=870
+[AUTOPLAY] t=205 hp=229 lv=14 kills=870 enemies=32 dps=124 grid=5 items=7 wave=1 dist=87 player=(1146.569, 209.0029) enemy=(1084.68, 270.0911) mv=(-1.0, 0.0) aim=(-0.728911, 0.684608)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "skeleton": 29, "ghost": 3 }
+[HB] t=205.7 paused=false frames=12745 fps_now=63 hp=229 kills=871
+[HB] t=206.7 paused=false frames=12808 fps_now=63 hp=229 kills=873
+[HB] t=207.8 paused=false frames=12872 fps_now=64 hp=206 kills=874
+[HB] t=208.8 paused=false frames=12934 fps_now=62 hp=229 kills=878
+[HB] t=209.8 paused=false frames=12995 fps_now=61 hp=235 kills=878
+[AUTOPLAY] t=210 hp=235 lv=14 kills=878 enemies=26 dps=124 grid=5 items=7 wave=1 dist=165 player=(495.3935, 661.7648) enemy=(442.6122, 505.4135) mv=(0.950758, 0.309933) aim=(-0.304633, -0.95247)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "skeleton": 25, "ghost": 1 }
+[SPAWNER] wave 2 active rel=24.0 abs=210.3 level_start=186.3
+[HB] t=210.8 paused=false frames=13057 fps_now=62 hp=235 kills=879
+[HB] t=211.8 paused=false frames=13118 fps_now=61 hp=235 kills=879
+[HB] t=212.8 paused=false frames=13180 fps_now=62 hp=235 kills=882
+[HB] t=213.8 paused=false frames=13243 fps_now=63 hp=206 kills=882
+[HB] t=214.8 paused=false frames=13305 fps_now=62 hp=218 kills=883
+[AUTOPLAY] t=215 hp=218 lv=14 kills=883 enemies=32 dps=124 grid=5 items=7 wave=2 dist=45 player=(1233.251, 209.9898) enemy=(1233.409, 254.6274) mv=(-0.805031, -0.593233) aim=(0.001516, 0.999999)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "skeleton": 31, "ghost": 1 }
+[HB] t=215.8 paused=false frames=13368 fps_now=63 hp=218 kills=884
+[HB] t=216.8 paused=false frames=13429 fps_now=61 hp=209 kills=885
+[HB] t=217.8 paused=false frames=13490 fps_now=61 hp=209 kills=886
+[HB] t=218.8 paused=false frames=13553 fps_now=63 hp=224 kills=887
+[HB] t=219.9 paused=false frames=13616 fps_now=63 hp=235 kills=893
+[AUTOPLAY] t=220 hp=235 lv=14 kills=893 enemies=28 dps=124 grid=5 items=7 wave=2 dist=138 player=(786.3102, 639.0206) enemy=(772.3018, 501.4438) mv=(0.948823, 0.315809) aim=(-0.079596, -0.996827)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "skeleton": 28 }
+[HB] t=220.9 paused=false frames=13678 fps_now=62 hp=235 kills=893
+[HB] t=221.9 paused=false frames=13741 fps_now=63 hp=235 kills=894
+[HB] t=222.9 paused=false frames=13804 fps_now=63 hp=235 kills=895
+[HB] t=223.9 paused=false frames=13866 fps_now=62 hp=235 kills=897
+[AUTOPLAY] choices: 穿透·火球=42, 不灭之火=170, 军团光环=110
+[AUTOPLAY] levelup -> 不灭之火 score=170
+[AUTOPLAY] levelup -> 不灭之火 score=170
+[HB] t=224.9 paused=false frames=13929 fps_now=63 hp=203 kills=902
+[AUTOPLAY] t=225 hp=203 lv=15 kills=902 enemies=32 dps=124 grid=5 items=8 wave=2 dist=54 player=(1021.741, 165.7321) enemy=(1075.191, 161.4364) mv=(-1.0, 0.0) aim=(0.996362, -0.085221)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "skeleton": 32 }
+[HB] t=225.9 paused=false frames=13990 fps_now=61 hp=219 kills=902
+[HB] t=226.9 paused=false frames=14052 fps_now=62 hp=219 kills=904
+[HB] t=227.9 paused=false frames=14115 fps_now=63 hp=240 kills=905
+[HB] t=228.9 paused=false frames=14179 fps_now=64 hp=245 kills=908
+[HB] t=229.9 paused=false frames=14243 fps_now=64 hp=245 kills=909
+[AUTOPLAY] t=230 hp=245 lv=15 kills=910 enemies=30 dps=124 grid=5 items=8 wave=2 dist=61 player=(1009.876, 672.316) enemy=(949.2924, 675.7255) mv=(1.0, 0.0) aim=(-0.998237, 0.059353)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "skeleton": 30 }
+[HB] t=230.9 paused=false frames=14305 fps_now=62 hp=245 kills=910
+[HB] t=231.9 paused=false frames=14366 fps_now=61 hp=245 kills=911
+[HB] t=233.0 paused=false frames=14428 fps_now=62 hp=245 kills=912
+[HB] t=234.0 paused=false frames=14490 fps_now=62 hp=245 kills=915
+[HB] t=235.0 paused=false frames=14553 fps_now=63 hp=245 kills=916
+[AUTOPLAY] t=235 hp=245 lv=15 kills=917 enemies=30 dps=124 grid=5 items=8 wave=2 dist=94 player=(695.2689, 236.5498) enemy=(680.6656, 329.2008) mv=(-0.920579, 0.390557) aim=(-0.184414, 0.982849)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "skeleton": 30 }
+[HB] t=236.0 paused=false frames=14614 fps_now=61 hp=245 kills=917
+[HB] t=237.0 paused=false frames=14678 fps_now=64 hp=245 kills=918
+[SPAWNER] wave 3 active rel=51.0 abs=237.4 level_start=186.3
+[HB] t=238.0 paused=false frames=14739 fps_now=61 hp=245 kills=918
+[HB] t=239.0 paused=false frames=14800 fps_now=61 hp=245 kills=921
+[HB] t=240.0 paused=false frames=14861 fps_now=61 hp=245 kills=923
+[AUTOPLAY] t=240 hp=245 lv=15 kills=924 enemies=31 dps=124 grid=5 items=8 wave=3 dist=110 player=(1034.356, 623.2023) enemy=(931.1547, 584.0588) mv=(0.817688, -0.575661) aim=(-0.925893, -0.377786)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "skeleton": 31 }
+[HB] t=241.0 paused=false frames=14924 fps_now=63 hp=245 kills=926
+[HB] t=242.0 paused=false frames=14985 fps_now=61 hp=245 kills=928
+[HB] t=243.0 paused=false frames=15049 fps_now=64 hp=245 kills=929
+[HB] t=244.0 paused=false frames=15110 fps_now=61 hp=245 kills=929
+[HB] t=245.1 paused=false frames=15172 fps_now=62 hp=245 kills=932
+[AUTOPLAY] t=245 hp=245 lv=15 kills=932 enemies=32 dps=124 grid=5 items=8 wave=3 dist=121 player=(537.1381, 383.4701) enemy=(518.0186, 503.083) mv=(-0.071832, 0.997417) aim=(-0.155178, 0.987887)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "skeleton": 32 }
+[HB] t=246.1 paused=false frames=15234 fps_now=62 hp=245 kills=932
+[HB] t=247.1 paused=false frames=15297 fps_now=63 hp=245 kills=933
+[HB] t=248.1 paused=false frames=15360 fps_now=63 hp=245 kills=933
+[HB] t=249.1 paused=false frames=15421 fps_now=61 hp=245 kills=935
+[HB] t=250.1 paused=false frames=15483 fps_now=62 hp=245 kills=935
+[AUTOPLAY] t=250 hp=245 lv=15 kills=936 enemies=32 dps=124 grid=5 items=8 wave=3 dist=143 player=(1136.047, 403.2164) enemy=(1014.695, 478.296) mv=(-0.225589, -0.974223) aim=(-0.861747, 0.507338)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "skeleton": 32 }
+[HB] t=251.1 paused=false frames=15547 fps_now=64 hp=245 kills=936
+[HB] t=252.1 paused=false frames=15608 fps_now=61 hp=245 kills=936
+[HB] t=253.1 paused=false frames=15669 fps_now=61 hp=245 kills=937
+[HB] t=254.1 paused=false frames=15730 fps_now=61 hp=245 kills=938
+[HB] t=255.1 paused=false frames=15793 fps_now=63 hp=230 kills=940
+[AUTOPLAY] t=255 hp=230 lv=15 kills=941 enemies=31 dps=124 grid=5 items=8 wave=3 dist=89 player=(327.4769, 287.1782) enemy=(371.0946, 365.2878) mv=(-0.394103, 0.919067) aim=(0.466006, 0.884782)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "skeleton": 31 }
+[HB] t=256.2 paused=false frames=15855 fps_now=62 hp=230 kills=941
+[HB] t=257.2 paused=false frames=15916 fps_now=61 hp=238 kills=941
+[HB] t=258.2 paused=false frames=15979 fps_now=63 hp=209 kills=942
+[HB] t=259.2 paused=false frames=16044 fps_now=65 hp=217 kills=942
+[HB] t=260.2 paused=false frames=16105 fps_now=61 hp=188 kills=942
+[AUTOPLAY] t=260 hp=188 lv=15 kills=942 enemies=32 dps=124 grid=5 items=8 wave=3 dist=16 player=(54.01091, 711.925) enemy=(67.34605, 704.0) mv=(-1.0, 0.0) aim=(0.824685, -0.565593)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "skeleton": 32 }
+[HB] t=261.2 paused=false frames=16167 fps_now=62 hp=159 kills=942
+[HB] t=262.2 paused=false frames=16230 fps_now=63 hp=228 kills=945
+[HB] t=263.2 paused=false frames=16293 fps_now=63 hp=228 kills=945
+[HB] t=264.2 paused=false frames=16355 fps_now=62 hp=213 kills=948
+[HB] t=265.2 paused=false frames=16417 fps_now=62 hp=213 kills=953
+[AUTOPLAY] t=265 hp=213 lv=15 kills=953 enemies=27 dps=124 grid=5 items=8 wave=3 dist=63 player=(332.8809, 700.7382) enemy=(276.1365, 672.7131) mv=(0.911632, -0.411007) aim=(-0.882926, -0.469513)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "skeleton": 27 }
+[HB] t=266.2 paused=false frames=16480 fps_now=63 hp=245 kills=959
+[HB] t=267.2 paused=false frames=16543 fps_now=63 hp=245 kills=964
+[HB] t=268.3 paused=false frames=16606 fps_now=63 hp=245 kills=966
+[HB] t=269.3 paused=false frames=16667 fps_now=61 hp=245 kills=966
+[HB] t=270.3 paused=false frames=16729 fps_now=62 hp=245 kills=968
+[AUTOPLAY] t=270 hp=245 lv=15 kills=972 enemies=8 dps=124 grid=5 items=8 wave=3 dist=142 player=(53.64484, 547.8197) enemy=(171.6129, 469.4362) mv=(0.279641, 0.960105) aim=(0.843993, -0.536355)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "skeleton": 8 }
+[HB] t=271.3 paused=false frames=16792 fps_now=63 hp=245 kills=974
+[HB] t=272.3 paused=false frames=16853 fps_now=61 hp=245 kills=976
+[HB] t=273.3 paused=false frames=16914 fps_now=61 hp=245 kills=976
+[HB] t=274.3 paused=false frames=16977 fps_now=63 hp=245 kills=978
+[HB] t=275.3 paused=false frames=17038 fps_now=61 hp=245 kills=979
+[AUTOPLAY] t=275 hp=245 lv=15 kills=979 enemies=1 dps=124 grid=5 items=8 wave=3 dist=153 player=(697.3145, 452.7376) enemy=(612.5032, 579.5936) mv=(-0.728064, -0.685509) aim=(-0.573461, 0.819233)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "skeleton": 1 }
+[HB] t=276.3 paused=false frames=17101 fps_now=63 hp=245 kills=979
+[HB] t=277.3 paused=false frames=17162 fps_now=61 hp=245 kills=979
+[AUTOPLAY] choices: 召唤精通=50, 薪火相传=1168, 弹射·火球=27
+[AUTOPLAY] levelup -> 薪火相传 score=1168
+[AUTOPLAY] levelup -> 薪火相传 score=1168
+[HB] t=278.3 paused=false frames=17223 fps_now=61 hp=255 kills=980
+[HB] t=279.3 paused=false frames=17284 fps_now=61 hp=255 kills=980
+[HB] t=280.3 paused=false frames=17346 fps_now=62 hp=234 kills=980
+[AUTOPLAY] t=280 hp=234 lv=16 kills=980 enemies=4 dps=240 grid=5 items=9 wave=3 dist=122 player=(540.1613, 208.2678) enemy=(620.8256, 299.5777) mv=(1.0, 0.0) aim=(0.669531, 0.742784)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "skeleton_king": 1, "skeleton_king_hp": "1398/2232", "skeleton": 3 }
+[HB] t=281.4 paused=false frames=17408 fps_now=62 hp=255 kills=983
+[HB] t=282.4 paused=false frames=17471 fps_now=63 hp=246 kills=985
+[AUTOPLAY] self-heal unpause
+[SPAWNER] setup at run.time=283.3 waves=3
+[AUTOPLAY] wand shop handled
+[SPAWNER] wave 1 active rel=0.0 abs=283.3 level_start=283.3
+[HB] t=283.4 paused=false frames=17536 fps_now=65 hp=255 kills=987
+[HB] t=284.4 paused=false frames=17597 fps_now=61 hp=255 kills=987
+[HB] t=285.4 paused=false frames=17658 fps_now=61 hp=255 kills=989
+[AUTOPLAY] t=285 hp=255 lv=16 kills=990 enemies=22 dps=210 grid=5 items=9 wave=0 dist=243 player=(803.2536, 500.2812) enemy=(1018.066, 613.3116) mv=(0.884967, 0.465654) aim=(0.884967, 0.465654)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "imp": 13, "slime": 9 }
+[HB] t=286.4 paused=false frames=17722 fps_now=64 hp=227 kills=994
+[HB] t=287.4 paused=false frames=17787 fps_now=65 hp=246 kills=997
+[HB] t=288.4 paused=false frames=17848 fps_now=61 hp=255 kills=1003
+[HB] t=289.4 paused=false frames=17911 fps_now=63 hp=255 kills=1012
+[HB] t=290.4 paused=false frames=17973 fps_now=62 hp=255 kills=1017
+[AUTOPLAY] t=290 hp=255 lv=16 kills=1017 enemies=32 dps=210 grid=5 items=9 wave=0 dist=115 player=(1258.995, 608.4628) enemy=(1165.256, 541.6154) mv=(0.800744, -0.599007) aim=(-0.536177, -0.844106)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "imp": 21, "slime": 11 }
+[HB] t=291.4 paused=false frames=18036 fps_now=63 hp=245 kills=1023
+[HB] t=292.5 paused=false frames=18100 fps_now=64 hp=255 kills=1029
+[HB] t=293.5 paused=false frames=18163 fps_now=63 hp=245 kills=1038
+[HB] t=294.5 paused=false frames=18226 fps_now=63 hp=245 kills=1049
+[AUTOPLAY] t=295 hp=255 lv=16 kills=1058 enemies=31 dps=210 grid=5 items=9 wave=0 dist=58 player=(708.5355, 181.4975) enemy=(658.2914, 209.8385) mv=(1.0, 0.0) aim=(-0.993323, 0.115364)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "imp": 26, "slime": 5 }
+[HB] t=295.5 paused=false frames=18292 fps_now=66 hp=255 kills=1059
+[HB] t=296.5 paused=false frames=18355 fps_now=63 hp=255 kills=1070
+[HB] t=297.5 paused=false frames=18418 fps_now=63 hp=255 kills=1074
+[HB] t=298.5 paused=false frames=18481 fps_now=63 hp=255 kills=1081
+[HB] t=299.5 paused=false frames=18543 fps_now=62 hp=255 kills=1083
+[AUTOPLAY] t=300 hp=245 lv=16 kills=1087 enemies=32 dps=210 grid=5 items=9 wave=0 dist=135 player=(296.7155, 61.40566) enemy=(423.3391, 108.9745) mv=(-0.828523, 0.559955) aim=(0.936123, 0.351674)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "imp": 29, "slime": 3 }
+[HB] t=300.5 paused=false frames=18606 fps_now=63 hp=245 kills=1087
+[HB] t=301.5 paused=false frames=18669 fps_now=63 hp=255 kills=1092
+[AUTOPLAY] choices: 爆发·旋风刃=-133, 沸腾=180, 生命结晶=100
+[AUTOPLAY] levelup -> 沸腾 score=180
+[AUTOPLAY] levelup -> 沸腾 score=180
+[HB] t=302.5 paused=false frames=18733 fps_now=64 hp=265 kills=1099
+[HB] t=303.5 paused=false frames=18798 fps_now=65 hp=265 kills=1102
+[HB] t=304.6 paused=false frames=18861 fps_now=63 hp=265 kills=1105
+[AUTOPLAY] t=305 hp=255 lv=17 kills=1117 enemies=18 dps=210 grid=5 items=10 wave=0 dist=129 player=(214.1495, 569.2252) enemy=(313.2661, 487.2516) mv=(0.499481, 0.866325) aim=(0.786451, -0.617652)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "slime": 1, "imp": 17 }
+[HB] t=305.6 paused=false frames=18924 fps_now=63 hp=255 kills=1117
+[HB] t=306.6 paused=false frames=18987 fps_now=63 hp=265 kills=1123
+[SPAWNER] wave 2 active rel=24.0 abs=307.3 level_start=283.3
+[HB] t=307.6 paused=false frames=19050 fps_now=63 hp=265 kills=1129
+[HB] t=308.6 paused=false frames=19113 fps_now=63 hp=265 kills=1133
+[HB] t=309.6 paused=false frames=19175 fps_now=62 hp=265 kills=1136
+[AUTOPLAY] t=310 hp=265 lv=17 kills=1137 enemies=31 dps=210 grid=5 items=10 wave=0 dist=118 player=(569.0786, 579.7791) enemy=(665.2253, 648.6702) mv=(-0.051016, -0.998698) aim=(0.825562, 0.564311)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "imp": 17, "ghost": 7, "goblin": 5, "bomber": 2 }
+[HB] t=310.6 paused=false frames=19239 fps_now=64 hp=265 kills=1138
+[HB] t=311.6 paused=false frames=19303 fps_now=64 hp=265 kills=1140
+[HB] t=312.7 paused=false frames=19366 fps_now=63 hp=265 kills=1149
+[HB] t=313.7 paused=false frames=19428 fps_now=62 hp=265 kills=1155
+[HB] t=314.7 paused=false frames=19491 fps_now=63 hp=265 kills=1161
+[AUTOPLAY] t=315 hp=255 lv=17 kills=1165 enemies=29 dps=210 grid=5 items=10 wave=0 dist=79 player=(583.6334, 208.4524) enemy=(525.8702, 262.1245) mv=(-1.0, 0.0) aim=(0.080696, -0.996739)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "imp": 23, "ghost": 5, "goblin": 1 }
+[HB] t=315.7 paused=false frames=19554 fps_now=63 hp=265 kills=1165
+[HB] t=316.7 paused=false frames=19617 fps_now=63 hp=265 kills=1170
+[HB] t=317.7 paused=false frames=19681 fps_now=64 hp=265 kills=1176
+[HB] t=318.7 paused=false frames=19744 fps_now=63 hp=265 kills=1183
+[HB] t=319.7 paused=false frames=19809 fps_now=65 hp=255 kills=1191
+[AUTOPLAY] t=320 hp=265 lv=17 kills=1199 enemies=26 dps=210 grid=5 items=10 wave=0 dist=139 player=(211.2212, 529.1677) enemy=(287.2213, 412.4426) mv=(0.983407, 0.181412) aim=(0.699197, -0.714929)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "goblin": 1, "imp": 25 }
+[HB] t=320.7 paused=false frames=19873 fps_now=64 hp=265 kills=1199
+[HB] t=321.7 paused=false frames=19938 fps_now=65 hp=255 kills=1207
+[AUTOPLAY] choices: 环绕·火球=-40, 火源晶石=110, 燃烧符=110
+[AUTOPLAY] levelup -> 火源晶石 score=110
+[AUTOPLAY] levelup -> 火源晶石 score=110
+[HB] t=322.7 paused=false frames=20001 fps_now=63 hp=265 kills=1211
+[HB] t=323.7 paused=false frames=20065 fps_now=64 hp=275 kills=1215
+[HB] t=324.7 paused=false frames=20129 fps_now=64 hp=275 kills=1219
+[AUTOPLAY] t=325 hp=275 lv=18 kills=1225 enemies=30 dps=210 grid=5 items=11 wave=0 dist=128 player=(914.9579, 627.413) enemy=(840.3513, 523.3827) mv=(0.97803, -0.208465) aim=(-0.564323, -0.825554)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "imp": 30 }
+[HB] t=325.7 paused=false frames=20193 fps_now=64 hp=275 kills=1228
+[HB] t=326.8 paused=false frames=20257 fps_now=64 hp=275 kills=1237
+[HB] t=327.8 paused=false frames=20322 fps_now=65 hp=265 kills=1242
+[HB] t=328.8 paused=false frames=20384 fps_now=62 hp=275 kills=1246
+[HB] t=329.8 paused=false frames=20447 fps_now=63 hp=265 kills=1251
+[AUTOPLAY] t=330 hp=275 lv=18 kills=1253 enemies=32 dps=210 grid=5 items=11 wave=0 dist=228 player=(1193.304, 154.7887) enemy=(1060.816, 340.5428) mv=(-0.580678, 0.814134) aim=(-0.580677, 0.814134)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "imp": 32 }
+[HB] t=330.8 paused=false frames=20510 fps_now=63 hp=275 kills=1253
+[HB] t=331.8 paused=false frames=20573 fps_now=63 hp=275 kills=1261
+[HB] t=332.8 paused=false frames=20637 fps_now=64 hp=275 kills=1268
+[HB] t=333.8 paused=false frames=20701 fps_now=64 hp=275 kills=1275
+[SPAWNER] wave 3 active rel=51.0 abs=334.3 level_start=283.3
+[HB] t=334.8 paused=false frames=20764 fps_now=63 hp=265 kills=1281
+[AUTOPLAY] t=335 hp=275 lv=18 kills=1285 enemies=32 dps=210 grid=5 items=11 wave=0 dist=187 player=(401.3115, 214.3567) enemy=(455.492, 35.20888) mv=(0.289485, -0.957182) aim=(0.289485, -0.957183)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "imp": 16, "goblin_archer": 7, "skeleton": 9 }
+[HB] t=335.8 paused=false frames=20827 fps_now=63 hp=275 kills=1285
+[HB] t=336.8 paused=false frames=20889 fps_now=62 hp=275 kills=1289
+[HB] t=337.8 paused=false frames=20951 fps_now=62 hp=265 kills=1295
+[HB] t=338.8 paused=false frames=21012 fps_now=61 hp=275 kills=1300
+[HB] t=339.8 paused=false frames=21077 fps_now=65 hp=275 kills=1309
+[AUTOPLAY] t=340 hp=275 lv=18 kills=1314 enemies=31 dps=210 grid=5 items=11 wave=0 dist=141 player=(133.8147, 210.1341) enemy=(234.6323, 308.0299) mv=(0.0554, 0.998464) aim=(0.036806, 0.999322)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "imp": 22, "goblin_archer": 4, "skeleton": 5 }
+[HB] t=340.8 paused=false frames=21140 fps_now=63 hp=275 kills=1314
+[HB] t=341.9 paused=false frames=21203 fps_now=63 hp=275 kills=1318
+[HB] t=342.9 paused=false frames=21265 fps_now=62 hp=265 kills=1325
+[AUTOPLAY] choices: 暴击眼镜=180, 爆发·火柱=-1, 暴击攻速=1120
+[AUTOPLAY] levelup -> 暴击攻速 score=1120
+[AUTOPLAY] levelup -> 暴击攻速 score=1120
+[HB] t=343.9 paused=false frames=21327 fps_now=62 hp=275 kills=1328
+[HB] t=344.9 paused=false frames=21389 fps_now=62 hp=285 kills=1331
+[AUTOPLAY] t=345 hp=285 lv=19 kills=1334 enemies=32 dps=210 grid=5 items=12 wave=0 dist=175 player=(162.6127, 533.3769) enemy=(328.4355, 476.166) mv=(0.945319, -0.326147) aim=(0.945319, -0.326147)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "goblin_archer": 1, "skeleton": 2, "imp": 29 }
+[HB] t=345.9 paused=false frames=21454 fps_now=65 hp=277 kills=1336
+[HB] t=346.9 paused=false frames=21516 fps_now=62 hp=285 kills=1341
+[HB] t=347.9 paused=false frames=21579 fps_now=63 hp=285 kills=1343
+[HB] t=348.9 paused=false frames=21645 fps_now=66 hp=257 kills=1353
+[HB] t=349.9 paused=false frames=21709 fps_now=64 hp=285 kills=1359
+[AUTOPLAY] t=350 hp=285 lv=19 kills=1362 enemies=32 dps=210 grid=5 items=12 wave=0 dist=119 player=(775.2455, 643.0175) enemy=(779.6476, 523.9576) mv=(0.98615, 0.165854) aim=(0.052961, -0.998597)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "goblin_archer": 1, "skeleton": 2, "imp": 29 }
+[HB] t=350.9 paused=false frames=21772 fps_now=63 hp=285 kills=1364
+[HB] t=352.0 paused=false frames=21836 fps_now=64 hp=257 kills=1369
+[HB] t=353.0 paused=false frames=21899 fps_now=63 hp=285 kills=1375
+[HB] t=354.0 paused=false frames=21961 fps_now=62 hp=285 kills=1380
+[HB] t=355.0 paused=false frames=22022 fps_now=61 hp=285 kills=1384
+[AUTOPLAY] t=355 hp=285 lv=19 kills=1386 enemies=31 dps=210 grid=5 items=12 wave=0 dist=237 player=(1225.422, 402.153) enemy=(993.8299, 451.5141) mv=(-0.892186, 0.451668) aim=(-0.977271, 0.211992)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "goblin_archer": 1, "skeleton": 2, "imp": 28 }
+[HB] t=356.0 paused=false frames=22085 fps_now=63 hp=285 kills=1386
+[HB] t=357.0 paused=false frames=22149 fps_now=64 hp=285 kills=1394
+[HB] t=358.0 paused=false frames=22212 fps_now=63 hp=285 kills=1398
+[HB] t=359.0 paused=false frames=22277 fps_now=65 hp=275 kills=1407
+[HB] t=360.0 paused=false frames=22339 fps_now=62 hp=275 kills=1411
+[AUTOPLAY] t=360 hp=285 lv=19 kills=1419 enemies=4 dps=210 grid=5 items=12 wave=0 dist=131 player=(641.0143, 188.9206) enemy=(602.6692, 313.9582) mv=(-1.0, 0.0) aim=(-0.315925, 0.948784)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "imp": 4 }
+[HB] t=361.0 paused=false frames=22403 fps_now=64 hp=285 kills=1420
+[HB] t=362.0 paused=false frames=22465 fps_now=62 hp=285 kills=1423
+[HB] t=363.0 paused=false frames=22528 fps_now=63 hp=285 kills=1423
+[HB] t=364.1 paused=false frames=22591 fps_now=63 hp=285 kills=1426
+[HB] t=365.1 paused=false frames=22654 fps_now=63 hp=285 kills=1426
+[AUTOPLAY] t=365 hp=285 lv=19 kills=1426 enemies=4 dps=210 grid=5 items=12 wave=0 dist=114 player=(537.6324, 212.0441) enemy=(632.3719, 275.4417) mv=(-0.072296, -0.997383) aim=(0.677758, 0.735285)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "imp_king": 1, "imp_king_hp": "1390/4957", "imp": 3 }
+[HB] t=366.1 paused=false frames=22718 fps_now=64 hp=275 kills=1429
+[HB] t=367.1 paused=false frames=22780 fps_now=62 hp=285 kills=1429
+[AUTOPLAY] self-heal unpause
+[AUTOPLAY] wand shop handled
+[SPAWNER] setup at run.time=367.4 waves=3
+[AUTOPLAY] wand shop handled
+[SPAWNER] wave 1 active rel=0.0 abs=367.4 level_start=367.4
+[HB] t=368.1 paused=false frames=22844 fps_now=64 hp=285 kills=1430
+[HB] t=369.1 paused=false frames=22905 fps_now=61 hp=285 kills=1430
+[HB] t=370.1 paused=false frames=22966 fps_now=61 hp=285 kills=1430
+[AUTOPLAY] t=370 hp=285 lv=19 kills=1430 enemies=32 dps=237 grid=5 items=12 wave=1 dist=140 player=(419.62, 399.1055) enemy=(406.8409, 538.5236) mv=(0.756422, 0.654084) aim=(0.764089, 0.645111)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "skeleton": 18, "imp": 8, "ghost": 6 }
+[HB] t=371.2 paused=false frames=23027 fps_now=61 hp=285 kills=1430
+[HB] t=372.2 paused=false frames=23092 fps_now=65 hp=285 kills=1434
+[HB] t=373.2 paused=false frames=23154 fps_now=62 hp=285 kills=1439
+[HB] t=374.2 paused=false frames=23216 fps_now=62 hp=285 kills=1441
+[HB] t=375.2 paused=false frames=23278 fps_now=62 hp=239 kills=1441
+[AUTOPLAY] t=375 hp=239 lv=19 kills=1441 enemies=32 dps=237 grid=5 items=12 wave=1 dist=68 player=(250.9732, 674.1918) enemy=(183.3559, 672.3655) mv=(1.0, 0.0) aim=(-0.291978, -0.956425)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "skeleton": 20, "imp": 7, "ghost": 5 }
+[AUTOPLAY] choices: 禁疗领域=60, 连发·火柱=61, 先祖图腾=50
+[AUTOPLAY] levelup -> 连发·火柱 score=61
+[AUTOPLAY] levelup -> 连发·火柱 score=61
+[AUTOPLAY] self-heal unpause
+[AUTOPLAY] spell replace -> slot 2 score=246
+[AUTOPLAY] spell replace -> slot 0 (fallback)
+[HB] t=376.2 paused=false frames=23343 fps_now=65 hp=295 kills=1444
+[HB] t=377.2 paused=false frames=23405 fps_now=62 hp=295 kills=1446
+[HB] t=378.2 paused=false frames=23468 fps_now=63 hp=295 kills=1450
+[HB] t=379.2 paused=false frames=23530 fps_now=62 hp=295 kills=1451
+[HB] t=380.2 paused=false frames=23592 fps_now=62 hp=295 kills=1452
+[AUTOPLAY] t=380 hp=295 lv=20 kills=1453 enemies=31 dps=222 grid=5 items=12 wave=1 dist=33 player=(910.0834, 268.0438) enemy=(924.021, 298.4605) mv=(-0.100842, -0.994902) aim=(-0.446812, 0.894628)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "skeleton": 22, "imp": 5, "ghost": 4 }
+[HB] t=381.2 paused=false frames=23657 fps_now=65 hp=295 kills=1453
+[HB] t=382.3 paused=false frames=23720 fps_now=63 hp=295 kills=1456
+[HB] t=383.3 paused=false frames=23784 fps_now=64 hp=295 kills=1456
+[HB] t=384.3 paused=false frames=23850 fps_now=66 hp=295 kills=1459
+[HB] t=385.3 paused=false frames=23911 fps_now=61 hp=295 kills=1460
+[AUTOPLAY] t=385 hp=295 lv=20 kills=1460 enemies=32 dps=222 grid=5 items=12 wave=1 dist=140 player=(320.5505, 451.812) enemy=(391.5431, 330.7406) mv=(0.717473, -0.696587) aim=(0.730976, -0.682404)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "skeleton": 23, "imp": 5, "ghost": 4 }
+[HB] t=386.3 paused=false frames=23972 fps_now=61 hp=295 kills=1460
+[HB] t=387.3 paused=false frames=24034 fps_now=62 hp=295 kills=1461
+[HB] t=388.3 paused=false frames=24099 fps_now=65 hp=295 kills=1468
+[HB] t=389.3 paused=false frames=24161 fps_now=62 hp=295 kills=1475
+[HB] t=390.3 paused=false frames=24222 fps_now=61 hp=295 kills=1475
+[AUTOPLAY] t=390 hp=295 lv=20 kills=1475 enemies=24 dps=222 grid=5 items=12 wave=1 dist=121 player=(567.2325, 217.9638) enemy=(593.7665, 336.5033) mv=(-0.959865, -0.280463) aim=(0.437077, 0.899424)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "skeleton": 20, "imp": 2, "ghost": 2 }
+[HB] t=391.3 paused=false frames=24283 fps_now=61 hp=295 kills=1475
+[SPAWNER] wave 2 active rel=24.0 abs=391.4 level_start=367.4
+[HB] t=392.3 paused=false frames=24348 fps_now=65 hp=295 kills=1477
+[HB] t=393.3 paused=false frames=24410 fps_now=62 hp=293 kills=1479
+[HB] t=394.3 paused=false frames=24471 fps_now=61 hp=295 kills=1481
+[HB] t=395.4 paused=false frames=24532 fps_now=61 hp=295 kills=1481
+[AUTOPLAY] t=395 hp=295 lv=20 kills=1481 enemies=32 dps=222 grid=5 items=12 wave=2 dist=137 player=(218.6418, 594.558) enemy=(233.2739, 458.6666) mv=(0.825013, 0.565113) aim=(0.091582, -0.995798)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "skeleton": 17, "imp": 2, "ghost": 2, "goblin_archer": 11 }
+[HB] t=396.4 paused=false frames=24593 fps_now=61 hp=295 kills=1481
+[HB] t=397.4 paused=false frames=24657 fps_now=64 hp=295 kills=1482
+[HB] t=398.4 paused=false frames=24721 fps_now=64 hp=295 kills=1487
+[HB] t=399.4 paused=false frames=24784 fps_now=63 hp=284 kills=1490
+[HB] t=400.4 paused=false frames=24846 fps_now=62 hp=295 kills=1493
+[AUTOPLAY] t=400 hp=295 lv=20 kills=1493 enemies=32 dps=222 grid=5 items=12 wave=2 dist=127 player=(649.7734, 261.3643) enemy=(575.0363, 363.866) mv=(-0.743473, -0.668766) aim=(-0.610092, 0.792331)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "skeleton": 12, "imp": 2, "ghost": 2, "goblin_archer": 16 }
+[HB] t=401.4 paused=false frames=24907 fps_now=61 hp=295 kills=1493
+[HB] t=402.4 paused=false frames=24968 fps_now=61 hp=295 kills=1495
+[HB] t=403.4 paused=false frames=25030 fps_now=62 hp=295 kills=1496
+[HB] t=404.4 paused=false frames=25092 fps_now=62 hp=295 kills=1497
+[HB] t=405.5 paused=false frames=25153 fps_now=61 hp=295 kills=1497
+[AUTOPLAY] t=405 hp=295 lv=20 kills=1497 enemies=32 dps=222 grid=5 items=12 wave=2 dist=138 player=(526.8154, 642.8453) enemy=(409.2076, 570.2301) mv=(0.966273, -0.25752) aim=(-0.496854, -0.867834)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "skeleton": 12, "imp": 2, "ghost": 2, "goblin_archer": 16 }
+[HB] t=406.5 paused=false frames=25214 fps_now=61 hp=295 kills=1498
+[HB] t=407.5 paused=false frames=25276 fps_now=62 hp=295 kills=1501
+[HB] t=408.5 paused=false frames=25337 fps_now=61 hp=295 kills=1502
+[HB] t=409.5 paused=false frames=25398 fps_now=61 hp=295 kills=1502
+[HB] t=410.5 paused=false frames=25461 fps_now=63 hp=295 kills=1509
+[AUTOPLAY] t=410 hp=295 lv=20 kills=1509 enemies=25 dps=222 grid=5 items=12 wave=2 dist=124 player=(310.5083, 437.2426) enemy=(430.5299, 407.6915) mv=(-0.101404, 0.994845) aim=(0.933064, -0.359709)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "skeleton": 8, "imp": 2, "ghost": 2, "goblin_archer": 13 }
+[HB] t=411.5 paused=false frames=25522 fps_now=61 hp=295 kills=1509
+[HB] t=412.5 paused=false frames=25583 fps_now=61 hp=295 kills=1509
+[HB] t=413.5 paused=false frames=25644 fps_now=61 hp=293 kills=1511
+[HB] t=414.6 paused=false frames=25705 fps_now=61 hp=295 kills=1512
+[HB] t=415.6 paused=false frames=25766 fps_now=61 hp=295 kills=1512
+[AUTOPLAY] t=415 hp=295 lv=20 kills=1512 enemies=32 dps=222 grid=5 items=12 wave=2 dist=137 player=(717.0286, 315.425) enemy=(681.5806, 448.1989) mv=(-0.76524, -0.643745) aim=(-0.257946, 0.966159)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "skeleton": 8, "imp": 2, "ghost": 2, "goblin_archer": 20 }
+[HB] t=416.6 paused=false frames=25827 fps_now=61 hp=295 kills=1512
+[HB] t=417.6 paused=false frames=25890 fps_now=63 hp=295 kills=1514
+[SPAWNER] wave 3 active rel=51.0 abs=418.4 level_start=367.4
+[HB] t=418.6 paused=false frames=25951 fps_now=61 hp=295 kills=1517
+[HB] t=419.6 paused=false frames=26012 fps_now=61 hp=295 kills=1517
+[HB] t=420.6 paused=false frames=26075 fps_now=63 hp=295 kills=1518
+[AUTOPLAY] t=420 hp=295 lv=20 kills=1518 enemies=32 dps=222 grid=5 items=12 wave=3 dist=133 player=(591.0864, 639.4841) enemy=(484.8394, 558.8652) mv=(0.988957, -0.148201) aim=(-0.78589, -0.618366)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "skeleton": 13, "imp": 2, "ghost": 2, "goblin_archer": 15 }
+[HB] t=421.6 paused=false frames=26136 fps_now=61 hp=295 kills=1519
+[HB] t=422.7 paused=false frames=26199 fps_now=63 hp=295 kills=1520
+[HB] t=423.7 paused=false frames=26260 fps_now=61 hp=295 kills=1521
+[HB] t=424.7 paused=false frames=26322 fps_now=62 hp=295 kills=1522
+[AUTOPLAY] t=425 hp=295 lv=20 kills=1524 enemies=31 dps=222 grid=5 items=12 wave=3 dist=137 player=(384.8622, 300.1615) enemy=(518.8825, 273.4681) mv=(-0.089004, -0.996031) aim=(0.9768, 0.214152)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "skeleton": 15, "imp": 2, "ghost": 1, "goblin_archer": 13 }
+[HB] t=425.7 paused=false frames=26385 fps_now=63 hp=295 kills=1524
+[HB] t=426.7 paused=false frames=26449 fps_now=64 hp=282 kills=1524
+[HB] t=427.7 paused=false frames=26511 fps_now=62 hp=295 kills=1525
+[HB] t=428.7 paused=false frames=26572 fps_now=61 hp=295 kills=1525
+[HB] t=429.7 paused=false frames=26633 fps_now=61 hp=295 kills=1526
+[AUTOPLAY] t=430 hp=295 lv=20 kills=1527 enemies=32 dps=222 grid=5 items=12 wave=3 dist=16 player=(875.6018, 436.5486) enemy=(859.3185, 436.2545) mv=(0.987256, 0.159138) aim=(-0.909095, 0.416589)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "skeleton": 16, "imp": 2, "ghost": 1, "goblin_archer": 13 }
+[HB] t=430.7 paused=false frames=26697 fps_now=64 hp=295 kills=1527
+[HB] t=431.7 paused=false frames=26762 fps_now=65 hp=295 kills=1528
+[HB] t=432.8 paused=false frames=26823 fps_now=61 hp=295 kills=1528
+[HB] t=433.8 paused=false frames=26884 fps_now=61 hp=295 kills=1529
+[HB] t=434.8 paused=false frames=26947 fps_now=63 hp=295 kills=1535
+[AUTOPLAY] t=435 hp=295 lv=20 kills=1535 enemies=32 dps=222 grid=5 items=12 wave=3 dist=120 player=(449.0873, 531.1231) enemy=(505.6237, 424.8245) mv=(0.54969, 0.835369) aim=(0.582524, -0.812813)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "skeleton": 19, "imp": 2, "ghost": 1, "goblin_archer": 10 }
+[HB] t=435.8 paused=false frames=27008 fps_now=61 hp=295 kills=1535
+[HB] t=436.8 paused=false frames=27069 fps_now=61 hp=295 kills=1535
+[HB] t=437.8 paused=false frames=27134 fps_now=65 hp=295 kills=1536
+[HB] t=438.8 paused=false frames=27196 fps_now=62 hp=295 kills=1538
+[HB] t=439.8 paused=false frames=27257 fps_now=61 hp=295 kills=1540
+[AUTOPLAY] t=440 hp=295 lv=20 kills=1540 enemies=32 dps=222 grid=5 items=12 wave=3 dist=140 player=(802.0262, 240.1389) enemy=(825.5649, 378.1099) mv=(-0.900379, -0.435106) aim=(0.005981, 0.999982)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "skeleton": 19, "imp": 2, "ghost": 1, "goblin_archer": 10 }
+[HB] t=440.8 paused=false frames=27318 fps_now=61 hp=295 kills=1540
+[HB] t=441.8 paused=false frames=27380 fps_now=62 hp=295 kills=1540
+[HB] t=442.9 paused=false frames=27442 fps_now=62 hp=295 kills=1542
+[HB] t=443.9 paused=false frames=27504 fps_now=62 hp=295 kills=1543
+[HB] t=444.9 paused=false frames=27565 fps_now=61 hp=295 kills=1544
+[AUTOPLAY] t=445 hp=295 lv=20 kills=1544 enemies=32 dps=222 grid=5 items=12 wave=3 dist=129 player=(664.4246, 652.5137) enemy=(584.7034, 550.9731) mv=(0.99784, -0.065687) aim=(-0.617639, -0.786462)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "skeleton": 19, "imp": 2, "ghost": 1, "goblin_archer": 10 }
+[HB] t=445.9 paused=false frames=27626 fps_now=61 hp=295 kills=1544
+[HB] t=446.9 paused=false frames=27689 fps_now=63 hp=295 kills=1544
+[HB] t=447.9 paused=false frames=27750 fps_now=61 hp=295 kills=1544
+[HB] t=448.9 paused=false frames=27814 fps_now=64 hp=295 kills=1547
+[HB] t=449.9 paused=false frames=27875 fps_now=61 hp=295 kills=1547
+[AUTOPLAY] t=450 hp=295 lv=20 kills=1548 enemies=28 dps=222 grid=5 items=12 wave=3 dist=136 player=(671.4644, 218.5371) enemy=(784.4229, 293.8837) mv=(-0.940112, 0.340866) aim=(0.624635, 0.780917)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "skeleton": 15, "imp": 2, "ghost": 1, "goblin_archer": 10 }
+[HB] t=450.9 paused=false frames=27937 fps_now=62 hp=295 kills=1548
+[HB] t=451.9 paused=false frames=27999 fps_now=62 hp=295 kills=1548
+[HB] t=453.0 paused=false frames=28064 fps_now=65 hp=295 kills=1549
+[HB] t=454.0 paused=false frames=28125 fps_now=61 hp=295 kills=1549
+[HB] t=455.0 paused=false frames=28186 fps_now=61 hp=295 kills=1549
+[AUTOPLAY] t=455 hp=295 lv=20 kills=1549 enemies=27 dps=222 grid=5 items=12 wave=3 dist=122 player=(853.1633, 541.0852) enemy=(734.1302, 513.5074) mv=(0.525243, -0.850952) aim=(-0.988595, -0.150598)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "skeleton": 14, "imp": 2, "ghost": 1, "goblin_archer": 10 }
+[HB] t=456.0 paused=false frames=28247 fps_now=61 hp=295 kills=1549
+[HB] t=457.0 paused=false frames=28308 fps_now=61 hp=295 kills=1549
+[HB] t=458.0 paused=false frames=28369 fps_now=61 hp=295 kills=1549
+[HB] t=459.1 paused=false frames=28430 fps_now=61 hp=295 kills=1549
+[HB] t=460.1 paused=false frames=28493 fps_now=63 hp=295 kills=1552
+[AUTOPLAY] choices: 恶咒术架=192, 沸腾=180, 分裂·火柱=22
+[AUTOPLAY] levelup -> 恶咒术架 score=192
+[AUTOPLAY] levelup -> 恶咒术架 score=192
+[AUTOPLAY] t=460 hp=305 lv=21 kills=1569 enemies=8 dps=231 grid=5 items=13 wave=3 dist=85 player=(485.2589, 420.7089) enemy=(557.5926, 375.6301) mv=(-0.381875, -0.924214) aim=(0.821368, -0.570398)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "skeleton": 6, "goblin_archer": 1, "ancient_guardian": 1, "ancient_guardian_hp": "11231/11231" }
+[HB] t=461.1 paused=false frames=28556 fps_now=63 hp=305 kills=1570
+[HB] t=462.1 paused=false frames=28619 fps_now=63 hp=305 kills=1574
+[HB] t=463.1 paused=false frames=28682 fps_now=63 hp=305 kills=1575
+[HB] t=464.1 paused=false frames=28745 fps_now=63 hp=305 kills=1576
+[HB] t=465.1 paused=false frames=28806 fps_now=61 hp=264 kills=1576
+[AUTOPLAY] t=465 hp=264 lv=21 kills=1576 enemies=1 dps=231 grid=5 items=13 wave=3 dist=148 player=(363.0212, 208.1594) enemy=(505.0605, 249.3638) mv=(-1.0, 0.0) aim=(0.9621, 0.272697)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "ancient_guardian": 1, "ancient_guardian_hp": "11231/11231" }
+[HB] t=466.1 paused=false frames=28867 fps_now=61 hp=223 kills=1576
+[HB] t=467.2 paused=false frames=28928 fps_now=61 hp=141 kills=1576
+[HB] t=468.2 paused=false frames=28989 fps_now=61 hp=141 kills=1576
+[HB] t=469.2 paused=false frames=29050 fps_now=61 hp=141 kills=1576
+[HB] t=470.2 paused=false frames=29111 fps_now=61 hp=141 kills=1576
+[AUTOPLAY] t=470 hp=141 lv=21 kills=1576 enemies=1 dps=231 grid=5 items=13 wave=3 dist=338 player=(167.5183, 207.9828) enemy=(502.881, 249.0665) mv=(-0.121596, 0.99258) aim=(0.993731, 0.111798)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "ancient_guardian": 1, "ancient_guardian_hp": "11231/11231" }
+[HB] t=471.2 paused=false frames=29172 fps_now=61 hp=100 kills=1576
+[HB] t=472.2 paused=false frames=29233 fps_now=61 hp=100 kills=1576
+[HB] t=473.3 paused=false frames=29294 fps_now=61 hp=100 kills=1576
+[HB] t=474.3 paused=false frames=29355 fps_now=61 hp=100 kills=1576
+[HB] t=475.3 paused=false frames=29416 fps_now=61 hp=100 kills=1576
+[AUTOPLAY] t=475 hp=100 lv=21 kills=1576 enemies=1 dps=231 grid=5 items=13 wave=3 dist=340 player=(162.7265, 212.6087) enemy=(500.6966, 248.8048) mv=(0.10649, -0.994314) aim=(0.993222, 0.116235)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "ancient_guardian": 1, "ancient_guardian_hp": "11231/11231" }
+[HB] t=476.3 paused=false frames=29477 fps_now=61 hp=100 kills=1576
+[HB] t=477.3 paused=false frames=29540 fps_now=63 hp=113 kills=1576
+[HB] t=478.3 paused=false frames=29601 fps_now=61 hp=113 kills=1576
+[HB] t=479.4 paused=false frames=29662 fps_now=61 hp=113 kills=1576
+[HB] t=480.4 paused=false frames=29723 fps_now=61 hp=113 kills=1576
+[AUTOPLAY] t=480 hp=72 lv=21 kills=1576 enemies=1 dps=231 grid=5 items=13 wave=3 dist=278 player=(47.74315, 357.4352) enemy=(186.8841, 117.2807) mv=(0.0, 1.0) aim=(0.496153, -0.868235)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "ancient_guardian": 1, "ancient_guardian_hp": "10891/11231" }
+[HB] t=481.4 paused=false frames=29784 fps_now=61 hp=31 kills=1576
+[HB] t=482.4 paused=false frames=29845 fps_now=61 hp=6 kills=1576
+[HB] t=483.4 paused=false frames=29906 fps_now=61 hp=6 kills=1576
+[HB] t=484.4 paused=false frames=29967 fps_now=61 hp=6 kills=1576
+[HB] t=485.5 paused=false frames=30028 fps_now=61 hp=6 kills=1576
+[AUTOPLAY] t=485 hp=6 lv=21 kills=1576 enemies=1 dps=231 grid=5 items=13 wave=3 dist=288 player=(47.74315, 371.4348) enemy=(185.7846, 119.1863) mv=(0.0, -1.0) aim=(0.493044, -0.870004)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "ancient_guardian": 1, "ancient_guardian_hp": "10891/11231" }
+[HB] t=486.5 paused=false frames=30089 fps_now=61 hp=6 kills=1576
+[HB] t=487.5 paused=false frames=30150 fps_now=61 hp=6 kills=1576
+[HB] t=488.5 paused=false frames=30211 fps_now=61 hp=6 kills=1576
+[HB] t=489.5 paused=false frames=30272 fps_now=61 hp=6 kills=1576
+[HB] t=490.5 paused=false frames=30335 fps_now=63 hp=21 kills=1576
+[AUTOPLAY] t=490 hp=21 lv=21 kills=1576 enemies=1 dps=231 grid=5 items=13 wave=3 dist=220 player=(204.8119, 208.8464) enemy=(48.2949, 363.8161) mv=(1.0, 0.0) aim=(-0.702997, 0.711193)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "ancient_guardian": 1, "ancient_guardian_hp": "10891/11231" }
+[HB] t=491.6 paused=false frames=30396 fps_now=61 hp=6 kills=1576
+[HB] t=492.6 paused=false frames=30457 fps_now=61 hp=6 kills=1576
+[HB] t=493.6 paused=false frames=30518 fps_now=61 hp=6 kills=1576
+[HB] t=494.6 paused=false frames=30579 fps_now=61 hp=6 kills=1576
+[HB] t=495.6 paused=false frames=30640 fps_now=61 hp=6 kills=1576
+[AUTOPLAY] t=495 hp=6 lv=21 kills=1576 enemies=1 dps=231 grid=5 items=13 wave=3 dist=300 player=(49.85269, 665.495) enemy=(48.57182, 365.9819) mv=(-0.999991, 0.004276) aim=(0.006853, -0.999977)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "ancient_guardian": 1, "ancient_guardian_hp": "10891/11231" }
+[HB] t=496.6 paused=false frames=30701 fps_now=61 hp=6 kills=1576
+[HB] t=497.7 paused=false frames=30762 fps_now=61 hp=6 kills=1576
+[HB] t=498.7 paused=false frames=30823 fps_now=61 hp=6 kills=1576
+[HB] t=499.7 paused=false frames=30884 fps_now=61 hp=16 kills=1576
+[HB] t=500.7 paused=false frames=30945 fps_now=61 hp=16 kills=1576
+[AUTOPLAY] t=500 hp=16 lv=21 kills=1576 enemies=1 dps=231 grid=5 items=13 wave=3 dist=283 player=(208.0472, 426.7625) enemy=(24.23719, 641.7543) mv=(0.760075, 0.649836) aim=(-0.640833, 0.76768)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "ancient_guardian": 1, "ancient_guardian_hp": "10619/11231" }
+[HB] t=501.7 paused=false frames=31006 fps_now=61 hp=16 kills=1576
+[HB] t=502.7 paused=false frames=31067 fps_now=61 hp=16 kills=1576
+[HB] t=503.7 paused=false frames=31128 fps_now=61 hp=16 kills=1576
+[HB] t=504.8 paused=false frames=31189 fps_now=61 hp=16 kills=1576
+[HB] t=505.8 paused=false frames=31250 fps_now=61 hp=6 kills=1576
+[AUTOPLAY] t=505 hp=6 lv=21 kills=1576 enemies=1 dps=231 grid=5 items=13 wave=3 dist=282 player=(306.3479, 672.9262) enemy=(26.22777, 640.9934) mv=(0.113263, -0.993565) aim=(-0.994827, -0.101583)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "ancient_guardian": 1, "ancient_guardian_hp": "10619/11231" }
+[HB] t=506.8 paused=false frames=31311 fps_now=61 hp=6 kills=1576
+[HB] t=507.8 paused=false frames=31374 fps_now=63 hp=65 kills=1576
+[HB] t=508.8 paused=false frames=31435 fps_now=61 hp=65 kills=1576
+[HB] t=509.8 paused=false frames=31496 fps_now=61 hp=65 kills=1576
+[HB] t=510.9 paused=false frames=31557 fps_now=61 hp=65 kills=1576
+[AUTOPLAY] t=510 hp=65 lv=21 kills=1576 enemies=1 dps=231 grid=5 items=13 wave=3 dist=299 player=(571.2762, 535.9083) enemy=(305.1514, 671.736) mv=(0.454602, 0.890694) aim=(-0.885567, 0.464511)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "ancient_guardian": 1, "ancient_guardian_hp": "8853/11231" }
+[HB] t=511.9 paused=false frames=31618 fps_now=61 hp=65 kills=1576
+[HB] t=512.9 paused=false frames=31679 fps_now=61 hp=65 kills=1576
+[HB] t=513.9 paused=false frames=31740 fps_now=61 hp=65 kills=1576
+[HB] t=514.9 paused=false frames=31801 fps_now=61 hp=65 kills=1576
+[AUTOPLAY] t=515 hp=65 lv=21 kills=1576 enemies=1 dps=231 grid=5 items=13 wave=3 dist=321 player=(629.3865, 673.3107) enemy=(308.397, 671.3856) mv=(0.005998, -0.999982) aim=(-0.99999, 0.004387)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "ancient_guardian": 1, "ancient_guardian_hp": "8853/11231" }
+[HB] t=515.9 paused=false frames=31862 fps_now=61 hp=65 kills=1576
+[HB] t=517.0 paused=false frames=31923 fps_now=61 hp=65 kills=1576
+[HB] t=518.0 paused=false frames=31984 fps_now=61 hp=65 kills=1576
+[HB] t=519.0 paused=false frames=32045 fps_now=61 hp=65 kills=1576
+[HB] t=520.0 paused=false frames=32106 fps_now=61 hp=65 kills=1576
+[AUTOPLAY] t=520 hp=24 lv=21 kills=1576 enemies=1 dps=231 grid=5 items=13 wave=3 dist=335 player=(645.0914, 668.6932) enemy=(310.597, 671.3787) mv=(0.017201, 0.999852) aim=(-0.999998, -0.001937)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "ancient_guardian": 1, "ancient_guardian_hp": "8853/11231" }
+[HB] t=521.0 paused=false frames=32167 fps_now=61 hp=24 kills=1576
+[HB] t=522.0 paused=false frames=32228 fps_now=61 hp=24 kills=1576
+[HB] t=523.1 paused=false frames=32289 fps_now=61 hp=24 kills=1576
+[HB] t=524.1 paused=false frames=32350 fps_now=61 hp=24 kills=1576
+[HB] t=525.1 paused=false frames=32412 fps_now=62 hp=18 kills=1576
+[AUTOPLAY] t=525 hp=18 lv=21 kills=1576 enemies=1 dps=231 grid=5 items=13 wave=3 dist=284 player=(934.6095, 671.9451) enemy=(650.6493, 675.2838) mv=(0.025186, 0.999683) aim=(-1.0, 0.000019)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "ancient_guardian": 1, "ancient_guardian_hp": "8853/11231" }
+[HB] t=526.1 paused=false frames=32473 fps_now=61 hp=18 kills=1576
+[HB] t=527.1 paused=false frames=32534 fps_now=61 hp=6 kills=1576
+[HB] t=528.1 paused=false frames=32595 fps_now=61 hp=6 kills=1576
+[HB] t=529.2 paused=false frames=32656 fps_now=61 hp=6 kills=1576
+[HB] t=530.2 paused=false frames=32717 fps_now=61 hp=6 kills=1576
+[AUTOPLAY] t=530 hp=6 lv=21 kills=1576 enemies=1 dps=231 grid=5 items=13 wave=3 dist=311 player=(963.607, 674.4799) enemy=(652.8172, 675.0067) mv=(-0.001695, -0.999999) aim=(-0.999923, 0.012419)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "ancient_guardian": 1, "ancient_guardian_hp": "8853/11231" }
+[HB] t=531.2 paused=false frames=32778 fps_now=61 hp=6 kills=1576
+[HB] t=532.2 paused=false frames=32840 fps_now=62 hp=16 kills=1576
+[HB] t=533.2 paused=false frames=32901 fps_now=61 hp=16 kills=1576
+[HB] t=534.2 paused=false frames=32962 fps_now=61 hp=6 kills=1576
+[HB] t=535.2 paused=false frames=33023 fps_now=61 hp=6 kills=1576
+[AUTOPLAY] t=535 hp=6 lv=21 kills=1576 enemies=1 dps=231 grid=5 items=13 wave=3 dist=270 player=(1235.368, 669.9916) enemy=(964.981, 670.2364) mv=(0.0, 1.0) aim=(-0.999935, -0.011423)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "ancient_guardian": 1, "ancient_guardian_hp": "8853/11231" }
+[HB] t=536.3 paused=false frames=33084 fps_now=61 hp=6 kills=1576
+[HB] t=537.3 paused=false frames=33145 fps_now=61 hp=6 kills=1576
+[HB] t=538.3 paused=false frames=33206 fps_now=61 hp=6 kills=1576
+[HB] t=539.3 paused=false frames=33267 fps_now=61 hp=6 kills=1576
+[HB] t=540.3 paused=false frames=33328 fps_now=61 hp=6 kills=1576
+[AUTOPLAY] t=540 hp=6 lv=21 kills=1576 enemies=1 dps=231 grid=5 items=13 wave=3 dist=276 player=(1243.052, 672.1191) enemy=(967.1808, 670.2615) mv=(0.006733, -0.999977) aim=(-0.999986, 0.005349)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "ancient_guardian": 1, "ancient_guardian_hp": "8853/11231" }
+[HB] t=541.3 paused=false frames=33389 fps_now=61 hp=6 kills=1576
+[HB] t=542.4 paused=false frames=33450 fps_now=61 hp=6 kills=1576
+[HB] t=543.4 paused=false frames=33511 fps_now=61 hp=6 kills=1576
+[HB] t=544.4 paused=false frames=33574 fps_now=63 hp=31 kills=1576
+[HB] t=545.4 paused=false frames=33635 fps_now=61 hp=31 kills=1576
+[AUTOPLAY] t=545 hp=31 lv=21 kills=1576 enemies=1 dps=231 grid=5 items=13 wave=3 dist=282 player=(1235.222, 390.519) enemy=(1244.497, 672.4247) mv=(-0.999459, 0.032881) aim=(0.04469, 0.999001)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "ancient_guardian": 1, "ancient_guardian_hp": "8043/11231" }
+[HB] t=546.4 paused=false frames=33696 fps_now=61 hp=6 kills=1576
+[HB] t=547.4 paused=false frames=33757 fps_now=61 hp=6 kills=1576
+[HB] t=548.4 paused=false frames=33818 fps_now=61 hp=6 kills=1576
+[HB] t=549.5 paused=false frames=33879 fps_now=61 hp=6 kills=1576
+[HB] t=550.5 paused=false frames=33940 fps_now=61 hp=6 kills=1576
+[AUTOPLAY] t=550 hp=6 lv=21 kills=1576 enemies=1 dps=231 grid=5 items=13 wave=3 dist=306 player=(1234.259, 364.6356) enemy=(1244.427, 670.2259) mv=(-0.999447, 0.033253) aim=(0.044147, 0.999025)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "ancient_guardian": 1, "ancient_guardian_hp": "8043/11231" }
+[HB] t=551.5 paused=false frames=34001 fps_now=61 hp=6 kills=1576
+[HB] t=552.5 paused=false frames=34062 fps_now=61 hp=6 kills=1576
+[HB] t=553.5 paused=false frames=34123 fps_now=61 hp=6 kills=1576
+[HB] t=554.5 paused=false frames=34185 fps_now=62 hp=36 kills=1576
+[HB] t=555.6 paused=false frames=34246 fps_now=61 hp=36 kills=1576
+[AUTOPLAY] t=555 hp=36 lv=21 kills=1576 enemies=4 dps=231 grid=5 items=13 wave=3 dist=192 player=(1000.612, 138.9621) enemy=(1145.399, 264.7435) mv=(-1.0, -0.0) aim=(0.721085, 0.692847)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "ancient_guardian": 1, "ancient_guardian_hp": "7284/11231", "goblin_archer": 3 }
+[HB] t=556.6 paused=false frames=34307 fps_now=61 hp=36 kills=1576
+[HB] t=557.6 paused=false frames=34368 fps_now=61 hp=36 kills=1576
+[HB] t=558.6 paused=false frames=34429 fps_now=61 hp=36 kills=1576
+[HB] t=559.6 paused=false frames=34490 fps_now=61 hp=36 kills=1576
+[HB] t=560.6 paused=false frames=34551 fps_now=61 hp=36 kills=1576
+[AUTOPLAY] t=560 hp=36 lv=21 kills=1576 enemies=11 dps=231 grid=5 items=13 wave=3 dist=188 player=(523.9471, 138.9621) enemy=(711.3049, 159.1081) mv=(-1.0, -0.0) aim=(0.957091, 0.289787)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "ancient_guardian": 1, "ancient_guardian_hp": "7284/11231", "goblin_archer": 10 }
+[HB] t=561.7 paused=false frames=34612 fps_now=61 hp=36 kills=1576
+[HB] t=562.7 paused=false frames=34673 fps_now=61 hp=36 kills=1576
+[HB] t=563.7 paused=false frames=34734 fps_now=61 hp=36 kills=1576
+[HB] t=564.7 paused=false frames=34795 fps_now=61 hp=36 kills=1576
+[HB] t=565.7 paused=false frames=34856 fps_now=61 hp=36 kills=1576
+[AUTOPLAY] t=566 hp=36 lv=21 kills=1576 enemies=11 dps=231 grid=5 items=13 wave=3 dist=148 player=(138.5435, 434.6528) enemy=(196.7218, 298.4466) mv=(-0.0, 1.0) aim=(0.996806, -0.079857)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "ancient_guardian": 1, "ancient_guardian_hp": "7284/11231", "goblin_archer": 10 }
+[HB] t=566.7 paused=false frames=34917 fps_now=61 hp=36 kills=1576
+[HB] t=567.8 paused=false frames=34978 fps_now=61 hp=36 kills=1576
+[HB] t=568.8 paused=false frames=35039 fps_now=61 hp=36 kills=1576
+[HB] t=569.8 paused=false frames=35100 fps_now=61 hp=36 kills=1576
+[HB] t=570.8 paused=false frames=35163 fps_now=63 hp=29 kills=1576
+[AUTOPLAY] t=571 hp=29 lv=21 kills=1576 enemies=18 dps=231 grid=5 items=13 wave=3 dist=116 player=(658.3194, 650.1434) enemy=(724.2255, 554.7523) mv=(1.0, 0.0) aim=(0.886092, -0.46351)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "ancient_guardian": 1, "ancient_guardian_hp": "7284/11231", "goblin_archer": 17 }
+[HB] t=571.8 paused=false frames=35226 fps_now=63 hp=134 kills=1579
+[HB] t=572.8 paused=false frames=35287 fps_now=61 hp=198 kills=1579
+[HB] t=573.8 paused=false frames=35348 fps_now=61 hp=264 kills=1581
+[HB] t=574.8 paused=false frames=35412 fps_now=64 hp=305 kills=1590
+[HB] t=575.9 paused=false frames=35473 fps_now=61 hp=223 kills=1590
+[AUTOPLAY] t=576 hp=223 lv=21 kills=1590 enemies=4 dps=231 grid=5 items=13 wave=3 dist=129 player=(932.582, 672.4592) enemy=(817.9557, 612.2372) mv=(1.0, 0.0) aim=(-0.999993, -0.003706)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "ancient_guardian": 1, "ancient_guardian_hp": "7148/11231", "goblin_archer": 3 }
+[HB] t=576.9 paused=false frames=35534 fps_now=61 hp=223 kills=1590
+[HB] t=577.9 paused=false frames=35597 fps_now=63 hp=305 kills=1593
+[HB] t=578.9 paused=false frames=35658 fps_now=61 hp=264 kills=1593
+[HB] t=579.9 paused=false frames=35719 fps_now=61 hp=264 kills=1593
+[HB] t=580.9 paused=false frames=35783 fps_now=64 hp=303 kills=1593
+[AUTOPLAY] t=581 hp=305 lv=21 kills=1593 enemies=1 dps=231 grid=5 items=13 wave=3 dist=95 player=(883.9142, 672.4592) enemy=(788.6907, 671.9135) mv=(1.0, 0.0) aim=(-0.999982, -0.005938)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "ancient_guardian": 1, "ancient_guardian_hp": "5029/11231" }
+[HB] t=581.9 paused=false frames=35844 fps_now=61 hp=264 kills=1593
+[HB] t=583.0 paused=false frames=35905 fps_now=61 hp=264 kills=1593
+[HB] t=584.0 paused=false frames=35966 fps_now=61 hp=195 kills=1593
+[HB] t=585.0 paused=false frames=36027 fps_now=61 hp=195 kills=1593
+[HB] t=586.0 paused=false frames=36088 fps_now=61 hp=195 kills=1593
+[AUTOPLAY] t=586 hp=195 lv=21 kills=1593 enemies=1 dps=231 grid=5 items=13 wave=3 dist=148 player=(1084.507, 672.4592) enemy=(936.9398, 672.4592) mv=(1.0, 0.0) aim=(-1.0, 0.0)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "ancient_guardian": 1, "ancient_guardian_hp": "5029/11231" }
+[HB] t=587.0 paused=false frames=36149 fps_now=61 hp=154 kills=1593
+[HB] t=588.0 paused=false frames=36212 fps_now=63 hp=191 kills=1594
+[HB] t=589.0 paused=false frames=36273 fps_now=61 hp=243 kills=1597
+[HB] t=590.1 paused=false frames=36334 fps_now=61 hp=278 kills=1600
+[AUTOPLAY] t=591 hp=305 lv=21 kills=1603 enemies=1 dps=231 grid=5 items=13 wave=3 dist=149 player=(1088.551, 672.4592) enemy=(939.3464, 671.8104) mv=(1.0, 0.0) aim=(-0.999991, -0.004253)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "ancient_guardian": 1, "ancient_guardian_hp": "3020/11231" }
+[HB] t=591.1 paused=false frames=36396 fps_now=62 hp=305 kills=1603
+[HB] t=592.1 paused=false frames=36457 fps_now=61 hp=305 kills=1603
+[HB] t=593.1 paused=false frames=36518 fps_now=61 hp=264 kills=1603
+[HB] t=594.1 paused=false frames=36579 fps_now=61 hp=240 kills=1603
+[HB] t=595.1 paused=false frames=36640 fps_now=61 hp=240 kills=1603
+[AUTOPLAY] t=596 hp=158 lv=21 kills=1603 enemies=1 dps=231 grid=5 items=13 wave=3 dist=150 player=(1237.12, 681.0728) enemy=(1087.492, 671.4983) mv=(0.063858, -0.997959) aim=(-0.996293, -0.086029)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "ancient_guardian": 1, "ancient_guardian_hp": "3020/11231" }
+[HB] t=596.1 paused=false frames=36701 fps_now=61 hp=158 kills=1603
+[HB] t=597.1 paused=false frames=36762 fps_now=61 hp=117 kills=1603
+[HB] t=598.2 paused=false frames=36824 fps_now=62 hp=133 kills=1604
+[HB] t=599.2 paused=false frames=36885 fps_now=61 hp=242 kills=1606
+[HB] t=600.2 paused=false frames=36947 fps_now=62 hp=305 kills=1610
+[AUTOPLAY] t=601 hp=305 lv=21 kills=1610 enemies=1 dps=231 grid=5 items=13 wave=3 dist=146 player=(1233.646, 671.235) enemy=(1088.168, 685.6041) mv=(0.0, 1.0) aim=(-0.99714, 0.075576)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "ancient_guardian": 1, "ancient_guardian_hp": "3020/11231" }
+[HB] t=601.2 paused=false frames=37008 fps_now=61 hp=305 kills=1610
+[HB] t=602.2 paused=false frames=37069 fps_now=61 hp=264 kills=1610
+[HB] t=603.2 paused=false frames=37130 fps_now=61 hp=264 kills=1610
+[HB] t=604.2 paused=false frames=37191 fps_now=61 hp=264 kills=1610
+[HB] t=605.3 paused=false frames=37252 fps_now=61 hp=182 kills=1610
+[AUTOPLAY] t=606 hp=141 lv=21 kills=1610 enemies=1 dps=231 grid=5 items=13 wave=3 dist=143 player=(1233.101, 672.018) enemy=(1090.857, 684.7819) mv=(-0.089373, -0.995998) aim=(-0.993658, 0.112448)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "ancient_guardian": 1, "ancient_guardian_hp": "3020/11231" }
+[HB] t=606.3 paused=false frames=37313 fps_now=61 hp=141 kills=1610
+[HB] t=607.3 paused=false frames=37374 fps_now=61 hp=141 kills=1610
+[HB] t=608.3 paused=false frames=37437 fps_now=63 hp=305 kills=1615
+[HB] t=609.3 paused=false frames=37498 fps_now=61 hp=305 kills=1615
+[HB] t=610.3 paused=false frames=37559 fps_now=61 hp=276 kills=1617
+[AUTOPLAY] t=611 hp=305 lv=21 kills=1617 enemies=1 dps=231 grid=5 items=13 wave=3 dist=123 player=(1232.373, 673.4274) enemy=(1109.118, 680.8857) mv=(-0.060401, -0.998174) aim=(-0.996189, 0.087222)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "ancient_guardian": 1, "ancient_guardian_hp": "2524/11231" }
+[HB] t=611.3 paused=false frames=37620 fps_now=61 hp=305 kills=1617
+[HB] t=612.4 paused=false frames=37681 fps_now=61 hp=236 kills=1617
+[HB] t=613.4 paused=false frames=37742 fps_now=61 hp=289 kills=1617
+[HB] t=614.4 paused=false frames=37803 fps_now=61 hp=289 kills=1617
+[HB] t=615.4 paused=false frames=37864 fps_now=61 hp=289 kills=1617
+[AUTOPLAY] self-heal unpause
+[AUTOPLAY] wand shop handled
+[AUTOPLAY] wand shop handled
+[AUTOPLAY] wand shop handled
+[SPAWNER] setup at run.time=616.0 waves=0
+[AUTOPLAY] final boss now
+[AUTOPLAY] final boss now
+[AUTOPLAY] t=616 hp=305 lv=21 kills=1625 enemies=0 dps=249 grid=5 items=13 wave=0 none
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] {  }
+[HB] t=616.4 paused=false frames=37928 fps_now=64 hp=305 kills=1625
+[HB] t=617.4 paused=false frames=37991 fps_now=63 hp=305 kills=1625
+[HB] t=618.4 paused=false frames=38052 fps_now=61 hp=305 kills=1625
+[HB] t=619.4 paused=false frames=38113 fps_now=61 hp=305 kills=1625
+[HB] t=620.5 paused=false frames=38174 fps_now=61 hp=305 kills=1625
+[AUTOPLAY] t=621 hp=305 lv=21 kills=1625 enemies=1 dps=249 grid=5 items=13 wave=0 dist=152 player=(776.8001, 384.5328) enemy=(639.7602, 319.3242) mv=(-0.598419, 0.801183) aim=(-0.912029, -0.410125)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "final_god": 1, "final_god_hp": "57057/59902" }
+[HB] t=621.5 paused=false frames=38235 fps_now=61 hp=305 kills=1625
+[HB] t=622.5 paused=false frames=38296 fps_now=61 hp=305 kills=1625
+[HB] t=623.5 paused=false frames=38357 fps_now=61 hp=305 kills=1625
+[HB] t=624.5 paused=false frames=38418 fps_now=61 hp=221 kills=1625
+[HB] t=625.5 paused=false frames=38479 fps_now=61 hp=221 kills=1625
+[AUTOPLAY] t=626 hp=221 lv=21 kills=1625 enemies=1 dps=249 grid=5 items=13 wave=0 dist=149 player=(837.5132, 314.4352) enemy=(694.2332, 356.7007) mv=(0.917961, 0.396672) aim=(-0.952771, 0.30369)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "final_god": 1, "final_god_hp": "57057/59902" }
+[HB] t=626.6 paused=false frames=38540 fps_now=61 hp=221 kills=1625
+[HB] t=627.6 paused=false frames=38601 fps_now=61 hp=221 kills=1625
+[HB] t=628.6 paused=false frames=38662 fps_now=61 hp=137 kills=1625
+[HB] t=629.6 paused=false frames=38723 fps_now=61 hp=137 kills=1625
+[HB] t=630.6 paused=false frames=38784 fps_now=61 hp=137 kills=1625
+[AUTOPLAY] t=631 hp=137 lv=21 kills=1625 enemies=1 dps=249 grid=5 items=13 wave=0 dist=281 player=(394.3036, 209.4939) enemy=(652.6937, 321.1732) mv=(1.0, 0.0) aim=(0.916036, 0.401096)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "final_god": 1, "final_god_hp": "57057/59902" }
+[HB] t=631.6 paused=false frames=38845 fps_now=61 hp=137 kills=1625
+[HB] t=632.7 paused=false frames=38906 fps_now=61 hp=137 kills=1625
+[HB] t=633.7 paused=false frames=38967 fps_now=61 hp=53 kills=1625
+[HB] t=634.7 paused=false frames=39028 fps_now=61 hp=53 kills=1625
+[HB] t=635.7 paused=false frames=39089 fps_now=61 hp=6 kills=1625
+[AUTOPLAY] t=636 hp=6 lv=21 kills=1625 enemies=1 dps=249 grid=5 items=13 wave=0 dist=278 player=(325.6372, 209.4939) enemy=(589.0459, 298.3004) mv=(-1.0, 0.0) aim=(0.948798, 0.315884)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "final_god": 1, "final_god_hp": "57057/59902" }
+[HB] t=636.7 paused=false frames=39150 fps_now=61 hp=6 kills=1625
+[HB] t=637.7 paused=false frames=39211 fps_now=61 hp=6 kills=1625
+[HB] t=638.8 paused=false frames=39272 fps_now=61 hp=6 kills=1625
+[HB] t=639.8 paused=false frames=39333 fps_now=61 hp=6 kills=1625
+[HB] t=640.8 paused=false frames=39394 fps_now=61 hp=6 kills=1625
+[AUTOPLAY] t=641 hp=6 lv=21 kills=1625 enemies=1 dps=249 grid=5 items=13 wave=0 dist=295 player=(226.3039, 209.4939) enemy=(513.7188, 277.4645) mv=(1.0, 0.0) aim=(0.971534, 0.236901)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "final_god": 1, "final_god_hp": "57057/59902" }
+[HB] t=641.8 paused=false frames=39455 fps_now=61 hp=6 kills=1625
+[HB] t=642.8 paused=false frames=39516 fps_now=61 hp=6 kills=1625
+[HB] t=643.8 paused=false frames=39577 fps_now=61 hp=6 kills=1625
+[HB] t=644.9 paused=false frames=39638 fps_now=61 hp=6 kills=1625
+[HB] t=645.9 paused=false frames=39699 fps_now=61 hp=6 kills=1625
+[AUTOPLAY] t=646 hp=6 lv=21 kills=1625 enemies=1 dps=249 grid=5 items=13 wave=0 dist=278 player=(129.6372, 209.4939) enemy=(404.009, 255.075) mv=(-1.0, 0.0) aim=(0.986154, 0.165835)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "final_god": 1, "final_god_hp": "57057/59902" }
+[HB] t=646.9 paused=false frames=39760 fps_now=61 hp=6 kills=1625
+[HB] t=647.9 paused=false frames=39821 fps_now=61 hp=6 kills=1625
+[HB] t=648.9 paused=false frames=39882 fps_now=61 hp=6 kills=1625
+[HB] t=649.9 paused=false frames=39943 fps_now=61 hp=6 kills=1625
+[HB] t=651.0 paused=false frames=40004 fps_now=61 hp=6 kills=1625
+[AUTOPLAY] t=651 hp=6 lv=21 kills=1625 enemies=1 dps=249 grid=5 items=13 wave=0 dist=254 player=(38.99525, 209.6716) enemy=(290.7511, 239.5376) mv=(-0.117805, 0.993037) aim=(0.994492, 0.10481)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "final_god": 1, "final_god_hp": "57057/59902" }
+[HB] t=652.0 paused=false frames=40065 fps_now=61 hp=6 kills=1625
+[HB] t=653.0 paused=false frames=40126 fps_now=61 hp=6 kills=1625
+[HB] t=654.0 paused=false frames=40187 fps_now=61 hp=6 kills=1625
+[HB] t=655.0 paused=false frames=40248 fps_now=61 hp=6 kills=1625
+[HB] t=656.0 paused=false frames=40309 fps_now=61 hp=6 kills=1625
+[AUTOPLAY] t=656 hp=6 lv=21 kills=1625 enemies=1 dps=249 grid=5 items=13 wave=0 dist=200 player=(8.066097, 184.2533) enemy=(202.5265, 230.7259) mv=(-0.232437, 0.972611) aim=(0.968855, 0.247629)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "final_god": 1, "final_god_hp": "57057/59902" }
+[HB] t=657.1 paused=false frames=40370 fps_now=61 hp=6 kills=1625
+[HB] t=658.1 paused=false frames=40431 fps_now=61 hp=6 kills=1625
+[HB] t=659.1 paused=false frames=40492 fps_now=61 hp=6 kills=1625
+[HB] t=660.1 paused=false frames=40553 fps_now=61 hp=6 kills=1625
+[HB] t=661.1 paused=false frames=40614 fps_now=61 hp=6 kills=1625
+[AUTOPLAY] t=661 hp=6 lv=21 kills=1625 enemies=1 dps=249 grid=5 items=13 wave=0 dist=124 player=(8.064597, 213.2112) enemy=(131.7411, 223.4075) mv=(0.0, -1.0) aim=(0.994087, 0.108591)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "final_god": 1, "final_god_hp": "57057/59902" }
+[HB] t=662.1 paused=false frames=40675 fps_now=61 hp=6 kills=1625
+[HB] t=663.2 paused=false frames=40739 fps_now=64 hp=91 kills=1625
+[HB] t=664.2 paused=false frames=40800 fps_now=61 hp=103 kills=1625
+[HB] t=665.2 paused=false frames=40861 fps_now=61 hp=103 kills=1625
+[HB] t=666.2 paused=false frames=40922 fps_now=61 hp=19 kills=1625
+[AUTOPLAY] t=666 hp=19 lv=21 kills=1625 enemies=1 dps=249 grid=5 items=13 wave=0 dist=297 player=(102.6958, 473.2801) enemy=(128.5995, 177.0172) mv=(-0.996199, -0.087103) aim=(0.075931, -0.997113)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "final_god": 1, "final_god_hp": "54342/59902" }
+[HB] t=667.2 paused=false frames=40983 fps_now=61 hp=19 kills=1625
+[HB] t=668.2 paused=false frames=41044 fps_now=61 hp=19 kills=1625
+[HB] t=669.2 paused=false frames=41105 fps_now=61 hp=19 kills=1625
+[HB] t=670.3 paused=false frames=41166 fps_now=61 hp=6 kills=1625
+[AUTOPLAY] t=671 hp=6 lv=21 kills=1625 enemies=1 dps=249 grid=5 items=13 wave=0 dist=280 player=(47.0071, 588.6179) enemy=(97.16632, 313.3694) mv=(0.0, 1.0) aim=(0.181397, -0.98341)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "final_god": 1, "final_god_hp": "54342/59902" }
+[HB] t=671.3 paused=false frames=41227 fps_now=61 hp=6 kills=1625
+[HB] t=672.3 paused=false frames=41288 fps_now=61 hp=6 kills=1625
+[HB] t=673.3 paused=false frames=41349 fps_now=61 hp=6 kills=1625
+[HB] t=674.3 paused=false frames=41410 fps_now=61 hp=6 kills=1625
+[HB] t=675.3 paused=false frames=41471 fps_now=61 hp=6 kills=1625
+[AUTOPLAY] t=676 hp=6 lv=21 kills=1625 enemies=1 dps=249 grid=5 items=13 wave=0 dist=278 player=(8.066571, 662.2956) enemy=(84.30141, 395.1898) mv=(0.0, 1.0) aim=(0.271319, -0.96249)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "final_god": 1, "final_god_hp": "54342/59902" }
+[HB] t=676.4 paused=false frames=41532 fps_now=61 hp=6 kills=1625
+[HB] t=677.4 paused=false frames=41593 fps_now=61 hp=6 kills=1625
+[HB] t=678.4 paused=false frames=41654 fps_now=61 hp=6 kills=1625
+[HB] t=679.4 paused=false frames=41715 fps_now=61 hp=6 kills=1625
+[HB] t=680.4 paused=false frames=41776 fps_now=61 hp=6 kills=1625
+[AUTOPLAY] t=681 hp=6 lv=21 kills=1625 enemies=1 dps=249 grid=5 items=13 wave=0 dist=239 player=(50.20606, 711.9321) enemy=(78.7871, 474.5349) mv=(-1.0, 0.0) aim=(0.133117, -0.9911)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "final_god": 1, "final_god_hp": "54342/59902" }
+[HB] t=681.4 paused=false frames=41837 fps_now=61 hp=6 kills=1625
+[HB] t=682.5 paused=false frames=41898 fps_now=61 hp=6 kills=1625
+[HB] t=683.5 paused=false frames=41959 fps_now=61 hp=6 kills=1625
+[HB] t=684.5 paused=false frames=42020 fps_now=61 hp=6 kills=1625
+[HB] t=685.5 paused=false frames=42081 fps_now=61 hp=6 kills=1625
+[AUTOPLAY] t=686 hp=6 lv=21 kills=1625 enemies=1 dps=249 grid=5 items=13 wave=0 dist=176 player=(51.22718, 711.931) enemy=(68.36073, 536.5118) mv=(-1.0, 0.0) aim=(0.11576, -0.993277)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "final_god": 1, "final_god_hp": "54342/59902" }
+[HB] t=686.5 paused=false frames=42142 fps_now=61 hp=6 kills=1625
+[HB] t=687.5 paused=false frames=42203 fps_now=61 hp=12 kills=1625
+[HB] t=688.6 paused=false frames=42268 fps_now=65 hp=166 kills=1625
+[HB] t=689.6 paused=false frames=42329 fps_now=61 hp=82 kills=1625
+[HB] t=690.6 paused=false frames=42390 fps_now=61 hp=82 kills=1625
+[AUTOPLAY] t=691 hp=82 lv=21 kills=1625 enemies=1 dps=249 grid=5 items=13 wave=0 dist=277 player=(358.0562, 679.9741) enemy=(88.51865, 616.6833) mv=(1.0, 0.0) aim=(-0.974137, -0.225957)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "final_god": 1, "final_god_hp": "49860/59902" }
+[HB] t=691.6 paused=false frames=42451 fps_now=61 hp=82 kills=1625
+[HB] t=692.6 paused=false frames=42512 fps_now=61 hp=6 kills=1625
+[HB] t=693.6 paused=false frames=42573 fps_now=61 hp=6 kills=1625
+[HB] t=694.7 paused=false frames=42634 fps_now=61 hp=6 kills=1625
+[HB] t=695.7 paused=false frames=42695 fps_now=61 hp=6 kills=1625
+[AUTOPLAY] t=696 hp=6 lv=21 kills=1625 enemies=1 dps=249 grid=5 items=13 wave=0 dist=282 player=(473.3894, 679.9741) enemy=(195.0648, 637.0488) mv=(-1.0, 0.0) aim=(-0.988035, -0.154229)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "final_god": 1, "final_god_hp": "49860/59902" }
+[HB] t=696.7 paused=false frames=42756 fps_now=61 hp=6 kills=1625
+[HB] t=697.7 paused=false frames=42817 fps_now=61 hp=6 kills=1625
+[HB] t=698.7 paused=false frames=42878 fps_now=61 hp=6 kills=1625
+[HB] t=699.7 paused=false frames=42939 fps_now=61 hp=6 kills=1625
+[HB] t=700.8 paused=false frames=43000 fps_now=61 hp=6 kills=1625
+[AUTOPLAY] t=701 hp=6 lv=21 kills=1625 enemies=1 dps=249 grid=5 items=13 wave=0 dist=281 player=(533.9208, 711.9315) enemy=(261.1742, 644.231) mv=(-1.0, 0.0) aim=(-0.969848, -0.243712)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "final_god": 1, "final_god_hp": "49860/59902" }
+[HB] t=701.8 paused=false frames=43061 fps_now=61 hp=6 kills=1625
+[HB] t=702.8 paused=false frames=43122 fps_now=61 hp=6 kills=1625
+[HB] t=703.8 paused=false frames=43183 fps_now=61 hp=6 kills=1625
+[HB] t=704.8 paused=false frames=43244 fps_now=61 hp=6 kills=1625
+[HB] t=705.8 paused=false frames=43305 fps_now=61 hp=6 kills=1625
+[AUTOPLAY] t=706 hp=6 lv=21 kills=1625 enemies=1 dps=249 grid=5 items=13 wave=0 dist=277 player=(605.2529, 711.9315) enemy=(332.9775, 659.8849) mv=(1.0, 0.0) aim=(-0.982633, -0.185562)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "final_god": 1, "final_god_hp": "49860/59902" }
+[HB] t=706.9 paused=false frames=43366 fps_now=61 hp=6 kills=1625
+[HB] t=707.9 paused=false frames=43427 fps_now=61 hp=6 kills=1625
+[HB] t=708.9 paused=false frames=43488 fps_now=61 hp=6 kills=1625
+[HB] t=709.9 paused=false frames=43549 fps_now=61 hp=6 kills=1625
+[HB] t=710.9 paused=false frames=43610 fps_now=61 hp=6 kills=1625
+[AUTOPLAY] t=711 hp=6 lv=21 kills=1625 enemies=1 dps=249 grid=5 items=13 wave=0 dist=329 player=(750.3781, 675.3331) enemy=(421.7419, 672.944) mv=(0.00727, -0.999974) aim=(-0.999996, 0.002837)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "final_god": 1, "final_god_hp": "49860/59902" }
+[HB] t=711.9 paused=false frames=43671 fps_now=61 hp=6 kills=1625
+[HB] t=713.0 paused=false frames=43732 fps_now=61 hp=6 kills=1625
+[HB] t=714.0 paused=false frames=43793 fps_now=61 hp=6 kills=1625
+[HB] t=715.0 paused=false frames=43854 fps_now=61 hp=6 kills=1625
+[HB] t=716.0 paused=false frames=43915 fps_now=61 hp=6 kills=1625
+[AUTOPLAY] t=716 hp=6 lv=21 kills=1625 enemies=1 dps=249 grid=5 items=13 wave=0 dist=304 player=(861.7098, 672.4896) enemy=(557.5948, 670.6133) mv=(0.00617, -0.999981) aim=(-0.999989, 0.004791)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "final_god": 1, "final_god_hp": "49860/59902" }
+[HB] t=717.0 paused=false frames=43976 fps_now=61 hp=6 kills=1625
+[HB] t=718.0 paused=false frames=44037 fps_now=61 hp=6 kills=1625
+[HB] t=719.1 paused=false frames=44098 fps_now=61 hp=6 kills=1625
+[HB] t=720.1 paused=false frames=44159 fps_now=61 hp=6 kills=1625
+[HB] t=721.1 paused=false frames=44220 fps_now=61 hp=6 kills=1625
+[AUTOPLAY] t=721 hp=6 lv=21 kills=1625 enemies=1 dps=249 grid=5 items=13 wave=0 dist=284 player=(914.8754, 671.4076) enemy=(631.057, 671.3798) mv=(-0.00021, 1.0) aim=(-0.99993, -0.011843)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "final_god": 1, "final_god_hp": "49860/59902" }
+[HB] t=722.1 paused=false frames=44281 fps_now=61 hp=6 kills=1625
+[HB] t=723.1 paused=false frames=44342 fps_now=61 hp=6 kills=1625
+[HB] t=724.1 paused=false frames=44403 fps_now=61 hp=6 kills=1625
+[HB] t=725.2 paused=false frames=44464 fps_now=61 hp=6 kills=1625
+[HB] t=726.2 paused=false frames=44525 fps_now=61 hp=6 kills=1625
+[AUTOPLAY] t=726 hp=6 lv=21 kills=1625 enemies=1 dps=249 grid=5 items=13 wave=0 dist=287 player=(984.0731, 673.5859) enemy=(697.2898, 675.2938) mv=(-0.005955, -0.999982) aim=(-0.999846, 0.017575)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "final_god": 1, "final_god_hp": "49860/59902" }
+[HB] t=727.2 paused=false frames=44586 fps_now=61 hp=6 kills=1625
+[HB] t=728.2 paused=false frames=44647 fps_now=61 hp=6 kills=1625
+[HB] t=729.2 paused=false frames=44708 fps_now=61 hp=6 kills=1625
+[HB] t=730.2 paused=false frames=44769 fps_now=61 hp=6 kills=1625
+[HB] t=731.3 paused=false frames=44830 fps_now=61 hp=6 kills=1625
+[AUTOPLAY] t=731 hp=6 lv=21 kills=1625 enemies=1 dps=249 grid=5 items=13 wave=0 dist=304 player=(1072.308, 671.2159) enemy=(768.4069, 674.2213) mv=(0.021186, 0.999776) aim=(-0.999999, -0.001079)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "final_god": 1, "final_god_hp": "49860/59902" }
+[HB] t=732.3 paused=false frames=44891 fps_now=61 hp=6 kills=1625
+[HB] t=733.3 paused=false frames=44952 fps_now=61 hp=6 kills=1625
+[HB] t=734.3 paused=false frames=45013 fps_now=61 hp=6 kills=1625
+[HB] t=735.3 paused=false frames=45074 fps_now=61 hp=6 kills=1625
+[HB] t=736.3 paused=false frames=45135 fps_now=61 hp=6 kills=1625
+[AUTOPLAY] t=736 hp=6 lv=21 kills=1625 enemies=1 dps=249 grid=5 items=13 wave=0 dist=281 player=(1169.665, 675.3251) enemy=(888.5688, 673.7599) mv=(0.005568, -0.999985) aim=(-0.999984, -0.005634)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "final_god": 1, "final_god_hp": "49860/59902" }
+[HB] t=737.4 paused=false frames=45196 fps_now=61 hp=6 kills=1625
+[HB] t=738.4 paused=false frames=45257 fps_now=61 hp=6 kills=1625
+[HB] t=739.4 paused=false frames=45318 fps_now=61 hp=6 kills=1625
+[HB] t=740.4 paused=false frames=45379 fps_now=61 hp=6 kills=1625
+[HB] t=741.4 paused=false frames=45440 fps_now=61 hp=6 kills=1625
+[AUTOPLAY] t=741 hp=6 lv=21 kills=1625 enemies=1 dps=249 grid=5 items=13 wave=0 dist=251 player=(1235.983, 668.7808) enemy=(985.3976, 672.951) mv=(0.0, 1.0) aim=(-0.999994, 0.00334)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "final_god": 1, "final_god_hp": "49860/59902" }
+[HB] t=742.4 paused=false frames=45501 fps_now=61 hp=6 kills=1625
+[HB] t=743.5 paused=false frames=45562 fps_now=61 hp=6 kills=1625
+[HB] t=744.5 paused=false frames=45623 fps_now=61 hp=6 kills=1625
+[HB] t=745.5 paused=false frames=45684 fps_now=61 hp=6 kills=1625
+[AUTOPLAY] t=746 hp=6 lv=21 kills=1625 enemies=1 dps=249 grid=5 items=13 wave=0 dist=188 player=(1236.366, 672.2109) enemy=(1048.16, 675.3845) mv=(-0.01686, -0.999858) aim=(-0.999403, 0.034552)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "final_god": 1, "final_god_hp": "49860/59902" }
+[HB] t=746.5 paused=false frames=45745 fps_now=61 hp=6 kills=1625
+[HB] t=747.5 paused=false frames=45806 fps_now=61 hp=6 kills=1625
+[HB] t=748.5 paused=false frames=45867 fps_now=61 hp=6 kills=1625
+[HB] t=749.5 paused=false frames=45930 fps_now=63 hp=56 kills=1625
+[HB] t=750.6 paused=false frames=45991 fps_now=61 hp=6 kills=1625
+[AUTOPLAY] t=751 hp=6 lv=21 kills=1625 enemies=1 dps=249 grid=5 items=13 wave=0 dist=119 player=(1236.5, 637.1239) enemy=(1123.708, 676.1283) mv=(-0.0, -1.0) aim=(-0.936217, 0.351422)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "final_god": 1, "final_god_hp": "48439/59902" }
+[HB] t=751.6 paused=false frames=46052 fps_now=61 hp=6 kills=1625
+[HB] t=752.6 paused=false frames=46113 fps_now=61 hp=6 kills=1625
+[HB] t=753.6 paused=false frames=46174 fps_now=61 hp=6 kills=1625
+[HB] t=754.6 paused=false frames=46235 fps_now=61 hp=6 kills=1625
+[HB] t=755.6 paused=false frames=46296 fps_now=61 hp=6 kills=1625
+[AUTOPLAY] t=756 hp=6 lv=21 kills=1625 enemies=1 dps=249 grid=5 items=13 wave=0 dist=282 player=(1236.5, 293.7894) enemy=(1173.434, 568.194) mv=(0.0, 1.0) aim=(-0.22659, 0.97399)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "final_god": 1, "final_god_hp": "48439/59902" }
+[HB] t=756.7 paused=false frames=46357 fps_now=61 hp=6 kills=1625
+[HB] t=757.7 paused=false frames=46418 fps_now=61 hp=6 kills=1625
+[HB] t=758.7 paused=false frames=46479 fps_now=61 hp=6 kills=1625
+[HB] t=759.7 paused=false frames=46540 fps_now=61 hp=6 kills=1625
+[HB] t=760.7 paused=false frames=46601 fps_now=61 hp=6 kills=1625
+[AUTOPLAY] t=761 hp=6 lv=21 kills=1625 enemies=1 dps=249 grid=5 items=13 wave=0 dist=266 player=(1230.553, 199.8572) enemy=(1193.311, 462.7506) mv=(1.0, 0.0) aim=(-0.152683, 0.988275)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "final_god": 1, "final_god_hp": "48439/59902" }
+[HB] t=761.7 paused=false frames=46662 fps_now=61 hp=6 kills=1625
+[HB] t=762.8 paused=false frames=46723 fps_now=61 hp=6 kills=1625
+[HB] t=763.8 paused=false frames=46784 fps_now=61 hp=6 kills=1625
+[HB] t=764.8 paused=false frames=46845 fps_now=61 hp=6 kills=1625
+[HB] t=765.8 paused=false frames=46906 fps_now=61 hp=6 kills=1625
+[AUTOPLAY] t=766 hp=6 lv=21 kills=1625 enemies=1 dps=249 grid=5 items=13 wave=0 dist=236 player=(1172.438, 148.0587) enemy=(1204.633, 381.8873) mv=(1.0, 0.0) aim=(0.100848, 0.994902)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "final_god": 1, "final_god_hp": "48439/59902" }
+[HB] t=766.8 paused=false frames=46967 fps_now=61 hp=6 kills=1625
+[HB] t=767.8 paused=false frames=47028 fps_now=61 hp=6 kills=1625
+[HB] t=768.9 paused=false frames=47089 fps_now=61 hp=6 kills=1625
+[HB] t=769.9 paused=false frames=47150 fps_now=61 hp=6 kills=1625
+[HB] t=770.9 paused=false frames=47211 fps_now=61 hp=6 kills=1625
+[AUTOPLAY] t=771 hp=6 lv=21 kills=1625 enemies=1 dps=249 grid=5 items=13 wave=0 dist=218 player=(1230.052, 90.7523) enemy=(1212.157, 307.6032) mv=(1.0, 0.0) aim=(-0.097501, 0.995235)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "final_god": 1, "final_god_hp": "48439/59902" }
+[HB] t=771.9 paused=false frames=47272 fps_now=61 hp=6 kills=1625
+[HB] t=772.9 paused=false frames=47333 fps_now=61 hp=6 kills=1625
+[HB] t=773.9 paused=false frames=47394 fps_now=61 hp=6 kills=1625
+[HB] t=775.0 paused=false frames=47455 fps_now=61 hp=6 kills=1625
+[HB] t=776.0 paused=false frames=47516 fps_now=61 hp=6 kills=1625
+[AUTOPLAY] t=776 hp=6 lv=21 kills=1625 enemies=1 dps=249 grid=5 items=13 wave=0 dist=186 player=(1233.744, 41.66616) enemy=(1219.16, 227.4119) mv=(-0.996932, -0.078275) aim=(-0.060459, 0.998171)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "final_god": 1, "final_god_hp": "48439/59902" }
+[HB] t=777.0 paused=false frames=47577 fps_now=61 hp=6 kills=1625
+[HB] t=778.0 paused=false frames=47638 fps_now=61 hp=6 kills=1625
+[HB] t=779.0 paused=false frames=47699 fps_now=61 hp=6 kills=1625
+[HB] t=780.0 paused=false frames=47760 fps_now=61 hp=6 kills=1625
+[HB] t=781.1 paused=false frames=47821 fps_now=61 hp=6 kills=1625
+[AUTOPLAY] t=781 hp=91 lv=21 kills=1628 enemies=1 dps=249 grid=5 items=13 wave=0 dist=82 player=(1198.969, 41.80149) enemy=(1231.964, 117.2966) mv=(-1.0, 0.0) aim=(0.365673, 0.930743)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "final_god": 1, "final_god_hp": "47804/59902" }
+[HB] t=782.1 paused=false frames=47884 fps_now=63 hp=176 kills=1628
+[HB] t=783.1 paused=false frames=47947 fps_now=63 hp=305 kills=1637
+[HB] t=784.1 paused=false frames=48008 fps_now=61 hp=301 kills=1637
+[HB] t=785.1 paused=false frames=48069 fps_now=61 hp=250 kills=1637
+[HB] t=786.1 paused=false frames=48133 fps_now=64 hp=305 kills=1637
+[AUTOPLAY] t=786 hp=305 lv=21 kills=1637 enemies=1 dps=249 grid=5 items=13 wave=0 dist=83 player=(1234.366, 24.82804) enemy=(1223.832, 107.23) mv=(-0.991929, -0.126797) aim=(-0.087044, 0.996204)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "final_god": 1, "final_god_hp": "42313/59902" }
+[HB] t=787.1 paused=false frames=48196 fps_now=63 hp=243 kills=1637
+[HB] t=788.1 paused=false frames=48258 fps_now=62 hp=302 kills=1637
+[HB] t=789.1 paused=false frames=48319 fps_now=61 hp=224 kills=1637
+[HB] t=790.2 paused=false frames=48380 fps_now=61 hp=224 kills=1637
+[HB] t=791.2 paused=false frames=48441 fps_now=61 hp=224 kills=1637
+[AUTOPLAY] t=791 hp=224 lv=21 kills=1637 enemies=1 dps=249 grid=5 items=13 wave=0 dist=152 player=(1102.305, 12.6099) enemy=(1222.021, 105.7592) mv=(1.0, 0.0) aim=(0.780726, 0.624873)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "final_god": 1, "final_god_hp": "40798/59902" }
+[HB] t=792.2 paused=false frames=48502 fps_now=61 hp=140 kills=1637
+[HB] t=793.2 paused=false frames=48563 fps_now=61 hp=140 kills=1637
+[HB] t=794.2 paused=false frames=48624 fps_now=61 hp=140 kills=1637
+[HB] t=795.2 paused=false frames=48685 fps_now=61 hp=140 kills=1637
+[HB] t=796.3 paused=false frames=48746 fps_now=61 hp=140 kills=1637
+[AUTOPLAY] t=796 hp=140 lv=21 kills=1637 enemies=1 dps=249 grid=5 items=13 wave=0 dist=281 player=(954.9714, 12.6099) enemy=(1219.871, 104.8675) mv=(1.0, 0.0) aim=(0.943058, 0.332628)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "final_god": 1, "final_god_hp": "42000/59902" }
+[HB] t=797.3 paused=false frames=48807 fps_now=61 hp=140 kills=1637
+[HB] t=798.3 paused=false frames=48870 fps_now=63 hp=226 kills=1639
+[HB] t=799.3 paused=false frames=48932 fps_now=62 hp=187 kills=1646
+[HB] t=800.3 paused=false frames=48993 fps_now=61 hp=187 kills=1646
+[HB] t=801.3 paused=false frames=49054 fps_now=61 hp=103 kills=1646
+[AUTOPLAY] t=801 hp=103 lv=21 kills=1646 enemies=1 dps=249 grid=5 items=13 wave=0 dist=282 player=(962.5911, 42.1786) enemy=(1232.969, 122.3968) mv=(1.0, 0.0) aim=(0.957723, 0.287692)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "final_god": 1, "final_god_hp": "43199/59902" }
+[HB] t=802.3 paused=false frames=49115 fps_now=61 hp=103 kills=1646
+[HB] t=803.4 paused=false frames=49176 fps_now=61 hp=103 kills=1646
+[HB] t=804.4 paused=false frames=49237 fps_now=61 hp=103 kills=1646
+[HB] t=805.4 paused=false frames=49298 fps_now=61 hp=103 kills=1646
+[HB] t=806.4 paused=false frames=49359 fps_now=61 hp=19 kills=1646
+[AUTOPLAY] t=806 hp=19 lv=21 kills=1646 enemies=1 dps=249 grid=5 items=13 wave=0 dist=210 player=(1036.591, 42.1786) enemy=(1230.735, 121.7247) mv=(-1.0, 0.0) aim=(0.923005, 0.384787)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "final_god": 1, "final_god_hp": "44401/59902" }
+[HB] t=807.4 paused=false frames=49420 fps_now=61 hp=19 kills=1646
+[HB] t=808.4 paused=false frames=49481 fps_now=61 hp=6 kills=1646
+[HB] t=809.5 paused=false frames=49542 fps_now=61 hp=6 kills=1646
+[HB] t=810.5 paused=false frames=49603 fps_now=61 hp=6 kills=1646
+[HB] t=811.5 paused=false frames=49664 fps_now=61 hp=6 kills=1646
+[AUTOPLAY] t=811 hp=6 lv=21 kills=1646 enemies=1 dps=249 grid=5 items=13 wave=0 dist=282 player=(958.5912, 42.1786) enemy=(1229.617, 121.3922) mv=(1.0, 0.0) aim=(0.958898, 0.28375)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "final_god": 1, "final_god_hp": "45603/59902" }
+[HB] t=812.5 paused=false frames=49725 fps_now=61 hp=6 kills=1646
+[HB] t=813.5 paused=false frames=49786 fps_now=61 hp=6 kills=1646
+[HB] t=814.5 paused=false frames=49847 fps_now=61 hp=6 kills=1646
+[HB] t=815.6 paused=false frames=49908 fps_now=61 hp=6 kills=1646
+[HB] t=816.6 paused=false frames=49969 fps_now=61 hp=6 kills=1646
+[AUTOPLAY] t=816 hp=6 lv=21 kills=1646 enemies=1 dps=249 grid=5 items=13 wave=0 dist=278 player=(960.5913, 42.1786) enemy=(1227.378, 120.7353) mv=(-1.0, 0.0) aim=(0.960218, 0.279252)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "final_god": 1, "final_god_hp": "46805/59902" }
+[HB] t=817.6 paused=false frames=50030 fps_now=61 hp=6 kills=1646
+[HB] t=818.6 paused=false frames=50091 fps_now=61 hp=6 kills=1646
+[HB] t=819.6 paused=false frames=50152 fps_now=61 hp=6 kills=1646
+[HB] t=820.6 paused=false frames=50213 fps_now=61 hp=6 kills=1646
+[HB] t=821.7 paused=false frames=50274 fps_now=61 hp=6 kills=1646
+[AUTOPLAY] t=821 hp=6 lv=21 kills=1646 enemies=1 dps=249 grid=5 items=13 wave=0 dist=282 player=(954.5915, 42.1786) enemy=(1225.137, 120.083) mv=(1.0, 0.0) aim=(0.960032, 0.279892)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "final_god": 1, "final_god_hp": "48008/59902" }
+[HB] t=822.7 paused=false frames=50335 fps_now=61 hp=6 kills=1646
+[HB] t=823.7 paused=false frames=50396 fps_now=61 hp=6 kills=1646
+[HB] t=824.7 paused=false frames=50457 fps_now=61 hp=26 kills=1647
+[HB] t=825.7 paused=false frames=50520 fps_now=63 hp=90 kills=1652
+[AUTOPLAY] t=826 hp=120 lv=21 kills=1652 enemies=4 dps=249 grid=5 items=13 wave=0 dist=194 player=(737.0336, 42.34432) enemy=(929.8181, 63.76556) mv=(-1.0, 0.0) aim=(0.988553, 0.150876)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "final_god": 1, "final_god_hp": "49114/59902", "bat": 3 }
+[HB] t=826.7 paused=false frames=50581 fps_now=61 hp=120 kills=1652
+[HB] t=827.7 paused=false frames=50642 fps_now=61 hp=120 kills=1652
+[HB] t=828.8 paused=false frames=50703 fps_now=61 hp=136 kills=1654
+[HB] t=829.8 paused=false frames=50764 fps_now=61 hp=136 kills=1654
+[HB] t=830.8 paused=false frames=50825 fps_now=61 hp=136 kills=1654
+[AUTOPLAY] t=831 hp=136 lv=21 kills=1654 enemies=2 dps=249 grid=5 items=13 wave=0 dist=116 player=(240.7091, 42.34432) enemy=(356.5399, 42.82284) mv=(-1.0, 0.0) aim=(0.997137, 0.075612)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "final_god": 1, "final_god_hp": "50315/59902", "bat": 1 }
+[HB] t=831.8 paused=false frames=50886 fps_now=61 hp=148 kills=1655
+[HB] t=832.8 paused=false frames=50949 fps_now=63 hp=148 kills=1655
+[HB] t=833.8 paused=false frames=51010 fps_now=61 hp=148 kills=1655
+[HB] t=834.8 paused=false frames=51071 fps_now=61 hp=148 kills=1655
+[HB] t=835.9 paused=false frames=51132 fps_now=61 hp=148 kills=1655
+[AUTOPLAY] t=836 hp=148 lv=21 kills=1655 enemies=1 dps=249 grid=5 items=13 wave=0 dist=280 player=(957.1802, 42.34432) enemy=(1227.088, 116.6548) mv=(-1.0, 0.0) aim=(0.964952, 0.262427)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "final_god": 1, "final_god_hp": "51517/59902" }
+[HB] t=836.9 paused=false frames=51193 fps_now=61 hp=148 kills=1655
+[HB] t=837.9 paused=false frames=51254 fps_now=61 hp=148 kills=1655
+[HB] t=838.9 paused=false frames=51315 fps_now=61 hp=64 kills=1655
+[HB] t=839.9 paused=false frames=51376 fps_now=61 hp=64 kills=1655
+[HB] t=840.9 paused=false frames=51437 fps_now=61 hp=64 kills=1655
+[AUTOPLAY] t=841 hp=64 lv=21 kills=1655 enemies=1 dps=249 grid=5 items=13 wave=0 dist=282 player=(952.5138, 42.34432) enemy=(1224.838, 116.0368) mv=(1.0, 0.0) aim=(0.964462, 0.264223)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "final_god": 1, "final_god_hp": "52719/59902" }
+[HB] t=842.0 paused=false frames=51498 fps_now=61 hp=64 kills=1655
+[HB] t=843.0 paused=false frames=51559 fps_now=61 hp=64 kills=1655
+[HB] t=844.0 paused=false frames=51620 fps_now=61 hp=6 kills=1655
+[HB] t=845.0 paused=false frames=51681 fps_now=61 hp=6 kills=1655
+[HB] t=846.0 paused=false frames=51742 fps_now=61 hp=6 kills=1655
+[AUTOPLAY] t=846 hp=6 lv=21 kills=1655 enemies=10 dps=249 grid=5 items=13 wave=0 dist=117 player=(642.5151, 42.34432) enemy=(759.514, 44.33104) mv=(-1.0, 0.0) aim=(0.992684, 0.120744)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "final_god": 1, "final_god_hp": "53921/59902", "bat": 9 }
+[HB] t=847.0 paused=false frames=51805 fps_now=63 hp=23 kills=1656
+[HB] t=848.1 paused=false frames=51866 fps_now=61 hp=101 kills=1657
+[HB] t=849.1 paused=false frames=51927 fps_now=61 hp=101 kills=1657
+[HB] t=850.1 paused=false frames=51988 fps_now=61 hp=101 kills=1657
+[HB] t=851.1 paused=false frames=52049 fps_now=61 hp=101 kills=1657
+[AUTOPLAY] t=851 hp=101 lv=21 kills=1657 enemies=8 dps=249 grid=5 items=13 wave=0 dist=198 player=(169.7307, 52.50117) enemy=(367.987, 46.12032) mv=(-0.707107, 0.707107) aim=(0.998291, 0.058431)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "final_god": 1, "final_god_hp": "55121/59902", "bat": 7 }
+[HB] t=852.1 paused=false frames=52110 fps_now=61 hp=101 kills=1657
+[HB] t=853.1 paused=false frames=52171 fps_now=61 hp=101 kills=1657
+[HB] t=854.2 paused=false frames=52232 fps_now=61 hp=101 kills=1657
+[HB] t=855.2 paused=false frames=52293 fps_now=61 hp=101 kills=1657
+[HB] t=856.2 paused=false frames=52354 fps_now=61 hp=101 kills=1657
+[AUTOPLAY] t=856 hp=101 lv=21 kills=1657 enemies=8 dps=249 grid=5 items=13 wave=0 dist=206 player=(535.6512, 568.3951) enemy=(333.9745, 525.6406) mv=(1.0, 0.0) aim=(0.824473, -0.565901)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "final_god": 1, "final_god_hp": "56323/59902", "bat": 7 }
+[HB] t=857.2 paused=false frames=52415 fps_now=61 hp=101 kills=1657
+[HB] t=858.2 paused=false frames=52476 fps_now=61 hp=101 kills=1657
+[HB] t=859.2 paused=false frames=52537 fps_now=61 hp=101 kills=1657
+[HB] t=860.3 paused=false frames=52598 fps_now=61 hp=101 kills=1657
+[HB] t=861.3 paused=false frames=52659 fps_now=61 hp=17 kills=1657
+[AUTOPLAY] t=861 hp=17 lv=21 kills=1657 enemies=8 dps=249 grid=5 items=13 wave=0 dist=175 player=(1040.68, 172.2518) enemy=(1205.119, 111.834) mv=(-0.707107, -0.707107) aim=(0.944418, -0.328748)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "final_god": 1, "final_god_hp": "57525/59902", "bat": 7 }
+[HB] t=862.3 paused=false frames=52720 fps_now=61 hp=6 kills=1657
+[HB] t=863.3 paused=false frames=52781 fps_now=61 hp=6 kills=1657
+[HB] t=864.3 paused=false frames=52842 fps_now=61 hp=6 kills=1657
+[HB] t=865.3 paused=false frames=52906 fps_now=64 hp=43 kills=1664
+[HB] t=866.4 paused=false frames=52967 fps_now=61 hp=43 kills=1664
+[AUTOPLAY] t=866 hp=43 lv=21 kills=1664 enemies=1 dps=249 grid=5 items=13 wave=0 dist=286 player=(933.7975, 208.0937) enemy=(1203.492, 113.401) mv=(-1.0, 0.0) aim=(0.939604, -0.342264)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "final_god": 1, "final_god_hp": "58726/59902" }
+[HB] t=867.4 paused=false frames=53028 fps_now=61 hp=43 kills=1664
+[HB] t=868.4 paused=false frames=53089 fps_now=61 hp=43 kills=1664
+[HB] t=869.4 paused=false frames=53150 fps_now=61 hp=43 kills=1664
+[HB] t=870.4 paused=false frames=53211 fps_now=61 hp=43 kills=1664
+[HB] t=871.4 paused=false frames=53272 fps_now=61 hp=6 kills=1664
+[AUTOPLAY] t=871 hp=6 lv=21 kills=1664 enemies=1 dps=249 grid=5 items=13 wave=0 dist=341 player=(871.7971, 208.0937) enemy=(1200.13, 114.3745) mv=(1.0, 0.0) aim=(0.960848, -0.277077)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "final_god": 1, "final_god_hp": "59902/59902" }
+[HB] t=872.5 paused=false frames=53333 fps_now=61 hp=6 kills=1664
+[HB] t=873.5 paused=false frames=53394 fps_now=61 hp=6 kills=1664
+[HB] t=874.5 paused=false frames=53455 fps_now=61 hp=6 kills=1664
+[HB] t=875.5 paused=false frames=53516 fps_now=61 hp=6 kills=1664
+[HB] t=876.5 paused=false frames=53577 fps_now=61 hp=6 kills=1664
+[AUTOPLAY] t=876 hp=6 lv=21 kills=1664 enemies=1 dps=249 grid=5 items=13 wave=0 dist=337 player=(873.7979, 208.0937) enemy=(1197.887, 115.0155) mv=(-1.0, 0.0) aim=(0.961889, -0.273441)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "final_god": 1, "final_god_hp": "59902/59902" }
+[HB] t=877.5 paused=false frames=53638 fps_now=61 hp=6 kills=1664
+[HB] t=878.6 paused=false frames=53701 fps_now=63 hp=121 kills=1666
+[HB] t=879.6 paused=false frames=53762 fps_now=61 hp=121 kills=1666
+[HB] t=880.6 paused=false frames=53823 fps_now=61 hp=121 kills=1666
+[HB] t=881.6 paused=false frames=53884 fps_now=61 hp=121 kills=1666
+[AUTOPLAY] t=881 hp=121 lv=21 kills=1666 enemies=8 dps=249 grid=5 items=13 wave=0 dist=202 player=(374.0776, 208.0937) enemy=(575.639, 201.9626) mv=(-1.0, -0.0) aim=(0.99517, -0.098166)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "final_god": 1, "final_god_hp": "59902/59902", "bat": 7 }
+[HB] t=882.6 paused=false frames=53945 fps_now=61 hp=121 kills=1666
+[HB] t=883.6 paused=false frames=54006 fps_now=61 hp=121 kills=1666
+[HB] t=884.7 paused=false frames=54067 fps_now=61 hp=121 kills=1666
+[HB] t=885.7 paused=false frames=54128 fps_now=61 hp=121 kills=1666
+[HB] t=886.7 paused=false frames=54189 fps_now=61 hp=156 kills=1673
+[AUTOPLAY] t=886 hp=156 lv=21 kills=1673 enemies=10 dps=249 grid=5 items=13 wave=0 dist=927 player=(238.6631, 460.7286) enemy=(1123.488, 183.9636) mv=(0.476428, -0.879214) aim=(0.948215, -0.31763)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "final_god": 1, "final_god_hp": "59902/59902", "bat": 9 }
+[HB] t=887.7 paused=false frames=54250 fps_now=61 hp=156 kills=1673
+[HB] t=888.7 paused=false frames=54311 fps_now=61 hp=168 kills=1673
+[HB] t=889.7 paused=false frames=54372 fps_now=61 hp=152 kills=1673
+[HB] t=890.7 paused=false frames=54435 fps_now=63 hp=180 kills=1674
+[HB] t=891.7 paused=false frames=54498 fps_now=63 hp=272 kills=1682
+[AUTOPLAY] t=891 hp=268 lv=21 kills=1682 enemies=1 dps=249 grid=5 items=13 wave=0 dist=638 player=(594.3242, 137.8182) enemy=(1232.056, 129.8152) mv=(1.0, 0.0) aim=(0.999922, -0.012483)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "final_god": 1, "final_god_hp": "59902/59902" }
+[HB] t=892.7 paused=false frames=54559 fps_now=61 hp=298 kills=1682
+[HB] t=893.7 paused=false frames=54620 fps_now=61 hp=298 kills=1682
+[HB] t=894.8 paused=false frames=54681 fps_now=61 hp=214 kills=1682
+[HB] t=895.8 paused=false frames=54742 fps_now=61 hp=130 kills=1682
+[HB] t=896.8 paused=false frames=54803 fps_now=61 hp=130 kills=1682
+[AUTOPLAY] t=896 hp=130 lv=21 kills=1682 enemies=1 dps=249 grid=5 items=13 wave=0 dist=338 player=(895.9089, 177.6308) enemy=(1230.891, 129.8594) mv=(-1.0, 0.0) aim=(0.990177, -0.139817)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "final_god": 1, "final_god_hp": "59902/59902" }
+[HB] t=897.8 paused=false frames=54864 fps_now=61 hp=130 kills=1682
+[HB] t=898.8 paused=false frames=54925 fps_now=61 hp=130 kills=1682
+[HB] t=899.8 paused=false frames=54986 fps_now=61 hp=130 kills=1682
+[HB] t=900.9 paused=false frames=55047 fps_now=61 hp=130 kills=1682
+[HB] t=901.9 paused=false frames=55108 fps_now=61 hp=130 kills=1682
+[AUTOPLAY] t=901 hp=130 lv=21 kills=1682 enemies=1 dps=249 grid=5 items=13 wave=0 dist=329 player=(903.2438, 177.6308) enemy=(1228.58, 130.1844) mv=(-1.0, 0.0) aim=(0.989318, -0.145774)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "final_god": 1, "final_god_hp": "59902/59902" }
+[HB] t=902.9 paused=false frames=55169 fps_now=61 hp=130 kills=1682
+[HB] t=903.9 paused=false frames=55230 fps_now=61 hp=46 kills=1682
+[HB] t=904.9 paused=false frames=55291 fps_now=61 hp=46 kills=1682
+[HB] t=905.9 paused=false frames=55354 fps_now=63 hp=97 kills=1684
+[AUTOPLAY] t=906 hp=127 lv=21 kills=1684 enemies=8 dps=249 grid=5 items=13 wave=0 dist=211 player=(600.1229, 207.4012) enemy=(810.5049, 199.203) mv=(-1.0, -0.0) aim=(0.997143, -0.075533)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "final_god": 1, "final_god_hp": "59902/59902", "bat": 7 }
+[HB] t=906.9 paused=false frames=55415 fps_now=61 hp=127 kills=1684
+[HB] t=908.0 paused=false frames=55476 fps_now=61 hp=127 kills=1684
+[HB] t=909.0 paused=false frames=55537 fps_now=61 hp=127 kills=1684
+[HB] t=910.0 paused=false frames=55598 fps_now=61 hp=127 kills=1684
+[HB] t=911.0 paused=false frames=55659 fps_now=61 hp=127 kills=1684
+[AUTOPLAY] t=911 hp=185 lv=21 kills=1691 enemies=1 dps=249 grid=5 items=13 wave=0 dist=915 player=(299.9471, 179.2844) enemy=(1214.677, 161.0195) mv=(1.0, 0.0) aim=(0.999802, -0.019891)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "final_god": 1, "final_god_hp": "59902/59902" }
+[HB] t=912.0 paused=false frames=55721 fps_now=62 hp=185 kills=1691
+[HB] t=913.0 paused=false frames=55782 fps_now=61 hp=185 kills=1691
+[HB] t=914.1 paused=false frames=55843 fps_now=61 hp=185 kills=1691
+[HB] t=915.1 paused=false frames=55904 fps_now=61 hp=101 kills=1691
+[HB] t=916.1 paused=false frames=55965 fps_now=61 hp=101 kills=1691
+[AUTOPLAY] t=916 hp=17 lv=21 kills=1691 enemies=1 dps=249 grid=5 items=13 wave=0 dist=340 player=(874.8214, 209.1364) enemy=(1211.206, 161.4094) mv=(-1.0, 0.0) aim=(0.990275, -0.139124)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "final_god": 1, "final_god_hp": "59902/59902" }
+[HB] t=917.1 paused=false frames=56026 fps_now=61 hp=17 kills=1691
+[HB] t=918.1 paused=false frames=56087 fps_now=61 hp=17 kills=1691
+[HB] t=919.1 paused=false frames=56148 fps_now=61 hp=17 kills=1691
+[HB] t=920.2 paused=false frames=56209 fps_now=61 hp=17 kills=1691
+[HB] t=921.2 paused=false frames=56272 fps_now=63 hp=70 kills=1693
+[AUTOPLAY] t=921 hp=100 lv=21 kills=1693 enemies=8 dps=249 grid=5 items=13 wave=0 dist=199 player=(659.0269, 209.4944) enemy=(856.7429, 191.0694) mv=(1.0, 0.0) aim=(0.999401, -0.034613)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "final_god": 1, "final_god_hp": "59902/59902", "bat": 7 }
+[HB] t=922.2 paused=false frames=56333 fps_now=61 hp=100 kills=1693
+[HB] t=923.2 paused=false frames=56394 fps_now=61 hp=100 kills=1693
+[HB] t=924.2 paused=false frames=56455 fps_now=61 hp=100 kills=1693
+[HB] t=925.2 paused=false frames=56516 fps_now=61 hp=100 kills=1693
+[HB] t=926.3 paused=false frames=56577 fps_now=61 hp=100 kills=1693
+[AUTOPLAY] t=926 hp=100 lv=21 kills=1693 enemies=8 dps=249 grid=5 items=13 wave=0 dist=207 player=(136.8185, 463.8194) enemy=(247.0925, 288.6886) mv=(-0.0, 1.0) aim=(0.968936, -0.247311)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "final_god": 1, "final_god_hp": "59902/59902", "bat": 7 }
+[HB] t=927.3 paused=false frames=56638 fps_now=61 hp=100 kills=1693
+[HB] t=928.3 paused=false frames=56699 fps_now=61 hp=100 kills=1693
+[HB] t=929.3 paused=false frames=56762 fps_now=63 hp=139 kills=1700
+[HB] t=930.3 paused=false frames=56823 fps_now=61 hp=139 kills=1700
+[HB] t=931.3 paused=false frames=56884 fps_now=61 hp=139 kills=1700
+[AUTOPLAY] t=931 hp=159 lv=21 kills=1701 enemies=9 dps=249 grid=5 items=13 wave=0 dist=109 player=(330.5916, 209.9215) enemy=(439.5423, 208.6658) mv=(0.998564, 0.053572) aim=(0.999953, -0.009677)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "final_god": 1, "final_god_hp": "59902/59902", "bat": 8 }
+[HB] t=932.4 paused=false frames=56945 fps_now=61 hp=189 kills=1701
+[HB] t=933.4 paused=false frames=57009 fps_now=64 hp=305 kills=1709
+[HB] t=934.4 paused=false frames=57070 fps_now=61 hp=305 kills=1709
+[HB] t=935.4 paused=false frames=57131 fps_now=61 hp=305 kills=1709
+[HB] t=936.4 paused=false frames=57192 fps_now=61 hp=221 kills=1709
+[AUTOPLAY] t=936 hp=221 lv=21 kills=1709 enemies=1 dps=249 grid=5 items=13 wave=0 dist=149 player=(962.57, 209.1164) enemy=(1111.57, 216.7311) mv=(-1.0, 0.0) aim=(0.998753, 0.049925)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "final_god": 1, "final_god_hp": "59902/59902" }
+[HB] t=937.4 paused=false frames=57253 fps_now=61 hp=137 kills=1709
+[HB] t=938.4 paused=false frames=57314 fps_now=61 hp=137 kills=1709
+[HB] t=939.4 paused=false frames=57375 fps_now=61 hp=137 kills=1709
+[HB] t=940.5 paused=false frames=57437 fps_now=62 hp=305 kills=1718
+[HB] t=941.5 paused=false frames=57498 fps_now=61 hp=301 kills=1718
+[AUTOPLAY] t=942 hp=301 lv=21 kills=1718 enemies=1 dps=249 grid=5 items=13 wave=0 dist=150 player=(930.2748, 128.4837) enemy=(1060.705, 201.6986) mv=(-1.0, 0.0) aim=(0.877198, 0.48013)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "final_god": 1, "final_god_hp": "59902/59902" }
+[HB] t=942.5 paused=false frames=57559 fps_now=61 hp=217 kills=1718
+[HB] t=943.5 paused=false frames=57620 fps_now=61 hp=217 kills=1718
+[HB] t=944.5 paused=false frames=57681 fps_now=61 hp=133 kills=1718
+[HB] t=945.5 paused=false frames=57742 fps_now=61 hp=133 kills=1718
+[HB] t=946.6 paused=false frames=57803 fps_now=61 hp=133 kills=1718
+[AUTOPLAY] t=947 hp=133 lv=21 kills=1718 enemies=1 dps=249 grid=5 items=13 wave=0 dist=278 player=(789.6074, 128.4837) enemy=(1058.451, 201.0951) mv=(-1.0, 0.0) aim=(0.966208, 0.257765)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "final_god": 1, "final_god_hp": "59902/59902" }
+[HB] t=947.6 paused=false frames=57864 fps_now=61 hp=49 kills=1718
+[HB] t=948.6 paused=false frames=57925 fps_now=61 hp=49 kills=1718
+[HB] t=949.6 paused=false frames=57988 fps_now=63 hp=182 kills=1720
+[HB] t=950.6 paused=false frames=58051 fps_now=63 hp=149 kills=1727
+[HB] t=951.6 paused=false frames=58112 fps_now=61 hp=149 kills=1727
+[AUTOPLAY] t=952 hp=149 lv=21 kills=1727 enemies=1 dps=249 grid=5 items=13 wave=0 dist=280 player=(774.0024, 131.6077) enemy=(1050.32, 177.9459) mv=(1.0, 0.0) aim=(0.985897, 0.167353)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "final_god": 1, "final_god_hp": "59902/59902" }
+[HB] t=952.6 paused=false frames=58173 fps_now=61 hp=149 kills=1727
+[HB] t=953.7 paused=false frames=58234 fps_now=61 hp=149 kills=1727
+[HB] t=954.7 paused=false frames=58295 fps_now=61 hp=65 kills=1727
+[HB] t=955.7 paused=false frames=58356 fps_now=61 hp=65 kills=1727
+[HB] t=956.7 paused=false frames=58417 fps_now=61 hp=65 kills=1727
+[AUTOPLAY] t=957 hp=65 lv=21 kills=1727 enemies=1 dps=249 grid=5 items=13 wave=0 dist=238 player=(816.0033, 131.6077) enemy=(1049.178, 177.7064) mv=(-1.0, 0.0) aim=(0.982313, 0.187244)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "final_god": 1, "final_god_hp": "59902/59902" }
+[HB] t=957.7 paused=false frames=58478 fps_now=61 hp=6 kills=1727
+[HB] t=958.7 paused=false frames=58539 fps_now=61 hp=6 kills=1727
+[HB] t=959.8 paused=false frames=58600 fps_now=61 hp=6 kills=1727
+[HB] t=960.8 paused=false frames=58661 fps_now=61 hp=6 kills=1727
+[HB] t=961.8 paused=false frames=58724 fps_now=63 hp=25 kills=1728
+[AUTOPLAY] t=962 hp=90 lv=21 kills=1729 enemies=8 dps=249 grid=5 items=13 wave=0 dist=229 player=(597.4647, 174.8782) enemy=(825.5811, 160.0631) mv=(1.0, 0.0) aim=(0.995332, -0.096508)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "final_god": 1, "final_god_hp": "59902/59902", "bat": 7 }
+[HB] t=962.8 paused=false frames=58785 fps_now=61 hp=90 kills=1729
+[HB] t=963.8 paused=false frames=58846 fps_now=61 hp=90 kills=1729
+[HB] t=964.8 paused=false frames=58907 fps_now=61 hp=90 kills=1729
+[HB] t=965.8 paused=false frames=58968 fps_now=61 hp=90 kills=1729
+[HB] t=966.9 paused=false frames=59029 fps_now=61 hp=90 kills=1729
+[AUTOPLAY] t=967 hp=90 lv=21 kills=1729 enemies=8 dps=249 grid=5 items=13 wave=0 dist=198 player=(137.0244, 462.7112) enemy=(218.5234, 281.7476) mv=(-0.0, 1.0) aim=(0.937724, -0.347381)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "final_god": 1, "final_god_hp": "59902/59902", "bat": 7 }
+[HB] t=967.9 paused=false frames=59090 fps_now=61 hp=90 kills=1729
+[HB] t=968.9 paused=false frames=59151 fps_now=61 hp=90 kills=1729
+[HB] t=969.9 paused=false frames=59212 fps_now=61 hp=90 kills=1729
+[HB] t=970.9 paused=false frames=59273 fps_now=61 hp=90 kills=1729
+[HB] t=971.9 paused=false frames=59334 fps_now=61 hp=90 kills=1729
+[AUTOPLAY] t=972 hp=90 lv=21 kills=1729 enemies=8 dps=249 grid=5 items=13 wave=0 dist=214 player=(832.6669, 350.2215) enemy=(664.6232, 483.0417) mv=(0.707107, -0.707107) aim=(0.645542, -0.763725)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "final_god": 1, "final_god_hp": "59902/59902", "bat": 7 }
+[HB] t=973.0 paused=false frames=59395 fps_now=61 hp=6 kills=1729
+[HB] t=974.0 paused=false frames=59456 fps_now=61 hp=6 kills=1729
+[HB] t=975.0 paused=false frames=59517 fps_now=61 hp=6 kills=1729
+[HB] t=976.0 paused=false frames=59578 fps_now=61 hp=6 kills=1729
+[HB] t=977.0 paused=false frames=59641 fps_now=63 hp=62 kills=1736
+[AUTOPLAY] t=977 hp=62 lv=21 kills=1736 enemies=1 dps=249 grid=5 items=13 wave=0 dist=271 player=(1229.806, 302.138) enemy=(1015.808, 136.2032) mv=(0.214808, 0.976656) aim=(-0.795065, -0.606525)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "final_god": 1, "final_god_hp": "59902/59902" }
+[HB] t=978.0 paused=false frames=59702 fps_now=61 hp=62 kills=1736
+[HB] t=979.1 paused=false frames=59763 fps_now=61 hp=62 kills=1736
+[HB] t=980.1 paused=false frames=59824 fps_now=61 hp=62 kills=1736
+[HB] t=981.1 paused=false frames=59885 fps_now=61 hp=62 kills=1736
+[HB] t=982.1 paused=false frames=59946 fps_now=61 hp=62 kills=1736
+[AUTOPLAY] t=982 hp=62 lv=21 kills=1736 enemies=1 dps=249 grid=5 items=13 wave=0 dist=342 player=(680.9985, 207.0136) enemy=(1015.385, 137.3597) mv=(1.0, 0.0) aim=(0.978574, -0.205893)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "final_god": 1, "final_god_hp": "59902/59902" }
+[HB] t=983.1 paused=false frames=60007 fps_now=61 hp=62 kills=1736
+[HB] t=984.1 paused=false frames=60069 fps_now=62 hp=147 kills=1738
+[HB] t=985.2 paused=false frames=60130 fps_now=61 hp=147 kills=1738
+[HB] t=986.2 paused=false frames=60191 fps_now=61 hp=147 kills=1738
+[AUTOPLAY] t=987 hp=147 lv=21 kills=1738 enemies=8 dps=249 grid=5 items=13 wave=0 dist=202 player=(184.1263, 208.6456) enemy=(386.4471, 201.6429) mv=(-1.0, -0.0) aim=(0.99186, -0.127337)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "final_god": 1, "final_god_hp": "59902/59902", "bat": 7 }
+[HB] t=987.2 paused=false frames=60252 fps_now=61 hp=147 kills=1738
+[HB] t=988.2 paused=false frames=60313 fps_now=61 hp=147 kills=1738
+[HB] t=989.2 paused=false frames=60374 fps_now=61 hp=147 kills=1738
+[HB] t=990.2 paused=false frames=60435 fps_now=61 hp=208 kills=1744
+[HB] t=991.2 paused=false frames=60496 fps_now=61 hp=213 kills=1745
+[AUTOPLAY] t=992 hp=213 lv=21 kills=1745 enemies=1 dps=249 grid=5 items=13 wave=0 dist=664 player=(324.412, 232.2617) enemy=(976.8238, 107.5016) mv=(0.588092, -0.808794) aim=(0.981552, -0.191196)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "final_god": 1, "final_god_hp": "59902/59902" }
+[HB] t=992.3 paused=false frames=60557 fps_now=61 hp=213 kills=1745
+[HB] t=993.3 paused=false frames=60618 fps_now=61 hp=213 kills=1745
+[HB] t=994.3 paused=false frames=60679 fps_now=61 hp=129 kills=1745
+[HB] t=995.3 paused=false frames=60740 fps_now=61 hp=45 kills=1745
+[HB] t=996.3 paused=false frames=60801 fps_now=61 hp=45 kills=1745
+[AUTOPLAY] t=997 hp=45 lv=21 kills=1745 enemies=1 dps=249 grid=5 items=13 wave=0 dist=417 player=(569.0564, 208.2464) enemy=(973.4415, 108.3601) mv=(1.0, 0.0) aim=(0.971277, -0.237952)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "final_god": 1, "final_god_hp": "59902/59902" }
+[HB] t=997.3 paused=false frames=60862 fps_now=61 hp=45 kills=1745
+[HB] t=998.4 paused=false frames=60923 fps_now=61 hp=45 kills=1745
+[HB] t=999.4 paused=false frames=60984 fps_now=61 hp=45 kills=1745
+[HB] t=1000.4 paused=false frames=61045 fps_now=61 hp=45 kills=1745
+[HB] t=1001.4 paused=false frames=61106 fps_now=61 hp=45 kills=1745
+[AUTOPLAY] t=1002 hp=45 lv=21 kills=1745 enemies=1 dps=249 grid=5 items=13 wave=0 dist=343 player=(644.3901, 208.2464) enemy=(972.326, 108.7021) mv=(1.0, 0.0) aim=(0.956055, -0.293188)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "final_god": 1, "final_god_hp": "59902/59902" }
+[HB] t=1002.4 paused=false frames=61167 fps_now=61 hp=45 kills=1745
+[HB] t=1003.4 paused=false frames=61228 fps_now=61 hp=45 kills=1745
+[HB] t=1004.5 paused=false frames=61291 fps_now=63 hp=147 kills=1747
+[HB] t=1005.5 paused=false frames=61352 fps_now=61 hp=147 kills=1747
+[HB] t=1006.5 paused=false frames=61413 fps_now=61 hp=147 kills=1747
+[AUTOPLAY] t=1007 hp=147 lv=21 kills=1747 enemies=8 dps=249 grid=5 items=13 wave=0 dist=179 player=(137.2138, 202.2535) enemy=(312.3649, 167.4476) mv=(-0.0, 1.0) aim=(0.996694, -0.081247)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "final_god": 1, "final_god_hp": "59902/59902", "bat": 7 }
+[HB] t=1007.5 paused=false frames=61474 fps_now=61 hp=147 kills=1747
+[HB] t=1008.5 paused=false frames=61535 fps_now=61 hp=147 kills=1747
+[HB] t=1009.5 paused=false frames=61596 fps_now=61 hp=147 kills=1747
+[HB] t=1010.6 paused=false frames=61657 fps_now=61 hp=147 kills=1747
+[HB] t=1011.6 paused=false frames=61718 fps_now=61 hp=147 kills=1747
+[AUTOPLAY] t=1012 hp=147 lv=21 kills=1747 enemies=17 dps=249 grid=5 items=13 wave=0 dist=204 player=(697.3443, 513.8478) enemy=(818.054, 348.9387) mv=(-0.707107, 0.707107) aim=(0.596906, -0.802311)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "final_god": 1, "final_god_hp": "59902/59902", "bat": 16 }
+[HB] t=1012.6 paused=false frames=61779 fps_now=61 hp=147 kills=1747
+[HB] t=1013.6 paused=false frames=61842 fps_now=63 hp=273 kills=1756
+[HB] t=1014.6 paused=false frames=61904 fps_now=62 hp=305 kills=1763
+[HB] t=1015.6 paused=false frames=61965 fps_now=61 hp=221 kills=1763
+[HB] t=1016.6 paused=false frames=62026 fps_now=61 hp=221 kills=1763
+[AUTOPLAY] t=1017 hp=137 lv=21 kills=1763 enemies=1 dps=249 grid=5 items=13 wave=0 dist=234 player=(724.4794, 115.9887) enemy=(945.7296, 191.58) mv=(-1.0, 0.0) aim=(0.944773, 0.327724)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "final_god": 1, "final_god_hp": "59902/59902" }
+[HB] t=1017.7 paused=false frames=62087 fps_now=61 hp=137 kills=1763
+[HB] t=1018.7 paused=false frames=62148 fps_now=61 hp=137 kills=1763
+[HB] t=1019.7 paused=false frames=62209 fps_now=61 hp=137 kills=1763
+[HB] t=1020.7 paused=false frames=62270 fps_now=61 hp=137 kills=1763
+[HB] t=1021.7 paused=false frames=62331 fps_now=61 hp=137 kills=1763
+[AUTOPLAY] t=1022 hp=161 lv=21 kills=1765 enemies=8 dps=249 grid=5 items=13 wave=0 dist=272 player=(449.9452, 117.5359) enemy=(721.4772, 126.0924) mv=(0.993245, 0.116036) aim=(0.999471, 0.032515)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "final_god": 1, "final_god_hp": "59902/59902", "bat": 7 }
+[HB] t=1022.7 paused=false frames=62394 fps_now=63 hp=241 kills=1769
+[HB] t=1023.7 paused=false frames=62455 fps_now=61 hp=188 kills=1772
+[HB] t=1024.8 paused=false frames=62516 fps_now=61 hp=188 kills=1772
+[HB] t=1025.8 paused=false frames=62577 fps_now=61 hp=188 kills=1772
+[HB] t=1026.8 paused=false frames=62638 fps_now=61 hp=104 kills=1772
+[AUTOPLAY] t=1027 hp=104 lv=21 kills=1772 enemies=1 dps=249 grid=5 items=13 wave=0 dist=277 player=(618.4471, 130.5319) enemy=(891.1733, 180.7422) mv=(-1.0, 0.0) aim=(0.983859, 0.178946)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "final_god": 1, "final_god_hp": "59902/59902" }
+[HB] t=1027.8 paused=false frames=62699 fps_now=61 hp=20 kills=1772
+[HB] t=1028.8 paused=false frames=62760 fps_now=61 hp=6 kills=1772
+[HB] t=1029.8 paused=false frames=62821 fps_now=61 hp=6 kills=1772
+[HB] t=1030.9 paused=false frames=62882 fps_now=61 hp=6 kills=1772
+[HB] t=1031.9 paused=false frames=62944 fps_now=62 hp=97 kills=1774
+[AUTOPLAY] t=1032 hp=97 lv=21 kills=1774 enemies=8 dps=249 grid=5 items=13 wave=0 dist=201 player=(396.0522, 131.2935) enemy=(596.7537, 142.7458) mv=(-1.0, -0.0) aim=(0.990819, 0.135192)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "final_god": 1, "final_god_hp": "59902/59902", "bat": 7 }
+[HB] t=1032.9 paused=false frames=63005 fps_now=61 hp=97 kills=1774
+[HB] t=1033.9 paused=false frames=63066 fps_now=61 hp=125 kills=1779
+[HB] t=1034.9 paused=false frames=63127 fps_now=61 hp=125 kills=1779
+[HB] t=1035.9 paused=false frames=63188 fps_now=61 hp=125 kills=1779
+[HB] t=1036.9 paused=false frames=63249 fps_now=61 hp=125 kills=1779
+[AUTOPLAY] t=1037 hp=125 lv=21 kills=1779 enemies=3 dps=249 grid=5 items=13 wave=0 dist=203 player=(148.8595, 567.3353) enemy=(182.1961, 367.3235) mv=(-0.707107, 0.707107) aim=(0.883581, -0.468279)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "final_god": 1, "final_god_hp": "59902/59902", "bat": 2 }
+[HB] t=1038.0 paused=false frames=63310 fps_now=61 hp=125 kills=1779
+[HB] t=1039.0 paused=false frames=63371 fps_now=61 hp=125 kills=1779
+[HB] t=1040.0 paused=false frames=63432 fps_now=61 hp=125 kills=1779
+[HB] t=1041.0 paused=false frames=63493 fps_now=61 hp=125 kills=1779
+[HB] t=1042.0 paused=false frames=63554 fps_now=61 hp=125 kills=1779
+[AUTOPLAY] t=1042 hp=125 lv=21 kills=1779 enemies=3 dps=249 grid=5 items=13 wave=0 dist=203 player=(906.0291, 434.8928) enemy=(704.2861, 458.7192) mv=(1.0, 0.0) aim=(-0.185672, -0.982612)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "final_god": 1, "final_god_hp": "59902/59902", "bat": 2 }
+[HB] t=1043.0 paused=false frames=63615 fps_now=61 hp=41 kills=1779
+[HB] t=1044.1 paused=false frames=63676 fps_now=61 hp=41 kills=1779
+[HB] t=1045.1 paused=false frames=63737 fps_now=61 hp=47 kills=1780
+[HB] t=1046.1 paused=false frames=63798 fps_now=61 hp=58 kills=1781
+[HB] t=1047.1 paused=false frames=63859 fps_now=61 hp=58 kills=1781
+[AUTOPLAY] t=1047 hp=58 lv=21 kills=1781 enemies=1 dps=249 grid=5 items=13 wave=0 dist=350 player=(690.4598, 504.0007) enemy=(858.053, 196.2129) mv=(-0.315752, -0.948842) aim=(0.456906, -0.889515)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "final_god": 1, "final_god_hp": "59902/59902" }
+[HB] t=1048.1 paused=false frames=63920 fps_now=61 hp=58 kills=1781
+[HB] t=1049.1 paused=false frames=63981 fps_now=61 hp=58 kills=1781
+[AUTOPLAY] choices: 火源晶石=110, 齐射·火柱=235, 暴击连击=1309
+[AUTOPLAY] levelup -> 暴击连击 score=1309
+[AUTOPLAY] levelup -> 暴击连击 score=1309
+[HB] t=1050.1 paused=false frames=64044 fps_now=63 hp=315 kills=1787
+[HB] t=1051.1 paused=false frames=64106 fps_now=62 hp=311 kills=1787
+[HB] t=1052.1 paused=false frames=64169 fps_now=63 hp=315 kills=1787
+[AUTOPLAY] t=1052 hp=315 lv=22 kills=1790 enemies=1 dps=249 grid=5 items=14 wave=0 dist=62 player=(774.7867, 207.7836) enemy=(835.778, 197.9922) mv=(-1.0, 0.0) aim=(0.985885, -0.167422)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "final_god": 1, "final_god_hp": "59699/59902" }
+[HB] t=1053.1 paused=false frames=64230 fps_now=61 hp=231 kills=1790
+[HB] t=1054.2 paused=false frames=64291 fps_now=61 hp=231 kills=1790
+[HB] t=1055.2 paused=false frames=64352 fps_now=61 hp=147 kills=1790
+[HB] t=1056.2 paused=false frames=64413 fps_now=61 hp=147 kills=1790
+[HB] t=1057.2 paused=false frames=64474 fps_now=61 hp=147 kills=1790
+[AUTOPLAY] t=1057 hp=147 lv=22 kills=1790 enemies=1 dps=249 grid=5 items=14 wave=0 dist=282 player=(550.5322, 211.1896) enemy=(832.2831, 198.1745) mv=(-0.046145, -0.998935) aim=(0.99941, -0.034336)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "final_god": 1, "final_god_hp": "59221/59902" }
+[HB] t=1058.2 paused=false frames=64535 fps_now=61 hp=63 kills=1790
+[HB] t=1059.2 paused=false frames=64596 fps_now=61 hp=63 kills=1790
+[HB] t=1060.3 paused=false frames=64657 fps_now=61 hp=63 kills=1790
+[HB] t=1061.3 paused=false frames=64718 fps_now=61 hp=63 kills=1790
+[HB] t=1062.3 paused=false frames=64779 fps_now=61 hp=63 kills=1790
+[AUTOPLAY] t=1062 hp=63 lv=22 kills=1790 enemies=1 dps=249 grid=5 items=14 wave=0 dist=278 player=(563.9766, 115.9909) enemy=(830.059, 197.4689) mv=(-1.0, 0.0) aim=(0.957185, 0.289477)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "final_god": 1, "final_god_hp": "59902/59902" }
+[HB] t=1063.3 paused=false frames=64840 fps_now=61 hp=63 kills=1790
+[HB] t=1064.3 paused=false frames=64902 fps_now=62 hp=83 kills=1791
+[HB] t=1065.3 paused=false frames=64964 fps_now=62 hp=261 kills=1799
+[HB] t=1066.4 paused=false frames=65025 fps_now=61 hp=177 kills=1799
+[AUTOPLAY] t=1067 hp=177 lv=22 kills=1799 enemies=1 dps=249 grid=5 items=14 wave=0 dist=151 player=(691.0624, 121.1522) enemy=(829.837, 181.5105) mv=(1.0, 0.0) aim=(0.913405, 0.407052)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "final_god": 1, "final_god_hp": "59902/59902" }
+[HB] t=1067.4 paused=false frames=65086 fps_now=61 hp=177 kills=1799
+[HB] t=1068.4 paused=false frames=65147 fps_now=61 hp=93 kills=1799
+[HB] t=1069.4 paused=false frames=65208 fps_now=61 hp=6 kills=1799
+[HB] t=1070.4 paused=false frames=65269 fps_now=61 hp=6 kills=1799
+[HB] t=1071.4 paused=false frames=65330 fps_now=61 hp=6 kills=1799
+[AUTOPLAY] t=1072 hp=6 lv=22 kills=1799 enemies=1 dps=249 grid=5 items=14 wave=0 dist=323 player=(510.3965, 121.1522) enemy=(827.5491, 181.0541) mv=(1.0, 0.0) aim=(0.982977, 0.183728)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "final_god": 1, "final_god_hp": "59902/59902" }
+[HB] t=1072.5 paused=false frames=65391 fps_now=61 hp=6 kills=1799
+[HB] t=1073.5 paused=false frames=65452 fps_now=61 hp=6 kills=1799
+[HB] t=1074.5 paused=false frames=65513 fps_now=61 hp=6 kills=1799
+[HB] t=1075.5 paused=false frames=65574 fps_now=61 hp=6 kills=1799
+[HB] t=1076.5 paused=false frames=65635 fps_now=61 hp=6 kills=1799
+[AUTOPLAY] t=1077 hp=6 lv=22 kills=1799 enemies=1 dps=249 grid=5 items=14 wave=0 dist=280 player=(552.397, 121.1522) enemy=(826.4094, 180.8048) mv=(1.0, 0.0) aim=(0.976566, 0.215217)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "final_god": 1, "final_god_hp": "59902/59902" }
+[HB] t=1077.5 paused=false frames=65696 fps_now=61 hp=6 kills=1799
+[HB] t=1078.6 paused=false frames=65757 fps_now=61 hp=6 kills=1799
+[HB] t=1079.6 paused=false frames=65818 fps_now=61 hp=6 kills=1799
+[HB] t=1080.6 paused=false frames=65879 fps_now=61 hp=6 kills=1799
+[HB] t=1081.6 paused=false frames=65940 fps_now=61 hp=6 kills=1799
+[AUTOPLAY] t=1082 hp=6 lv=22 kills=1799 enemies=1 dps=249 grid=5 items=14 wave=0 dist=188 player=(646.3981, 121.1522) enemy=(825.2701, 180.5537) mv=(-1.0, 0.0) aim=(0.953321, 0.301958)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "final_god": 1, "final_god_hp": "59902/59902" }
+[HB] t=1082.6 paused=false frames=66001 fps_now=61 hp=6 kills=1799
+[HB] t=1083.6 paused=false frames=66062 fps_now=61 hp=6 kills=1799
+[HB] t=1084.6 paused=false frames=66124 fps_now=62 hp=39 kills=1801
+[HB] t=1085.7 paused=false frames=66185 fps_now=61 hp=101 kills=1801
+[HB] t=1086.7 paused=false frames=66246 fps_now=61 hp=101 kills=1801
+[AUTOPLAY] t=1087 hp=101 lv=22 kills=1801 enemies=8 dps=249 grid=5 items=14 wave=0 dist=182 player=(138.7038, 242.6828) enemy=(293.6344, 147.773) mv=(-0.0, 1.0) aim=(0.995957, -0.089831)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "final_god": 1, "final_god_hp": "59902/59902", "bat": 7 }
+[HB] t=1087.7 paused=false frames=66307 fps_now=61 hp=101 kills=1801
+[HB] t=1088.7 paused=false frames=66368 fps_now=61 hp=101 kills=1801
+[HB] t=1089.7 paused=false frames=66429 fps_now=61 hp=101 kills=1801
+[HB] t=1090.7 paused=false frames=66490 fps_now=61 hp=101 kills=1801
+[HB] t=1091.8 paused=false frames=66551 fps_now=61 hp=101 kills=1801
+[AUTOPLAY] t=1092 hp=101 lv=22 kills=1801 enemies=8 dps=249 grid=5 items=14 wave=0 dist=216 player=(736.2287, 539.5994) enemy=(520.6237, 541.4965) mv=(-0.577002, -0.816743) aim=(0.212075, -0.977254)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "final_god": 1, "final_god_hp": "59902/59902", "bat": 7 }
+[HB] t=1092.8 paused=false frames=66612 fps_now=61 hp=101 kills=1801
+[HB] t=1093.8 paused=false frames=66673 fps_now=61 hp=101 kills=1801
+[HB] t=1094.8 paused=false frames=66736 fps_now=63 hp=277 kills=1814
+[HB] t=1095.8 paused=false frames=66797 fps_now=61 hp=218 kills=1817
+[HB] t=1096.8 paused=false frames=66858 fps_now=61 hp=218 kills=1817
+[AUTOPLAY] t=1097 hp=134 lv=22 kills=1817 enemies=1 dps=249 grid=5 items=14 wave=0 dist=235 player=(614.6475, 128.1212) enemy=(831.503, 219.3394) mv=(-1.0, 0.0) aim=(0.919599, 0.392859)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "final_god": 1, "final_god_hp": "59902/59902" }
+[HB] t=1097.9 paused=false frames=66919 fps_now=61 hp=134 kills=1817
+[HB] t=1098.9 paused=false frames=66980 fps_now=61 hp=50 kills=1817
+[HB] t=1099.9 paused=false frames=67041 fps_now=61 hp=50 kills=1817
+[HB] t=1100.9 paused=false frames=67102 fps_now=61 hp=6 kills=1817
+[HB] t=1101.9 paused=false frames=67163 fps_now=61 hp=6 kills=1817
+[AUTOPLAY] t=1102 hp=6 lv=22 kills=1817 enemies=1 dps=249 grid=5 items=14 wave=0 dist=281 player=(563.3152, 128.1212) enemy=(829.2951, 218.5847) mv=(1.0, 0.0) aim=(0.945489, 0.325655)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "final_god": 1, "final_god_hp": "59902/59902" }
+[HB] t=1102.9 paused=false frames=67224 fps_now=61 hp=6 kills=1817
+[HB] t=1104.0 paused=false frames=67285 fps_now=61 hp=6 kills=1817
+[HB] t=1105.0 paused=false frames=67346 fps_now=61 hp=6 kills=1817
+[HB] t=1106.0 paused=false frames=67407 fps_now=61 hp=6 kills=1817
+[HB] t=1107.0 paused=false frames=67468 fps_now=61 hp=6 kills=1817
+[AUTOPLAY] t=1107 hp=6 lv=22 kills=1817 enemies=1 dps=249 grid=5 items=14 wave=0 dist=319 player=(519.9828, 128.1212) enemy=(825.9561, 217.5421) mv=(1.0, 0.0) aim=(0.96066, 0.277728)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "final_god": 1, "final_god_hp": "59902/59902" }
+[HB] t=1108.0 paused=false frames=67529 fps_now=61 hp=6 kills=1817
+[HB] t=1109.0 paused=false frames=67590 fps_now=61 hp=6 kills=1817
+[HB] t=1110.1 paused=false frames=67651 fps_now=61 hp=6 kills=1817
+[HB] t=1111.1 paused=false frames=67712 fps_now=61 hp=6 kills=1817
+[HB] t=1112.1 paused=false frames=67773 fps_now=61 hp=6 kills=1817
+[AUTOPLAY] t=1112 hp=6 lv=22 kills=1817 enemies=1 dps=249 grid=5 items=14 wave=0 dist=281 player=(557.9824, 128.1212) enemy=(824.8508, 217.1686) mv=(1.0, 0.0) aim=(0.947379, 0.320115)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "final_god": 1, "final_god_hp": "59902/59902" }
+[HB] t=1113.1 paused=false frames=67834 fps_now=61 hp=6 kills=1817
+[HB] t=1114.1 paused=false frames=67895 fps_now=61 hp=6 kills=1817
+[HB] t=1115.1 paused=false frames=67957 fps_now=62 hp=23 kills=1818
+[HB] t=1116.1 paused=false frames=68018 fps_now=61 hp=91 kills=1819
+[HB] t=1117.2 paused=false frames=68079 fps_now=61 hp=91 kills=1819
+[AUTOPLAY] t=1117 hp=91 lv=22 kills=1819 enemies=8 dps=249 grid=5 items=14 wave=0 dist=172 player=(138.0131, 192.5467) enemy=(303.7227, 147.127) mv=(-0.0, 1.0) aim=(0.998571, 0.053433)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "final_god": 1, "final_god_hp": "59902/59902", "bat": 7 }
+[HB] t=1118.2 paused=false frames=68140 fps_now=61 hp=91 kills=1819
+[HB] t=1119.2 paused=false frames=68201 fps_now=61 hp=91 kills=1819
+[HB] t=1120.2 paused=false frames=68262 fps_now=61 hp=91 kills=1819
+[HB] t=1121.2 paused=false frames=68325 fps_now=63 hp=170 kills=1826
+[HB] t=1122.2 paused=false frames=68386 fps_now=61 hp=170 kills=1826
+[AUTOPLAY] t=1122 hp=170 lv=22 kills=1826 enemies=1 dps=249 grid=5 items=14 wave=0 dist=377 player=(449.1457, 221.5924) enemy=(826.2565, 227.1172) mv=(0.739478, -0.673181) aim=(0.999963, 0.008604)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "final_god": 1, "final_god_hp": "59902/59902" }
+[HB] t=1123.2 paused=false frames=68447 fps_now=61 hp=86 kills=1826
+[HB] t=1124.3 paused=false frames=68508 fps_now=61 hp=86 kills=1826
+[HB] t=1125.3 paused=false frames=68569 fps_now=61 hp=86 kills=1826
+[HB] t=1126.3 paused=false frames=68630 fps_now=61 hp=6 kills=1826
+[HB] t=1127.3 paused=false frames=68691 fps_now=61 hp=6 kills=1826
+[AUTOPLAY] t=1127 hp=6 lv=22 kills=1826 enemies=1 dps=249 grid=5 items=14 wave=0 dist=319 player=(504.6656, 210.7345) enemy=(822.795, 227.2517) mv=(0.05185, -0.998655) aim=(0.998058, 0.062297)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "final_god": 1, "final_god_hp": "59902/59902" }
+[HB] t=1128.3 paused=false frames=68752 fps_now=61 hp=6 kills=1826
+[HB] t=1129.3 paused=false frames=68813 fps_now=61 hp=6 kills=1826
+[HB] t=1130.4 paused=false frames=68874 fps_now=61 hp=6 kills=1826
+[HB] t=1131.4 paused=false frames=68935 fps_now=61 hp=6 kills=1826
+[HB] t=1132.4 paused=false frames=68996 fps_now=61 hp=6 kills=1826
+[AUTOPLAY] t=1132 hp=6 lv=22 kills=1826 enemies=1 dps=249 grid=5 items=14 wave=0 dist=281 player=(563.5801, 115.4898) enemy=(821.725, 226.7867) mv=(1.0, 0.0) aim=(0.916399, 0.400266)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "final_god": 1, "final_god_hp": "59902/59902" }
+[HB] t=1133.4 paused=false frames=69057 fps_now=61 hp=6 kills=1826
+[HB] t=1134.4 paused=false frames=69118 fps_now=61 hp=6 kills=1826
+[HB] t=1135.4 paused=false frames=69181 fps_now=63 hp=94 kills=1828
+[HB] t=1136.5 paused=false frames=69242 fps_now=61 hp=94 kills=1828
+[HB] t=1137.5 paused=false frames=69303 fps_now=61 hp=94 kills=1828
+[AUTOPLAY] t=1137 hp=94 lv=22 kills=1828 enemies=8 dps=249 grid=5 items=14 wave=0 dist=199 player=(138.5555, 166.5956) enemy=(334.925, 135.5378) mv=(-0.0, 1.0) aim=(0.995361, 0.096216)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "final_god": 1, "final_god_hp": "59902/59902", "bat": 7 }
+[HB] t=1138.5 paused=false frames=69364 fps_now=61 hp=94 kills=1828
+[HB] t=1139.5 paused=false frames=69425 fps_now=61 hp=94 kills=1828
+[HB] t=1140.5 paused=false frames=69486 fps_now=61 hp=94 kills=1828
+[HB] t=1141.5 paused=false frames=69547 fps_now=61 hp=157 kills=1835
+[AUTOPLAY] t=1142 hp=157 lv=22 kills=1835 enemies=1 dps=249 grid=5 items=14 wave=0 dist=471 player=(343.2096, 249.3473) enemy=(813.5552, 229.2448) mv=(0.650479, -0.759524) aim=(0.998854, -0.047872)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "final_god": 1, "final_god_hp": "59902/59902" }
+[HB] t=1142.5 paused=false frames=69608 fps_now=61 hp=157 kills=1835
+[HB] t=1143.6 paused=false frames=69669 fps_now=61 hp=157 kills=1835
+[HB] t=1144.6 paused=false frames=69730 fps_now=61 hp=157 kills=1835
+[HB] t=1145.6 paused=false frames=69791 fps_now=61 hp=157 kills=1835
+[HB] t=1146.6 paused=false frames=69852 fps_now=61 hp=73 kills=1835
+[AUTOPLAY] t=1147 hp=95 lv=22 kills=1837 enemies=8 dps=249 grid=5 items=14 wave=0 dist=322 player=(227.9916, 158.2042) enemy=(549.3034, 180.1493) mv=(0.999391, 0.034904) aim=(0.997699, 0.067802)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "final_god": 1, "final_god_hp": "59902/59902", "bat": 7 }
+[HB] t=1147.6 paused=false frames=69913 fps_now=61 hp=126 kills=1837
+[HB] t=1148.6 paused=false frames=69974 fps_now=61 hp=157 kills=1837
+[HB] t=1149.7 paused=false frames=70035 fps_now=61 hp=157 kills=1837
+[HB] t=1150.7 paused=false frames=70096 fps_now=61 hp=157 kills=1837
+[HB] t=1151.7 paused=false frames=70157 fps_now=61 hp=157 kills=1837
+[AUTOPLAY] t=1152 hp=157 lv=22 kills=1837 enemies=8 dps=249 grid=5 items=14 wave=0 dist=120 player=(347.2849, 583.3495) enemy=(255.7429, 505.358) mv=(1.0, 0.0) aim=(0.770014, -0.638028)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "final_god": 1, "final_god_hp": "59902/59902", "bat": 7 }
+[HB] t=1152.7 paused=false frames=70218 fps_now=61 hp=157 kills=1837
+[HB] t=1153.7 paused=false frames=70279 fps_now=61 hp=73 kills=1837
+[HB] t=1154.7 paused=false frames=70340 fps_now=61 hp=73 kills=1837
+[HB] t=1155.8 paused=false frames=70401 fps_now=61 hp=73 kills=1837
+[HB] t=1156.8 paused=false frames=70462 fps_now=61 hp=73 kills=1837
+[AUTOPLAY] t=1157 hp=85 lv=22 kills=1839 enemies=6 dps=249 grid=5 items=14 wave=0 dist=117 player=(997.1696, 515.2654) enemy=(879.7921, 519.1715) mv=(1.0, 0.0) aim=(-0.526051, -0.850453)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "final_god": 1, "final_god_hp": "59902/59902", "bat": 5 }
+[HB] t=1157.8 paused=false frames=70523 fps_now=61 hp=85 kills=1839
+[HB] t=1158.8 paused=false frames=70584 fps_now=61 hp=85 kills=1839
+[HB] t=1159.8 paused=false frames=70645 fps_now=61 hp=85 kills=1839
+[HB] t=1160.8 paused=false frames=70706 fps_now=61 hp=6 kills=1839
+[HB] t=1161.8 paused=false frames=70771 fps_now=65 hp=6 kills=1844
+[AUTOPLAY] t=1162 hp=6 lv=22 kills=1844 enemies=10 dps=249 grid=5 items=14 wave=0 dist=214 player=(1076.734, 403.6281) enemy=(918.6973, 259.4905) mv=(-0.612814, 0.790227) aim=(-0.79625, -0.604968)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "final_god": 1, "final_god_hp": "59902/59902", "bat": 9 }
+[HB] t=1162.9 paused=false frames=70832 fps_now=61 hp=6 kills=1844
+[HB] t=1163.9 paused=false frames=70893 fps_now=61 hp=122 kills=1846
+[HB] t=1164.9 paused=false frames=70954 fps_now=61 hp=122 kills=1846
+[HB] t=1165.9 paused=false frames=71016 fps_now=62 hp=181 kills=1853
+[HB] t=1166.9 paused=false frames=71077 fps_now=61 hp=181 kills=1853
+[AUTOPLAY] t=1167 hp=181 lv=22 kills=1853 enemies=1 dps=249 grid=5 items=14 wave=0 dist=244 player=(781.2145, 438.4821) enemy=(814.2654, 196.6375) mv=(-0.578861, -0.815426) aim=(0.126143, -0.992012)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "final_god": 1, "final_god_hp": "59902/59902" }
+[HB] t=1167.9 paused=false frames=71138 fps_now=61 hp=181 kills=1853
+[HB] t=1168.9 paused=false frames=71199 fps_now=61 hp=181 kills=1853
+[HB] t=1170.0 paused=false frames=71260 fps_now=61 hp=181 kills=1853
+[HB] t=1171.0 paused=false frames=71321 fps_now=61 hp=97 kills=1853
+[HB] t=1172.0 paused=false frames=71382 fps_now=61 hp=97 kills=1853
+[AUTOPLAY] t=1172 hp=13 lv=22 kills=1853 enemies=1 dps=249 grid=5 items=14 wave=0 dist=298 player=(514.6618, 210.2449) enemy=(811.9376, 196.7909) mv=(-0.045211, -0.998977) aim=(0.999421, -0.034018)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "final_god": 1, "final_god_hp": "59902/59902" }
+[HB] t=1173.0 paused=false frames=71443 fps_now=61 hp=13 kills=1853
+[HB] t=1174.0 paused=false frames=71504 fps_now=61 hp=13 kills=1853
+[HB] t=1175.0 paused=false frames=71565 fps_now=61 hp=13 kills=1853
+[HB] t=1176.1 paused=false frames=71626 fps_now=61 hp=13 kills=1853
+[HB] t=1177.1 paused=false frames=71687 fps_now=61 hp=13 kills=1853
+[AUTOPLAY] t=1177 hp=13 lv=22 kills=1853 enemies=1 dps=249 grid=5 items=14 wave=0 dist=282 player=(540.6461, 115.1301) enemy=(810.8217, 196.4508) mv=(1.0, 0.0) aim=(0.956566, 0.291515)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "final_god": 1, "final_god_hp": "59902/59902" }
+[HB] t=1178.1 paused=false frames=71748 fps_now=61 hp=13 kills=1853
+[HB] t=1179.1 paused=false frames=71809 fps_now=61 hp=6 kills=1853
+[HB] t=1180.1 paused=false frames=71870 fps_now=61 hp=6 kills=1853
+[HB] t=1181.1 paused=false frames=71933 fps_now=63 hp=107 kills=1855
+[HB] t=1182.2 paused=false frames=71994 fps_now=61 hp=107 kills=1855
+[AUTOPLAY] t=1182 hp=107 lv=22 kills=1855 enemies=8 dps=249 grid=5 items=14 wave=0 dist=205 player=(157.7418, 138.7003) enemy=(362.9938, 134.5274) mv=(-0.707107, 0.707107) aim=(0.997488, 0.070833)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "final_god": 1, "final_god_hp": "59902/59902", "bat": 7 }
+[HB] t=1183.2 paused=false frames=72055 fps_now=61 hp=107 kills=1855
+[HB] t=1184.2 paused=false frames=72116 fps_now=61 hp=107 kills=1855
+[HB] t=1185.2 paused=false frames=72177 fps_now=61 hp=107 kills=1855
+[HB] t=1186.2 paused=false frames=72238 fps_now=61 hp=107 kills=1855
+[HB] t=1187.2 paused=false frames=72299 fps_now=61 hp=107 kills=1855
+[AUTOPLAY] t=1187 hp=107 lv=22 kills=1855 enemies=8 dps=249 grid=5 items=14 wave=0 dist=207 player=(649.0676, 555.0285) enemy=(444.4203, 527.3943) mv=(1.0, 0.0) aim=(0.381918, -0.924196)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "final_god": 1, "final_god_hp": "59902/59902", "bat": 7 }
+[HB] t=1188.3 paused=false frames=72360 fps_now=61 hp=107 kills=1855
+[HB] t=1189.3 paused=false frames=72421 fps_now=61 hp=23 kills=1855
+[HB] t=1190.3 paused=false frames=72482 fps_now=61 hp=23 kills=1855
+[HB] t=1191.3 paused=false frames=72543 fps_now=61 hp=23 kills=1855
+[HB] t=1192.3 paused=false frames=72604 fps_now=61 hp=23 kills=1855
+[AUTOPLAY] t=1192 hp=23 lv=22 kills=1855 enemies=8 dps=249 grid=5 items=14 wave=0 dist=205 player=(1142.129, 223.7966) enemy=(1053.227, 408.7142) mv=(0.0, -1.0) aim=(-0.992418, -0.122913)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "final_god": 1, "final_god_hp": "59902/59902", "bat": 7 }
+[HB] t=1193.3 paused=false frames=72665 fps_now=61 hp=23 kills=1855
+[HB] t=1194.3 paused=false frames=72726 fps_now=61 hp=70 kills=1862
+[HB] t=1195.4 paused=false frames=72787 fps_now=61 hp=6 kills=1862
+[HB] t=1196.4 paused=false frames=72848 fps_now=61 hp=6 kills=1862
+[HB] t=1197.4 paused=false frames=72910 fps_now=62 hp=58 kills=1864
+[AUTOPLAY] t=1197 hp=89 lv=22 kills=1864 enemies=8 dps=249 grid=5 items=14 wave=0 dist=188 player=(683.6682, 583.3213) enemy=(782.0583, 423.0647) mv=(-1.0, -0.0) aim=(0.327623, -0.944809)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "final_god": 1, "final_god_hp": "59902/59902", "bat": 7 }
+[HB] t=1198.4 paused=false frames=72971 fps_now=61 hp=89 kills=1864
+[HB] t=1199.4 paused=false frames=73032 fps_now=61 hp=89 kills=1864
+[HB] t=1200.4 paused=false frames=73093 fps_now=61 hp=89 kills=1864
+[HB] t=1201.4 paused=false frames=73154 fps_now=61 hp=89 kills=1864
+[HB] t=1202.5 paused=false frames=73215 fps_now=61 hp=89 kills=1864
+[AUTOPLAY] t=1202 hp=89 lv=22 kills=1864 enemies=8 dps=249 grid=5 items=14 wave=0 dist=211 player=(136.882, 140.5697) enemy=(249.958, 319.1844) mv=(0.707107, -0.707107) aim=(0.996758, 0.080463)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "final_god": 1, "final_god_hp": "59902/59902", "bat": 7 }
+[HB] t=1203.5 paused=false frames=73276 fps_now=61 hp=89 kills=1864
+[HB] t=1204.5 paused=false frames=73337 fps_now=61 hp=126 kills=1871
+[HB] t=1205.5 paused=false frames=73398 fps_now=61 hp=126 kills=1871
+[HB] t=1206.5 paused=false frames=73459 fps_now=61 hp=126 kills=1871
+[HB] t=1207.5 paused=false frames=73520 fps_now=61 hp=126 kills=1871
+[AUTOPLAY] t=1207 hp=126 lv=22 kills=1871 enemies=1 dps=249 grid=5 items=14 wave=0 dist=279 player=(550.8724, 114.864) enemy=(818.4567, 193.0841) mv=(-1.0, 0.0) aim=(0.960757, 0.277392)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "final_god": 1, "final_god_hp": "59902/59902" }
+[HB] t=1208.5 paused=false frames=73581 fps_now=61 hp=126 kills=1871
+[HB] t=1209.6 paused=false frames=73642 fps_now=61 hp=126 kills=1871
+[HB] t=1210.6 paused=false frames=73703 fps_now=61 hp=126 kills=1871
+[HB] t=1211.6 paused=false frames=73764 fps_now=61 hp=126 kills=1871
+[HB] t=1212.6 paused=false frames=73826 fps_now=62 hp=227 kills=1875
+[AUTOPLAY] t=1212 hp=230 lv=22 kills=1876 enemies=5 dps=249 grid=5 items=14 wave=0 dist=105 player=(455.2043, 116.5176) enemy=(558.2272, 135.2906) mv=(1.0, 0.0) aim=(0.971988, 0.23503)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "final_god": 1, "final_god_hp": "59902/59902", "bat": 4 }
+[HB] t=1213.6 paused=false frames=73889 fps_now=63 hp=253 kills=1880
+[HB] t=1214.6 paused=false frames=73951 fps_now=62 hp=315 kills=1880
+[HB] t=1215.6 paused=false frames=74012 fps_now=61 hp=315 kills=1880
+[HB] t=1216.7 paused=false frames=74073 fps_now=61 hp=231 kills=1880
+[HB] t=1217.7 paused=false frames=74134 fps_now=61 hp=231 kills=1880
+[AUTOPLAY] t=1217 hp=231 lv=22 kills=1880 enemies=1 dps=249 grid=5 items=14 wave=0 dist=148 player=(661.284, 238.1446) enemy=(804.6291, 200.5789) mv=(-0.905416, -0.424525) aim=(0.950858, -0.309628)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "final_god": 1, "final_god_hp": "58042/59902" }
+[HB] t=1218.7 paused=false frames=74195 fps_now=61 hp=231 kills=1880
+[HB] t=1219.7 paused=false frames=74256 fps_now=61 hp=231 kills=1880
+[HB] t=1220.7 paused=false frames=74317 fps_now=61 hp=147 kills=1880
+[HB] t=1221.7 paused=false frames=74378 fps_now=61 hp=147 kills=1880
+[AUTOPLAY] t=1222 hp=201 lv=22 kills=1882 enemies=8 dps=249 grid=5 items=14 wave=0 dist=240 player=(369.2135, 236.4316) enemy=(609.0236, 224.0902) mv=(0.990164, 0.139911) aim=(0.996807, -0.079855)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "final_god": 1, "final_god_hp": "59244/59902", "bat": 7 }
+[HB] t=1222.8 paused=false frames=74441 fps_now=63 hp=232 kills=1882
+[HB] t=1223.8 paused=false frames=74503 fps_now=62 hp=258 kills=1889
+[HB] t=1224.8 paused=false frames=74564 fps_now=61 hp=90 kills=1889
+[HB] t=1225.8 paused=false frames=74625 fps_now=61 hp=90 kills=1889
+[HB] t=1226.8 paused=false frames=74686 fps_now=61 hp=90 kills=1889
+[AUTOPLAY] t=1227 hp=90 lv=22 kills=1889 enemies=1 dps=249 grid=5 items=14 wave=0 dist=313 player=(440.1487, 212.1174) enemy=(752.8033, 207.8477) mv=(-0.013655, -0.999907) aim=(0.999996, -0.002995)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "final_god": 1, "final_god_hp": "59902/59902" }
+[HB] t=1227.8 paused=false frames=74747 fps_now=61 hp=90 kills=1889
+[HB] t=1228.8 paused=false frames=74808 fps_now=61 hp=90 kills=1889
+[HB] t=1229.9 paused=false frames=74869 fps_now=61 hp=90 kills=1889
+[HB] t=1230.9 paused=false frames=74930 fps_now=61 hp=90 kills=1889
+[HB] t=1231.9 paused=false frames=74991 fps_now=61 hp=6 kills=1889
+[AUTOPLAY] t=1232 hp=6 lv=22 kills=1889 enemies=1 dps=249 grid=5 items=14 wave=0 dist=292 player=(472.6638, 116.7998) enemy=(750.566, 207.191) mv=(1.0, 0.0) aim=(0.952034, 0.305991)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "final_god": 1, "final_god_hp": "59902/59902" }
+[HB] t=1232.9 paused=false frames=75052 fps_now=61 hp=6 kills=1889
+[HB] t=1233.9 paused=false frames=75113 fps_now=61 hp=6 kills=1889
+[HB] t=1234.9 paused=false frames=75174 fps_now=61 hp=6 kills=1889
+[HB] t=1236.0 paused=false frames=75235 fps_now=61 hp=6 kills=1889
+[HB] t=1237.0 paused=false frames=75296 fps_now=61 hp=6 kills=1889
+[AUTOPLAY] t=1237 hp=6 lv=22 kills=1889 enemies=1 dps=249 grid=5 items=14 wave=0 dist=279 player=(483.9975, 116.7998) enemy=(748.3586, 206.4349) mv=(-1.0, 0.0) aim=(0.94579, 0.324778)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "final_god": 1, "final_god_hp": "59902/59902" }
+[HB] t=1238.0 paused=false frames=75357 fps_now=61 hp=6 kills=1889
+[HB] t=1239.0 paused=false frames=75418 fps_now=61 hp=6 kills=1889
+[HB] t=1240.0 paused=false frames=75479 fps_now=61 hp=6 kills=1889
+[HB] t=1241.0 paused=false frames=75540 fps_now=61 hp=6 kills=1889
+[HB] t=1242.1 paused=false frames=75601 fps_now=61 hp=6 kills=1889
+[AUTOPLAY] t=1242 hp=6 lv=22 kills=1889 enemies=1 dps=249 grid=5 items=14 wave=0 dist=220 player=(544.6649, 116.7998) enemy=(746.1923, 205.5766) mv=(-1.0, 0.0) aim=(0.912628, 0.408792)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "final_god": 1, "final_god_hp": "59902/59902" }
+[HB] t=1243.1 paused=false frames=75662 fps_now=61 hp=6 kills=1889
+[HB] t=1244.1 paused=false frames=75723 fps_now=61 hp=6 kills=1889
+[HB] t=1245.1 paused=false frames=75784 fps_now=61 hp=6 kills=1889
+[HB] t=1246.1 paused=false frames=75845 fps_now=61 hp=6 kills=1889
+[HB] t=1247.1 paused=false frames=75906 fps_now=61 hp=6 kills=1889
+[AUTOPLAY] t=1247 hp=6 lv=22 kills=1889 enemies=10 dps=249 grid=5 items=14 wave=0 dist=100 player=(299.9981, 116.7998) enemy=(398.9586, 133.1719) mv=(-1.0, -0.0) aim=(0.98905, 0.147584)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "final_god": 1, "final_god_hp": "59902/59902", "bat": 9 }
+[HB] t=1248.2 paused=false frames=75969 fps_now=63 hp=95 kills=1891
+[HB] t=1249.2 paused=false frames=76030 fps_now=61 hp=95 kills=1891
+[HB] t=1250.2 paused=false frames=76091 fps_now=61 hp=95 kills=1891
+[HB] t=1251.2 paused=false frames=76152 fps_now=61 hp=95 kills=1891
+[HB] t=1252.2 paused=false frames=76213 fps_now=61 hp=95 kills=1891
+[AUTOPLAY] t=1252 hp=95 lv=22 kills=1891 enemies=8 dps=249 grid=5 items=14 wave=0 dist=168 player=(281.0629, 583.2899) enemy=(190.7337, 441.4376) mv=(1.0, 0.0) aim=(0.758205, -0.652016)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "final_god": 1, "final_god_hp": "59902/59902", "bat": 7 }
+[HB] t=1253.2 paused=false frames=76274 fps_now=61 hp=95 kills=1891
+[HB] t=1254.3 paused=false frames=76335 fps_now=61 hp=95 kills=1891
+[HB] t=1255.3 paused=false frames=76396 fps_now=61 hp=95 kills=1891
+[HB] t=1256.3 paused=false frames=76457 fps_now=61 hp=11 kills=1891
+[HB] t=1257.3 paused=false frames=76518 fps_now=61 hp=6 kills=1891
+[AUTOPLAY] t=1257 hp=6 lv=22 kills=1891 enemies=8 dps=249 grid=5 items=14 wave=0 dist=197 player=(955.8774, 307.4828) enemy=(797.9889, 425.3135) mv=(0.707107, -0.707107) aim=(-0.862581, -0.50592)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "final_god": 1, "final_god_hp": "59902/59902", "bat": 7 }
+[HB] t=1258.3 paused=false frames=76579 fps_now=61 hp=6 kills=1891
+[HB] t=1259.3 paused=false frames=76640 fps_now=61 hp=6 kills=1891
+[HB] t=1260.4 paused=false frames=76701 fps_now=61 hp=6 kills=1891
+[HB] t=1261.4 paused=false frames=76762 fps_now=61 hp=70 kills=1898
+[HB] t=1262.4 paused=false frames=76823 fps_now=61 hp=70 kills=1898
+[AUTOPLAY] t=1262 hp=70 lv=22 kills=1898 enemies=1 dps=249 grid=5 items=14 wave=0 dist=338 player=(921.7769, 469.9553) enemy=(740.7703, 184.3342) mv=(-0.844668, 0.535291) aim=(-0.543592, -0.83935)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "final_god": 1, "final_god_hp": "59902/59902" }
+[HB] t=1263.4 paused=false frames=76884 fps_now=61 hp=70 kills=1898
+[HB] t=1264.4 paused=false frames=76945 fps_now=61 hp=70 kills=1898
+[HB] t=1265.4 paused=false frames=77006 fps_now=61 hp=6 kills=1898
+[HB] t=1266.4 paused=false frames=77068 fps_now=62 hp=123 kills=1900
+[HB] t=1267.5 paused=false frames=77129 fps_now=61 hp=123 kills=1900
+[AUTOPLAY] t=1267 hp=123 lv=22 kills=1900 enemies=8 dps=249 grid=5 items=14 wave=0 dist=169 player=(191.3614, 439.9312) enemy=(359.8214, 428.7945) mv=(-1.0, -0.0) aim=(0.895379, -0.445305)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "final_god": 1, "final_god_hp": "59902/59902", "bat": 7 }
+[HB] t=1268.5 paused=false frames=77190 fps_now=61 hp=123 kills=1900
+[HB] t=1269.5 paused=false frames=77251 fps_now=61 hp=148 kills=1905
+[HB] t=1270.5 paused=false frames=77314 fps_now=63 hp=164 kills=1907
+[HB] t=1271.5 paused=false frames=77375 fps_now=61 hp=164 kills=1907
+[HB] t=1272.5 paused=false frames=77436 fps_now=61 hp=80 kills=1907
+[AUTOPLAY] t=1272 hp=6 lv=22 kills=1907 enemies=1 dps=249 grid=5 items=14 wave=0 dist=339 player=(370.403, 212.5043) enemy=(708.0423, 184.2407) mv=(-0.083418, -0.996515) aim=(0.997287, -0.07361)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "final_god": 1, "final_god_hp": "59902/59902" }
+[HB] t=1273.5 paused=false frames=77497 fps_now=61 hp=6 kills=1907
+[HB] t=1274.6 paused=false frames=77558 fps_now=61 hp=6 kills=1907
+[HB] t=1275.6 paused=false frames=77619 fps_now=61 hp=6 kills=1907
+[HB] t=1276.6 paused=false frames=77680 fps_now=61 hp=6 kills=1907
+[HB] t=1277.6 paused=false frames=77741 fps_now=61 hp=6 kills=1907
+[AUTOPLAY] t=1277 hp=6 lv=22 kills=1907 enemies=1 dps=249 grid=5 items=14 wave=0 dist=337 player=(376.1071, 117.5829) enemy=(706.9097, 183.961) mv=(1.0, 0.0) aim=(0.980833, 0.194848)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "final_god": 1, "final_god_hp": "59902/59902" }
+[HB] t=1278.6 paused=false frames=77802 fps_now=61 hp=6 kills=1907
+[HB] t=1279.6 paused=false frames=77863 fps_now=61 hp=6 kills=1907
+[HB] t=1280.7 paused=false frames=77924 fps_now=61 hp=6 kills=1907
+[HB] t=1281.7 paused=false frames=77986 fps_now=62 hp=19 kills=1908
+[HB] t=1282.7 paused=false frames=78047 fps_now=61 hp=94 kills=1909
+[AUTOPLAY] t=1282 hp=94 lv=22 kills=1909 enemies=8 dps=249 grid=5 items=14 wave=0 dist=208 player=(174.5248, 121.9244) enemy=(382.9353, 126.1905) mv=(-0.707107, 0.707107) aim=(0.987927, 0.154922)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "final_god": 1, "final_god_hp": "59902/59902", "bat": 7 }
+[HB] t=1283.7 paused=false frames=78108 fps_now=61 hp=94 kills=1909
+[HB] t=1284.7 paused=false frames=78169 fps_now=61 hp=94 kills=1909
+[HB] t=1285.7 paused=false frames=78230 fps_now=61 hp=94 kills=1909
+[HB] t=1286.7 paused=false frames=78291 fps_now=61 hp=132 kills=1916
+[HB] t=1287.7 paused=false frames=78352 fps_now=61 hp=132 kills=1916
+[AUTOPLAY] t=1287 hp=132 lv=22 kills=1916 enemies=1 dps=249 grid=5 items=14 wave=0 dist=369 player=(299.0533, 280.2962) enemy=(658.2714, 195.7947) mv=(0.496786, -0.867873) aim=(0.971896, -0.23541)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "final_god": 1, "final_god_hp": "59902/59902" }
+[HB] t=1288.8 paused=false frames=78413 fps_now=61 hp=132 kills=1916
+[HB] t=1289.8 paused=false frames=78474 fps_now=61 hp=48 kills=1916
+[HB] t=1290.8 paused=false frames=78535 fps_now=61 hp=48 kills=1916
+[HB] t=1291.8 paused=false frames=78596 fps_now=61 hp=6 kills=1916
+[HB] t=1292.8 paused=false frames=78657 fps_now=61 hp=6 kills=1916
+[AUTOPLAY] t=1292 hp=6 lv=22 kills=1916 enemies=1 dps=249 grid=5 items=14 wave=0 dist=282 player=(385.9501, 115.2074) enemy=(656.0212, 195.1802) mv=(1.0, 0.0) aim=(0.957874, 0.287188)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "final_god": 1, "final_god_hp": "59902/59902" }
+[HB] t=1293.8 paused=false frames=78718 fps_now=61 hp=6 kills=1916
+[HB] t=1294.9 paused=false frames=78782 fps_now=64 hp=94 kills=1918
+[HB] t=1295.9 paused=false frames=78843 fps_now=61 hp=94 kills=1918
+[HB] t=1296.9 paused=false frames=78904 fps_now=61 hp=94 kills=1918
+[AUTOPLAY] t=1297 hp=94 lv=22 kills=1918 enemies=8 dps=249 grid=5 items=14 wave=0 dist=194 player=(163.5811, 581.8512) enemy=(177.1368, 388.3828) mv=(1.0, 0.0) aim=(0.746588, -0.665287)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "final_god": 1, "final_god_hp": "59902/59902", "bat": 7 }
+[HB] t=1297.9 paused=false frames=78965 fps_now=61 hp=94 kills=1918
+[HB] t=1298.9 paused=false frames=79026 fps_now=61 hp=182 kills=1925
+[HB] t=1299.9 paused=false frames=79087 fps_now=61 hp=182 kills=1925
+[HB] t=1300.9 paused=false frames=79148 fps_now=61 hp=182 kills=1925
+[HB] t=1302.0 paused=false frames=79209 fps_now=61 hp=98 kills=1925
+[AUTOPLAY] t=1302 hp=98 lv=22 kills=1925 enemies=1 dps=249 grid=5 items=14 wave=0 dist=278 player=(322.4923, 117.3043) enemy=(588.7759, 198.2809) mv=(-1.0, 0.0) aim=(0.957737, 0.287646)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "final_god": 1, "final_god_hp": "59902/59902" }
+[HB] t=1303.0 paused=false frames=79270 fps_now=61 hp=98 kills=1925
+[HB] t=1304.0 paused=false frames=79331 fps_now=61 hp=98 kills=1925
+[HB] t=1305.0 paused=false frames=79392 fps_now=61 hp=98 kills=1925
+[HB] t=1306.0 paused=false frames=79453 fps_now=61 hp=14 kills=1925
+[HB] t=1307.0 paused=false frames=79514 fps_now=61 hp=14 kills=1925
+[AUTOPLAY] t=1307 hp=14 lv=22 kills=1925 enemies=1 dps=249 grid=5 items=14 wave=0 dist=280 player=(317.8252, 117.3043) enemy=(586.5588, 197.5552) mv=(1.0, 0.0) aim=(0.957198, 0.289435)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "final_god": 1, "final_god_hp": "59902/59902" }
+[HB] t=1308.1 paused=false frames=79575 fps_now=61 hp=14 kills=1925
+[HB] t=1309.1 paused=false frames=79636 fps_now=61 hp=14 kills=1925
+[HB] t=1310.1 paused=false frames=79697 fps_now=61 hp=14 kills=1925
+[HB] t=1311.1 paused=false frames=79758 fps_now=61 hp=14 kills=1925
+[HB] t=1312.1 paused=false frames=79819 fps_now=61 hp=14 kills=1925
+[AUTOPLAY] t=1312 hp=14 lv=22 kills=1925 enemies=1 dps=249 grid=5 items=14 wave=0 dist=277 player=(319.8248, 117.3043) enemy=(585.4416, 197.2191) mv=(-1.0, 0.0) aim=(0.958579, 0.284828)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "final_god": 1, "final_god_hp": "59902/59902" }
+[HB] t=1313.1 paused=false frames=79880 fps_now=61 hp=6 kills=1925
+[HB] t=1314.2 paused=false frames=79941 fps_now=61 hp=6 kills=1925
+[HB] t=1315.2 paused=false frames=80002 fps_now=61 hp=6 kills=1925
+[HB] t=1316.2 paused=false frames=80063 fps_now=61 hp=6 kills=1925
+[HB] t=1317.2 paused=false frames=80124 fps_now=61 hp=6 kills=1925
+[AUTOPLAY] t=1317 hp=6 lv=22 kills=1925 enemies=1 dps=249 grid=5 items=14 wave=0 dist=278 player=(316.4912, 117.3043) enemy=(583.2051, 196.5537) mv=(-1.0, 0.0) aim=(0.959535, 0.28159)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "final_god": 1, "final_god_hp": "59902/59902" }
+[HB] t=1318.2 paused=false frames=80185 fps_now=61 hp=6 kills=1925
+[HB] t=1319.2 paused=false frames=80246 fps_now=61 hp=6 kills=1925
+[HB] t=1320.3 paused=false frames=80307 fps_now=61 hp=6 kills=1925
+[HB] t=1321.3 paused=false frames=80368 fps_now=61 hp=6 kills=1925
+[HB] t=1322.3 paused=false frames=80429 fps_now=61 hp=6 kills=1925
+[AUTOPLAY] t=1322 hp=6 lv=22 kills=1925 enemies=1 dps=249 grid=5 items=14 wave=0 dist=279 player=(314.4914, 117.3043) enemy=(582.0868, 196.2214) mv=(-1.0, 0.0) aim=(0.960099, 0.279661)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "final_god": 1, "final_god_hp": "59902/59902" }
+[HB] t=1323.3 paused=false frames=80490 fps_now=61 hp=6 kills=1925
+[HB] t=1324.3 paused=false frames=80551 fps_now=61 hp=6 kills=1925
+[HB] t=1325.3 paused=false frames=80612 fps_now=61 hp=6 kills=1925
+[HB] t=1326.4 paused=false frames=80673 fps_now=61 hp=6 kills=1925
+[HB] t=1327.4 paused=false frames=80736 fps_now=63 hp=91 kills=1927
+[AUTOPLAY] t=1327 hp=91 lv=22 kills=1927 enemies=8 dps=249 grid=5 items=14 wave=0 dist=216 player=(138.4392, 379.4927) enemy=(279.3882, 216.1432) mv=(-0.0, 1.0) aim=(0.928638, -0.370988)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "final_god": 1, "final_god_hp": "59902/59902", "bat": 7 }
+[HB] t=1328.4 paused=false frames=80797 fps_now=61 hp=91 kills=1927
+[HB] t=1329.4 paused=false frames=80858 fps_now=61 hp=91 kills=1927
+[HB] t=1330.4 paused=false frames=80919 fps_now=61 hp=131 kills=1934
+[HB] t=1331.4 paused=false frames=80980 fps_now=61 hp=131 kills=1934
+[HB] t=1332.4 paused=false frames=81041 fps_now=61 hp=131 kills=1934
+[AUTOPLAY] t=1332 hp=131 lv=22 kills=1934 enemies=1 dps=249 grid=5 items=14 wave=0 dist=339 player=(245.0387, 207.1197) enemy=(584.033, 198.571) mv=(0.02521, 0.999682) aim=(0.999386, -0.035036)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "final_god": 1, "final_god_hp": "59902/59902" }
+[HB] t=1333.5 paused=false frames=81102 fps_now=61 hp=47 kills=1934
+[HB] t=1334.5 paused=false frames=81163 fps_now=61 hp=6 kills=1934
+[HB] t=1335.5 paused=false frames=81224 fps_now=61 hp=6 kills=1934
+[HB] t=1336.5 paused=false frames=81285 fps_now=61 hp=6 kills=1934
+[HB] t=1337.5 paused=false frames=81346 fps_now=61 hp=6 kills=1934
+[AUTOPLAY] t=1337 hp=6 lv=22 kills=1934 enemies=1 dps=249 grid=5 items=14 wave=0 dist=278 player=(316.5183, 115.2357) enemy=(581.7521, 198.2558) mv=(-1.0, 0.0) aim=(0.955394, 0.295334)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "final_god": 1, "final_god_hp": "59902/59902" }
+[HB] t=1338.5 paused=false frames=81407 fps_now=61 hp=6 kills=1934
+[HB] t=1339.6 paused=false frames=81468 fps_now=61 hp=6 kills=1934
+[HB] t=1340.6 paused=false frames=81529 fps_now=61 hp=6 kills=1934
+[HB] t=1341.6 paused=false frames=81590 fps_now=61 hp=6 kills=1934
+[HB] t=1342.6 paused=false frames=81651 fps_now=61 hp=6 kills=1934
+[AUTOPLAY] t=1342 hp=6 lv=22 kills=1934 enemies=1 dps=249 grid=5 items=14 wave=0 dist=278 player=(313.1847, 115.2357) enemy=(578.4542, 197.0998) mv=(-1.0, 0.0) aim=(0.956559, 0.291538)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "final_god": 1, "final_god_hp": "59902/59902" }
+[HB] t=1343.6 paused=false frames=81712 fps_now=61 hp=6 kills=1934
+[HB] t=1344.6 paused=false frames=81773 fps_now=61 hp=6 kills=1934
+[HB] t=1345.7 paused=false frames=81834 fps_now=61 hp=6 kills=1934
+[HB] t=1346.7 paused=false frames=81895 fps_now=61 hp=6 kills=1934
+[HB] t=1347.7 paused=false frames=81956 fps_now=61 hp=6 kills=1934
+[AUTOPLAY] t=1348 hp=6 lv=22 kills=1934 enemies=1 dps=249 grid=5 items=14 wave=0 dist=281 player=(308.5176, 115.2357) enemy=(577.3378, 196.7612) mv=(1.0, 0.0) aim=(0.955944, 0.293551)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "final_god": 1, "final_god_hp": "59902/59902" }
+[HB] t=1348.7 paused=false frames=82017 fps_now=61 hp=6 kills=1934
+[HB] t=1349.7 paused=false frames=82078 fps_now=61 hp=6 kills=1934
+[HB] t=1350.7 paused=false frames=82139 fps_now=61 hp=6 kills=1934
+[HB] t=1351.8 paused=false frames=82200 fps_now=61 hp=6 kills=1934
+[HB] t=1352.8 paused=false frames=82261 fps_now=61 hp=6 kills=1934
+[AUTOPLAY] t=1353 hp=6 lv=22 kills=1934 enemies=1 dps=249 grid=5 items=14 wave=0 dist=278 player=(310.5172, 115.2357) enemy=(576.2245, 196.4124) mv=(-1.0, 0.0) aim=(0.95737, 0.288864)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "final_god": 1, "final_god_hp": "59902/59902" }
+[HB] t=1353.8 paused=false frames=82322 fps_now=61 hp=6 kills=1934
+[HB] t=1354.8 paused=false frames=82383 fps_now=61 hp=6 kills=1934
+[HB] t=1355.8 paused=false frames=82444 fps_now=61 hp=6 kills=1934
+[HB] t=1356.8 paused=false frames=82505 fps_now=61 hp=6 kills=1934
+[HB] t=1357.9 paused=false frames=82566 fps_now=61 hp=6 kills=1934
+[AUTOPLAY] t=1358 hp=6 lv=22 kills=1934 enemies=1 dps=249 grid=5 items=14 wave=0 dist=281 player=(304.5164, 115.2357) enemy=(573.9893, 195.7429) mv=(1.0, 0.0) aim=(0.957165, 0.289542)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "final_god": 1, "final_god_hp": "59902/59902" }
+[HB] t=1358.9 paused=false frames=82627 fps_now=61 hp=6 kills=1934
+[HB] t=1359.9 paused=false frames=82688 fps_now=61 hp=6 kills=1934
+[HB] t=1360.9 paused=false frames=82749 fps_now=61 hp=6 kills=1934
+[HB] t=1361.9 paused=false frames=82810 fps_now=61 hp=6 kills=1934
+[HB] t=1362.9 paused=false frames=82871 fps_now=61 hp=6 kills=1934
+[AUTOPLAY] t=1363 hp=6 lv=22 kills=1934 enemies=1 dps=249 grid=5 items=14 wave=0 dist=282 player=(299.8493, 115.2357) enemy=(570.6582, 194.673) mv=(1.0, 0.0) aim=(0.958617, 0.284699)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "final_god": 1, "final_god_hp": "59902/59902" }
+[HB] t=1364.0 paused=false frames=82932 fps_now=61 hp=6 kills=1934
+[HB] t=1365.0 paused=false frames=82993 fps_now=61 hp=6 kills=1934
+[HB] t=1366.0 paused=false frames=83054 fps_now=61 hp=6 kills=1934
+[HB] t=1367.0 paused=false frames=83115 fps_now=61 hp=6 kills=1934
+[HB] t=1368.0 paused=false frames=83176 fps_now=61 hp=6 kills=1934
+[AUTOPLAY] t=1368 hp=6 lv=22 kills=1934 enemies=1 dps=249 grid=5 items=14 wave=0 dist=239 player=(343.1825, 115.2357) enemy=(568.4212, 194.0094) mv=(-1.0, 0.0) aim=(0.942383, 0.334535)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "final_god": 1, "final_god_hp": "59902/59902" }
+[HB] t=1369.0 paused=false frames=83237 fps_now=61 hp=6 kills=1934
+[HB] t=1370.1 paused=false frames=83298 fps_now=61 hp=6 kills=1934
+[HB] t=1371.1 paused=false frames=83360 fps_now=62 hp=29 kills=1936
+[HB] t=1372.1 paused=false frames=83421 fps_now=61 hp=91 kills=1936
+[AUTOPLAY] t=1373 hp=91 lv=22 kills=1936 enemies=8 dps=249 grid=5 items=14 wave=0 dist=203 player=(110.8529, 496.2695) enemy=(178.3004, 305.1254) mv=(-0.0, 1.0) aim=(0.842113, -0.5393)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "final_god": 1, "final_god_hp": "59902/59902", "bat": 7 }
+[HB] t=1373.1 paused=false frames=83482 fps_now=61 hp=91 kills=1936
+[HB] t=1374.1 paused=false frames=83543 fps_now=61 hp=91 kills=1936
+[HB] t=1375.1 paused=false frames=83604 fps_now=61 hp=91 kills=1936
+[HB] t=1376.2 paused=false frames=83665 fps_now=61 hp=91 kills=1936
+[HB] t=1377.2 paused=false frames=83726 fps_now=61 hp=91 kills=1936
+[AUTOPLAY] t=1378 hp=91 lv=22 kills=1936 enemies=8 dps=249 grid=5 items=14 wave=0 dist=211 player=(882.7282, 541.5637) enemy=(672.0623, 539.5515) mv=(1.0, 0.0) aim=(-0.67884, -0.734286)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "final_god": 1, "final_god_hp": "59902/59902", "bat": 7 }
+[HB] t=1378.2 paused=false frames=83787 fps_now=61 hp=91 kills=1936
+[HB] t=1379.2 paused=false frames=83848 fps_now=61 hp=91 kills=1936
+[HB] t=1380.2 paused=false frames=83909 fps_now=61 hp=91 kills=1936
+[HB] t=1381.2 paused=false frames=83970 fps_now=61 hp=91 kills=1936
+[HB] t=1382.3 paused=false frames=84031 fps_now=61 hp=91 kills=1936
+[AUTOPLAY] t=1383 hp=7 lv=22 kills=1936 enemies=8 dps=249 grid=5 items=14 wave=0 dist=173 player=(931.6193, 128.797) enemy=(1037.028, 265.9882) mv=(-1.0, -0.0) aim=(-0.97951, 0.201397)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "final_god": 1, "final_god_hp": "59902/59902", "bat": 7 }
+[HB] t=1383.3 paused=false frames=84092 fps_now=61 hp=7 kills=1936
+[HB] t=1384.3 paused=false frames=84153 fps_now=61 hp=7 kills=1936
+[HB] t=1385.3 paused=false frames=84214 fps_now=61 hp=18 kills=1936
+[HB] t=1386.3 paused=false frames=84278 fps_now=64 hp=6 kills=1943
+[HB] t=1387.3 paused=false frames=84339 fps_now=61 hp=6 kills=1943
+[AUTOPLAY] t=1388 hp=6 lv=22 kills=1943 enemies=10 dps=249 grid=5 items=14 wave=0 dist=229 player=(654.3401, 488.1191) enemy=(637.7524, 259.8229) mv=(-0.460837, 0.887485) aim=(-0.221633, -0.97513)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "final_god": 1, "final_god_hp": "59802/59902", "bat": 9 }
+[HB] t=1388.3 paused=false frames=84400 fps_now=61 hp=6 kills=1943
+[HB] t=1389.4 paused=false frames=84461 fps_now=61 hp=33 kills=1945
+[HB] t=1390.4 paused=false frames=84522 fps_now=61 hp=95 kills=1945
+[HB] t=1391.4 paused=false frames=84583 fps_now=61 hp=95 kills=1945
+[HB] t=1392.4 paused=false frames=84645 fps_now=62 hp=123 kills=1950
+[AUTOPLAY] t=1393 hp=123 lv=22 kills=1950 enemies=3 dps=249 grid=5 items=14 wave=0 dist=157 player=(138.9939, 299.0362) enemy=(202.089, 442.7635) mv=(0.0, -1.0) aim=(0.984647, -0.174556)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "final_god": 1, "final_god_hp": "59902/59902", "bat": 2 }
+[HB] t=1393.4 paused=false frames=84706 fps_now=61 hp=123 kills=1950
+[HB] t=1394.4 paused=false frames=84767 fps_now=61 hp=123 kills=1950
+[HB] t=1395.4 paused=false frames=84828 fps_now=61 hp=123 kills=1950
+[HB] t=1396.5 paused=false frames=84889 fps_now=61 hp=50 kills=1952
+[HB] t=1397.5 paused=false frames=84950 fps_now=61 hp=6 kills=1952
+[AUTOPLAY] t=1398 hp=6 lv=22 kills=1952 enemies=1 dps=249 grid=5 items=14 wave=0 dist=281 player=(306.6559, 208.7228) enemy=(587.5752, 222.1986) mv=(-0.047915, 0.998851) aim=(0.999349, 0.036074)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "final_god": 1, "final_god_hp": "59902/59902" }
+[HB] t=1398.5 paused=false frames=85011 fps_now=61 hp=6 kills=1952
+[HB] t=1399.5 paused=false frames=85072 fps_now=61 hp=6 kills=1952
+[HB] t=1400.5 paused=false frames=85135 fps_now=63 hp=24 kills=1953
+[HB] t=1401.5 paused=false frames=85196 fps_now=61 hp=96 kills=1954
+[HB] t=1402.5 paused=false frames=85257 fps_now=61 hp=96 kills=1954
+[AUTOPLAY] t=1403 hp=96 lv=22 kills=1954 enemies=8 dps=249 grid=5 items=14 wave=0 dist=188 player=(137.0922, 494.5016) enemy=(193.4021, 315.4964) mv=(-0.0, 1.0) aim=(0.861812, -0.507227)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "final_god": 1, "final_god_hp": "59902/59902", "bat": 7 }
+[HB] t=1403.6 paused=false frames=85318 fps_now=61 hp=96 kills=1954
+[HB] t=1404.6 paused=false frames=85379 fps_now=61 hp=96 kills=1954
+[HB] t=1405.6 paused=false frames=85440 fps_now=61 hp=96 kills=1954
+[HB] t=1406.6 paused=false frames=85501 fps_now=61 hp=96 kills=1954
+[HB] t=1407.6 paused=false frames=85562 fps_now=61 hp=96 kills=1954
+[AUTOPLAY] t=1408 hp=12 lv=22 kills=1954 enemies=8 dps=249 grid=5 items=14 wave=0 dist=215 player=(892.1892, 561.5949) enemy=(677.5245, 569.3353) mv=(1.0, 0.0) aim=(-0.668117, -0.744057)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "final_god": 1, "final_god_hp": "59902/59902", "bat": 7 }
+[HB] t=1408.6 paused=false frames=85623 fps_now=61 hp=12 kills=1954
+[HB] t=1409.7 paused=false frames=85684 fps_now=61 hp=12 kills=1954
+[HB] t=1410.7 paused=false frames=85745 fps_now=61 hp=12 kills=1954
+[HB] t=1411.7 paused=false frames=85806 fps_now=61 hp=12 kills=1954
+[HB] t=1412.7 paused=false frames=85867 fps_now=61 hp=12 kills=1954
+[AUTOPLAY] t=1413 hp=54 lv=22 kills=1957 enemies=14 dps=249 grid=5 items=14 wave=0 dist=114 player=(1140.13, 138.0453) enemy=(1117.922, 250.0639) mv=(0.707107, 0.707107) aim=(-0.985926, 0.167184)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "final_god": 1, "final_god_hp": "59902/59902", "bat": 13 }
+[HB] t=1413.7 paused=false frames=85931 fps_now=64 hp=183 kills=1963
+[HB] t=1414.7 paused=false frames=85994 fps_now=63 hp=230 kills=1970
+[HB] t=1415.8 paused=false frames=86055 fps_now=61 hp=230 kills=1970
+[HB] t=1416.8 paused=false frames=86116 fps_now=61 hp=230 kills=1970
+[HB] t=1417.8 paused=false frames=86177 fps_now=61 hp=230 kills=1970
+[AUTOPLAY] t=1418 hp=230 lv=22 kills=1970 enemies=1 dps=249 grid=5 items=14 wave=0 dist=152 player=(435.2852, 207.9576) enemy=(584.9921, 236.7101) mv=(1.0, 0.0) aim=(0.981248, 0.192749)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "final_god": 1, "final_god_hp": "59902/59902" }
+[HB] t=1418.8 paused=false frames=86238 fps_now=61 hp=230 kills=1970
+[HB] t=1419.8 paused=false frames=86299 fps_now=61 hp=230 kills=1970
+[HB] t=1420.8 paused=false frames=86360 fps_now=61 hp=230 kills=1970
+[HB] t=1421.9 paused=false frames=86421 fps_now=61 hp=230 kills=1970
+[HB] t=1422.9 paused=false frames=86482 fps_now=61 hp=230 kills=1970
+[AUTOPLAY] t=1423 hp=230 lv=22 kills=1970 enemies=1 dps=249 grid=5 items=14 wave=0 dist=153 player=(433.2856, 207.9576) enemy=(583.8467, 236.4881) mv=(1.0, 0.0) aim=(0.981736, 0.190246)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "final_god": 1, "final_god_hp": "59902/59902" }
+[HB] t=1423.9 paused=false frames=86543 fps_now=61 hp=230 kills=1970
+[HB] t=1424.9 paused=false frames=86606 fps_now=63 hp=212 kills=1970
+[HB] t=1425.9 paused=false frames=86668 fps_now=62 hp=298 kills=1975
+[HB] t=1426.9 paused=false frames=86732 fps_now=64 hp=311 kills=1979
+[HB] t=1427.9 paused=false frames=86793 fps_now=61 hp=311 kills=1979
+[AUTOPLAY] t=1428 hp=311 lv=22 kills=1979 enemies=1 dps=249 grid=5 items=14 wave=0 dist=147 player=(437.5483, 207.9576) enemy=(583.0687, 228.6362) mv=(-1.0, 0.0) aim=(0.990488, 0.137598)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "final_god": 1, "final_god_hp": "56921/59902" }
+[HB] t=1428.9 paused=false frames=86854 fps_now=61 hp=311 kills=1979
+[HB] t=1430.0 paused=false frames=86917 fps_now=63 hp=315 kills=1979
+[HB] t=1431.0 paused=false frames=86978 fps_now=61 hp=315 kills=1979
+[HB] t=1432.0 paused=false frames=87039 fps_now=61 hp=315 kills=1979
+[HB] t=1433.0 paused=false frames=87100 fps_now=61 hp=315 kills=1979
+[AUTOPLAY] t=1433 hp=315 lv=22 kills=1979 enemies=1 dps=249 grid=5 items=14 wave=0 dist=220 player=(362.0965, 207.9576) enemy=(580.757, 228.3188) mv=(1.0, 0.0) aim=(0.99582, 0.091337)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "final_god": 1, "final_god_hp": "56288/59902" }
+[HB] t=1434.0 paused=false frames=87161 fps_now=61 hp=231 kills=1979
+[HB] t=1435.0 paused=false frames=87222 fps_now=61 hp=147 kills=1979
+[HB] t=1436.1 paused=false frames=87283 fps_now=61 hp=63 kills=1979
+[HB] t=1437.1 paused=false frames=87344 fps_now=61 hp=63 kills=1979
+[HB] t=1438.1 paused=false frames=87406 fps_now=62 hp=110 kills=1980
+[AUTOPLAY] t=1438 hp=94 lv=22 kills=1980 enemies=9 dps=249 grid=5 items=14 wave=0 dist=9 player=(138.7299, 211.8831) enemy=(139.6348, 202.9799) mv=(-0.0, 1.0) aim=(0.997864, 0.065331)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "final_god": 1, "final_god_hp": "57489/59902", "bat": 8 }
+[HB] t=1439.1 paused=false frames=87468 fps_now=62 hp=94 kills=1980
+[HB] t=1440.1 paused=false frames=87530 fps_now=62 hp=69 kills=1980
+[HB] t=1441.1 paused=false frames=87592 fps_now=62 hp=74 kills=1981
+[HB] t=1442.1 paused=false frames=87653 fps_now=61 hp=105 kills=1981
+[HB] t=1443.2 paused=false frames=87714 fps_now=61 hp=105 kills=1981
+[AUTOPLAY] t=1443 hp=105 lv=22 kills=1981 enemies=8 dps=249 grid=5 items=14 wave=0 dist=212 player=(791.2361, 563.532) enemy=(579.6782, 544.6729) mv=(1.0, 0.0) aim=(-0.568433, -0.822729)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "final_god": 1, "final_god_hp": "58688/59902", "bat": 7 }
+[HB] t=1444.2 paused=false frames=87775 fps_now=61 hp=105 kills=1981
+[HB] t=1445.2 paused=false frames=87836 fps_now=61 hp=105 kills=1981
+[HB] t=1446.2 paused=false frames=87897 fps_now=61 hp=105 kills=1981
+[HB] t=1447.2 paused=false frames=87958 fps_now=61 hp=105 kills=1981
+[HB] t=1448.2 paused=false frames=88019 fps_now=61 hp=105 kills=1981
+[AUTOPLAY] t=1448 hp=105 lv=22 kills=1981 enemies=8 dps=249 grid=5 items=14 wave=0 dist=206 player=(1141.06, 147.5278) enemy=(1097.77, 349.0544) mv=(-0.707107, -0.707107) aim=(-0.988135, 0.153587)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "final_god": 1, "final_god_hp": "59890/59902", "bat": 7 }
+[HB] t=1449.3 paused=false frames=88080 fps_now=61 hp=105 kills=1981
+[HB] t=1450.3 paused=false frames=88143 fps_now=63 hp=298 kills=1997
+[HB] t=1451.3 paused=false frames=88204 fps_now=61 hp=214 kills=1997
+[HB] t=1452.3 paused=false frames=88265 fps_now=61 hp=214 kills=1997
+[AUTOPLAY] t=1453 hp=214 lv=22 kills=1997 enemies=1 dps=249 grid=5 items=14 wave=0 dist=151 player=(430.6057, 213.135) enemy=(577.5066, 247.797) mv=(0.416064, -0.909335) aim=(0.978019, 0.208518)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "final_god": 1, "final_god_hp": "59902/59902" }
+[HB] t=1453.3 paused=false frames=88326 fps_now=61 hp=214 kills=1997
+[HB] t=1454.3 paused=false frames=88387 fps_now=61 hp=130 kills=1997
+[HB] t=1455.3 paused=false frames=88448 fps_now=61 hp=130 kills=1997
+[HB] t=1456.4 paused=false frames=88509 fps_now=61 hp=46 kills=1997
+[HB] t=1457.4 paused=false frames=88570 fps_now=61 hp=6 kills=1997
+[AUTOPLAY] t=1458 hp=6 lv=22 kills=1997 enemies=1 dps=249 grid=5 items=14 wave=0 dist=338 player=(239.2547, 224.9152) enemy=(576.3478, 247.6615) mv=(0.067325, -0.997731) aim=(0.998347, 0.057478)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "final_god": 1, "final_god_hp": "59902/59902" }
+[HB] t=1458.4 paused=false frames=88631 fps_now=61 hp=6 kills=1997
+[HB] t=1459.4 paused=false frames=88692 fps_now=61 hp=6 kills=1997
+[HB] t=1460.4 paused=false frames=88753 fps_now=61 hp=6 kills=1997
+[HB] t=1461.4 paused=false frames=88814 fps_now=61 hp=6 kills=1997
+[HB] t=1462.5 paused=false frames=88875 fps_now=61 hp=6 kills=1997
+[AUTOPLAY] t=1463 hp=6 lv=22 kills=1997 enemies=10 dps=249 grid=5 items=14 wave=0 dist=143 player=(194.2504, 116.5088) enemy=(328.6467, 166.7466) mv=(-1.0, -0.0) aim=(0.923594, 0.383371)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "final_god": 1, "final_god_hp": "59902/59902", "bat": 9 }
+[HB] t=1463.5 paused=false frames=88936 fps_now=61 hp=6 kills=1997
+[HB] t=1464.5 paused=false frames=88999 fps_now=63 hp=96 kills=1999
+[HB] t=1465.5 paused=false frames=89060 fps_now=61 hp=96 kills=1999
+[HB] t=1466.5 paused=false frames=89121 fps_now=61 hp=96 kills=1999
+[HB] t=1467.5 paused=false frames=89182 fps_now=61 hp=96 kills=1999
+[AUTOPLAY] t=1468 hp=96 lv=22 kills=1999 enemies=8 dps=249 grid=5 items=14 wave=0 dist=181 player=(577.9412, 581.3588) enemy=(401.4552, 539.6877) mv=(1.0, 0.0) aim=(-0.105884, -0.994379)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "final_god": 1, "final_god_hp": "59902/59902", "bat": 7 }
+[HB] t=1468.6 paused=false frames=89243 fps_now=61 hp=96 kills=1999
+[HB] t=1469.6 paused=false frames=89304 fps_now=61 hp=12 kills=1999
+[HB] t=1470.6 paused=false frames=89365 fps_now=61 hp=6 kills=1999
+[HB] t=1471.6 paused=false frames=89426 fps_now=61 hp=6 kills=1999
+[HB] t=1472.6 paused=false frames=89487 fps_now=61 hp=6 kills=1999
+[AUTOPLAY] t=1473 hp=6 lv=22 kills=1999 enemies=8 dps=249 grid=5 items=14 wave=0 dist=120 player=(1142.349, 510.6796) enemy=(1040.586, 574.663) mv=(0.0, -1.0) aim=(-0.923654, -0.383227)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "final_god": 1, "final_god_hp": "59902/59902", "bat": 7 }
+[HB] t=1473.6 paused=false frames=89548 fps_now=61 hp=6 kills=1999
+[HB] t=1474.7 paused=false frames=89609 fps_now=61 hp=6 kills=1999
+[HB] t=1475.7 paused=false frames=89670 fps_now=61 hp=6 kills=1999
+[HB] t=1476.7 paused=false frames=89733 fps_now=63 hp=38 kills=2001
+[HB] t=1477.7 paused=false frames=89796 fps_now=63 hp=228 kills=2015
+[AUTOPLAY] t=1478 hp=228 lv=22 kills=2015 enemies=1 dps=249 grid=5 items=14 wave=0 dist=206 player=(752.0339, 329.3362) enemy=(553.0588, 274.3198) mv=(-0.450348, 0.892853) aim=(-0.967934, -0.251206)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "final_god": 1, "final_god_hp": "59902/59902" }
+[HB] t=1478.7 paused=false frames=89857 fps_now=61 hp=228 kills=2015
+[HB] t=1479.7 paused=false frames=89918 fps_now=61 hp=228 kills=2015
+[HB] t=1480.7 paused=false frames=89979 fps_now=61 hp=228 kills=2015
+[HB] t=1481.8 paused=false frames=90040 fps_now=61 hp=228 kills=2015
+[HB] t=1482.8 paused=false frames=90101 fps_now=61 hp=228 kills=2015
+[AUTOPLAY] t=1483 hp=296 lv=22 kills=2015 enemies=1 dps=249 grid=5 items=14 wave=0 dist=73 player=(518.2978, 208.8921) enemy=(550.8422, 273.7824) mv=(1.0, 0.0) aim=(0.483864, 0.875143)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "final_god": 1, "final_god_hp": "58299/59902" }
+[HB] t=1483.8 paused=false frames=90163 fps_now=62 hp=315 kills=2015
+[HB] t=1484.8 paused=false frames=90224 fps_now=61 hp=261 kills=2015
+[HB] t=1485.8 paused=false frames=90285 fps_now=61 hp=177 kills=2015
+[HB] t=1486.8 paused=false frames=90346 fps_now=61 hp=177 kills=2015
+[HB] t=1487.8 paused=false frames=90407 fps_now=61 hp=93 kills=2015
+[AUTOPLAY] t=1488 hp=93 lv=22 kills=2015 enemies=10 dps=249 grid=5 items=14 wave=0 dist=167 player=(230.5864, 209.317) enemy=(394.9713, 240.6733) mv=(-1.0, -0.0) aim=(0.987654, 0.156651)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "final_god": 1, "final_god_hp": "58412/59902", "bat": 9 }
+[HB] t=1488.8 paused=false frames=90468 fps_now=61 hp=99 kills=2015
+[HB] t=1489.9 paused=false frames=90532 fps_now=64 hp=240 kills=2023
+[HB] t=1490.9 paused=false frames=90594 fps_now=62 hp=254 kills=2024
+[HB] t=1491.9 paused=false frames=90655 fps_now=61 hp=254 kills=2024
+[HB] t=1492.9 paused=false frames=90716 fps_now=61 hp=254 kills=2024
+[AUTOPLAY] t=1493 hp=254 lv=22 kills=2024 enemies=1 dps=249 grid=5 items=14 wave=0 dist=147 player=(432.2515, 178.5098) enemy=(554.9148, 260.2154) mv=(-1.0, 0.0) aim=(0.839028, 0.544088)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "final_god": 1, "final_god_hp": "59610/59902" }
+[HB] t=1493.9 paused=false frames=90777 fps_now=61 hp=254 kills=2024
+[HB] t=1494.9 paused=false frames=90838 fps_now=61 hp=254 kills=2024
+[HB] t=1495.9 paused=false frames=90899 fps_now=61 hp=170 kills=2024
+[HB] t=1497.0 paused=false frames=90960 fps_now=61 hp=170 kills=2024
+[HB] t=1498.0 paused=false frames=91021 fps_now=61 hp=170 kills=2024
+[AUTOPLAY] t=1498 hp=170 lv=22 kills=2024 enemies=1 dps=249 grid=5 items=14 wave=0 dist=151 player=(424.919, 178.5098) enemy=(552.948, 258.9599) mv=(1.0, 0.0) aim=(0.840293, 0.542133)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "final_god": 1, "final_god_hp": "59902/59902" }
+[HB] t=1499.0 paused=false frames=91082 fps_now=61 hp=170 kills=2024
+[HB] t=1500.0 paused=false frames=91143 fps_now=61 hp=86 kills=2024
+[AUTOPLAY] TIMEOUT kills=2024 level=5
+[AUTOPLAY] TIMEOUT kills=2024 level=5 hp=86 player=(281.5852, 178.5098) enemies={ "final_god": 1 }
+ERROR: 44 RID allocations of type 'P11GodotArea2D' were leaked at exit.
+ERROR: 1 RID allocations of type 'P12GodotShape2D' were leaked at exit.
+WARNING: 132 RIDs of type "CanvasItem" were leaked.
+   at: _free_rids (servers/rendering/renderer_canvas_cull.cpp:2735)
+WARNING: 135 ObjectDB instances were leaked at exit (run with `--verbose` for details).
+   at: cleanup (core/object/object.cpp:2536)
+ERROR: 2 resources still in use at exit (run with --verbose for details).
+   at: clear (core/io/resource.cpp:822)

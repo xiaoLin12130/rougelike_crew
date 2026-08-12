@@ -198,7 +198,7 @@ func _settle(enemy: Node2D, id: int, count: int) -> void:
 		_fear_rolled[id] = true
 		if randf() < _chance(0.10):
 			_fear_left[id] = FEAR_DURATION
-			EventBus.fx_hit_slow.emit(enemy)
+			EventBus.fx_hit_slow.emit(enemy, true)  # 保持顿帧 60ms（G-4 分级后）
 	elif count < 3:
 		_fear_rolled.erase(id)
 	if count >= 4 and not _stun_rolled.get(id, false) and _stacks(M6) > 0:
@@ -220,7 +220,7 @@ func _spread_debuff(enemy: Node2D, id: int) -> void:
 	if target == null:
 		return
 	EventBus.apply_status.emit(target, kind, 1)
-	EventBus.fx_hit_slow.emit(target)
+	EventBus.fx_hit_slow.emit(target, true)  # 保持顿帧 60ms（G-4 分级后）
 
 
 ## ===== 咒M2 痛苦加深：敌人每有 1 层 debuff 受伤 +4%（上限 25%）=====

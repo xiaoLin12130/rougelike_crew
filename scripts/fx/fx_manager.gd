@@ -36,6 +36,33 @@ const SHAKE_PLAYER_HIT := 2.5
 const FLASH_COLOR := Color(3.0, 3.0, 3.0, 1.0)
 const SLOW_MO_MIN_FACTOR := 0.05
 
+## =====================================================================
+## 打击感强化第二轮（S 级，docs/design/打击感强化方案-第二轮.md G-1~G-4）
+## G-1 音效（SfxBus 池化，见 scripts/core/sfx_bus.gd）｜G-2 死亡碎块｜
+## G-3 伤害数字聚合+上限+弹出｜G-4 hitstop 接入普通攻击
+## =====================================================================
+const HITSTOP_COOLDOWN := 0.15     # 顿帧全局冷却（防高攻速连发卡手）
+const HITSTOP_FACTOR := 0.05       # 顿帧时间因子（>0）
+const HITSTOP_DUR_CRIT := 0.06     # 暴击顿帧时长（s）
+const HITSTOP_DUR_NORMAL := 0.03   # 普通命中顿帧时长（s）
+const HITSTOP_DUR_BOSS := 0.08     # Boss 命中顿帧时长（s）
+const DMG_NUM_MAX_ALIVE := 24      # 伤害数字存活上限（超出挤掉最旧）
+const DMG_NUM_PER_FRAME := 8       # 单帧新建上限（超出并入最近数字）
+const DMG_NUM_MERGE_DIST := 14.0   # 同帧聚合距离（px）
+const DMG_NUM_DISMISS := 0.15      # 被淘汰数字加速淡出时长（s）
+const DEBRIS_NORMAL_MIN := 4       # 普通怪死亡碎块数
+const DEBRIS_NORMAL_MAX := 6
+const DEBRIS_ELITE_MIN := 8        # 精英翻倍
+const DEBRIS_ELITE_MAX := 10
+const DEBRIS_BOSS_MIN := 14        # Boss：更多碎块 + 延迟消失
+const DEBRIS_BOSS_MAX := 18
+const DEBRIS_LIFE_MIN := 0.3
+const DEBRIS_LIFE_MAX := 0.5
+const DEBRIS_BOSS_LIFE_MIN := 0.55
+const DEBRIS_BOSS_LIFE_MAX := 0.8
+const DEBRIS_GRAV := 620.0
+const DEBRIS_FALLBACK := Color(0.75, 0.28, 0.2)  # 提取贴图主色失败时的暗红
+
 const FX_DIR := "res://assets/fx/kenney/"
 
 ## 每 kind 配方：flash=闪光贴图；ring=[扩散环目标缩放, 持续时间, 线宽]；
@@ -322,6 +349,15 @@ var _aura_timer := 0.0
 var _summon_auras: Dictionary = {}  # summon instance_id -> aura Node2D
 var _chain_bolts: Array = []  # 链跳闪电连线池（LightningBolt，上限 CHAIN_BOLT_MAX）
 var _hitstop_cd := 0.0  ## 打击感 P1：顿帧冷却（150ms 防高攻速连发卡手）
+var _hitstop_last_target := 0  ## G-4：顿帧去重——同一帧同一目标只触发一次
+var _hitstop_last_frame := -1
+var _dmg_numbers: Array = []  ## G-3：存活伤害数字（上限淘汰）
+var _fx_frame := 0            ## 自维护 process 帧计数（headless 下 get_frame() 不可靠）
+var _dmg_frame := -1          ## G-3：当前聚合帧（_fx_frame）
+var _dmg_frame_count := 0     ## G-3：本帧已建数字数（DMG_NUM_PER_FRAME 上限）
+var _dmg_frame_nums: Array = []  ## G-3：本帧已建数字（同帧聚合搜索）
+var _boss_ids: Array = []     ## G-2：boss id 缓存（碎块分级）
+static var _death_color_cache: Dictionary = {}  ## G-2：enemy_id -> 贴图主色
 
 ## =====================================================================
 ## 一次性粒子对象池（P1 性能优化，docs/design/性能优化方案.md 热点 2）
@@ -444,6 +480,7 @@ func _exit_tree() -> void:
 	_particle_pools.clear()
 
 func _process(delta: float) -> void:
+	_fx_frame += 1
 	_hitstop_cd = maxf(_hitstop_cd - delta, 0.0)
 	# 爽感档位（F11）：按 DPS 分档，档位越高特效越足
 	_tier_timer -= delta
@@ -1342,10 +1379,54 @@ func _build_aura_rings(aura: Node2D, tier: int) -> void:
 		tw.tween_property(ring, "rotation", ring.rotation + TAU * (0.35 if i % 2 == 0 else -0.35), 2.6 + 0.5 * float(i))
 
 func _on_damage_dealt(dmg: int, pos: Vector2, is_crit: bool) -> void:
+	if dmg <= 0:
+		return
+	var frame := _fx_frame
+	if frame != _dmg_frame:
+		_dmg_frame = frame
+		_dmg_frame_count = 0
+		_dmg_frame_nums.clear()
+	# 聚合（G-3）：同帧同位置（距离 < 14px）命中合并到最近数字（RoR2 同款降噪）
+	var best: DamageNumber = null
+	var best_d := DMG_NUM_MERGE_DIST
+	for n in _dmg_frame_nums:
+		if not is_instance_valid(n):
+			continue
+		var d: float = n.position.distance_to(pos)
+		if d <= best_d:
+			best_d = d
+			best = n
+	if best != null:
+		best.add_value(dmg, is_crit)
+		return
+	# 单帧新建上限：超出 8 个并入最近数字（任意距离），防极端刷屏
+	if _dmg_frame_count >= DMG_NUM_PER_FRAME and not _dmg_frame_nums.is_empty():
+		var nearest: DamageNumber = _dmg_frame_nums[0]
+		var nd := INF
+		for n in _dmg_frame_nums:
+			if not is_instance_valid(n):
+				continue
+			var d2: float = n.position.distance_to(pos)
+			if d2 < nd:
+				nd = d2
+				nearest = n
+		if is_instance_valid(nearest):
+			nearest.add_value(dmg, is_crit)
+		return
+	# 存活上限：超出 24 个挤掉最旧（加速淡出 0.15s）
+	if _dmg_numbers.size() >= DMG_NUM_MAX_ALIVE:
+		var oldest: DamageNumber = _dmg_numbers[0]
+		_dmg_numbers.pop_front()
+		if is_instance_valid(oldest):
+			oldest.dismiss(DMG_NUM_DISMISS)
 	var number: DamageNumber = DamageNumberScene.instantiate()
 	number.z_index = 100  # 数字永远渲染在敌人/Boss 大贴图之上（Boss 无数字的根因：层级被盖）
 	number.position = pos
 	add_child(number)
+	_dmg_numbers.append(number)
+	_dmg_frame_nums.append(number)
+	_dmg_frame_count += 1
+	number.tree_exited.connect(_on_dmg_number_freed.bind(number))
 	# 爽感：DPS 档位越高伤害数字越大（tier 1: 1.25x / tier 2: 1.6x / tier 3: 2x）
 	var tier_size := 1.0
 	match _dps_tier:
@@ -1355,13 +1436,141 @@ func _on_damage_dealt(dmg: int, pos: Vector2, is_crit: bool) -> void:
 			tier_size = 1.6
 		3:
 			tier_size = 2.0
+	number.base_scale = tier_size
 	number.play(dmg, is_crit)
-	if tier_size > 1.0:
-		number.scale = Vector2.ONE * tier_size
 	# 暴击反馈（Agent C）：金色粒子爆点 + 2 级轻微震屏
 	if is_crit:
 		_spawn_burst(pos, CRIT_GOLD, 14, 22)
 		EventBus.screen_shake.emit(2.0)
+
+func _on_dmg_number_freed(number: DamageNumber) -> void:
+	## 数字自毁后从存活表摘除（dismiss/自然寿命共用）
+	var idx := _dmg_numbers.find(number)
+	if idx >= 0:
+		_dmg_numbers.remove_at(idx)
+
+## 当前被跟踪的伤害数字数（测试/监控：验证 DMG_NUM_MAX_ALIVE 上限）。
+func dmg_number_tracked() -> int:
+	return _dmg_numbers.size()
+
+## 死亡碎块爆散（G-2）：按怪物贴图主色生成像素方块碎块（重力 + 旋转 + 渐隐）。
+## 普通怪 4-6 块 / 精英 8-10 块（掺金）/ Boss 14-18 块且寿命更长（延迟消失）。
+func _spawn_death_debris(pos: Vector2, enemy_id: String, elite: bool) -> void:
+	var boss := _is_boss_id(enemy_id)
+	var color: Color = _death_color(enemy_id)
+	if elite:
+		color = color.lerp(CRIT_GOLD, 0.45)
+	var n := randi_range(DEBRIS_NORMAL_MIN, DEBRIS_NORMAL_MAX)
+	var life_min := DEBRIS_LIFE_MIN
+	var life_max := DEBRIS_LIFE_MAX
+	var size_mult := 1.0
+	if elite:
+		n = randi_range(DEBRIS_ELITE_MIN, DEBRIS_ELITE_MAX)
+		size_mult = 1.1
+	if boss:
+		n = randi_range(DEBRIS_BOSS_MIN, DEBRIS_BOSS_MAX)
+		life_min = DEBRIS_BOSS_LIFE_MIN
+		life_max = DEBRIS_BOSS_LIFE_MAX
+		size_mult = 1.3
+	for i in n:
+		var d := DeathDebris.new()
+		var ang := randf() * TAU
+		d.setup(pos, color, randf_range(2.4, 4.8) * size_mult,
+			Vector2(cos(ang), sin(ang)) * randf_range(90.0, 270.0),
+			randf_range(life_min, life_max))
+		add_child(d)
+
+func _is_boss_id(enemy_id: String) -> bool:
+	## boss 表 id 缓存（enemies.json bosses 数组）
+	if _boss_ids.is_empty() and GameState != null:
+		for b in GameState.tables.get("enemies", {}).get("bosses", []):
+			_boss_ids.append(str(b.get("id", "")))
+	return _boss_ids.has(enemy_id)
+
+func _death_color(enemy_id: String) -> Color:
+	## 从敌人贴图提取主体颜色（alpha > 0.5 像素平均色，提亮保证可见），按 enemy_id 缓存。
+	if _death_color_cache.has(enemy_id):
+		return _death_color_cache[enemy_id]
+	_death_color_cache[enemy_id] = DEBRIS_FALLBACK
+	var path := ""
+	if GameState != null:
+		for e in GameState.tables.get("enemies", {}).get("enemies", []):
+			if str(e.get("id", "")) == enemy_id:
+				path = str(e.get("sprite", ""))
+				break
+		if path.is_empty():
+			for b in GameState.tables.get("enemies", {}).get("bosses", []):
+				if str(b.get("id", "")) == enemy_id:
+					path = str(b.get("sprite", ""))
+					break
+	if path.is_empty():
+		return DEBRIS_FALLBACK
+	var tex: Texture2D = load(path)
+	if tex == null:
+		return DEBRIS_FALLBACK
+	var img := tex.get_image()
+	if img == null:
+		return DEBRIS_FALLBACK
+	img.convert(Image.FORMAT_RGBA8)
+	var r := 0.0
+	var g := 0.0
+	var b := 0.0
+	var n := 0
+	for y in img.get_height():
+		for x in img.get_width():
+			var c := img.get_pixel(x, y)
+			if c.a > 0.5:
+				r += c.r
+				g += c.g
+				b += c.b
+				n += 1
+	if n == 0:
+		return DEBRIS_FALLBACK
+	var col := Color(clampf(r / n * 1.5 + 0.06, 0.0, 1.0),
+		clampf(g / n * 1.5 + 0.06, 0.0, 1.0),
+		clampf(b / n * 1.5 + 0.06, 0.0, 1.0))
+	_death_color_cache[enemy_id] = col
+	return col
+
+## 像素方块碎块（G-2）：Node2D + 简单移动 + 重力 + 旋转 + 渐隐，寿命到自毁。
+class DeathDebris:
+	extends Node2D
+
+	## 内嵌类作用域隔离：常量需在本类内自包含（不能引用外层 fx_manager 常量）
+	const GRAV := 620.0
+	const FALLBACK := Color(0.75, 0.28, 0.2)
+
+	var _vel := Vector2.ZERO
+	var _grav := GRAV
+	var _life := 0.4
+	var _age := 0.0
+	var _size := 3.0
+	var _color := FALLBACK
+	var _spin := 0.0
+
+	func setup(pos: Vector2, color: Color, size: float, vel: Vector2, life: float) -> void:
+		position = pos
+		_color = color
+		_size = size
+		_vel = vel
+		_life = maxf(life, 0.15)
+		_spin = randf_range(-7.0, 7.0)
+		rotation = randf() * TAU
+		z_index = 5
+
+	func _process(delta: float) -> void:
+		_age += delta
+		_vel.y += _grav * delta
+		_vel *= maxf(1.0 - 2.4 * delta, 0.0)  # 空气阻力
+		position += _vel * delta
+		rotation += _spin * delta
+		# 尾段 45% 时间渐隐
+		modulate.a = clampf((_life - _age) / maxf(_life * 0.45, 0.01), 0.0, 1.0)
+		if _age >= _life:
+			queue_free()
+
+	func _draw() -> void:
+		draw_rect(Rect2(-_size, -_size, _size * 2.0, _size * 2.0), _color)
 
 
 ## 可复用粒子爆散封装：一次性 CPUParticles2D，自毁由 finished 驱动。
@@ -1383,7 +1592,10 @@ func _spawn_burst(pos: Vector2, color: Color, amount_min: int, amount_max: int) 
 	burst.finished.connect(burst.queue_free)
 	add_child(burst)
 
-func _on_enemy_died(_id: String, pos: Vector2, _xp: int, _gold: int, _elite: bool) -> void:
+func _on_enemy_died(enemy_id: String, pos: Vector2, _xp: int, _gold: int, elite: bool) -> void:
+	# 击杀反馈（G-1/G-2）：独特击杀音 + 像素碎块爆散（普通 4-6 / 精英 8-10 / Boss 14-18）
+	SfxBus.play_hit("kill")
+	_spawn_death_debris(pos, enemy_id, elite)
 	# 连杀反馈：2 秒内击杀 >= 6 触发小慢动作（0.8x 0.15s）
 	var now := Time.get_ticks_msec() / 1000.0
 	_kill_times.append(now)
@@ -1416,8 +1628,8 @@ func _on_fx_dot_text(pos: Vector2, amount: int, kind: String) -> void:
 	number.z_index = 100
 	number.position = pos
 	add_child(number)
+	number.base_scale = 0.8
 	number.play(amount, false, false, DOT_COLORS.get(kind, Color.WHITE))
-	number.scale = Vector2.ONE * 0.8
 
 func _on_fx_hit_flash(target: Node) -> void:
 	if not is_instance_valid(target) or not (target is CanvasItem):
@@ -1441,13 +1653,25 @@ func _on_slow_mo(factor: float, duration: float) -> void:
 	_slow_mo_tween.tween_property(Engine, "time_scale", 1.0, d)
 
 
-func _on_fx_hit_slow(_target: Node) -> void:
-	## 打击感 P1（McClintock 方案）：顿帧 hitstop——暴击/Boss 命中/击杀触发，
-	## 因子 0.05、时长 60ms、冷却 150ms（复用 slow_mo 时间轴控制器）
+func _on_fx_hit_slow(target: Node, crit: bool = false) -> void:
+	## 打击感 P1+G-4：顿帧 hitstop——projectile/melee/summon 命中与 synergy 触发共用，
+	## 暴击 60ms / 普通 30ms / Boss 80ms，因子 0.05、全局冷却 150ms；
+	## 去重：同一帧同一目标只触发一次（与 synergy 触发不冲突）。
 	if _hitstop_cd > 0.0:
 		return
-	_hitstop_cd = 0.15
-	EventBus.slow_mo.emit(0.05, 0.06)
+	var frame := _fx_frame
+	var tid := target.get_instance_id() if is_instance_valid(target) else 0
+	if frame == _hitstop_last_frame and tid == _hitstop_last_target:
+		return
+	_hitstop_last_frame = frame
+	_hitstop_last_target = tid
+	_hitstop_cd = HITSTOP_COOLDOWN
+	var dur := HITSTOP_DUR_NORMAL
+	if is_instance_valid(target) and bool(target.get("is_boss")) == true:
+		dur = HITSTOP_DUR_BOSS
+	elif crit:
+		dur = HITSTOP_DUR_CRIT
+	EventBus.slow_mo.emit(HITSTOP_FACTOR, dur)
 
 func _on_screen_shake(power: float) -> void:
 	var camera := get_tree().get_first_node_in_group("camera")
@@ -1455,6 +1679,7 @@ func _on_screen_shake(power: float) -> void:
 		camera.shake(power)
 
 func _on_player_hit(_dmg: int, _pos: Vector2) -> void:
+	SfxBus.play_hit("hurt")
 	var player := get_tree().get_first_node_in_group("player")
 	if is_instance_valid(player):
 		_on_fx_hit_flash(player)

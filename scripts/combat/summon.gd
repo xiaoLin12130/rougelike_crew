@@ -448,6 +448,9 @@ func _damage_enemy(enemy: Node, mult: float, is_crit: bool = false) -> void:
 		enemy.take_damage(dmg, _element, is_crit)
 	EventBus.damage_dealt.emit(dmg, enemy.global_position, is_crit)
 	EventBus.fx_hit_flash.emit(enemy)
+	# 打击感 G-1/G-4：召唤物命中音效 + 顿帧（暴击 60ms/普通 30ms/Boss 80ms）
+	SfxBus.play_hit(SfxBus.hit_kind_for(enemy, is_crit))
+	EventBus.fx_hit_slow.emit(enemy, is_crit)
 
 
 func _fire_projectile(dir: Vector2, speed: float, range: float, mods: Dictionary) -> void:
@@ -471,7 +474,7 @@ func _taunt() -> void:
 			continue
 		if global_position.distance_to(e.global_position) <= TAUNT_RADIUS + e.scale.x * 8.0:
 			EventBus.apply_status.emit(e, "slow", 1)
-			EventBus.fx_hit_slow.emit(e)
+			EventBus.fx_hit_slow.emit(e, true)  # 保持顿帧 60ms（G-4 分级后）
 
 
 func _hit_range(target: Node) -> float:

@@ -6,11 +6,15 @@ extends CanvasLayer
 ## （_detail 弹窗，名称+描述+关闭），触屏不依赖 hover tooltip（tooltip 仅桌面附加）。
 const UiLayout := preload("res://scripts/ui/ui_layout.gd")
 
-const SLOT_SIZE := Vector2(46, 46)
+## Brotato 化（2026-08-12，docs/design/土豆兄弟UI适配方案.md §5.5）：
+## 面板透明度 0.82 + 暗幕 0.55 + 灰蓝边框；全格统一"图标+×N 角标+稀有度边框"；
+## 玩家属性区改"图标+名称+数值"网格；PC 额外支持 TAB 键开关。
+const SLOT_SIZE_PC := Vector2(54, 54)      # PC 法术/装备格
+const SLOT_SIZE_MOBILE := Vector2(46, 46)  # 手机格（46px，触控达标）
 const ICON_SIZE := Vector2(36, 36)
-const PANEL_BG := Color(0.07, 0.05, 0.11, 0.55)
-const PANEL_BORDER := Color(0.38, 0.28, 0.62, 0.5)
-const SLOT_BG := Color(0.10, 0.08, 0.16, 0.75)
+const PANEL_BG := Color(0.11, 0.13, 0.19, 0.82)   # #1c2230 @ 0.82
+const PANEL_BORDER := Color(0.23, 0.27, 0.34, 0.95)  # #3a4557
+const SLOT_BG := Color(0.09, 0.11, 0.16, 0.9)     # #171c28
 const SLOT_BORDER := Color(0.30, 0.22, 0.52, 0.7)
 
 var _items_box: FlowContainer
@@ -22,6 +26,12 @@ var _sel_slot := -1
 var _detail: PanelContainer
 var _detail_title: Label
 var _detail_body: Label
+var _scroll: ScrollContainer
+var _grid_section: Control
+var _stats_grid: GridContainer
+
+func _slot_size() -> Vector2:
+	return SLOT_SIZE_MOBILE if UiLayout.is_mobile() else SLOT_SIZE_PC
 
 func _ready() -> void:
 	var root := Control.new()
@@ -29,7 +39,7 @@ func _ready() -> void:
 	add_child(root)
 	# 全屏暗幕：降低透明度，战斗区仍可见（雨中冒险式）
 	var dim := ColorRect.new()
-	dim.color = Color(0.02, 0.015, 0.04, 0.38)
+	dim.color = Color(0.02, 0.015, 0.04, 0.55)
 	dim.set_anchors_preset(Control.PRESET_FULL_RECT)
 	root.add_child(dim)
 	var panel := PanelContainer.new()
@@ -38,20 +48,23 @@ func _ready() -> void:
 	panel.add_theme_stylebox_override("panel", UiTheme.style(PANEL_BG, PANEL_BORDER, 2, 8))
 	root.add_child(panel)
 	# 内容可滚动：法杖/法术/装备/饰品 超出面板高度时滚动查看
-	var scroll := ScrollContainer.new()
-	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
-	scroll.custom_minimum_size = Vector2(UiLayout.panel_w(), UiLayout.panel_h() + 20.0)
-	panel.add_child(scroll)
+	_scroll = ScrollContainer.new()
+	_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	_scroll.custom_minimum_size = Vector2(UiLayout.panel_w(), UiLayout.panel_h() + 20.0)
+	panel.add_child(_scroll)
 	var main := VBoxContainer.new()
 	main.add_theme_constant_override("separation", 8)
 	main.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	scroll.add_child(main)
+	_scroll.add_child(main)
 	_section(main, "法杖（最多装备 3 把，Boss 战后可用金币购买/强化）")
 	_wand_box = HBoxContainer.new()
 	_wand_box.add_theme_constant_override("separation", 6)
 	_wand_box.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	main.add_child(_wand_box)
 	_section(main, "法术序列（点击两格交换）")
+	_grid_section = Control.new()
+	_grid_section.custom_minimum_size = Vector2(0, 0)
+	main.add_child(_grid_section)
 	_grid_box = GridContainer.new()
 	# 法术序列：PC 5 格单行展示（1 行）；手机 3 列排布（3+2 两行，2026-08-10 修复：
 	# 不能用 is_portrait 判定——桌面窗口版 720x1280 竖窗口会被误判为手机）
@@ -59,7 +72,7 @@ func _ready() -> void:
 	_grid_box.add_theme_constant_override("h_separation", 6)
 	_grid_box.add_theme_constant_override("v_separation", 6)
 	_grid_box.size_flags_horizontal = Control.SIZE_SHRINK_CENTER  # 法术格整体居中
-	main.add_child(_grid_box)
+	_grid_section.add_child(_grid_box)
 	_section(main, "装备（点击查看详情）")
 	_items_box = FlowContainer.new()
 	_items_box.add_theme_constant_override("h_separation", 5)
@@ -75,7 +88,15 @@ func _ready() -> void:
 	_trinkets_box.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	main.add_child(_trinkets_box)
 	_section(main, "玩家属性")
-	_stats_label = UiTheme.label("", 10, Color("#c8c0e0"))
+	_stats_grid = GridContainer.new()
+	_stats_grid.columns = 2 if not UiLayout.is_mobile() else 1
+	_stats_grid.add_theme_constant_override("h_separation", 8)
+	_stats_grid.add_theme_constant_override("v_separation", 3)
+	_stats_grid.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	main.add_child(_stats_grid)
+	_stats_label = UiTheme.label("", 9, Color("#9d8fc4"))
+	_stats_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	_stats_label.custom_minimum_size = Vector2(280, 0)
 	main.add_child(_stats_label)
 	var close := UiTheme.button("关闭 (Esc)", Vector2(160, UiLayout.touch_min()))
 	close.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
@@ -142,22 +163,53 @@ func _refresh_stats() -> void:
 		{"curve": {"type": "linear", "base": 0.30, "k": 0.20, "cap": 0.65}},
 		GameState.total_stacks("thorn_reflect"))
 	reflect += float(run.get("synergy_bonus", {}).get("defense", 0.0))
-	_stats_label.text = "生命 %d/%d · 攻击 +%d%% · 攻速 +%d%%\n暴击 %.0f%% · 暴伤 +%d%% · 移速 +%d%%\n减伤 %.0f%% · 反弹 %.0f%% · 吸血 %.1f%% · 范围 +%d%%" % [
-		run.get("hp", 0), run.get("max_hp", 100),
-		int(GameState.aggregate_bonus("atk") * 100),
-		GameState.attack_speed_pct(),
-		float(run.get("crit_chance", 0.03)) * 100,
-		int((float(run.get("crit_dmg_bonus", 1.5)) - 1.0) * 100),
-		int(GameState.aggregate_bonus("speed") * 100),
-		stone * 100 + float(run.get("synergy_bonus", {}).get("defense", 0.0)) * 100,
-		reflect * 100,
-		float(run.get("lifesteal", 0.0)) * 100,
-		int(GameState.aggregate_bonus("area") * 100),
+	## Brotato 式属性区：图标+名称+数值 2 列网格（PC）/1 列（手机），负值标红
+	var rows: Array = [
+		["生命", "%d/%d" % [run.get("hp", 0), run.get("max_hp", 100)], "healing_spell.png"],
+		["攻击", "+%d%%" % int(GameState.aggregate_bonus("atk") * 100), "attack_boost.png"],
+		["攻速", "+%d%%" % GameState.attack_speed_pct(), "attack_speed_boost.png"],
+		["暴击", "%.0f%%" % (float(run.get("crit_chance", 0.03)) * 100), "critical_boost.png"],
+		["暴伤", "+%d%%" % int((float(run.get("crit_dmg_bonus", 1.5)) - 1.0) * 100), "counterspell.png"],
+		["移速", "+%d%%" % int(GameState.aggregate_bonus("speed") * 100), "knockback_boost.png"],
+		["减伤", "%.0f%%" % (stone * 100 + float(run.get("synergy_bonus", {}).get("defense", 0.0)) * 100), "defense_boost.png"],
+		["反弹", "%.0f%%" % (reflect * 100), "defense_down.png"],
+		["吸血", "%.1f%%" % (float(run.get("lifesteal", 0.0)) * 100), "hungry.png"],
+		["范围", "+%d%%" % int(GameState.aggregate_bonus("area") * 100), "element_boost.png"],
 	]
-	# F 批：攻速实时换算行（与施法/近战冷却公式 1/(1+as) 一致）
-	_stats_label.text += "\n" + GameState.attack_speed_summary()
-	## 问题6：构筑面板展示理论 DPS（估算），与 HUD 实测值语义分开
+	for c in _stats_grid.get_children():
+		c.queue_free()
+	for r in rows:
+		_stats_grid.add_child(_stat_row(str(r[0]), str(r[1]), str(r[2])))
+	# F 批：攻速实时换算行（与施法/近战冷却公式 1/(1+as) 一致）+ 理论 DPS（估算）
+	_stats_label.text = GameState.attack_speed_summary()
 	_stats_label.text += "\n理论 DPS（估算）：%d" % int(GameState.estimate_dps())
+
+
+func _stat_row(name: String, value: String, icon_name: String) -> Control:
+	## 属性行：16x16 图标 + 名称 + 数值（负值红/正值白，Brotato 统计面板式）
+	var row := HBoxContainer.new()
+	row.add_theme_constant_override("separation", 4)
+	row.custom_minimum_size = Vector2(140, 18)
+	row.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	var ic := UiTheme.icon("res://assets/icons/verarc/" + icon_name, Vector2(16, 16))
+	if ic.texture == null:
+		# 图标缺口程序化占位（方案 §5.2.6）：灰蓝小方块
+		var ph := ColorRect.new()
+		ph.color = Color(0.35, 0.42, 0.56)
+		ph.custom_minimum_size = Vector2(12, 12)
+		ph.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+		ph.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+		row.add_child(ph)
+	else:
+		row.add_child(ic)
+	var nl := UiTheme.label(name, 10, Color("#c8c0e0"))
+	row.add_child(nl)
+	var vl := UiTheme.label(value, 11, UiTheme.WHITE, true)
+	vl.add_theme_color_override("font_color", UiTheme.RED if str(value).contains("-") else UiTheme.WHITE)
+	vl.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	vl.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+	row.add_child(vl)
+	return row
 
 func _refresh_wand() -> void:
 	for c in _wand_box.get_children():
@@ -179,7 +231,7 @@ func _refresh_wand() -> void:
 		if i < owned.size():
 			var wand := GameState.wand_def(str(owned[i]))
 			var slot := PanelContainer.new()
-			slot.custom_minimum_size = SLOT_SIZE
+			slot.custom_minimum_size = _slot_size()
 			slot.tooltip_text = "%s（%s）\n%s" % [
 				wand.get("name", "?"),
 				wand.get("rarity", "common"),
@@ -204,7 +256,7 @@ func _refresh_wand() -> void:
 			_wand_box.add_child(slot)
 		else:
 			var empty := PanelContainer.new()
-			empty.custom_minimum_size = SLOT_SIZE
+			empty.custom_minimum_size = _slot_size()
 			empty.add_theme_stylebox_override("panel", UiTheme.style(Color(0.10, 0.08, 0.16, 0.6), Color(0.30, 0.22, 0.52, 0.4), 1, 3))
 			var l := UiTheme.label("+", 16, Color("#5a5278"))
 			l.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
@@ -215,9 +267,11 @@ func _refresh_wand() -> void:
 ## 雨中冒险式格子：图标 + 右下角数量角标（数量 >1 才显示）；点击查看详情
 func _icon_slot(def: Dictionary, count: int, tooltip: String) -> Control:
 	var box := PanelContainer.new()
-	box.custom_minimum_size = SLOT_SIZE
+	box.custom_minimum_size = _slot_size()
 	box.tooltip_text = tooltip
-	box.add_theme_stylebox_override("panel", UiTheme.style(SLOT_BG, SLOT_BORDER, 1, 3))
+	## 稀有度边框（Brotato：全格统一"图标+×N 角标+稀有度边框"）
+	var rar: Color = UiTheme.RARITY.get(str(def.get("rarity", "common")), UiTheme.BORDER_GRAY)
+	box.add_theme_stylebox_override("panel", UiTheme.style(SLOT_BG, rar, 2, 3))
 	var tex := TextureRect.new()
 	tex.texture = UiTheme.icon_texture(str(def.get("icon", "")))
 	tex.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
@@ -228,12 +282,9 @@ func _icon_slot(def: Dictionary, count: int, tooltip: String) -> Control:
 	tex.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	box.add_child(tex)
 	if count > 1:
-		var badge := UiTheme.label(str(count), 12, UiTheme.WHITE)
+		var badge := UiTheme.badge("×%d" % count, 9, UiTheme.GOLD)
 		badge.set_anchors_preset(Control.PRESET_BOTTOM_RIGHT)
-		badge.position = Vector2(-16, -17)
-		badge.add_theme_color_override("font_outline_color", Color(0, 0, 0, 1))
-		badge.add_theme_constant_override("outline_size", 3)
-		badge.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		badge.position = Vector2(-2, -2)
 		box.add_child(badge)
 	var active: Array = []
 	var holdings: Dictionary = GameState.school_holdings()
@@ -304,10 +355,15 @@ func _refresh_grid() -> void:
 		c.queue_free()
 	var grid: Array = GameState.run.get("grid", [])
 	var slots: int = GameState.tables.get("balance", {}).get("max_grid_slots", 5)
+	var counts := {}
+	for g in grid:
+		var cid: String = str(g.get("core", ""))
+		if not cid.is_empty():
+			counts[cid] = int(counts.get(cid, 0)) + 1
 	for i in slots:
 		var box := Button.new()
 		UiTheme.apply_font(box, 12)
-		box.custom_minimum_size = SLOT_SIZE
+		box.custom_minimum_size = _slot_size()
 		box.add_theme_stylebox_override("normal", UiTheme.style(SLOT_BG, SLOT_BORDER, 1, 3))
 		box.add_theme_stylebox_override("hover", UiTheme.style(Color(0.14, 0.11, 0.22, 0.9), UiTheme.BORDER, 1, 3))
 		box.add_theme_stylebox_override("pressed", UiTheme.style(Color(0.16, 0.12, 0.26, 0.9), UiTheme.GOLD, 1, 3))
@@ -328,17 +384,21 @@ func _refresh_grid() -> void:
 			tex.position = Vector2(5, 5)  # 图标在格内居中偏右下（修正错位）
 			tex.mouse_filter = Control.MOUSE_FILTER_IGNORE
 			box.add_child(tex)
+			var n_core: int = int(counts.get(core_id, 0))
+			if n_core > 1:
+				## ×N 堆叠角标（Brotato：同核心堆叠数右下角标）
+				var cnt := UiTheme.badge("×%d" % n_core, 9, UiTheme.GOLD)
+				cnt.set_anchors_preset(Control.PRESET_BOTTOM_RIGHT)
+				cnt.position = Vector2(-2, -2)
+				box.add_child(cnt)
 			if not shell_id.is_empty():
 				# 外壳角标：右下角小字显示外壳名首字（序号对玩家无意义，2026-08-10 修复）
 				shell = _find_shell(shell_id)
 				var shell_name: String = str(shell.get("name", "原"))
-				var badge := UiTheme.label(shell_name.substr(0, 1), 10, UiTheme.GOLD)
-				badge.set_anchors_preset(Control.PRESET_BOTTOM_RIGHT)
-				badge.position = Vector2(-15, -16)
-				badge.add_theme_color_override("font_outline_color", Color(0, 0, 0, 1))
-				badge.add_theme_constant_override("outline_size", 3)
-				badge.mouse_filter = Control.MOUSE_FILTER_IGNORE
-				box.add_child(badge)
+				var sh_badge := UiTheme.badge(shell_name.substr(0, 1), 8, Color("#9fb8d8"))
+				sh_badge.set_anchors_preset(Control.PRESET_TOP_RIGHT)
+				sh_badge.position = Vector2(-2, 0)
+				box.add_child(sh_badge)
 			var tooltip := "%s · %s\n冷却 %.1fs · 伤害 %.0f\n%s" % [
 				core.get("name", core_id),
 				shell.get("name", "原生形态") if not shell_id.is_empty() else "原生形态",
@@ -381,3 +441,10 @@ func _on_slot_clicked(i: int) -> void:
 		GameState.swap_grid(_sel_slot, i)
 	_sel_slot = -1
 	refresh()
+
+
+func focus_grid() -> void:
+	## HUD 底部武器栏点击入口：滚动定位到法术序列区
+	if _grid_section == null or _scroll == null:
+		return
+	_scroll.scroll_vertical = int(_grid_section.get_global_rect().position.y - _scroll.get_global_rect().position.y)

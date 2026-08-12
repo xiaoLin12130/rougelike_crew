@@ -11,6 +11,7 @@ const LOOP_CHOICE_SCENE := "res://scenes/ui/loop_choice.tscn"
 const GAME_OVER_SCENE := "res://scenes/ui/game_over.tscn"
 const PAUSE_SCENE := "res://scenes/ui/pause_menu.tscn"
 const HEALTH_PACK_SCENE := "res://scenes/game/health_pack.tscn"
+const ELITE_HEAL_DROP_CHANCE := 0.10  # 精英怪血包掉落概率（2026-08-12 概率化：10%）
 const WAND_SHOP_SCENE := "res://scenes/ui/wand_shop.tscn"
 const SPELL_REPLACE_SCENE := "res://scenes/ui/spell_replace.tscn"
 const ITEM_PICKUP_SCENE := "res://scenes/game/item_pickup.tscn"
@@ -242,9 +243,12 @@ func _on_enemy_died(enemy_id: String, pos: Vector2, xp: int, gold: int, is_elite
 	# 金币改为走击杀掉落判定（kill_drops prob 门控），不再无条件发放（2026-08-10 平衡调整）
 	_roll_drop(pos, gold)
 	if is_elite:
-		# 精英怪必掉血包：恢复最大生命 10%（掉落物形式，可拾取）
+		# 精英怪概率掉落血包：恢复最大生命 10%（掉落物形式，可拾取），
+		# 掉落概率 10%（drops.json elite_drops.drop_chance，缺省 ELITE_HEAL_DROP_CHANCE）
 		var pct: float = float(GameState.tables.get("drops", {}).get("elite_drops", {}).get("heal_pct", 0.10))
-		_spawn_health_pack(pos, pct)
+		var drop_chance: float = float(GameState.tables.get("drops", {}).get("elite_drops", {}).get("drop_chance", ELITE_HEAL_DROP_CHANCE))
+		if randf() < drop_chance:
+			_spawn_health_pack(pos, pct)
 	EventBus.fx_explosion.emit(pos, "blade")
 
 func _on_damage_dealt(dmg: int, _pos: Vector2, _is_crit: bool) -> void:

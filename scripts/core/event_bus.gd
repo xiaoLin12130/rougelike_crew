@@ -17,7 +17,7 @@ signal fx_explosion_scaled(pos: Vector2, kind: String, radius: float)
 signal fx_cast(pos: Vector2, kind: String, dir: Vector2)
 signal fx_hit(pos: Vector2, kind: String)
 signal fx_hit_flash(target: Node)
-signal fx_hit_slow(target: Node)
+signal fx_hit_slow(target: Node, crit: bool)  # crit 必传：Godot 4.7.1 不支持信号参数默认值（解析错误），全部发射点已显式传参
 signal fx_heal_text(pos: Vector2, amount: int)
 signal fx_dot_text(pos: Vector2, amount: int, kind: String)
 signal screen_shake(power: float)

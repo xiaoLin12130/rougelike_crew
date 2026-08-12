@@ -2,7 +2,7 @@
  "levels": [
   {
    "id": "level_1",
-   "name": "风语草原",
+   "name": "\u98ce\u8bed\u8349\u539f",
    "theme": "grass",
    "tile": "res://assets/sprites/gen/tile_grass.png",
    "waves": [
@@ -42,7 +42,7 @@
   },
   {
    "id": "level_2",
-   "name": "幽暗密林",
+   "name": "\u5e7d\u6697\u5bc6\u6797",
    "theme": "forest",
    "tile": "res://assets/sprites/gen/tile_grass.png",
    "waves": [
@@ -61,7 +61,8 @@
       "goblin": 5,
       "goblin_archer": 3,
       "ghost": 2,
-      "charger": 1
+      "charger": 1,
+      "boar": 1
      },
      "interval": 1.1,
      "elite_chance": 0.11,
@@ -74,7 +75,8 @@
       "goblin_archer": 4,
       "slime": 4,
       "charger": 2,
-      "specter": 1
+      "specter": 1,
+      "boar": 2
      },
      "interval": 0.9,
      "elite_chance": 0.12,
@@ -85,7 +87,7 @@
   },
   {
    "id": "level_3",
-   "name": "白骨墓穴",
+   "name": "\u767d\u9aa8\u5893\u7a74",
    "theme": "stone",
    "tile": "res://assets/sprites/gen/tile_stone.png",
    "waves": [
@@ -128,7 +130,7 @@
   },
   {
    "id": "level_4",
-   "name": "熔火深渊",
+   "name": "\u7194\u706b\u6df1\u6e0a",
    "theme": "lava",
    "tile": "res://assets/sprites/gen/tile_dirt.png",
    "waves": [
@@ -171,7 +173,7 @@
   },
   {
    "id": "level_5",
-   "name": "远古神殿",
+   "name": "\u8fdc\u53e4\u795e\u6bbf",
    "theme": "temple",
    "tile": "res://assets/sprites/gen/tile_stone.png",
    "waves": [

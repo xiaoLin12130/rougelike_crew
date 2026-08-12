@@ -13,7 +13,34 @@ static var _instances := 0
 var _pending_spell: Array = []  # [core_id, shell_id]：满格时选中法术的替换目标（SpellReplace 用）
 var _boss_dash_cd := 0.0
 
+var _school := ""
+var _school_tags: Array = []
+var _school_elements: Array = []
+var _school_prefixes: Array = []
+var _max_wave := 0
+
 const ELEMENT_TAGS := ["fire", "ice", "lightning", "poison", "summon", "water", "nature", "light", "void", "blade"]
+
+## 流派倾向（--school <name>）：主 tag/元素映射。items.json 的实际 tag 与 spells.json 的 core element 存在差异，
+## 此处显式映射 12 个主流派；alias 用于兼容常见叫法（thunder->lightning, blade->melee, light/void->holy/teleport 等）。
+const SCHOOLS := {
+	"fire": {"tags": ["fire"], "elements": ["fire"], "prefixes": ["fire_"]},
+	"ice": {"tags": ["ice"], "elements": ["ice"], "prefixes": ["ice_"]},
+	"lightning": {"tags": ["lightning", "thunder"], "elements": ["lightning"], "prefixes": ["thunder_"]},
+	"poison": {"tags": ["poison"], "elements": ["poison"], "prefixes": ["poison_"]},
+	"water": {"tags": ["water"], "elements": ["water"], "prefixes": ["water_"]},
+	"wind": {"tags": ["wind"], "elements": [], "prefixes": ["wind_"]},
+	"holy": {"tags": ["holy"], "elements": ["light"], "prefixes": ["holy_"]},
+	"curse": {"tags": ["curse"], "elements": [], "prefixes": ["curse_"]},
+	"melee": {"tags": ["blade"], "elements": ["blade"], "prefixes": ["melee_"]},
+	"summon": {"tags": ["summon"], "elements": ["summon"], "prefixes": ["summon_"]},
+	"defense": {"tags": ["defense"], "elements": [], "prefixes": ["defense_"]},
+	"teleport": {"tags": ["teleport"], "elements": ["void"], "prefixes": []},
+}
+const SCHOOL_ALIASES := {"thunder": "lightning", "blade": "melee", "light": "holy", "void": "teleport", "nature": "wind"}
+const SCHOOL_ITEM_BONUS := 150  # 流派道具加权
+const SCHOOL_SPELL_BONUS := 120  # 流派法术核心加权
+
 
 func _log_line(msg: String) -> void:
 	var exists := FileAccess.file_exists("H:/rougelike_crew/.tools/autoplay_run.log")
@@ -29,9 +56,29 @@ func _log_line(msg: String) -> void:
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS  # 树暂停（升级三选一）时驱动仍然存活
 	_instances += 1
+	_parse_school()
 	print("[AUTOPLAY] started")
 	_log_line("[AUTOPLAY] started instances=%d" % _instances)
 
+func _parse_school() -> void:
+	## 流派倾向参数：--school <name>（优先级高），否则环境变量 AUTOPLAY_SCHOOL；无参数保持原行为
+	var args := OS.get_cmdline_user_args()
+	for i in args.size():
+		if args[i] == "--school" and i + 1 < args.size():
+			_school = str(args[i + 1]).to_lower()
+	if _school == "" and OS.get_environment("AUTOPLAY_SCHOOL") != "":
+		_school = OS.get_environment("AUTOPLAY_SCHOOL").to_lower()
+	if SCHOOL_ALIASES.has(_school):
+		_school = SCHOOL_ALIASES[_school]
+	if _school != "" and not SCHOOLS.has(_school):
+		_log_line("[AUTOPLAY] WARN unknown school=%s, ignore" % _school)
+		_school = ""
+	if _school != "":
+		var cfg: Dictionary = SCHOOLS[_school]
+		_school_tags = cfg.get("tags", [])
+		_school_elements = cfg.get("elements", [])
+		_school_prefixes = cfg.get("prefixes", [])
+	_log_line("[AUTOPLAY] school=%s tags=%s elements=%s" % [_school, _school_tags, _school_elements])
 func _process(_delta: float) -> void:
 	_frames += 1
 	_frames_total += 1
@@ -108,10 +155,10 @@ func _process(_delta: float) -> void:
 				item_slots = hud._items_box.get_child_count()
 			if hud.get("_grid_box") != null:
 				grid_slots = hud._grid_box.get_child_count()
-		_log_line("[AUTOPLAY] t=%d hp=%d lv=%d kills=%d enemies=%d dps=%d grid=%d items=%d %s" % [
+		_log_line("[AUTOPLAY] t=%d hp=%d lv=%d kills=%d enemies=%d dps=%d grid=%d items=%d wave=%d %s" % [
 			int(GameState.run.time), GameState.run.hp, GameState.run.player_level,
 			GameState.run.kills, enemies.size(), int(GameState.estimate_dps()),
-			GameState.run.grid.size(), GameState.run.items.size(), dist_info])
+			GameState.run.grid.size(), GameState.run.items.size(), _current_wave(scene), dist_info])
 		_log_line("[HUD] item_slots=%d grid_slots=%d" % [item_slots, grid_slots])
 		_log_line("[KINDS] " + str(kinds))
 
@@ -184,12 +231,25 @@ func _handle_overlays(scene: Node) -> bool:
 			" kills=", GameState.run.kills, " time=", int(GameState.run.time),
 			" loop=", GameState.run.loop, " level=", GameState.run.level,
 			" hp=", GameState.run.hp, " gold=", GameState.run.gold)
-		_log_line("[AUTOPLAY] RESULT=%s kills=%d time=%d loop=%d level=%d hp=%d gold=%d" % [
+		_log_line("[AUTOPLAY] RESULT=%s kills=%d time=%d loop=%d level=%d plv=%d hp=%d maxhp=%d gold=%d wave=%d" % [
 			"VICTORY" if win else "DEFEAT", GameState.run.kills, int(GameState.run.time),
-			GameState.run.loop, GameState.run.level, GameState.run.hp, GameState.run.gold])
+			GameState.run.loop, GameState.run.level, GameState.run.player_level, GameState.run.hp,
+			GameState.run.max_hp, GameState.run.gold, _max_wave])
+		_log_build()
 		get_tree().quit(0 if win else 1)
 		return true
 	return false
+
+func _log_build() -> void:
+	## 终局构筑快照：法术网格 + 道具 + 法杖
+	var parts: Array = []
+	for slot in GameState.run.grid:
+		parts.append("%s+%s" % [str(slot.get("core", "")), str(slot.get("shell", ""))])
+	var items: Array = []
+	for item_id in GameState.run.items:
+		items.append("%sx%d" % [item_id, int(GameState.run.items[item_id])])
+	_log_line("[BUILD] school=%s grid=[%s] items=[%s] wands=%s" % [
+		_school, ", ".join(parts), ", ".join(items), str(GameState.current_wands())])
 
 func _find_wand_buttons(node: Node) -> Array:
 	## 返回 [[Button, price], ...]：商店里的购买按钮（文本以"金"结尾）
@@ -209,12 +269,41 @@ func _rarity_score(c: Dictionary) -> int:
 		_:
 			return 1
 
+func _item_matches_school(item_id: String, tags: Array) -> bool:
+	## 流派匹配：tag 或 id 前缀（items.json 部分流派道具缺 tag，如 ice_9/melee_*）
+	if _school == "" or not SCHOOLS.has(_school):
+		return false
+	for t in tags:
+		if str(t) in _school_tags:
+			return true
+	for p in _school_prefixes:
+		if item_id.begins_with(str(p)):
+			return true
+	return false
+
+func _core_matches_school(core: Dictionary) -> bool:
+	## 法术核心元素是否命中流派元素（如 holy 对应 light）
+	if _school == "" or _school_elements.is_empty():
+		return false
+	return str(core.get("element", "")) in _school_elements
+
 func _choice_score(c: Dictionary) -> int:
 	## 选道具策略：法术按核心×外壳直伤打分；道具按稀有度 + DPS 收益 + 流派匹配打分
 	var tags: Array = c.get("tags", [])
 	if "spell_part" in tags:
 		return _spell_choice_score(c)
 	return _item_choice_score(c)
+
+func _current_wave(scene: Node) -> int:
+	## 当前波次（spawner._active_wave 从 0 开始）
+	var lv_node := scene.get_node_or_null("Level")
+	if lv_node:
+		var sp := lv_node.get_node_or_null("Spawner")
+		if sp and sp.get("_active_wave") != null:
+			var w: int = int(sp.get("_active_wave")) + 1
+			_max_wave = maxi(_max_wave, w)
+			return w
+	return 0
 
 func _is_boss(e: Node) -> bool:
 	## 敌人 id 是否在 Boss 表（用于 Boss 战走位）
@@ -322,6 +411,8 @@ func _spell_parts_score(core_id: String, shell_id: String) -> int:
 	var el := str(core.get("element", ""))
 	if el != "" and el == _main_element():
 		score += 80  # 本流派元素核心
+	if _core_matches_school(core):
+		score += SCHOOL_SPELL_BONUS  # 流派倾向：优先本流派法术核心
 	if shell_id == "drain":
 		score += 50  # 吸血外壳：保命
 	var base_dmg := float(core.get("base_damage", 0.0))
@@ -363,6 +454,8 @@ func _slot_score(slot: Dictionary) -> int:
 	var el := str(core.get("element", ""))
 	if el != "" and el == _main_element():
 		score += 90
+	if _core_matches_school(core):
+		score += SCHOOL_SPELL_BONUS  # 流派倾向：替换决策保留本流派法术
 	return score
 
 func _worst_slot_idx() -> int:
@@ -416,6 +509,8 @@ func _item_choice_score(c: Dictionary) -> int:
 	var main_el := _main_element()
 	if main_el != "" and _item_element(str(c.get("id", ""))) == main_el:
 		score += 60  # 本流派道具
+	if _item_matches_school(str(c.get("id", "")), tags):
+		score += SCHOOL_ITEM_BONUS  # 流派倾向：优先本流派道具
 	return score
 
 func _drive_player() -> void:

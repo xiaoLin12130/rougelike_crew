@@ -135,8 +135,8 @@ func _check_menu(shop: CanvasLayer, tag: String) -> void:
 	if shop._enhance_section.visible or shop._buy_section.visible:
 		fail("[%s] 选择页时强化/购买区块不应同时可见" % tag)
 	var vp: Rect2 = (shop._scroll as Control).get_global_rect()
-	# 2026-08-10：选择页三项（强化/购买/回血）+ 右上角 × 关闭（离开按钮已移除）
-	for bname in ["EnhanceBtn", "BuyBtn", "PotionBtn", "CloseBtn"]:
+	# 2026-08-12：选择页 = 强化/购买/回血/购买构筑/关闭 + Brotato 金色"开始下一波"
+	for bname in ["EnhanceBtn", "BuyBtn", "PotionBtn", "CloseBtn", "NextWaveBtn"]:
 		var b := _find_button(shop, bname)
 		if b == null:
 			fail("[%s] 选择页缺少按钮 %s" % [tag, bname])
@@ -152,17 +152,33 @@ func _check_buy(shop: CanvasLayer, tag: String) -> void:
 	if cards.size() != 3:
 		fail("[%s] 购买页应显示 3 把法杖，实际 %d" % [tag, cards.size()])
 		return
+	# Brotato：商品卡 2 列网格（PC/手机统一）
+	if shop._box.columns != 2:
+		fail("[%s] 商品卡网格列数 != 2: %d" % [tag, shop._box.columns])
 	var vp: Rect2 = (shop._scroll as Control).get_global_rect()
-	var prev_end := -1e9
+	var rects: Array = []
 	for c in cards:
-		var r: Rect2 = c.get_global_rect()
-		if r.size.x > 341.0:
-			fail("[%s] 卡片过宽(>340): %s rect=%s" % [tag, c.name, str(r)])
+		var r: Rect2 = (c as Control).get_global_rect()
+		rects.append(r)
+		if r.size.x > 150.0:
+			fail("[%s] 卡片过宽(>150): %s rect=%s" % [tag, c.name, str(r)])
 		if not vp.encloses(r):
 			fail("[%s] 卡片超出滚动可视区: rect=%s vp=%s" % [tag, str(r), str(vp)])
-		if r.position.y <= prev_end:
-			fail("[%s] 卡片纵向重叠: rect=%s prev_end=%.1f" % [tag, str(r), prev_end])
-		prev_end = r.end.y
+	if absf((rects[0] as Rect2).position.y - (rects[1] as Rect2).position.y) > 2.0:
+		fail("[%s] 2 列网格首行两卡未同排: %s / %s" % [tag, str(rects[0]), str(rects[1])])
+	if (rects[0] as Rect2).intersects(rects[1]):
+		fail("[%s] 2 列网格首行卡片重叠" % tag)
+	if (rects[2] as Rect2).position.y <= (rects[0] as Rect2).end.y - 2.0:
+		fail("[%s] 第 2 行卡片未低于首行: %s / %s" % [tag, str(rects[2]), str(rects[0])])
+	# 每卡右上角锁钮存在（20x20）
+	var locks := 0
+	for c in shop._box.get_children():
+		if c is PanelContainer:
+			for ch in c.get_children():
+				if ch is Button and ch.name == "LockBtn":
+					locks += 1
+	if locks != 3:
+		fail("[%s] 商品卡锁钮数量 != 3: %d" % [tag, locks])
 	var back := _find_button(shop, "BackBtnBuy")
 	if back == null:
 		fail("[%s] 购买页缺少返回按钮" % tag)
@@ -194,8 +210,11 @@ func _check_buttons_min(shop: CanvasLayer, tag: String) -> void:
 
 func _walk_buttons(node: Node, tag: String) -> void:
 	if node is Button:
-		var r: Rect2 = (node as Control).get_global_rect()
-		if r.size.x < 44.0 or r.size.y < 44.0:
-			fail("[%s] 按钮触控区过小(<44px): %s rect=%s" % [tag, node.name, str(r)])
+		if node.name == "LockBtn":
+			pass  # 商品卡锁钮为 20x20 装饰钮（整卡才是触控目标），豁免 44px 断言
+		else:
+			var r: Rect2 = (node as Control).get_global_rect()
+			if r.size.x < 44.0 or r.size.y < 44.0:
+				fail("[%s] 按钮触控区过小(<44px): %s rect=%s" % [tag, node.name, str(r)])
 	for ch in node.get_children():
 		_walk_buttons(ch, tag)

@@ -276,7 +276,7 @@ func _assert_panel_rendering(panel: CanvasLayer) -> void:
 	if it == null or _cell_name(it) != "攻速药水":
 		fail("装备条目 attack_speed_potion 渲染错误: %s" % (_cell_name(it) if it != null else "missing"))
 	_click(it)
-	if not panel._detail.visible or not str(panel._detail_body.text).contains("攻击速度 +15%"):
+	if not panel._detail.visible or not str(panel._detail_body.text).contains("攻击速度 +8%"):
 		fail("装备详情缺描述: %s" % str(panel._detail_body.text))
 	# 未收集装备条目："？？？" + 点击无详情
 	panel._detail.visible = false

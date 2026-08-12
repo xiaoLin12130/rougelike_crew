@@ -145,16 +145,58 @@ func new_run() -> void:
 		"pity": 0,
 		"level_elapsed": 0.0,  # 本关已过时间（存档续波次用）
 	}
-	# 初始构筑（需求5）：火球/旋风刃随机外壳（不再固定），去掉默认装备
+	# 初始技能随机化（2026-08-12 需求）：开局随机 2 个「核心×外壳」技能，
+	# 两个技能流派（核心 element）必须不同；外壳从该核心的有效组合池随机
+	# （见 docs/design/初始技能随机方案.md）
+	var starter := _roll_starter_grid()
+	run.grid = starter
+
+
+func _roll_starter_core_pool() -> Array:
+	## 开局可选核心池：只保留至少存在一个有效外壳组合的核心
+	## （frenzy/mana_echo 对所有外壳零消费/冲突，全部过滤，保证开局技能必带外壳）
+	var cores: Array = tables.get("spells", {}).get("cores", [])
 	var shells: Array = tables.get("spells", {}).get("shells", [])
-	var shell_a: Dictionary = {}
-	var shell_b: Dictionary = {}
-	if not shells.is_empty():
-		shell_a = shells[randi() % shells.size()]
-		shell_b = shells[randi() % shells.size()]
-	run.grid = [
-		{"core": "fireball", "shell": str(shell_a.get("id", ""))},
-		{"core": "whirl_blade", "shell": str(shell_b.get("id", ""))},
+	var pool: Array = []
+	for c in cores:
+		for s in shells:
+			if not _invalid_combo(c, s):
+				pool.append(c)
+				break
+	return pool
+
+
+func _roll_valid_shell(core: Dictionary) -> Dictionary:
+	## 从指定核心的有效外壳池随机抽 1 个（无有效组合时返回空字典=原生）
+	var shells: Array = tables.get("spells", {}).get("shells", [])
+	var valid: Array = []
+	for s in shells:
+		if not _invalid_combo(core, s):
+			valid.append(s)
+	if valid.is_empty():
+		return {}
+	return valid[randi() % valid.size()]
+
+
+func _roll_starter_grid() -> Array:
+	## 开局技能：核心1（流派A）→ 核心2（流派B != A），各配有效随机外壳
+	var pool: Array = _roll_starter_core_pool()
+	if pool.is_empty():
+		return []
+	var core_a: Dictionary = pool[randi() % pool.size()]
+	var el_a: String = str(core_a.get("element", ""))
+	var pool_b: Array = []
+	for c in pool:
+		if str(c.get("element", "")) != el_a:
+			pool_b.append(c)
+	var core_b: Dictionary
+	if pool_b.is_empty():
+		core_b = pool[randi() % pool.size()]  # 防御兜底（11 种 element 下不会发生）
+	else:
+		core_b = pool_b[randi() % pool_b.size()]
+	return [
+		{"core": str(core_a.get("id", "")), "shell": str(_roll_valid_shell(core_a).get("id", ""))},
+		{"core": str(core_b.get("id", "")), "shell": str(_roll_valid_shell(core_b).get("id", ""))},
 	]
 
 func add_item(item_id: String) -> void:
@@ -178,6 +220,7 @@ func add_xp(n: int) -> void:
 		leveled = true
 		need = xp_to_next(run.player_level)
 	if leveled:
+		SfxBus.play_hit("upgrade")  # 打击感 G-1：升级确认音
 		# 升级短暂无敌（体验优化）：1.2s 无敌帧 + 回满血，避免升级瞬间被围殴秒杀
 		var p := get_tree().get_first_node_in_group("player")
 		if is_instance_valid(p) and p.has_method("grant_invuln"):
@@ -186,11 +229,10 @@ func add_xp(n: int) -> void:
 	EventBus.player_stats_changed.emit()
 
 func xp_to_next(level: int) -> int:
-	# 平滑升级曲线：L1-3 加速（30/60/100，更快形成构筑，2026-08-10），
-	# L4+ 原公式（40+30(L-1)+5(L-1)²：L4=175 → L5=240 → L10=715）
+	# 平滑升级曲线（2026-08-12）：全等级统一走 balance.json xp 公式。
+	# 移除 L1-3 硬编码加速分支（30/55/90）——玩家反馈前期升级过快；
+	# 新曲线 38+30(L-1)+5(L-1)²：L1=38 → L2=73 → L3=118（详见 docs/design/升级曲线平滑调整.md）
 	var l := maxi(level, 1)
-	if l <= 3:
-		return 30 + 25 * (l - 1) + 5 * (l - 1) * (l - 1)
 	var xp: Dictionary = balance().get("xp", {})
 	return int(xp.get("base", 50)) + int(xp.get("per_level", 30)) * (l - 1) \
 		+ int(xp.get("quad", 5)) * (l - 1) * (l - 1)
@@ -381,7 +423,9 @@ func _element_weight(def: Dictionary, base_weights: Dictionary, holdings: Dictio
 	if el != "" and holdings.has(el):
 		var n: int = int(holdings[el])
 		if n > 0:
-			w *= minf(1.0 + 0.10 * float(n) * lv_factor, 2.5)  # 2026-08-10 流派聚焦强化: +10%/件/关, 上限 +150%
+			# 2026-08-12 平衡调整：同流派权重加成降至原来的 1/3（+10%→+3.33%/件/关，
+			# 上限 +150%→+50%），防止"拿得越多越容易拿"的马太效应过强；主流派保底保留。
+			w *= minf(1.0 + 0.0333 * float(n) * lv_factor, 1.5)
 	return w
 
 func _choice_is_off(def: Dictionary, main_el: String) -> bool:
@@ -467,7 +511,9 @@ func sell_wand(idx: int) -> int:
 
 func _make_spell_choice() -> Dictionary:
 	## 随机法术部件选项：核心×外壳（网格满时仍返回选项，选中后由 game_root 弹替换界面）
-	## 落雷误触发修复（Beauvoir P1）：无某元素构筑时不出该元素法术（与 N2 物品过滤对齐）
+	## 落雷误触发修复（Beauvoir P1）：无某元素构筑时不出该元素法术（与 N2 物品过滤对齐）。
+	## 落地加固：先按 holdings 预过滤核心池——未持有元素的核心不进生成池（blade 通用保留），
+	## 杜绝"8 次重抽全失败后回退随机核心"仍可能漏出未持有元素法术的路径。
 	## 组合有效性过滤（docs/design/核心外壳组合审计.md 修复）：随机 core×shell 后经
 	## _invalid_combo 校验，无效组合重抽（最多 8 次防死循环）；仍无有效组合时退化为
 	## "原生"（无外壳）——生成池绝不出现"选了没效果"的组合。
@@ -477,14 +523,18 @@ func _make_spell_choice() -> Dictionary:
 		return {}
 	var shells: Array = spells.get("shells", [])
 	var holdings := _element_holdings()
+	## 元素门控：核心池 = 无元素核心 + 通用 blade + 已持有元素核心；空池直接返回空（不给选项）
+	var eligible: Array = []
+	for c in cores:
+		var el := str(c.get("element", ""))
+		if el == "" or el == "blade" or holdings.has(el):
+			eligible.append(c)
+	if eligible.is_empty():
+		return {}
 	var core: Dictionary = {}
 	var shell: Dictionary = {}
 	for _attempt in 8:
-		core = cores[randi() % cores.size()]
-		## 元素门控：核心元素未被持有（且非通用 blade）时重抽；通用/保底失败保留原生
-		var el := str(core.get("element", ""))
-		if el != "" and el != "blade" and not holdings.has(el):
-			continue
+		core = eligible[randi() % eligible.size()]
 		if shells.is_empty():
 			shell = {}
 			break
@@ -866,6 +916,7 @@ func upgrade_wand(wand_id: String) -> bool:
 	if run.get("gold", 0) < cost:
 		return false
 	run.gold -= cost
+	SfxBus.play_hit("buy")  # 打击感 G-1：购买音
 	var levels: Dictionary = run.get("wand_upgrade_levels", {})
 	levels[wand_id] = wand_upgrade_level(wand_id) + 1
 	run["wand_upgrade_levels"] = levels

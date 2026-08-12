@@ -79,6 +79,8 @@ var _vanish_left := 0.0
 var _vanish_cd := 0.0
 var _totem_cd := 0.0
 var _camouflage_awake := false
+var _anim: AnimatedSprite2D  # 动画节点缓存（多动画怪）
+var _has_anims := false      # 是否配置了 anims 多动画（旧怪无 anims 走原逻辑）
 
 func get_enemy_id() -> String:
 	return enemy_id
@@ -147,22 +149,88 @@ func _apply_elite_visual() -> void:
 	spr.modulate = Color(1.35, 1.1, 0.35, 1.0)
 
 func _build_sprite() -> void:
-	var frames: int = int(conf.get("frames", 2))
-	var base_path: String = str(conf.get("sprite", ""))
 	var anim := AnimatedSprite2D.new()
 	anim.name = "AnimatedSprite2D"
 	anim.sprite_frames = SpriteFrames.new()
-	anim.sprite_frames.add_animation("idle")
-	anim.sprite_frames.set_animation_speed("idle", 6.0)
-	for i in frames:
-		var p := base_path.replace("_1.png", "_%d.png" % (i + 1)) if frames > 1 else base_path
-		anim.sprite_frames.add_frame("idle", load(p))
-	var tex := anim.sprite_frames.get_frame_texture("idle", 0)
+	var anims: Dictionary = conf.get("anims", {})
+	_has_anims = not anims.is_empty()
+	var tex: Texture2D = null
+	if not _has_anims:
+		# 旧怪（无 anims）：单 idle 动画，原逻辑 100% 不变
+		var frames: int = int(conf.get("frames", 2))
+		var base_path: String = str(conf.get("sprite", ""))
+		anim.sprite_frames.add_animation("idle")
+		anim.sprite_frames.set_animation_speed("idle", 6.0)
+		for i in frames:
+			var p := base_path.replace("_1.png", "_%d.png" % (i + 1)) if frames > 1 else base_path
+			anim.sprite_frames.add_frame("idle", load(p))
+		tex = anim.sprite_frames.get_frame_texture("idle", 0)
+		anim.play("idle")
+	else:
+		# 多动画：anims = {"idle": {...}, "run": {...}}，值支持两种形态：
+		#   Array     -> 逐帧路径列表
+		#   Dictionary-> {"prefix": "res://.../id", "frames": N, "fps": F}
+		#                帧文件按 {prefix}_{0..N-1}.png 生成
+		var start := ""
+		for name in anims:
+			var paths: Array = _anim_paths(anims[name])
+			if paths.is_empty():
+				continue
+			if start == "":
+				start = name
+			anim.sprite_frames.add_animation(name)
+			anim.sprite_frames.set_animation_speed(name, _anim_fps(anims[name]))
+			anim.sprite_frames.set_animation_loop_mode(name, SpriteFrames.LOOP_LINEAR)
+			for p in paths:
+				anim.sprite_frames.add_frame(name, load(p))
+		if start == "":
+			# 配置了 anims 但帧文件全缺失：兜底单帧，不崩溃
+			start = "idle"
+			anim.sprite_frames.add_animation("idle")
+			anim.sprite_frames.set_animation_speed("idle", 6.0)
+			anim.sprite_frames.add_frame("idle", load(str(conf.get("sprite", ""))))
+		tex = anim.sprite_frames.get_frame_texture(start, 0)
+		anim.play(start)
 	if tex != null and tex.get_width() > 64:
 		# 宽幅贴图（96px retro Boss）：按内容重心居中，补偿画布内偏移
 		anim.offset = _sprite_content_offset(tex)
-	anim.play("idle")
+	_anim = anim
 	add_child(anim)
+
+## 解析 anims 单动画配置为存在的帧路径列表（缺失帧自动跳过）
+func _anim_paths(spec: Variant) -> Array:
+	var paths: Array = []
+	if spec is Array:
+		for p in spec:
+			var s := str(p)
+			if ResourceLoader.exists(s):
+				paths.append(s)
+	elif spec is Dictionary:
+		var prefix := str(spec.get("prefix", ""))
+		var n := int(spec.get("frames", 1))
+		for i in n:
+			var s := "%s_%d.png" % [prefix, i]
+			if ResourceLoader.exists(s):
+				paths.append(s)
+	return paths
+
+func _anim_fps(spec: Variant) -> float:
+	return float(spec.get("fps", 8.0)) if spec is Dictionary else 8.0
+
+## 多动画状态机（仅 anims 怪启用）：速度阈值切 idle/run + 移动方向 flip_h
+func _update_anim() -> void:
+	if _anim == null or not _has_anims:
+		return
+	var sf := _anim.sprite_frames
+	if sf == null:
+		return
+	var want := "idle"
+	if sf.has_animation("run") and velocity.length() > speed * 0.4:
+		want = "run"
+	if _anim.animation != want:
+		_anim.play(want)
+	if absf(velocity.x) > 1.0:
+		_anim.flip_h = velocity.x < 0.0
 
 ## 计算贴图内容（alpha > 0.78）重心相对画布中心的偏移；内容为空时返回零
 func _sprite_content_offset(tex: Texture2D) -> Vector2:
@@ -186,6 +254,7 @@ func _sprite_content_offset(tex: Texture2D) -> Vector2:
 func _physics_process(delta: float) -> void:
 	if _dead:
 		return
+	_update_anim()
 	## 打击感 P0：击退惯性衰减（velocity 式，精英/Boss 霸体不击退）
 	if _knock_vel.length_squared() > 0.01:
 		global_position += _knock_vel * delta

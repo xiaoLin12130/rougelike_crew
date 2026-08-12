@@ -46,9 +46,16 @@ func _process(_delta: float) -> bool:
 			_assert_build_button()
 			_phase = 2
 		2:
-			root.size = Vector2i(390, 844)  # 模拟手机：expand 下逻辑视口 ≈360x779
+			_panels[2]._goto_buy()  # 商店默认选择页 → 购买页（下一帧布局后断言）
 			_phase = 3
 		3:
+			_assert_wand_shop_offers()  # 商店卡片 2 列网格断言
+			_assert_weapon_bar()
+			_phase = 4
+		4:
+			root.size = Vector2i(390, 844)  # 模拟手机：expand 下逻辑视口 ≈360x779
+			_phase = 5
+		5:
 			_assert_expand()
 			if failures.is_empty():
 				print("PORTRAIT UI OK")
@@ -119,8 +126,9 @@ func _assert_hud() -> void:
 	_hud._on_wave("波次 3 来袭")
 	var boss := _rect(_hud._boss_root)
 	var res := _rect(_hud._res_box)
-	var wave := _rect(_hud._wave_label)
-	var pick := _rect(_hud._pickup_label)
+	var wave := _rect(_hud._wave_root)
+	var pick := _rect(_hud._pickup_root)
+	var xp := _rect(_hud._xp_bar)
 	print("[RECTS] boss=%s res=%s wave=%s pickup=%s" % [boss, res, wave, pick])
 	if not _hud._boss_root.visible:
 		fail("Boss 血条未显示")
@@ -130,10 +138,22 @@ func _assert_hud() -> void:
 		fail("Boss 血条与左上资源重叠: boss=%s res=%s" % [boss, res])
 	if boss.intersects(wave):
 		fail("Boss 血条与波次横幅重叠: boss=%s wave=%s" % [boss, wave])
+	# Brotato 验收：Boss 条与经验条互斥，且 Boss 出现不隐藏经验条
+	if boss.intersects(xp):
+		fail("Boss 血条与 XP 经验条重叠: boss=%s xp=%s" % [boss, xp])
+	if not _hud._xp_bar.visible:
+		fail("Boss 出现后经验条不应隐藏")
 	if res.position.y < 22.0 or res.size.y > 80.0:
-		fail("资源条三行布局越界(需 y>=22, 高<=80): " + str(res))
+		fail("资源区布局越界(需 y>=22, 高<=80): " + str(res))
 	if res.end.x > 360.0 or res.end.y > 640.0:
-		fail("资源条越界: " + str(res))
+		fail("资源区越界: " + str(res))
+	if res.end.x > 190.0:
+		fail("资源区右缘越界(需 <=190，给波次横幅让位): " + str(res))
+	# 波次横幅：顶部中右带 x186..356 y24..56，与资源区 x 分界互斥
+	if wave.position.x < 185.0 or wave.end.x > 360.0 or wave.position.y < 22.0 or wave.end.y > 60.0:
+		fail("波次横幅越界(需 x>=186, y24..56): " + str(wave))
+	if wave.intersects(res):
+		fail("波次横幅与资源区重叠: wave=%s res=%s" % [wave, res])
 	if pick.position.x < -1.0 or pick.end.x > 361.0 or pick.position.y < 0.0 or pick.end.y > 640.0:
 		fail("获得提示越界: " + str(pick))
 	if pick.position.y < 440.0:
@@ -150,18 +170,38 @@ func _assert_hud() -> void:
 			fail("按钮侵入底部安全区(<24px): " + str(r))
 	if btns.size() == 2 and _rect(btns[0]).intersects(_rect(btns[1])):
 		fail("构筑/暂停按钮重叠")
-	# HUD 不再有底部常驻构筑条（成员已删除）
-	if _hud.get("_bar_root") != null or _hud.get("_grid_bar") != null or _hud.get("_tab_btn") != null:
-		fail("底部常驻构筑条仍存在")
 
 func _corner_buttons() -> Array:
+	## 左下角按钮（构筑/暂停）：x<64 带内；武器栏按钮（x>=64）不计入
 	var out: Array = []
 	for c in _hud.get_children():
 		if c is Control and c is not CanvasLayer:
 			for ch in c.get_children():
-				if ch is Button and ch.get_global_rect().position.y > 250.0:
+				if ch is Button and ch.get_global_rect().position.y > 250.0 and ch.get_global_rect().position.x < 64.0:
 					out.append(ch)
 	return out
+
+func _assert_weapon_bar() -> void:
+	## Brotato 底部武器/法术栏：PC 5 格单行，x>=64 与左下按钮互斥，视口内
+	var wb: Control = _hud._weapon_bar
+	if wb == null:
+		fail("底部武器栏缺失")
+		return
+	var r := _rect(wb)
+	var screen := Rect2(Vector2.ZERO, Vector2(360, 640))
+	if not screen.encloses(r):
+		fail("武器栏越出视口: " + str(r))
+	if r.position.x < 63.0:
+		fail("武器栏侵入左下按钮带(x<64): " + str(r))
+	for b in _corner_buttons():
+		if r.intersects(_rect(b)):
+			fail("武器栏与左下按钮重叠: weapon=%s btn=%s" % [r, str(_rect(b))])
+	if r.intersects(_rect(_hud._res_box)):
+		fail("武器栏与资源区重叠: weapon=%s res=%s" % [r, str(_rect(_hud._res_box))])
+	if r.intersects(_rect(_hud._pickup_root)):
+		fail("武器栏与获得提示重叠: weapon=%s pick=%s" % [r, str(_rect(_hud._pickup_root))])
+	if _hud._weapon_slots.size() != 5:
+		fail("武器栏槽位数 != 5: " + str(_hud._weapon_slots.size()))
 
 func _assert_panels() -> void:
 	for ui in _panels:
@@ -182,7 +222,6 @@ func _assert_panels() -> void:
 	# 专项断言
 	_assert_levelup_stack()
 	_assert_build_grid()
-	_assert_wand_shop_offers()
 
 func _collect_panels(node: Node) -> void:
 	if node is PanelContainer:
@@ -198,6 +237,8 @@ func _collect_panels(node: Node) -> void:
 func _assert_buttons_44(node: Node, tag: String) -> void:
 	for ch in node.get_children():
 		if ch is Button:
+			if ch.name == "LockBtn":
+				continue  # 商品卡锁钮为 20x20 装饰钮（整卡才是触控目标），豁免 44px 断言
 			var r := (ch as Control).get_global_rect()
 			if r.size.x < 43.0 or r.size.y < 43.0:
 				fail("%s 按钮触控区不足 44: %s rect=%s" % [tag, ch.name, str(r)])
@@ -244,20 +285,30 @@ func _assert_build_grid() -> void:
 
 func _assert_wand_shop_offers() -> void:
 	var ws: Node = _panels[2]
-	# 2026-08-10：商店 v2 默认选择页——先切到购买页再断言商品卡
-	ws._goto_buy()
+	# Brotato：商品卡 2 列网格（PC/手机统一）；卡片 138 宽等宽等高不重叠
+	if ws._box == null or ws._box.columns != 2:
+		fail("法杖商店商品卡网格列数 != 2: " + str(ws._box.columns if ws._box else "null"))
 	var cards: Array = []
 	for c in ws._box.get_children():
 		if c is PanelContainer and not c.is_queued_for_deletion():
 			cards.append(c.get_global_rect())
 	if cards.size() != 3:
 		fail("法杖商店商品卡数量 != 3: " + str(cards.size()))
+		return
+	var vp := (ws._scroll as Control).get_global_rect()
 	for i in cards.size():
 		var r: Rect2 = cards[i]
-		if r.size.x > 341.0:
-			fail("法杖商店商品卡过宽: " + str(r))
-		if i > 0 and r.position.y <= cards[i - 1].end.y:
-			fail("法杖商店商品卡纵向重叠")
+		if r.size.x > 150.0:
+			fail("法杖商店商品卡过宽(>150): " + str(r))
+		if not vp.encloses(r):
+			fail("法杖商店商品卡超出滚动可视区: rect=%s vp=%s" % [str(r), str(vp)])
+	# 首行两卡同 y 且不重叠，第二行首卡 y 低于首行
+	if absf(cards[0].position.y - cards[1].position.y) > 2.0:
+		fail("商店 2 列网格首行两卡未同排: %s / %s" % [str(cards[0]), str(cards[1])])
+	if cards[0].intersects(cards[1]):
+		fail("商店 2 列网格首行卡片重叠")
+	if cards[2].position.y <= cards[0].end.y - 2.0:
+		fail("商店第 2 行卡片未低于首行: %s / %s" % [str(cards[2]), str(cards[0])])
 
 func _assert_build_button() -> void:
 	# 构筑按钮存在且切换构筑面板可见性（面板实例化+refresh 无报错）
@@ -283,8 +334,8 @@ func _assert_expand() -> void:
 	var screen := Rect2(Vector2.ZERO, vp)
 	var boss := _rect(_hud._boss_root)
 	var res := _rect(_hud._res_box)
-	var wave := _rect(_hud._wave_label)
-	var pick := _rect(_hud._pickup_label)
+	var wave := _rect(_hud._wave_root)
+	var pick := _rect(_hud._pickup_root)
 	for pair in [["boss", boss], ["res", res], ["wave", wave], ["pick", pick]]:
 		var r: Rect2 = pair[1]
 		if not screen.encloses(r):
@@ -293,10 +344,14 @@ func _assert_expand() -> void:
 		fail("expand 下资源条未贴左上 (8,24): " + str(res))
 	if not approx(boss.position.x, vp.x / 2.0 - 126.0):
 		fail("expand 下 Boss 条未顶部居中: " + str(boss))
-	if not approx(wave.position.x, vp.x - 100.0):
-		fail("expand 下波次提示未锚右上: " + str(wave))
+	if not approx(wave.position.x, vp.x - 174.0):
+		fail("expand 下波次横幅未锚顶部中右(x=vp-174): " + str(wave))
+	if not approx(wave.end.x, vp.x - 4.0):
+		fail("expand 下波次横幅右缘未贴 vp-4: " + str(wave))
 	if not approx(pick.position.y, vp.y - 140.0):
 		fail("expand 下获得提示未锚中下（y=视口高-140）: " + str(pick))
+	if wave.intersects(res):
+		fail("expand 下波次横幅与资源区重叠: " + str(wave) + " / " + str(res))
 	var btns := _corner_buttons()
 	for b in btns:
 		var r := _rect(b)
@@ -304,6 +359,12 @@ func _assert_expand() -> void:
 			fail("expand 下底部按钮越界: " + str(r))
 		if r.end.y < vp.y - 100.0:
 			fail("expand 下底部按钮未贴底: " + str(r))
+	if _hud._weapon_bar != null:
+		var wr := _rect(_hud._weapon_bar)
+		if not screen.encloses(wr):
+			fail("expand 下武器栏越界: " + str(wr))
+		if not approx(wr.end.y, vp.y - 30.0):
+			fail("expand 下武器栏未贴底(vp-30): " + str(wr))
 	# 面板：expand 视口下在屏内且水平居中；主菜单按钮全在屏内
 	for ui in _panels:
 		var tag: String = ui.name

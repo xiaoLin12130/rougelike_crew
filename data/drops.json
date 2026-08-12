@@ -6,7 +6,8 @@
   }
  ],
  "elite_drops": {
-  "heal_pct": 0.1
+  "heal_pct": 0.1,
+  "drop_chance": 0.1
  },
  "pity_threshold": 8,
  "boss_drops": {

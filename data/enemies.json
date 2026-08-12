@@ -1,28 +1,28 @@
 {
  "affixes": {
   "flame": {
-   "name": "烈焰",
+   "name": "\u70c8\u7130",
    "hp_mult": 2.8,
    "atk_mult": 1.5,
    "size_mult": 1.4,
    "element": "fire"
   },
   "lightning": {
-   "name": "迅捷",
+   "name": "\u8fc5\u6377",
    "hp_mult": 2.5,
    "atk_mult": 1.4,
    "size_mult": 1.3,
    "speed_mult": 1.5
   },
   "frost": {
-   "name": "霜甲",
+   "name": "\u971c\u7532",
    "hp_mult": 3.2,
    "atk_mult": 1.3,
    "size_mult": 1.4,
    "armor": 0.3
   },
   "stone": {
-   "name": "磐石",
+   "name": "\u78d0\u77f3",
    "hp_mult": 3.5,
    "atk_mult": 1.2,
    "size_mult": 1.6,
@@ -32,7 +32,8 @@
  "enemies": [
   {
    "id": "slime",
-   "name": "史莱姆",
+   "bullet_visual": {"shape": "eb_spore_green", "tint": "#14532D"},
+   "name": "\u53f2\u83b1\u59c6",
    "hp": 45,
    "attack": 9,
    "speed": 62,
@@ -52,7 +53,8 @@
   },
   {
    "id": "bat",
-   "name": "蝙蝠",
+   "bullet_visual": {"shape": "eb_shard_red", "tint": "#9F1239"},
+   "name": "\u8759\u8760",
    "hp": 30,
    "attack": 6,
    "speed": 128,
@@ -69,11 +71,19 @@
    "atk_cd": 0.8,
    "dive_cd": 2.4,
    "skill_cd": 5.0,
-   "bullet_speed": 150
+   "bullet_speed": 150,
+   "anims": {
+    "idle": {
+     "prefix": "res://assets/sprites/enemy/bat_idle",
+     "frames": 4,
+     "fps": 8.0
+    }
+   }
   },
   {
    "id": "ghost",
-   "name": "幽灵",
+   "bullet_visual": {"shape": "eb_skull_dark", "tint": "#6D28D9"},
+   "name": "\u5e7d\u7075",
    "hp": 60,
    "attack": 10,
    "speed": 78,
@@ -89,11 +99,19 @@
    ],
    "behavior": "phase",
    "atk_cd": 0.85,
-   "skill_cd": 3.5
+   "skill_cd": 3.5,
+   "anims": {
+    "idle": {
+     "prefix": "res://assets/sprites/enemy/ghost_idle",
+     "frames": 4,
+     "fps": 6.0
+    }
+   }
   },
   {
    "id": "goblin",
-   "name": "哥布林",
+   "bullet_visual": {"shape": "eb_orb_stone", "tint": "#92400E"},
+   "name": "\u54e5\u5e03\u6797",
    "hp": 70,
    "attack": 13,
    "speed": 88,
@@ -109,11 +127,24 @@
    ],
    "behavior": "rock",
    "atk_cd": 0.85,
-   "skill_cd": 4.5
+   "skill_cd": 4.5,
+   "anims": {
+    "idle": {
+     "prefix": "res://assets/sprites/enemy/goblin_idle",
+     "frames": 4,
+     "fps": 6.0
+    },
+    "run": {
+     "prefix": "res://assets/sprites/enemy/goblin_run",
+     "frames": 6,
+     "fps": 10.0
+    }
+   }
   },
   {
    "id": "goblin_archer",
-   "name": "哥布林弓手",
+   "bullet_visual": {"shape": "eb_bolt_bone", "tint": "#E7E5E4"},
+   "name": "\u54e5\u5e03\u6797\u5f13\u624b",
    "hp": 50,
    "attack": 9,
    "speed": 66,
@@ -135,7 +166,8 @@
   },
   {
    "id": "skeleton",
-   "name": "骷髅",
+   "bullet_visual": {"shape": "eb_diamond_purple", "tint": "#6D28D9"},
+   "name": "\u9ab7\u9ac5",
    "hp": 90,
    "attack": 15,
    "speed": 66,
@@ -155,7 +187,8 @@
   },
   {
    "id": "imp",
-   "name": "小恶魔",
+   "bullet_visual": {"shape": "eb_shard_red", "tint": "#9F1239"},
+   "name": "\u5c0f\u6076\u9b54",
    "hp": 55,
    "attack": 10,
    "speed": 104,
@@ -172,11 +205,19 @@
     "flame"
    ],
    "behavior": "triple",
-   "skill_cd": 4.5
+   "skill_cd": 4.5,
+   "anims": {
+    "idle": {
+     "prefix": "res://assets/sprites/enemy/imp_idle",
+     "frames": 4,
+     "fps": 8.0
+    }
+   }
   },
   {
    "id": "wizard",
-   "name": "秘法巫师",
+   "bullet_visual": {"shape": "eb_diamond_purple", "tint": "#6D28D9"},
+   "name": "\u79d8\u6cd5\u5deb\u5e08",
    "hp": 45,
    "attack": 18,
    "speed": 62,
@@ -197,7 +238,8 @@
   },
   {
    "id": "bomber",
-   "name": "爆裂者",
+   "bullet_visual": {"shape": "eb_diamond_purple", "tint": "#6D28D9"},
+   "name": "\u7206\u88c2\u8005",
    "hp": 40,
    "attack": 13,
    "speed": 93,
@@ -212,11 +254,19 @@
     "flame"
    ],
    "atk_cd": 0.85,
-   "skill_cd": 5.0
+   "skill_cd": 5.0,
+   "anims": {
+    "idle": {
+     "prefix": "res://assets/sprites/enemy/bomber_idle",
+     "frames": 4,
+     "fps": 6.0
+    }
+   }
   },
   {
    "id": "charger",
-   "name": "冲锋兽",
+   "bullet_visual": {"shape": "eb_diamond_purple", "tint": "#6D28D9"},
+   "name": "\u51b2\u950b\u517d",
    "hp": 80,
    "attack": 18,
    "speed": 98,
@@ -232,11 +282,19 @@
    ],
    "atk_cd": 0.85,
    "charge_cd": 2.6,
-   "skill_cd": 6.0
+   "skill_cd": 6.0,
+   "anims": {
+    "idle": {
+     "prefix": "res://assets/sprites/enemy/charger_idle",
+     "frames": 3,
+     "fps": 6.0
+    }
+   }
   },
   {
    "id": "healer",
-   "name": "幽暗巫医",
+   "bullet_visual": {"shape": "eb_skull_dark", "tint": "#6D28D9"},
+   "name": "\u5e7d\u6697\u5deb\u533b",
    "hp": 70,
    "attack": 8,
    "speed": 60,
@@ -255,7 +313,8 @@
   },
   {
    "id": "crystal_sentry",
-   "name": "水晶哨兵",
+   "bullet_visual": {"shape": "eb_diamond_purple", "tint": "#6D28D9"},
+   "name": "\u6c34\u6676\u54e8\u5175",
    "hp": 60,
    "attack": 11,
    "speed": 52,
@@ -277,7 +336,8 @@
   },
   {
    "id": "spider",
-   "name": "毒蛛",
+   "bullet_visual": {"shape": "eb_spore_green", "tint": "#14532D"},
+   "name": "\u6bd2\u86db",
    "hp": 50,
    "attack": 8,
    "speed": 104,
@@ -293,11 +353,19 @@
    ],
    "behavior": "web",
    "atk_cd": 0.8,
-   "skill_cd": 6.0
+   "skill_cd": 6.0,
+   "anims": {
+    "idle": {
+     "prefix": "res://assets/sprites/enemy/spider_idle",
+     "frames": 4,
+     "fps": 6.0
+    }
+   }
   },
   {
    "id": "mimic_block",
-   "name": "魔像方块",
+   "bullet_visual": {"shape": "eb_orb_stone", "tint": "#92400E"},
+   "name": "\u9b54\u50cf\u65b9\u5757",
    "hp": 130,
    "attack": 17,
    "speed": 44,
@@ -318,7 +386,8 @@
   },
   {
    "id": "specter",
-   "name": "幽魂法师",
+   "bullet_visual": {"shape": "eb_blade_shadow", "tint": "#4C1D95"},
+   "name": "\u5e7d\u9b42\u6cd5\u5e08",
    "hp": 55,
    "attack": 13,
    "speed": 64,
@@ -336,13 +405,475 @@
     "flame"
    ],
    "behavior": "vanish",
-   "skill_cd": 4.5
+   "skill_cd": 4.5,
+   "anims": {
+    "idle": {
+     "prefix": "res://assets/sprites/enemy/specter_idle",
+     "frames": 4,
+     "fps": 6.0
+    },
+    "run": {
+     "prefix": "res://assets/sprites/enemy/specter_run",
+     "frames": 6,
+     "fps": 10.0
+    }
+   }
+  },
+  {
+   "id": "rat",
+   "bullet_visual": {"shape": "eb_diamond_purple", "tint": "#6D28D9"},
+   "name": "\u5de8\u9f20",
+   "hp": 32,
+   "attack": 8,
+   "speed": 118,
+   "size": 0.8,
+   "touch": true,
+   "xp": 10,
+   "gold": 2,
+   "sprite": "res://assets/sprites/enemy/rat_1.png",
+   "frames": 2,
+   "affix_pool": [
+    "flame"
+   ],
+   "behavior": "charge",
+   "atk_cd": 0.7,
+   "skill_cd": 5.0,
+   "anims": {
+    "idle": {
+     "prefix": "res://assets/sprites/enemy/rat_idle",
+     "frames": 6,
+     "fps": 8.0
+    }
+   }
+  },
+  {
+   "id": "mushroom",
+   "bullet_visual": {"shape": "eb_spore_green", "tint": "#14532D"},
+   "name": "\u5b62\u83c7",
+   "hp": 55,
+   "attack": 10,
+   "speed": 52,
+   "size": 1.0,
+   "touch": true,
+   "xp": 11,
+   "gold": 2,
+   "sprite": "res://assets/sprites/enemy/mushroom_1.png",
+   "frames": 3,
+   "affix_pool": [
+    "poison"
+   ],
+   "behavior": "rock",
+   "atk_cd": 0.9,
+   "skill_cd": 5.5,
+   "anims": {
+    "idle": {
+     "prefix": "res://assets/sprites/enemy/mushroom_idle",
+     "frames": 3,
+     "fps": 5.0
+    }
+   }
+  },
+  {
+   "id": "wolf",
+   "bullet_visual": {"shape": "eb_diamond_purple", "tint": "#6D28D9"},
+   "name": "\u7070\u72fc",
+   "hp": 60,
+   "attack": 14,
+   "speed": 112,
+   "size": 1.0,
+   "touch": true,
+   "xp": 12,
+   "gold": 3,
+   "sprite": "res://assets/sprites/enemy/wolf_1.png",
+   "frames": 2,
+   "affix_pool": [
+    "flame"
+   ],
+   "behavior": "charge",
+   "atk_cd": 0.7,
+   "skill_cd": 6.0,
+   "anims": {
+    "idle": {
+     "prefix": "res://assets/sprites/enemy/wolf_idle",
+     "frames": 4,
+     "fps": 6.0
+    },
+    "run": {
+     "prefix": "res://assets/sprites/enemy/wolf_run",
+     "frames": 6,
+     "fps": 10.0
+    }
+   }
+  },
+  {
+   "id": "treant_sapling",
+   "bullet_visual": {"shape": "eb_diamond_purple", "tint": "#6D28D9"},
+   "name": "\u6811\u82d7\u5b88\u536b",
+   "hp": 110,
+   "attack": 13,
+   "speed": 46,
+   "size": 1.3,
+   "touch": true,
+   "xp": 15,
+   "gold": 3,
+   "sprite": "res://assets/sprites/enemy/treant_sapling_1.png",
+   "frames": 3,
+   "affix_pool": [
+    "stone"
+   ],
+   "behavior": "rock",
+   "atk_cd": 1.0,
+   "skill_cd": 6.5,
+   "anims": {
+    "idle": {
+     "prefix": "res://assets/sprites/enemy/treant_sapling_idle",
+     "frames": 3,
+     "fps": 5.0
+    }
+   }
+  },
+  {
+   "id": "cultist",
+   "bullet_visual": {"shape": "eb_skull_dark", "tint": "#6D28D9"},
+   "name": "\u90aa\u6559\u5f92",
+   "hp": 65,
+   "attack": 14,
+   "speed": 62,
+   "size": 1.0,
+   "touch": false,
+   "xp": 13,
+   "gold": 3,
+   "sprite": "res://assets/sprites/enemy/cultist_1.png",
+   "frames": 2,
+   "affix_pool": [
+    "curse"
+   ],
+   "behavior": "triple",
+   "atk_cd": 0.9,
+   "skill_cd": 5.5,
+   "anims": {
+    "idle": {
+     "prefix": "res://assets/sprites/enemy/cultist_idle",
+     "frames": 4,
+     "fps": 6.0
+    },
+    "run": {
+     "prefix": "res://assets/sprites/enemy/cultist_run",
+     "frames": 6,
+     "fps": 10.0
+    }
+   }
+  },
+  {
+   "id": "bone_arbalest",
+   "bullet_visual": {"shape": "eb_bolt_bone", "tint": "#E7E5E4"},
+   "name": "\u9aa8\u5f29\u54e8\u5854",
+   "hp": 75,
+   "attack": 15,
+   "speed": 0,
+   "size": 1.1,
+   "touch": false,
+   "xp": 14,
+   "gold": 3,
+   "sprite": "res://assets/sprites/enemy/bone_arbalest_1.png",
+   "frames": 2,
+   "affix_pool": [
+    "stone"
+   ],
+   "behavior": "sniper",
+   "atk_cd": 1.2,
+   "skill_cd": 4.5,
+   "anims": {
+    "idle": {
+     "prefix": "res://assets/sprites/enemy/bone_arbalest_idle",
+     "frames": 4,
+     "fps": 6.0
+    }
+   }
+  },
+  {
+   "id": "gravedigger",
+   "bullet_visual": {"shape": "eb_orb_stone", "tint": "#92400E"},
+   "name": "\u6398\u5893\u8005",
+   "hp": 85,
+   "attack": 11,
+   "speed": 58,
+   "size": 1.1,
+   "touch": true,
+   "xp": 14,
+   "gold": 3,
+   "sprite": "res://assets/sprites/enemy/gravedigger_1.png",
+   "frames": 2,
+   "affix_pool": [
+    "curse"
+   ],
+   "behavior": "heal",
+   "atk_cd": 0.9,
+   "skill_cd": 6.0,
+   "anims": {
+    "idle": {
+     "prefix": "res://assets/sprites/enemy/gravedigger_idle",
+     "frames": 4,
+     "fps": 6.0
+    },
+    "run": {
+     "prefix": "res://assets/sprites/enemy/gravedigger_run",
+     "frames": 6,
+     "fps": 10.0
+    }
+   }
+  },
+  {
+   "id": "lava_lizard",
+   "bullet_visual": {"shape": "eb_shard_red", "tint": "#9F1239"},
+   "name": "\u7194\u5ca9\u8725\u8734",
+   "hp": 70,
+   "attack": 16,
+   "speed": 104,
+   "size": 1.0,
+   "touch": true,
+   "xp": 13,
+   "gold": 3,
+   "sprite": "res://assets/sprites/enemy/lava_lizard_1.png",
+   "frames": 2,
+   "affix_pool": [
+    "flame"
+   ],
+   "behavior": "charge",
+   "atk_cd": 0.7,
+   "skill_cd": 5.5,
+   "anims": {
+    "idle": {
+     "prefix": "res://assets/sprites/enemy/lava_lizard_idle",
+     "frames": 4,
+     "fps": 6.0
+    }
+   }
+  },
+  {
+   "id": "fire_wisp",
+   "bullet_visual": {"shape": "eb_skull_dark", "tint": "#6D28D9"},
+   "name": "\u706b\u7075",
+   "hp": 45,
+   "attack": 12,
+   "speed": 88,
+   "size": 0.8,
+   "touch": true,
+   "xp": 12,
+   "gold": 2,
+   "sprite": "res://assets/sprites/enemy/fire_wisp_1.png",
+   "frames": 2,
+   "affix_pool": [
+    "flame"
+   ],
+   "behavior": "scream",
+   "atk_cd": 0.8,
+   "skill_cd": 6.0,
+   "anims": {
+    "idle": {
+     "prefix": "res://assets/sprites/enemy/fire_wisp_idle",
+     "frames": 4,
+     "fps": 8.0
+    }
+   }
+  },
+  {
+   "id": "obsidian_golem",
+   "bullet_visual": {"shape": "eb_orb_stone", "tint": "#92400E"},
+   "name": "\u9ed1\u66dc\u77f3\u9b54\u50cf",
+   "hp": 130,
+   "attack": 17,
+   "speed": 42,
+   "size": 1.5,
+   "touch": true,
+   "xp": 16,
+   "gold": 4,
+   "sprite": "res://assets/sprites/enemy/obsidian_golem_1.png",
+   "frames": 2,
+   "affix_pool": [
+    "stone"
+   ],
+   "behavior": "shield",
+   "atk_cd": 1.0,
+   "skill_cd": 7.0
+  },
+  {
+   "id": "temple_guardian",
+   "bullet_visual": {"shape": "eb_diamond_purple", "tint": "#6D28D9"},
+   "name": "\u795e\u6bbf\u5b88\u536b",
+   "hp": 105,
+   "attack": 15,
+   "speed": 60,
+   "size": 1.2,
+   "touch": true,
+   "xp": 15,
+   "gold": 4,
+   "sprite": "res://assets/sprites/enemy/temple_guardian_1.png",
+   "frames": 2,
+   "affix_pool": [
+    "stone"
+   ],
+   "behavior": "shield",
+   "atk_cd": 0.9,
+   "skill_cd": 6.0,
+   "anims": {
+    "idle": {
+     "prefix": "res://assets/sprites/enemy/temple_guardian_idle",
+     "frames": 4,
+     "fps": 6.0
+    },
+    "run": {
+     "prefix": "res://assets/sprites/enemy/temple_guardian_run",
+     "frames": 6,
+     "fps": 10.0
+    }
+   }
+  },
+  {
+   "id": "mummy",
+   "bullet_visual": {"shape": "eb_bolt_bone", "tint": "#E7E5E4"},
+   "name": "\u6728\u4e43\u4f0a",
+   "hp": 95,
+   "attack": 13,
+   "speed": 56,
+   "size": 1.0,
+   "touch": true,
+   "xp": 14,
+   "gold": 3,
+   "sprite": "res://assets/sprites/enemy/mummy_1.png",
+   "frames": 2,
+   "affix_pool": [
+    "curse"
+   ],
+   "behavior": "curse",
+   "atk_cd": 0.9,
+   "skill_cd": 6.0,
+   "anims": {
+    "idle": {
+     "prefix": "res://assets/sprites/enemy/mummy_idle",
+     "frames": 4,
+     "fps": 6.0
+    }
+   }
+  },
+  {
+   "id": "scarab",
+   "bullet_visual": {"shape": "eb_orb_stone", "tint": "#92400E"},
+   "name": "\u5723\u7532\u866b",
+   "hp": 38,
+   "attack": 9,
+   "speed": 120,
+   "size": 0.7,
+   "touch": true,
+   "xp": 10,
+   "gold": 2,
+   "sprite": "res://assets/sprites/enemy/scarab_1.png",
+   "frames": 2,
+   "affix_pool": [
+    "stone"
+   ],
+   "behavior": "charge",
+   "atk_cd": 0.6,
+   "skill_cd": 4.5,
+   "anims": {
+    "idle": {
+     "prefix": "res://assets/sprites/enemy/scarab_idle",
+     "frames": 4,
+     "fps": 6.0
+    }
+   }
+  },
+  {
+   "id": "void_slime",
+   "bullet_visual": {"shape": "eb_spore_green", "tint": "#14532D"},
+   "name": "\u865a\u7a7a\u53f2\u83b1\u59c6",
+   "hp": 70,
+   "attack": 12,
+   "speed": 70,
+   "size": 1.0,
+   "touch": true,
+   "xp": 13,
+   "gold": 3,
+   "sprite": "res://assets/sprites/enemy/void_slime_1.png",
+   "frames": 3,
+   "affix_pool": [
+    "curse"
+   ],
+   "behavior": "split",
+   "atk_cd": 0.85,
+   "skill_cd": 6.0
+  },
+  {
+   "id": "shadow_stalker",
+   "bullet_visual": {"shape": "eb_blade_shadow", "tint": "#4C1D95"},
+   "name": "\u6697\u5f71\u523a\u5ba2",
+   "hp": 55,
+   "attack": 15,
+   "speed": 100,
+   "size": 0.9,
+   "touch": true,
+   "xp": 14,
+   "gold": 3,
+   "sprite": "res://assets/sprites/enemy/shadow_stalker_1.png",
+   "frames": 2,
+   "affix_pool": [
+    "curse"
+   ],
+   "behavior": "vanish",
+   "atk_cd": 0.7,
+   "skill_cd": 6.5,
+   "anims": {
+    "idle": {
+     "prefix": "res://assets/sprites/enemy/shadow_stalker_idle",
+     "frames": 4,
+     "fps": 6.0
+    },
+    "run": {
+     "prefix": "res://assets/sprites/enemy/shadow_stalker_run",
+     "frames": 6,
+     "fps": 10.0
+    }
+   }
+  },
+  {
+   "id": "boar",
+   "bullet_visual": {"shape": "eb_diamond_purple", "tint": "#6D28D9"},
+   "name": "\u91ce\u732a",
+   "hp": 60,
+   "attack": 14,
+   "speed": 112,
+   "size": 0.8,
+   "touch": true,
+   "xp": 12,
+   "gold": 3,
+   "sprite": "res://assets/sprites/enemy/boar_idle_0.png",
+   "frames": 4,
+   "affix_pool": [
+    "flame",
+    "stone"
+   ],
+   "behavior": "charge",
+   "atk_cd": 0.7,
+   "charge_cd": 2.6,
+   "skill_cd": 6.0,
+   "anims": {
+    "idle": {
+     "prefix": "res://assets/sprites/enemy/boar_idle",
+     "frames": 4,
+     "fps": 5.0
+    },
+    "run": {
+     "prefix": "res://assets/sprites/enemy/boar_run",
+     "frames": 6,
+     "fps": 10.0
+    }
+   }
   }
  ],
  "bosses": [
   {
    "id": "slime_king",
-   "name": "史莱姆王",
+   "name": "\u53f2\u83b1\u59c6\u738b",
    "hp": 600,
    "attack": 15,
    "speed": 50,
@@ -412,7 +943,7 @@
   },
   {
    "id": "tree_golem",
-   "name": "树精守卫",
+   "name": "\u6811\u7cbe\u5b88\u536b",
    "hp": 800,
    "attack": 17,
    "speed": 40,
@@ -500,7 +1031,7 @@
   },
   {
    "id": "skeleton_king",
-   "name": "骷髅王",
+   "name": "\u9ab7\u9ac5\u738b",
    "hp": 1000,
    "attack": 20,
    "speed": 60,
@@ -574,7 +1105,7 @@
   },
   {
    "id": "imp_king",
-   "name": "熔岩魔王",
+   "name": "\u7194\u5ca9\u9b54\u738b",
    "hp": 1200,
    "attack": 24,
    "speed": 70,
@@ -677,7 +1208,7 @@
   },
   {
    "id": "ancient_guardian",
-   "name": "远古守卫",
+   "name": "\u8fdc\u53e4\u5b88\u536b",
    "hp": 1500,
    "attack": 27,
    "speed": 66,
@@ -761,7 +1292,7 @@
   },
   {
    "id": "final_god",
-   "name": "古神",
+   "name": "\u53e4\u795e",
    "hp": 5000,
    "attack": 52,
    "speed": 70,

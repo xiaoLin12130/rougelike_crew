@@ -525,7 +525,7 @@ func _update_circles(delta: float) -> void:
 					continue
 				if center.distance_to(e.global_position) <= radius + e.scale.x * 8.0:
 					EventBus.apply_status.emit(e, "slow", 1)
-					EventBus.fx_hit_slow.emit(e)
+					EventBus.fx_hit_slow.emit(e, true)  # 保持顿帧 60ms（G-4 分级后）
 			EventBus.fx_explosion.emit(center, "ice")
 		keep.append(cd)
 	_circles = keep

@@ -15,7 +15,10 @@
   4. 元素归属：element_bonus 与 school 对应（fire 法杖只给 fire 加成等）
   5. desc 一致性铁律：description 必须覆盖每个 shape_mods / cd_mult /
      damage_mult / element_bonus 的实际效果（关键词断言）
-  6. 抽取模拟：1000 次 3 连抽（镜像 wand_shop.gd 公式）——
+  6. 稀有度重分类（2026-08-12）：连发类（shape=rapid 或 shots>=3）必须 legendary；
+     每流派至少 1 把 legendary；price 与 rarity 区间严格正相关不重叠；
+     同流派内传说用途指纹两两互异
+  7. 抽取模拟：1000 次 3 连抽（镜像 wand_shop.gd 公式）——
      lucky=0 时 普通>稀有>传说 递减；lucky=10 时传说占比明显高于 lucky=0
 """
 
@@ -29,7 +32,9 @@ ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
 FAILS = []
 
 # 与 wand_shop.gd 保持一致的加权公式常量
-RARITY_WEIGHT = {"common": 60.0, "rare": 25.0, "legendary": 15.0}
+# （2026-08-12：稀有度重分类后传说池 21 把，common 60→70 / legendary 15→13
+#  保持 lucky=0/lucky=10 下 common > rare > legendary 分层递减语义）
+RARITY_WEIGHT = {"common": 70.0, "rare": 25.0, "legendary": 13.0}
 LUCKY_RARITY_BOOST = {"common": 1.0, "rare": 2.0, "legendary": 4.0}
 LUCKY_PER_STACK = 0.06
 
@@ -162,16 +167,46 @@ def main():
               "流派 %s 用途指纹仅 %d 种（需 >=3）：%s"
               % (s, len(fps), sorted(fps)))
 
-    # 6. 传说法杖用途两两互异
+    # 6. 稀有度重分类（2026-08-12）
     leg = [w for w in wands if w.get("rarity") == "legendary"]
-    check(len(leg) == 11, "传说应 11 把，实际 %d" % len(leg))
+    check(len(leg) == 21, "传说应 21 把，实际 %d" % len(leg))
+
+    # 6a. 连发类强制 legendary：shape=rapid 或任意 shape 下 shots>=3
+    for w in wands:
+        wid = w["id"]
+        mods = w.get("shape_mods", {})
+        is_burst_fire = (w.get("shape") == "rapid") or (int(mods.get("shots", 1)) >= 3)
+        if is_burst_fire:
+            check(w.get("rarity") == "legendary",
+                  "[%s] 连发类（shape=rapid 或 shots>=3）必须是 legendary，实际 %s"
+                  % (wid, w.get("rarity")))
+
+    # 6b. 每流派至少 1 把 legendary
+    for s in sorted(schools):
+        n_leg = sum(1 for w in wands if w.get("school") == s and w.get("rarity") == "legendary")
+        check(n_leg >= 1, "流派 %s 没有 legendary 法杖" % s)
+
+    # 6c. price 与 rarity 正相关：三档价格区间严格不重叠
+    price_by_rarity = {}
+    for w in wands:
+        price_by_rarity.setdefault(w["rarity"], []).append(w["price"])
+    p_c = price_by_rarity.get("common", [])
+    p_r = price_by_rarity.get("rare", [])
+    p_l = price_by_rarity.get("legendary", [])
+    check(max(p_c) < min(p_r), "common 最高价 %d 应低于 rare 最低价 %d（正相关）"
+          % (max(p_c), min(p_r)))
+    check(max(p_r) < min(p_l), "rare 最高价 %d 应低于 legendary 最低价 %d（正相关）"
+          % (max(p_r), min(p_l)))
+
+    # 6d. 同流派内传说法杖用途两两互异（跨流派 rapid 连发共享指纹属预期）
     leg_fps = {}
     for w in leg:
         fp = fingerprint(w)
-        if fp in leg_fps:
-            check(False, "传说用途重复：%s 与 %s 同为 %s"
-                  % (leg_fps[fp], w["id"], fp))
-        leg_fps[fp] = w["id"]
+        key = (w.get("school"), fp)
+        if key in leg_fps:
+            check(False, "同流派传说用途重复：%s 与 %s 同为 %s"
+                  % (leg_fps[key], w["id"], fp))
+        leg_fps[key] = w["id"]
 
     # 7. 逐条字段校验 + 白名单 + 元素归属 + desc 一致性
     for w in wands:
@@ -242,7 +277,7 @@ def main():
             check("冷却" in desc,
                   "[%s] cd_mult=%s 但描述未提冷却" % (wid, w.get("cd_mult")))
 
-    # 8. 抽取模拟（镜像商店公式，1000 次 × 3 把）
+    # 7. 抽取模拟（镜像商店公式，1000 次 × 3 把）
     random.seed(20260810)
     trials = 1000
 
@@ -266,7 +301,7 @@ def main():
           "lucky=10 传说占比 %.3f 应明显高于 lucky=0 的 %.3f（+5pp 以上）"
           % (s10["legendary"], s0["legendary"]))
 
-    # 9. 汇总输出
+    # 8. 汇总输出
     per_school = {s: len({fingerprint(w) for w in wands if w.get("school") == s})
                   for s in sorted(schools)}
     print("wands: %d | schools: %d | aoe_mult: %d (%.1f%%) | rarity: %s" % (

@@ -1,0 +1,562 @@
+Godot Engine v4.7.1.stable.official.a13da4feb - https://godotengine.org
+
+ERROR: Failed to read the root certificate store.
+   at: get_system_ca_certificates (platform/windows/os_windows.cpp:2582)
+[SYNERGY] crit_synergy registered
+[SYNERGY] loaded: crit_synergy.gd
+[SYNERGY] curse_synergy registered
+[SYNERGY] loaded: curse_synergy.gd
+[SYNERGY] defense_synergy registered
+[SYNERGY] loaded: defense_synergy.gd
+[SYNERGY] fire_synergy registered
+[SYNERGY] loaded: fire_synergy.gd
+[SYNERGY] holy registered
+[SYNERGY] loaded: holy_synergy.gd
+[SYNERGY] ice_synergy registered
+[SYNERGY] loaded: ice_synergy.gd
+[SYNERGY] mech_items registered
+[SYNERGY] loaded: mech_items.gd
+[SYNERGY] melee_synergy registered
+[SYNERGY] loaded: melee_synergy.gd
+[SYNERGY] loaded: poison_synergy.gd
+[SYNERGY] loaded: summon_synergy.gd
+[SYNERGY] loaded: thunder_synergy.gd
+[SYNERGY] water_synergy registered
+[SYNERGY] loaded: water_synergy.gd
+[SYNERGY] wind_synergy registered
+[SYNERGY] loaded: wind_synergy.gd
+[AUTOPLAY] school=water tags=["water"] elements=["water"]
+[AUTOPLAY] started
+[AUTOPLAY] started instances=1
+[FONT] cn loaded=true path=res://assets/fonts/LXGWWenKai_subset.ttf
+[SPAWNER] setup at run.time=0.0 waves=3
+[SPAWNER] wave 1 active rel=0.0 abs=0.0 level_start=0.0
+[HB] t=1.0 paused=false frames=60 fps_now=60 hp=105 kills=0
+[HB] t=2.0 paused=false frames=121 fps_now=61 hp=105 kills=0
+[HB] t=3.0 paused=false frames=182 fps_now=61 hp=105 kills=0
+[HB] t=4.0 paused=false frames=243 fps_now=61 hp=105 kills=0
+[AUTOPLAY] t=5 hp=105 lv=1 kills=0 enemies=8 dps=12 grid=2 items=0 wave=1 dist=95 player=(960.8798, 583.9144) enemy=(1040.977, 532.8461) mv=(0.666878, 0.745167) aim=(0.861034, -0.508548)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "slime": 6, "bat": 2 }
+[HB] t=5.1 paused=false frames=304 fps_now=61 hp=105 kills=0
+[HB] t=6.1 paused=false frames=365 fps_now=61 hp=96 kills=0
+[HB] t=7.1 paused=false frames=427 fps_now=62 hp=87 kills=4
+[HB] t=8.1 paused=false frames=488 fps_now=61 hp=81 kills=5
+[HB] t=9.1 paused=false frames=549 fps_now=61 hp=81 kills=5
+[AUTOPLAY] t=10 hp=75 lv=1 kills=5 enemies=19 dps=12 grid=2 items=0 wave=1 dist=3 player=(812.9863, 502.2552) enemy=(815.4361, 503.0396) mv=(-0.635048, 0.772472) aim=(0.219036, 0.975717)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "slime": 15, "bat": 4 }
+[HB] t=10.1 paused=true frames=611 fps_now=62 hp=105 kills=7
+[AUTOPLAY] choices: 连发·火柱=336, 生命结晶=100, 活力药剂=56
+[SYNERGY] formed: 燃烧流
+[AUTOPLAY] levelup -> 连发·火柱 score=336
+[AUTOPLAY] levelup -> 连发·火柱 score=336
+[HB] t=11.1 paused=false frames=673 fps_now=62 hp=96 kills=11
+[HB] t=12.1 paused=false frames=736 fps_now=63 hp=87 kills=13
+[AUTOPLAY] choices: 闪光粉=50, 原生·水弹=271, 共鸣水晶=50
+[AUTOPLAY] levelup -> 原生·水弹 score=271
+[AUTOPLAY] levelup -> 原生·水弹 score=271
+[HB] t=13.1 paused=false frames=800 fps_now=64 hp=115 kills=19
+[HB] t=14.1 paused=false frames=863 fps_now=63 hp=115 kills=34
+[AUTOPLAY] t=15 hp=115 lv=3 kills=34 enemies=30 dps=35 grid=4 items=0 wave=1 dist=130 player=(1180.32, 388.9242) enemy=(1179.38, 519.1617) mv=(-0.695828, -0.718209) aim=(-0.02487, 0.999691)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "slime": 27, "bat": 3 }
+[HB] t=15.1 paused=false frames=924 fps_now=61 hp=115 kills=34
+[HB] t=16.1 paused=false frames=986 fps_now=62 hp=115 kills=34
+[HB] t=17.2 paused=false frames=1048 fps_now=62 hp=109 kills=34
+[AUTOPLAY] choices: 铁环=67, 分裂·火柱=227, 迅捷护符=50
+[AUTOPLAY] levelup -> 分裂·火柱 score=227
+[AUTOPLAY] levelup -> 分裂·火柱 score=227
+[HB] t=18.2 paused=false frames=1110 fps_now=62 hp=119 kills=36
+[HB] t=19.2 paused=false frames=1172 fps_now=62 hp=101 kills=40
+[AUTOPLAY] t=20 hp=101 lv=4 kills=56 enemies=44 dps=43 grid=5 items=0 wave=1 dist=117 player=(484.742, 673.2097) enemy=(525.9611, 563.5024) mv=(1.0, 0.0) aim=(0.373961, -0.927444)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "slime": 43, "bat": 1 }
+[HB] t=20.2 paused=false frames=1237 fps_now=65 hp=101 kills=56
+[AUTOPLAY] choices: 禁疗领域=60, 恐惧=110, 吸血·火球=188
+[AUTOPLAY] levelup -> 吸血·火球 score=188
+[AUTOPLAY] levelup -> 吸血·火球 score=188
+[AUTOPLAY] self-heal unpause
+[AUTOPLAY] spell replace -> slot 1 score=254
+[AUTOPLAY] spell replace -> slot 0 (fallback)
+[SPAWNER] wave 2 active rel=21.0 abs=21.0 level_start=0.0
+[HB] t=21.2 paused=false frames=1301 fps_now=64 hp=135 kills=68
+[HB] t=22.2 paused=false frames=1367 fps_now=66 hp=136 kills=90
+[AUTOPLAY] choices: 追踪·水弹=78, 燃烧符=110, 纵火狂=120
+[AUTOPLAY] levelup -> 纵火狂 score=120
+[AUTOPLAY] levelup -> 纵火狂 score=120
+[HB] t=23.2 paused=false frames=1431 fps_now=64 hp=145 kills=114
+[HB] t=24.2 paused=false frames=1492 fps_now=61 hp=155 kills=116
+[AUTOPLAY] t=25 hp=155 lv=6 kills=122 enemies=37 dps=48 grid=5 items=1 wave=2 dist=169 player=(984.326, 331.3615) enemy=(918.5247, 487.3679) mv=(-0.937514, -0.347949) aim=(-0.406561, 0.913624)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "slime": 37 }
+[HB] t=25.2 paused=false frames=1554 fps_now=62 hp=155 kills=122
+[HB] t=26.2 paused=false frames=1616 fps_now=62 hp=155 kills=127
+[HB] t=27.3 paused=false frames=1679 fps_now=63 hp=155 kills=138
+[HB] t=28.3 paused=false frames=1741 fps_now=62 hp=155 kills=151
+[HB] t=29.3 paused=false frames=1803 fps_now=62 hp=155 kills=153
+[AUTOPLAY] choices: 原生·旋风刃=-78, 火元素徽章=160, 霜甲=50
+[AUTOPLAY] levelup -> 火元素徽章 score=160
+[AUTOPLAY] levelup -> 火元素徽章 score=160
+[AUTOPLAY] t=30 hp=155 lv=7 kills=176 enemies=16 dps=48 grid=5 items=2 wave=2 dist=155 player=(789.3843, 668.5733) enemy=(741.8479, 521.3571) mv=(0.999203, -0.039925) aim=(-0.287577, -0.957757)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "slime": 14, "bat": 2 }
+[HB] t=30.3 paused=false frames=1865 fps_now=62 hp=157 kills=177
+[HB] t=31.3 paused=false frames=1926 fps_now=61 hp=157 kills=178
+[HB] t=32.3 paused=false frames=1989 fps_now=63 hp=161 kills=181
+[HB] t=33.3 paused=false frames=2050 fps_now=61 hp=161 kills=181
+[HB] t=34.3 paused=false frames=2113 fps_now=63 hp=165 kills=186
+[AUTOPLAY] t=35 hp=156 lv=7 kills=187 enemies=31 dps=48 grid=5 items=2 wave=2 dist=6 player=(529.5669, 205.6019) enemy=(523.8928, 203.9561) mv=(-1.0, 0.0) aim=(-0.983715, -0.179735)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "slime": 26, "bat": 5 }
+[HB] t=35.3 paused=false frames=2175 fps_now=62 hp=156 kills=189
+[HB] t=36.3 paused=false frames=2236 fps_now=61 hp=158 kills=191
+[HB] t=37.3 paused=false frames=2298 fps_now=62 hp=160 kills=195
+[HB] t=38.3 paused=false frames=2359 fps_now=61 hp=162 kills=196
+[HB] t=39.3 paused=false frames=2422 fps_now=63 hp=162 kills=208
+[AUTOPLAY] t=40 hp=164 lv=7 kills=208 enemies=32 dps=48 grid=5 items=2 wave=2 dist=133 player=(389.5189, 673.7598) enemy=(376.6199, 541.6771) mv=(1.0, 0.0) aim=(-0.072628, -0.997359)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "slime": 29, "bat": 3 }
+[HB] t=40.3 paused=false frames=2483 fps_now=61 hp=164 kills=208
+[HB] t=41.4 paused=false frames=2546 fps_now=63 hp=165 kills=215
+[HB] t=42.4 paused=false frames=2608 fps_now=62 hp=165 kills=224
+[HB] t=43.4 paused=false frames=2670 fps_now=62 hp=165 kills=230
+[HB] t=44.4 paused=false frames=2731 fps_now=61 hp=165 kills=230
+[SPAWNER] wave 3 active rel=45.0 abs=45.0 level_start=0.0
+[AUTOPLAY] choices: 引燃粉=110, 齐射·水弹=291, 余烬指环=110
+[AUTOPLAY] levelup -> 齐射·水弹 score=291
+[AUTOPLAY] levelup -> 齐射·水弹 score=291
+[AUTOPLAY] self-heal unpause
+[AUTOPLAY] spell replace -> slot 0 score=426
+[AUTOPLAY] spell replace -> slot 0 (fallback)
+[AUTOPLAY] t=45 hp=165 lv=8 kills=232 enemies=32 dps=48 grid=5 items=2 wave=3 dist=173 player=(755.562, 209.8471) enemy=(924.5373, 246.9414) mv=(-0.992878, 0.119138) aim=(0.972885, 0.23129)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "slime": 30, "bat": 2 }
+[HB] t=45.4 paused=false frames=2793 fps_now=62 hp=165 kills=244
+[HB] t=46.4 paused=false frames=2856 fps_now=63 hp=167 kills=254
+[HB] t=47.4 paused=false frames=2918 fps_now=62 hp=171 kills=258
+[HB] t=48.4 paused=false frames=2980 fps_now=62 hp=173 kills=269
+[HB] t=49.4 paused=false frames=3042 fps_now=62 hp=159 kills=272
+[AUTOPLAY] t=50 hp=159 lv=8 kills=276 enemies=32 dps=69 grid=5 items=2 wave=3 dist=66 player=(690.7341, 673.6221) enemy=(743.999, 634.8306) mv=(1.0, 0.0) aim=(0.999058, -0.0434)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "slime": 27, "bat": 1, "goblin": 3, "wizard": 1 }
+[HB] t=50.4 paused=false frames=3105 fps_now=63 hp=139 kills=276
+[HB] t=51.4 paused=false frames=3167 fps_now=62 hp=135 kills=277
+[HB] t=52.5 paused=false frames=3229 fps_now=62 hp=137 kills=280
+[HB] t=53.5 paused=false frames=3290 fps_now=61 hp=139 kills=280
+[HB] t=54.5 paused=false frames=3352 fps_now=62 hp=131 kills=284
+[AUTOPLAY] t=55 hp=131 lv=8 kills=290 enemies=33 dps=69 grid=5 items=2 wave=3 dist=127 player=(670.3806, 208.3435) enemy=(717.8037, 326.0746) mv=(-1.0, 0.0) aim=(0.350975, 0.936385)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "slime": 30, "goblin": 3 }
+[HB] t=55.5 paused=false frames=3416 fps_now=64 hp=133 kills=295
+[HB] t=56.5 paused=false frames=3478 fps_now=62 hp=133 kills=297
+[HB] t=57.5 paused=false frames=3540 fps_now=62 hp=135 kills=305
+[HB] t=58.5 paused=false frames=3603 fps_now=63 hp=137 kills=315
+[HB] t=59.5 paused=false frames=3666 fps_now=63 hp=127 kills=324
+[AUTOPLAY] choices: 灼热核心=160, 洋流=270, 穿透·水弹=50
+[AUTOPLAY] levelup -> 洋流 score=270
+[AUTOPLAY] levelup -> 洋流 score=270
+[AUTOPLAY] t=60 hp=175 lv=9 kills=327 enemies=37 dps=69 grid=5 items=3 wave=3 dist=137 player=(736.2335, 655.7599) enemy=(659.4316, 542.5092) mv=(0.894765, -0.446537) aim=(-0.521267, -0.853394)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "slime": 33, "goblin": 2, "bat": 2 }
+[HB] t=60.5 paused=false frames=3729 fps_now=63 hp=175 kills=332
+[HB] t=61.5 paused=false frames=3792 fps_now=63 hp=178 kills=335
+[HB] t=62.5 paused=false frames=3855 fps_now=63 hp=182 kills=342
+[HB] t=63.6 paused=false frames=3918 fps_now=63 hp=185 kills=351
+[HB] t=64.6 paused=false frames=3981 fps_now=63 hp=185 kills=360
+[AUTOPLAY] t=65 hp=185 lv=9 kills=360 enemies=37 dps=69 grid=5 items=3 wave=3 dist=103 player=(329.0844, 569.864) enemy=(290.0258, 665.6499) mv=(0.010578, 0.999944) aim=(-0.353914, 0.935278)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "slime": 35, "goblin": 2 }
+[HB] t=65.6 paused=false frames=4044 fps_now=63 hp=181 kills=373
+[HB] t=66.6 paused=false frames=4105 fps_now=61 hp=181 kills=375
+[HB] t=67.6 paused=false frames=4168 fps_now=63 hp=183 kills=392
+[HB] t=68.6 paused=false frames=4231 fps_now=63 hp=182 kills=401
+[HB] t=69.6 paused=false frames=4293 fps_now=62 hp=182 kills=407
+[AUTOPLAY] t=70 hp=184 lv=9 kills=411 enemies=28 dps=69 grid=5 items=3 wave=3 dist=94 player=(993.2117, 708.1848) enemy=(1086.774, 701.611) mv=(0.919091, -0.394045) aim=(0.980798, -0.195029)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "slime": 27, "goblin": 1 }
+[HB] t=70.6 paused=false frames=4356 fps_now=63 hp=184 kills=426
+[AUTOPLAY] choices: 反甲吸血=60, 连发·火柱=52, 防御结晶=50
+[AUTOPLAY] levelup -> 反甲吸血 score=60
+[AUTOPLAY] levelup -> 反甲吸血 score=60
+[HB] t=71.7 paused=false frames=4419 fps_now=63 hp=192 kills=436
+[HB] t=72.7 paused=false frames=4480 fps_now=61 hp=193 kills=439
+[HB] t=73.7 paused=false frames=4543 fps_now=63 hp=195 kills=454
+[HB] t=74.7 paused=false frames=4604 fps_now=61 hp=195 kills=455
+[AUTOPLAY] t=75 hp=195 lv=10 kills=460 enemies=6 dps=69 grid=5 items=4 wave=3 dist=82 player=(479.1379, 127.8621) enemy=(430.819, 194.4248) mv=(-1.0, 0.0) aim=(-0.636305, 0.771438)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "slime": 6 }
+[HB] t=75.7 paused=false frames=4667 fps_now=63 hp=195 kills=461
+[HB] t=76.7 paused=false frames=4728 fps_now=61 hp=195 kills=467
+[HB] t=77.7 paused=false frames=4790 fps_now=62 hp=195 kills=470
+[HB] t=78.7 paused=false frames=4852 fps_now=62 hp=195 kills=476
+[HB] t=79.7 paused=false frames=4914 fps_now=62 hp=195 kills=476
+[AUTOPLAY] t=80 hp=195 lv=10 kills=476 enemies=6 dps=69 grid=5 items=4 wave=3 dist=130 player=(527.2434, 208.5101) enemy=(650.4701, 251.1259) mv=(-1.0, 0.0) aim=(0.756478, 0.654019)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "slime_king": 1, "slime_king_hp": "386/600", "slime": 5 }
+[HB] t=80.7 paused=false frames=4977 fps_now=63 hp=195 kills=482
+[HB] t=81.7 paused=false frames=5040 fps_now=63 hp=195 kills=494
+[HB] t=82.7 paused=false frames=5104 fps_now=64 hp=195 kills=512
+[HB] t=83.7 paused=false frames=5167 fps_now=63 hp=195 kills=517
+[HB] t=84.8 paused=false frames=5230 fps_now=63 hp=180 kills=528
+[AUTOPLAY] self-heal unpause
+[AUTOPLAY] wand shop handled
+[SPAWNER] setup at run.time=84.8 waves=3
+[AUTOPLAY] wand shop handled
+[SPAWNER] wave 1 active rel=0.0 abs=84.8 level_start=84.8
+[AUTOPLAY] t=85 hp=195 lv=10 kills=531 enemies=0 dps=74 grid=5 items=4 wave=0 none
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] {  }
+[HB] t=85.8 paused=false frames=5293 fps_now=63 hp=195 kills=531
+[HB] t=86.8 paused=false frames=5354 fps_now=61 hp=183 kills=531
+[HB] t=87.8 paused=false frames=5415 fps_now=61 hp=173 kills=532
+[HB] t=88.8 paused=false frames=5478 fps_now=63 hp=162 kills=534
+[HB] t=89.8 paused=false frames=5539 fps_now=61 hp=165 kills=535
+[AUTOPLAY] t=90 hp=168 lv=10 kills=535 enemies=24 dps=74 grid=5 items=4 wave=0 dist=60 player=(789.9485, 195.6187) enemy=(736.2319, 223.1736) mv=(1.0, 0.0) aim=(-0.936667, 0.350222)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "goblin": 18, "bat": 6 }
+[HB] t=90.8 paused=false frames=5601 fps_now=62 hp=158 kills=535
+[HB] t=91.8 paused=false frames=5664 fps_now=63 hp=184 kills=537
+[HB] t=92.8 paused=false frames=5726 fps_now=62 hp=174 kills=539
+[AUTOPLAY] choices: 环绕·火球=-49, 磐石护甲=50, 攻速药水=139
+[AUTOPLAY] levelup -> 攻速药水 score=139
+[AUTOPLAY] levelup -> 攻速药水 score=139
+[HB] t=93.8 paused=false frames=5789 fps_now=63 hp=198 kills=542
+[HB] t=94.8 paused=false frames=5851 fps_now=62 hp=189 kills=542
+[AUTOPLAY] t=95 hp=179 lv=11 kills=542 enemies=32 dps=85 grid=5 items=5 wave=0 dist=54 player=(46.01073, 570.5048) enemy=(66.20333, 520.7965) mv=(0.0, 1.0) aim=(0.402562, -0.915393)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "goblin": 26, "bat": 6 }
+[HB] t=95.8 paused=false frames=5914 fps_now=63 hp=173 kills=545
+[HB] t=96.9 paused=false frames=5977 fps_now=63 hp=166 kills=547
+[HB] t=97.9 paused=false frames=6039 fps_now=62 hp=155 kills=548
+[HB] t=98.9 paused=false frames=6102 fps_now=63 hp=163 kills=549
+[HB] t=99.9 paused=false frames=6163 fps_now=61 hp=163 kills=550
+[AUTOPLAY] t=100 hp=158 lv=11 kills=552 enemies=29 dps=85 grid=5 items=5 wave=0 dist=210 player=(1012.237, 212.2867) enemy=(821.2163, 124.0995) mv=(-0.825061, -0.565044) aim=(-0.905357, -0.424651)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "goblin": 24, "bat": 5 }
+[HB] t=100.9 paused=false frames=6226 fps_now=63 hp=150 kills=553
+[HB] t=101.9 paused=false frames=6289 fps_now=63 hp=129 kills=555
+[HB] t=102.9 paused=false frames=6352 fps_now=63 hp=135 kills=558
+[HB] t=103.9 paused=false frames=6414 fps_now=62 hp=127 kills=560
+[HB] t=104.9 paused=false frames=6476 fps_now=62 hp=124 kills=563
+[AUTOPLAY] t=105 hp=144 lv=11 kills=563 enemies=31 dps=85 grid=5 items=5 wave=0 dist=156 player=(1165.59, 496.0522) enemy=(1040.964, 401.9908) mv=(0.710013, -0.704189) aim=(-0.772212, -0.635365)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "goblin": 26, "bat": 5 }
+[HB] t=105.9 paused=false frames=6538 fps_now=62 hp=147 kills=564
+[HB] t=107.0 paused=false frames=6601 fps_now=63 hp=154 kills=568
+[HB] t=108.0 paused=false frames=6664 fps_now=63 hp=130 kills=570
+[SPAWNER] wave 2 active rel=24.0 abs=108.8 level_start=84.8
+[HB] t=109.0 paused=false frames=6727 fps_now=63 hp=135 kills=577
+[HB] t=110.0 paused=false frames=6789 fps_now=62 hp=128 kills=578
+[AUTOPLAY] t=110 hp=128 lv=11 kills=578 enemies=30 dps=85 grid=5 items=5 wave=0 dist=156 player=(421.2868, 530.6876) enemy=(449.9614, 684.5355) mv=(0.183227, 0.983071) aim=(0.183227, 0.983071)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "goblin": 18, "bat": 5, "goblin_archer": 4, "ghost": 2, "charger": 1 }
+[HB] t=111.0 paused=false frames=6851 fps_now=62 hp=123 kills=580
+[HB] t=112.0 paused=false frames=6915 fps_now=64 hp=189 kills=585
+[HB] t=113.0 paused=false frames=6977 fps_now=62 hp=190 kills=588
+[HB] t=114.0 paused=false frames=7040 fps_now=63 hp=164 kills=590
+[HB] t=115.0 paused=false frames=7101 fps_now=61 hp=151 kills=592
+[AUTOPLAY] t=115 hp=153 lv=11 kills=592 enemies=30 dps=85 grid=5 items=5 wave=0 dist=44 player=(842.7176, 205.2262) enemy=(848.3707, 248.7285) mv=(-1.0, 0.0) aim=(0.923952, 0.38251)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "goblin": 24, "bat": 2, "goblin_archer": 1, "ghost": 2, "charger": 1 }
+[HB] t=116.0 paused=false frames=7164 fps_now=63 hp=144 kills=594
+[HB] t=117.0 paused=false frames=7227 fps_now=63 hp=135 kills=594
+[HB] t=118.0 paused=false frames=7289 fps_now=62 hp=121 kills=596
+[HB] t=119.1 paused=false frames=7351 fps_now=62 hp=119 kills=599
+[HB] t=120.1 paused=false frames=7414 fps_now=63 hp=118 kills=603
+[AUTOPLAY] t=120 hp=118 lv=11 kills=603 enemies=30 dps=85 grid=5 items=5 wave=0 dist=54 player=(1124.092, 261.4745) enemy=(1082.766, 226.3978) mv=(0.028759, -0.999586) aim=(-0.684684, -0.72884)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "goblin": 27, "bat": 2, "ghost": 1 }
+[AUTOPLAY] choices: 迅捷护符=50, 延时·火柱=1, 水元素精粹=200
+[AUTOPLAY] levelup -> 水元素精粹 score=200
+[AUTOPLAY] levelup -> 水元素精粹 score=200
+[HB] t=121.1 paused=false frames=7476 fps_now=62 hp=209 kills=606
+[HB] t=122.1 paused=false frames=7539 fps_now=63 hp=195 kills=607
+[HB] t=123.1 paused=false frames=7601 fps_now=62 hp=204 kills=609
+[HB] t=124.1 paused=false frames=7664 fps_now=63 hp=198 kills=611
+[HB] t=125.1 paused=false frames=7727 fps_now=63 hp=198 kills=613
+[AUTOPLAY] t=125 hp=198 lv=12 kills=613 enemies=30 dps=85 grid=5 items=6 wave=0 dist=173 player=(1127.215, 346.924) enemy=(982.679, 441.5003) mv=(-0.44949, -0.893285) aim=(-0.857021, 0.515281)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "goblin": 27, "bat": 2, "ghost": 1 }
+[HB] t=126.1 paused=false frames=7789 fps_now=62 hp=198 kills=617
+[HB] t=127.1 paused=false frames=7852 fps_now=63 hp=197 kills=622
+[HB] t=128.1 paused=false frames=7915 fps_now=63 hp=189 kills=623
+[HB] t=129.1 paused=false frames=7977 fps_now=62 hp=188 kills=627
+[HB] t=130.2 paused=false frames=8039 fps_now=62 hp=213 kills=627
+[AUTOPLAY] t=130 hp=213 lv=12 kills=627 enemies=32 dps=85 grid=5 items=6 wave=0 dist=95 player=(175.0545, 673.2513) enemy=(123.2414, 594.122) mv=(1.0, 0.0) aim=(-0.497173, -0.867651)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "goblin": 29, "bat": 2, "ghost": 1 }
+[HB] t=131.2 paused=false frames=8101 fps_now=62 hp=205 kills=629
+[HB] t=132.2 paused=false frames=8164 fps_now=63 hp=208 kills=637
+[HB] t=133.2 paused=false frames=8227 fps_now=63 hp=215 kills=642
+[HB] t=134.2 paused=false frames=8290 fps_now=63 hp=204 kills=643
+[HB] t=135.2 paused=false frames=8352 fps_now=62 hp=185 kills=645
+[AUTOPLAY] t=135 hp=185 lv=12 kills=645 enemies=24 dps=85 grid=5 items=6 wave=0 dist=130 player=(110.7078, 496.7028) enemy=(213.6487, 418.0197) mv=(0.298123, 0.954527) aim=(0.963262, 0.268563)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "goblin": 23, "goblin_archer": 1 }
+[SPAWNER] wave 3 active rel=51.0 abs=135.8 level_start=84.8
+[HB] t=136.2 paused=false frames=8415 fps_now=63 hp=165 kills=646
+[HB] t=137.2 paused=false frames=8477 fps_now=62 hp=160 kills=647
+[HB] t=138.2 paused=false frames=8540 fps_now=63 hp=215 kills=650
+[HB] t=139.2 paused=false frames=8602 fps_now=62 hp=215 kills=651
+[AUTOPLAY] t=140 hp=215 lv=12 kills=651 enemies=32 dps=85 grid=5 items=6 wave=0 dist=151 player=(996.1776, 299.9842) enemy=(998.7283, 451.4592) mv=(-0.941359, -0.337407) aim=(-0.941359, -0.337407)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "goblin": 30, "goblin_archer": 2 }
+[HB] t=140.2 paused=false frames=8664 fps_now=62 hp=215 kills=651
+[HB] t=141.2 paused=false frames=8726 fps_now=62 hp=195 kills=652
+[HB] t=142.2 paused=false frames=8790 fps_now=64 hp=188 kills=653
+[HB] t=143.3 paused=false frames=8853 fps_now=63 hp=194 kills=656
+[HB] t=144.3 paused=false frames=8915 fps_now=62 hp=197 kills=656
+[AUTOPLAY] t=145 hp=193 lv=12 kills=658 enemies=31 dps=85 grid=5 items=6 wave=0 dist=141 player=(484.8479, 665.316) enemy=(366.356, 589.3129) mv=(-0.866741, -0.498758) aim=(-0.85646, -0.516213)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "goblin": 30, "goblin_archer": 1 }
+[HB] t=145.3 paused=false frames=8977 fps_now=62 hp=193 kills=658
+[HB] t=146.3 paused=false frames=9039 fps_now=62 hp=202 kills=659
+[HB] t=147.3 paused=false frames=9102 fps_now=63 hp=209 kills=665
+[HB] t=148.3 paused=false frames=9164 fps_now=62 hp=212 kills=665
+[HB] t=149.3 paused=false frames=9227 fps_now=63 hp=205 kills=667
+[AUTOPLAY] t=150 hp=196 lv=12 kills=668 enemies=31 dps=85 grid=5 items=6 wave=0 dist=26 player=(51.22231, 711.9332) enemy=(47.18388, 686.7206) mv=(-1.0, 0.0) aim=(-0.031246, -0.999512)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "goblin": 31 }
+[HB] t=150.3 paused=false frames=9289 fps_now=62 hp=196 kills=668
+[HB] t=151.3 paused=false frames=9352 fps_now=63 hp=167 kills=669
+[HB] t=152.3 paused=false frames=9414 fps_now=62 hp=178 kills=671
+[HB] t=153.4 paused=false frames=9477 fps_now=63 hp=195 kills=675
+[AUTOPLAY] choices: 军团光环=110, 荆棘领域=110, 爆发·火球=-2
+[AUTOPLAY] levelup -> 军团光环 score=110
+[AUTOPLAY] levelup -> 军团光环 score=110
+[HB] t=154.4 paused=false frames=9540 fps_now=63 hp=215 kills=677
+[AUTOPLAY] t=155 hp=218 lv=13 kills=678 enemies=31 dps=85 grid=5 items=7 wave=0 dist=115 player=(571.8619, 208.9431) enemy=(621.558, 312.627) mv=(-1.0, 0.0) aim=(0.383946, 0.923356)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "goblin": 31 }
+[HB] t=155.4 paused=false frames=9602 fps_now=62 hp=212 kills=680
+[HB] t=156.4 paused=false frames=9664 fps_now=62 hp=202 kills=680
+[HB] t=157.4 paused=false frames=9727 fps_now=63 hp=207 kills=684
+[HB] t=158.4 paused=false frames=9789 fps_now=62 hp=209 kills=686
+[HB] t=159.4 paused=false frames=9852 fps_now=63 hp=225 kills=690
+[AUTOPLAY] t=160 hp=213 lv=13 kills=693 enemies=29 dps=85 grid=5 items=7 wave=0 dist=177 player=(476.7066, 234.5851) enemy=(311.6756, 298.1029) mv=(-0.926861, -0.375405) aim=(0.055085, 0.998482)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "goblin": 29 }
+[HB] t=160.4 paused=false frames=9914 fps_now=62 hp=213 kills=693
+[HB] t=161.4 paused=false frames=9976 fps_now=62 hp=196 kills=695
+[HB] t=162.4 paused=false frames=10038 fps_now=62 hp=188 kills=699
+[HB] t=163.4 paused=false frames=10101 fps_now=63 hp=203 kills=699
+[HB] t=164.4 paused=false frames=10164 fps_now=63 hp=196 kills=701
+[AUTOPLAY] t=165 hp=199 lv=13 kills=702 enemies=26 dps=85 grid=5 items=7 wave=0 dist=149 player=(1115.251, 342.7514) enemy=(966.1788, 342.0337) mv=(0.202175, -0.979349) aim=(-0.998874, -0.047438)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "goblin": 26 }
+[HB] t=165.4 paused=false frames=10227 fps_now=63 hp=199 kills=703
+[HB] t=166.4 paused=false frames=10287 fps_now=60 hp=199 kills=703
+[HB] t=167.4 paused=false frames=10348 fps_now=61 hp=201 kills=703
+[HB] t=168.4 paused=false frames=10410 fps_now=62 hp=205 kills=705
+[HB] t=169.4 paused=false frames=10474 fps_now=64 hp=200 kills=710
+[AUTOPLAY] t=170 hp=196 lv=13 kills=711 enemies=17 dps=85 grid=5 items=7 wave=0 dist=139 player=(817.4493, 209.0743) enemy=(823.35, 348.2751) mv=(-1.0, 0.0) aim=(-0.005004, 0.999988)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "goblin": 17 }
+[HB] t=170.5 paused=false frames=10536 fps_now=62 hp=199 kills=712
+[HB] t=171.5 paused=false frames=10599 fps_now=63 hp=201 kills=715
+[HB] t=172.5 paused=false frames=10661 fps_now=62 hp=207 kills=718
+[HB] t=173.5 paused=false frames=10724 fps_now=63 hp=208 kills=724
+[HB] t=174.5 paused=false frames=10787 fps_now=63 hp=218 kills=728
+[AUTOPLAY] t=175 hp=225 lv=13 kills=728 enemies=1 dps=85 grid=5 items=7 wave=0 dist=160 player=(481.3794, 298.5514) enemy=(639.9963, 320.6667) mv=(0.329646, -0.944105) aim=(0.995231, 0.097547)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "tree_golem": 1, "tree_golem_hp": "1087/1220" }
+[HB] t=175.5 paused=false frames=10850 fps_now=63 hp=225 kills=728
+[HB] t=176.5 paused=false frames=10912 fps_now=62 hp=213 kills=728
+[HB] t=177.5 paused=false frames=10975 fps_now=63 hp=225 kills=733
+[HB] t=178.5 paused=false frames=11036 fps_now=61 hp=225 kills=735
+[HB] t=179.5 paused=false frames=11098 fps_now=62 hp=206 kills=735
+[AUTOPLAY] t=180 hp=195 lv=13 kills=735 enemies=4 dps=85 grid=5 items=7 wave=0 dist=103 player=(726.6071, 207.889) enemy=(670.427, 294.6749) mv=(1.0, 0.0) aim=(-0.594139, 0.804363)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "tree_golem": 1, "tree_golem_hp": "288/1220", "goblin": 3 }
+[HB] t=180.5 paused=false frames=11160 fps_now=62 hp=225 kills=735
+[HB] t=181.5 paused=false frames=11225 fps_now=65 hp=225 kills=738
+[HB] t=182.6 paused=false frames=11288 fps_now=63 hp=225 kills=738
+[AUTOPLAY] self-heal unpause
+[AUTOPLAY] wand shop handled
+[SPAWNER] setup at run.time=183.5 waves=3
+[AUTOPLAY] wand shop handled
+[SPAWNER] wave 1 active rel=0.0 abs=183.5 level_start=183.5
+[HB] t=183.6 paused=false frames=11352 fps_now=64 hp=225 kills=739
+[HB] t=184.6 paused=false frames=11412 fps_now=60 hp=225 kills=739
+[AUTOPLAY] t=185 hp=225 lv=13 kills=739 enemies=9 dps=92 grid=5 items=7 wave=1 dist=292 player=(781.1768, 435.2944) enemy=(987.9292, 640.9431) mv=(-0.882353, -0.470588) aim=(0.713504, 0.700652)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "skeleton": 6, "ghost": 3 }
+[HB] t=185.6 paused=false frames=11473 fps_now=61 hp=225 kills=739
+[HB] t=186.6 paused=false frames=11535 fps_now=62 hp=225 kills=739
+[HB] t=187.6 paused=false frames=11598 fps_now=63 hp=225 kills=740
+[HB] t=188.6 paused=false frames=11660 fps_now=62 hp=225 kills=740
+[HB] t=189.6 paused=false frames=11723 fps_now=63 hp=191 kills=740
+[AUTOPLAY] t=190 hp=181 lv=13 kills=742 enemies=30 dps=92 grid=5 items=7 wave=1 dist=145 player=(340.9211, 135.7494) enemy=(197.2967, 156.4145) mv=(-1.0, 0.0) aim=(0.763155, 0.646215)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "skeleton": 22, "ghost": 8 }
+[HB] t=190.6 paused=false frames=11785 fps_now=62 hp=184 kills=742
+[HB] t=191.7 paused=false frames=11847 fps_now=62 hp=189 kills=743
+[HB] t=192.7 paused=false frames=11910 fps_now=63 hp=200 kills=744
+[HB] t=193.7 paused=false frames=11972 fps_now=62 hp=203 kills=744
+[HB] t=194.7 paused=false frames=12033 fps_now=61 hp=191 kills=745
+[AUTOPLAY] t=195 hp=176 lv=13 kills=746 enemies=31 dps=92 grid=5 items=7 wave=1 dist=238 player=(1117.327, 517.7334) enemy=(888.6978, 582.058) mv=(0.667223, -0.744858) aim=(-0.969349, 0.245687)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "skeleton": 23, "ghost": 8 }
+[HB] t=195.7 paused=false frames=12094 fps_now=61 hp=176 kills=746
+[AUTOPLAY] choices: 水元素精粹=200, 原生·召唤蝙蝠=256, 火攻药=169
+[AUTOPLAY] levelup -> 原生·召唤蝙蝠 score=256
+[AUTOPLAY] levelup -> 原生·召唤蝙蝠 score=256
+[AUTOPLAY] self-heal unpause
+[AUTOPLAY] spell replace -> slot 1 score=450
+[AUTOPLAY] spell replace -> slot 0 (fallback)
+[HB] t=196.7 paused=false frames=12157 fps_now=63 hp=225 kills=747
+[HB] t=197.7 paused=false frames=12218 fps_now=61 hp=225 kills=747
+[HB] t=198.7 paused=false frames=12280 fps_now=62 hp=232 kills=750
+[HB] t=199.7 paused=false frames=12343 fps_now=63 hp=235 kills=751
+[AUTOPLAY] t=200 hp=235 lv=14 kills=752 enemies=31 dps=151 grid=5 items=7 wave=1 dist=166 player=(593.7417, 622.9521) enemy=(594.4873, 457.2478) mv=(0.993577, 0.113157) aim=(0.044249, -0.999021)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "skeleton": 25, "ghost": 6 }
+[HB] t=200.7 paused=false frames=12405 fps_now=62 hp=235 kills=758
+[HB] t=201.7 paused=false frames=12467 fps_now=62 hp=235 kills=759
+[HB] t=202.7 paused=false frames=12529 fps_now=62 hp=235 kills=760
+[HB] t=203.7 paused=false frames=12591 fps_now=62 hp=217 kills=760
+[HB] t=204.7 paused=false frames=12653 fps_now=62 hp=220 kills=761
+[AUTOPLAY] t=205 hp=220 lv=14 kills=761 enemies=31 dps=151 grid=5 items=7 wave=1 dist=164 player=(63.56957, 593.2475) enemy=(198.2699, 499.0807) mv=(0.373164, 0.927765) aim=(0.841473, -0.540299)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "skeleton": 25, "ghost": 6 }
+[HB] t=205.7 paused=false frames=12714 fps_now=61 hp=220 kills=761
+[HB] t=206.7 paused=false frames=12776 fps_now=62 hp=225 kills=762
+[SPAWNER] wave 2 active rel=24.0 abs=207.5 level_start=183.5
+[HB] t=207.7 paused=false frames=12839 fps_now=63 hp=226 kills=762
+[HB] t=208.8 paused=false frames=12902 fps_now=63 hp=226 kills=762
+[HB] t=209.8 paused=false frames=12965 fps_now=63 hp=230 kills=762
+[AUTOPLAY] t=210 hp=232 lv=14 kills=762 enemies=32 dps=151 grid=5 items=7 wave=2 dist=121 player=(471.6426, 233.2428) enemy=(542.3138, 331.0959) mv=(-0.90251, 0.430669) aim=(0.541962, 0.840403)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "skeleton": 26, "ghost": 6 }
+[HB] t=210.8 paused=false frames=13027 fps_now=62 hp=232 kills=763
+[HB] t=211.8 paused=false frames=13090 fps_now=63 hp=200 kills=764
+[HB] t=212.8 paused=false frames=13152 fps_now=62 hp=201 kills=764
+[HB] t=213.8 paused=false frames=13214 fps_now=62 hp=213 kills=766
+[HB] t=214.8 paused=false frames=13276 fps_now=62 hp=214 kills=766
+[AUTOPLAY] t=215 hp=229 lv=14 kills=769 enemies=29 dps=151 grid=5 items=7 wave=2 dist=20 player=(710.218, 172.7037) enemy=(689.9237, 173.3104) mv=(-1.0, 0.0) aim=(-0.999731, 0.023178)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "skeleton": 23, "ghost": 6 }
+[HB] t=215.8 paused=false frames=13341 fps_now=65 hp=211 kills=769
+[HB] t=216.8 paused=false frames=13403 fps_now=62 hp=211 kills=770
+[HB] t=217.8 paused=false frames=13466 fps_now=63 hp=215 kills=772
+[HB] t=218.8 paused=false frames=13529 fps_now=63 hp=222 kills=773
+[HB] t=219.8 paused=false frames=13592 fps_now=63 hp=230 kills=774
+[AUTOPLAY] t=220 hp=230 lv=14 kills=774 enemies=32 dps=151 grid=5 items=7 wave=2 dist=71 player=(905.6531, 219.1804) enemy=(917.8757, 289.487) mv=(-0.854737, -0.519061) aim=(0.103106, 0.99467)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "skeleton": 26, "ghost": 6 }
+[HB] t=220.8 paused=false frames=13654 fps_now=62 hp=230 kills=774
+[HB] t=221.9 paused=false frames=13716 fps_now=62 hp=235 kills=775
+[HB] t=222.9 paused=false frames=13778 fps_now=62 hp=235 kills=776
+[HB] t=223.9 paused=false frames=13841 fps_now=63 hp=235 kills=776
+[HB] t=224.9 paused=false frames=13903 fps_now=62 hp=235 kills=777
+[AUTOPLAY] t=225 hp=235 lv=14 kills=778 enemies=31 dps=151 grid=5 items=7 wave=2 dist=184 player=(1016.945, 272.0696) enemy=(938.7325, 438.3148) mv=(-0.656098, -0.754676) aim=(-0.455318, 0.890329)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "skeleton": 25, "ghost": 6 }
+[HB] t=225.9 paused=false frames=13964 fps_now=61 hp=235 kills=778
+[HB] t=226.9 paused=false frames=14026 fps_now=62 hp=235 kills=778
+[HB] t=227.9 paused=false frames=14087 fps_now=61 hp=235 kills=778
+[HB] t=228.9 paused=false frames=14151 fps_now=64 hp=235 kills=781
+[HB] t=229.9 paused=false frames=14213 fps_now=62 hp=235 kills=787
+[AUTOPLAY] t=230 hp=235 lv=14 kills=787 enemies=31 dps=151 grid=5 items=7 wave=2 dist=161 player=(831.184, 282.0031) enemy=(741.7656, 416.3406) mv=(-0.630448, -0.776232) aim=(-0.586284, 0.810106)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "skeleton": 25, "ghost": 6 }
+[HB] t=230.9 paused=false frames=14275 fps_now=62 hp=235 kills=788
+[HB] t=231.9 paused=false frames=14337 fps_now=62 hp=235 kills=789
+[HB] t=232.9 paused=false frames=14398 fps_now=61 hp=235 kills=789
+[HB] t=233.9 paused=false frames=14463 fps_now=65 hp=235 kills=794
+[SPAWNER] wave 3 active rel=51.0 abs=234.5 level_start=183.5
+[HB] t=235.0 paused=false frames=14524 fps_now=61 hp=216 kills=794
+[AUTOPLAY] t=235 hp=220 lv=14 kills=795 enemies=32 dps=151 grid=5 items=7 wave=3 dist=134 player=(1149.848, 264.5205) enemy=(1019.552, 295.717) mv=(0.467129, -0.884189) aim=(-0.980105, 0.198479)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "skeleton": 28, "ghost": 4 }
+[HB] t=236.0 paused=false frames=14586 fps_now=62 hp=224 kills=796
+[HB] t=237.0 paused=false frames=14648 fps_now=62 hp=207 kills=796
+[HB] t=238.0 paused=false frames=14710 fps_now=62 hp=212 kills=797
+[HB] t=239.0 paused=false frames=14772 fps_now=62 hp=213 kills=797
+[HB] t=240.0 paused=false frames=14834 fps_now=62 hp=195 kills=797
+[AUTOPLAY] t=240 hp=195 lv=14 kills=797 enemies=32 dps=151 grid=5 items=7 wave=3 dist=173 player=(807.9344, 581.1158) enemy=(679.7852, 465.5531) mv=(0.855195, -0.518307) aim=(-0.717556, -0.696501)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "skeleton": 28, "ghost": 4 }
+[HB] t=241.0 paused=false frames=14896 fps_now=62 hp=197 kills=799
+[HB] t=242.0 paused=false frames=14959 fps_now=63 hp=185 kills=802
+[HB] t=243.0 paused=false frames=15021 fps_now=62 hp=186 kills=802
+[HB] t=244.0 paused=false frames=15084 fps_now=63 hp=177 kills=804
+[HB] t=245.0 paused=false frames=15146 fps_now=62 hp=178 kills=804
+[AUTOPLAY] t=245 hp=178 lv=14 kills=804 enemies=32 dps=151 grid=5 items=7 wave=3 dist=231 player=(605.561, 662.3633) enemy=(574.7264, 433.7038) mv=(0.979482, -0.201533) aim=(-0.999785, -0.020722)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "skeleton": 28, "ghost": 4 }
+[HB] t=246.0 paused=false frames=15209 fps_now=63 hp=192 kills=809
+[HB] t=247.0 paused=false frames=15271 fps_now=62 hp=193 kills=809
+[HB] t=248.1 paused=false frames=15334 fps_now=63 hp=197 kills=810
+[HB] t=249.1 paused=false frames=15396 fps_now=62 hp=198 kills=810
+[HB] t=250.1 paused=false frames=15458 fps_now=62 hp=201 kills=810
+[AUTOPLAY] t=250 hp=202 lv=14 kills=811 enemies=31 dps=151 grid=5 items=7 wave=3 dist=153 player=(441.7418, 399.9915) enemy=(290.378, 377.2085) mv=(0.235395, 0.9719) aim=(-0.994134, -0.108152)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "skeleton": 30, "ghost": 1 }
+[HB] t=251.1 paused=false frames=15520 fps_now=62 hp=202 kills=811
+[HB] t=252.1 paused=false frames=15582 fps_now=62 hp=211 kills=811
+[HB] t=253.1 paused=false frames=15644 fps_now=62 hp=212 kills=813
+[HB] t=254.1 paused=false frames=15706 fps_now=62 hp=235 kills=818
+[AUTOPLAY] choices: 急冻风=60, 火源晶石=50, 爆发·召唤蝙蝠=0
+[AUTOPLAY] levelup -> 急冻风 score=60
+[AUTOPLAY] levelup -> 急冻风 score=60
+[HB] t=255.1 paused=false frames=15768 fps_now=62 hp=216 kills=821
+[AUTOPLAY] t=255 hp=216 lv=15 kills=821 enemies=32 dps=151 grid=5 items=8 wave=3 dist=57 player=(355.6364, 290.6761) enemy=(411.3511, 280.1143) mv=(-0.355245, 0.934773) aim=(0.992659, -0.12095)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "skeleton": 32 }
+[HB] t=256.1 paused=false frames=15830 fps_now=62 hp=203 kills=822
+[HB] t=257.1 paused=false frames=15894 fps_now=64 hp=212 kills=825
+[HB] t=258.1 paused=false frames=15958 fps_now=64 hp=198 kills=826
+[HB] t=259.1 paused=false frames=16021 fps_now=63 hp=200 kills=826
+[HB] t=260.1 paused=false frames=16083 fps_now=62 hp=207 kills=828
+[AUTOPLAY] t=260 hp=207 lv=15 kills=828 enemies=32 dps=151 grid=5 items=8 wave=3 dist=221 player=(1056.97, 140.1103) enemy=(1096.439, 357.0544) mv=(-1.0, 0.0) aim=(0.149458, 0.988768)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "skeleton": 32 }
+[HB] t=261.2 paused=false frames=16145 fps_now=62 hp=208 kills=828
+[HB] t=262.2 paused=false frames=16207 fps_now=62 hp=214 kills=830
+[HB] t=263.2 paused=false frames=16269 fps_now=62 hp=215 kills=830
+[HB] t=264.2 paused=false frames=16332 fps_now=63 hp=216 kills=830
+[HB] t=265.2 paused=false frames=16394 fps_now=62 hp=219 kills=831
+[AUTOPLAY] t=265 hp=220 lv=15 kills=832 enemies=28 dps=151 grid=5 items=8 wave=3 dist=160 player=(577.2637, 673.7119) enemy=(468.0421, 556.3708) mv=(1.0, 0.0) aim=(-0.658362, -0.752702)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "skeleton": 28 }
+[HB] t=266.2 paused=false frames=16458 fps_now=64 hp=220 kills=833
+[HB] t=267.2 paused=false frames=16522 fps_now=64 hp=237 kills=836
+[HB] t=268.2 paused=false frames=16584 fps_now=62 hp=245 kills=837
+[HB] t=269.2 paused=false frames=16648 fps_now=64 hp=245 kills=840
+[HB] t=270.2 paused=false frames=16711 fps_now=63 hp=245 kills=842
+[AUTOPLAY] t=270 hp=245 lv=15 kills=846 enemies=14 dps=151 grid=5 items=8 wave=3 dist=204 player=(544.134, 659.7412) enemy=(558.0822, 456.0304) mv=(0.946808, 0.321799) aim=(0.099536, -0.995034)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "skeleton": 14 }
+[HB] t=271.2 paused=false frames=16774 fps_now=63 hp=245 kills=849
+[HB] t=272.2 paused=false frames=16836 fps_now=62 hp=245 kills=851
+[HB] t=273.2 paused=false frames=16899 fps_now=63 hp=245 kills=852
+[HB] t=274.2 paused=false frames=16960 fps_now=61 hp=245 kills=855
+[HB] t=275.2 paused=false frames=17023 fps_now=63 hp=245 kills=859
+[AUTOPLAY] t=275 hp=245 lv=15 kills=859 enemies=1 dps=151 grid=5 items=8 wave=3 dist=156 player=(863.9802, 332.9297) enemy=(742.3274, 430.3326) mv=(-0.513878, -0.857864) aim=(-0.806233, 0.591598)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "skeleton": 1 }
+[HB] t=276.3 paused=false frames=17085 fps_now=62 hp=245 kills=859
+[HB] t=277.3 paused=false frames=17148 fps_now=63 hp=245 kills=859
+[HB] t=278.3 paused=false frames=17210 fps_now=62 hp=220 kills=859
+[HB] t=279.3 paused=false frames=17273 fps_now=63 hp=228 kills=859
+[HB] t=280.3 paused=false frames=17336 fps_now=63 hp=245 kills=865
+[AUTOPLAY] t=280 hp=245 lv=15 kills=865 enemies=4 dps=151 grid=5 items=8 wave=3 dist=116 player=(502.3346, 208.7686) enemy=(602.7578, 267.5858) mv=(1.0, 0.0) aim=(0.823543, 0.567254)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "skeleton_king": 1, "skeleton_king_hp": "1266/2232", "skeleton": 3 }
+[HB] t=281.3 paused=false frames=17399 fps_now=63 hp=245 kills=865
+[HB] t=282.3 paused=false frames=17462 fps_now=63 hp=23 kills=868
+[HB] t=283.3 paused=false frames=17525 fps_now=63 hp=27 kills=868
+[HB] t=284.3 paused=false frames=17587 fps_now=62 hp=4 kills=868
+[AUTOPLAY] RESULT=DEFEAT kills=868 time=285 loop=1 level=3 hp=0 gold=318
+[AUTOPLAY] RESULT=DEFEAT kills=868 time=285 loop=1 level=3 plv=15 hp=0 maxhp=245 gold=318 wave=3
+[BUILD] school=water grid=[water_bolt+spread, summon_bat+, inferno+rapid, water_bolt+, inferno+split] items=[fire_pyromaniacx1, fire_element_badgex1, water_ocean_currentx1, defense_thorn_leechx1, attack_speed_potionx1, water_essencex1, summon_m1x1, wind_frostx1] wands=["basic_wand"]
+ERROR: 36 RID allocations of type 'P11GodotArea2D' were leaked at exit.
+ERROR: 1 RID allocations of type 'P12GodotShape2D' were leaked at exit.
+WARNING: 108 RIDs of type "CanvasItem" were leaked.
+   at: _free_rids (servers/rendering/renderer_canvas_cull.cpp:2735)
+WARNING: 141 ObjectDB instances were leaked at exit (run with `--verbose` for details).
+   at: cleanup (core/object/object.cpp:2536)
+ERROR: 14 resources still in use at exit (run with --verbose for details).
+   at: clear (core/io/resource.cpp:822)

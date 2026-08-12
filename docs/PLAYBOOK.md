@@ -70,3 +70,18 @@
 - 解决：…
 - 备注/复现：…
 ```
+
+## 6.5 子代理"幽灵运行中"（显示 Working 但实际已结束）— 2026-08-11
+- 现象：重启 Codex 后，每个项目的线程下出现几十个"运行中"子代理；点击进去没有在工作，右侧 Subagents 面板仍显示 Working/Active；主 AI 无法清除（stop/interrupt 返回 not_found 或无效）。
+- 原因：Codex Desktop 已知 bug（GitHub openai/codex #37563，另有 #37041/#37042/#37222/#37426/#37299 重复报告，多平台确认，官方尚未修复）。应用重启后把历史子代理错误水合为 Working：渲染层按 `status !== "done"` 计数，未水合的 waiting/历史记录被标成 working。rollout 文件里其实已有 task_complete/turn_aborted 终止事件。
+- 判断是否真在运行：
+  - 检查本地数据库：`sqlite3 ~/.codex/state_5.sqlite "SELECT status, COUNT(*) FROM thread_spawn_edges GROUP BY status;"`（open 边才可能真在跑）
+  - 检查 rollout 末尾事件：以 task_complete / turn_aborted 结尾 = 已结束（应为绝大多数）
+  - 查进程：`Get-Process | Where-Object { $_.ProcessName -match 'codex|node' }`，空闲 node 进程 CPU≈0
+- 解决（按优先级）：
+  1. 打开那个"Working"的子代理 → 按返回键（Back）→ 状态立即刷新为 Completed（社区实测有效，最简单的临时方案）
+  2. 对单条记录：点击子代理 → 用应用内的 stop/interrupt；若返回 not_found 则忽略
+  3. 批量清理（确认无真正运行任务后）：完全退出 Codex → 备份 `~/.codex/state_5.sqlite` → 把 `thread_spawn_edges` 中 `status='open'` 且对应 rollout 已终止的边改为 `closed` → 重启应用
+  4. 长期：关注官方修复（#37563）；升级 Codex 版本后复测
+- 注意：这是显示层 bug，不影响 token 消耗和真实进程；不要为了"清除"而删除 rollout 文件（会丢聊天记录）。
+

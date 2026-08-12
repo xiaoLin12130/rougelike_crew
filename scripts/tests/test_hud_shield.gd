@@ -1,8 +1,8 @@
 extends SceneTree
-## 护盾显示测试（问题5）：hud.gd 血条灰色层 + 护盾文本
+## 护盾显示测试（问题5 + Brotato 化 2026-08-12）：hud.gd 血条灰蓝叠层 + 护盾数值小字
 ##  - 有护盾（defense_synergy._shield=30，max_hp=120）时：灰色层节点可见、
-##    value=30/max=120、血量文本 "100/120（护盾 30）" 含"护盾"
-##  - 无护盾/归零时：灰色层隐藏、文本不含"护盾"
+##    value=30/max=120、血条右端护盾小字 "护盾 30"
+##  - 无护盾/归零时：灰色层与护盾小字隐藏、血量文本保持 "100/120"
 ## Run: godot --headless --path . -s res://scripts/tests/test_hud_shield.gd
 
 var failures: Array[String] = []
@@ -59,8 +59,8 @@ func _run_no_shield() -> void:
 		fail("无护盾时灰色层应隐藏")
 	if str(_hud._hp_label.text) != "100/120":
 		fail("无护盾文本应为 100/120: " + _hud._hp_label.text)
-	if str(_hud._hp_label.text).contains("护盾"):
-		fail("无护盾时文本不应含'护盾': " + _hud._hp_label.text)
+	if _hud._shield_label.visible:
+		fail("无护盾时护盾小字应隐藏")
 
 
 func _run_with_shield() -> void:
@@ -79,17 +79,18 @@ func _run_with_shield() -> void:
 		fail("灰色层 value 应为 30: %s" % str(_hud._shield_bar.value))
 	if not is_equal_approx(_hud._shield_bar.max_value, 120.0):
 		fail("灰色层 max_value 应为 120: %s" % str(_hud._shield_bar.max_value))
-	var label_text := str(_hud._hp_label.text)
-	if label_text != "100/120（护盾 30）":
-		fail("有护盾文本应为 '100/120（护盾 30）': " + label_text)
-	if not label_text.contains("护盾"):
-		fail("有护盾时文本应含'护盾': " + label_text)
-	if not label_text.contains("30"):
-		fail("有护盾时文本应含护盾数值: " + label_text)
-	# 护盾归零 -> 灰色层隐藏 + 文本回退
+	if str(_hud._hp_label.text) != "100/120":
+		fail("有护盾时血量文本仍应为紧凑 100/120: " + _hud._hp_label.text)
+	if not _hud._shield_label.visible:
+		fail("有护盾时护盾小字应可见")
+	if str(_hud._shield_label.text) != "护盾 30":
+		fail("护盾小字应为 '护盾 30': " + _hud._shield_label.text)
+	# 护盾归零 -> 灰色层与护盾小字隐藏 + 文本保持
 	ds._shield = 0.0
 	_hud._refresh()
 	if _hud._shield_bar.visible:
 		fail("护盾归零后灰色层应隐藏")
-	if str(_hud._hp_label.text).contains("护盾"):
-		fail("护盾归零后文本不应含'护盾': " + _hud._hp_label.text)
+	if _hud._shield_label.visible:
+		fail("护盾归零后护盾小字应隐藏")
+	if str(_hud._hp_label.text) != "100/120":
+		fail("护盾归零后血量文本应为 100/120: " + _hud._hp_label.text)

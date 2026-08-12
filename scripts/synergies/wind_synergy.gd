@@ -452,7 +452,7 @@ func _on_m9(ctx: Dictionary) -> void:
 	if randf() >= _m9_chance(stacks):
 		return
 	EventBus.apply_status.emit(enemy, "slow", 1)
-	EventBus.fx_hit_slow.emit(enemy)
+	EventBus.fx_hit_slow.emit(enemy, true)  # 保持顿帧 60ms（G-4 分级后）
 
 
 func _m9_chance(stacks: int) -> float:
@@ -729,7 +729,7 @@ func _slow_aoe(center: Vector2, radius: float) -> void:
 		if center.distance_to(node.global_position) > radius + node.scale.x * 8.0:
 			continue
 		EventBus.apply_status.emit(e, "slow", 1)
-		EventBus.fx_hit_slow.emit(e)
+		EventBus.fx_hit_slow.emit(e, true)  # 保持顿帧 60ms（G-4 分级后）
 
 
 func _tick_timers(dt: float) -> void:
