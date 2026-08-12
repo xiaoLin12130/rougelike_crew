@@ -642,24 +642,6 @@ func _make_offer_card(w: Dictionary, idx: int) -> Control:
 	buy_btn.pressed.connect(_buy_wand.bind(str(w.get("id", ""))))
 	buy_col.add_child(buy_btn)
 	# 右上角锁钮（20x20；子按钮先于卡片收到点击）
-	var lock_btn := Button.new()
-	lock_btn.name = "LockBtn"
-	lock_btn.custom_minimum_size = Vector2(20, 20)
-	lock_btn.flat = true
-	lock_btn.icon = _lock_tex(locked)
-	lock_btn.expand_icon = true
-	lock_btn.icon_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	lock_btn.focus_mode = Control.FOCUS_NONE
-	lock_btn.set_anchors_preset(Control.PRESET_TOP_RIGHT)
-	## 2026-08-12：旧偏移 top=-30/bottom=-8 使锁钮整个悬在卡片上方（y=-30..-8），
-	## 渲染覆盖上一行卡片并拦截点击；改为卡片内右上角 20x20（y=4..24，x=-28..-8）
-	lock_btn.offset_left = -30.0
-	lock_btn.offset_right = -8.0
-	lock_btn.offset_top = -30.0
-	lock_btn.offset_bottom = -8.0
-	lock_btn.tooltip_text = "解锁" if locked else "锁定（刷新时保留）"
-	lock_btn.pressed.connect(_toggle_lock.bind(idx))
-	card.add_child(lock_btn)
 	return card
 
 

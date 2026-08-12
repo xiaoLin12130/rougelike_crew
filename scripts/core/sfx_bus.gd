@@ -25,19 +25,19 @@ const HIT_SFX_DIR := "res://assets/audio/"
 ## kind -> {paths=候选池（每次随机取一，听感去重复）, vol=基础音量, pitch=基础音调}
 const HIT_SFX := {
 	"hit": {
-		"paths": ["impactGeneric_light_000.ogg", "impactGeneric_light_001.ogg", "impactGeneric_light_002.ogg",
-			"impactGeneric_light_003.ogg", "impactGeneric_light_004.ogg"],
-		"vol": -12.0, "pitch": 1.02,  # 普通命中：干爽短 tick（0.12~0.14s），音量最低不抢戏
+		"paths": ["impactPunch_medium_000.ogg", "impactPunch_medium_001.ogg", "impactPunch_medium_002.ogg",
+			"impactPunch_medium_003.ogg", "impactPunch_medium_004.ogg"],
+		"vol": -11.0, "pitch": 1.0,  # 普通命中：短促打击肉感（拳头中击），有反馈不刺耳
 	},
 	"crit": {
-		"paths": ["impactGlass_heavy_000.ogg", "impactGlass_heavy_001.ogg", "impactGlass_heavy_002.ogg",
-			"impactGlass_heavy_003.ogg", "impactGlass_heavy_004.ogg"],
-		"vol": -9.0, "pitch": 1.0,   # 暴击：玻璃重碎，明亮炸裂（第二响）
+		"paths": ["impactPunch_heavy_000.ogg", "impactPunch_heavy_001.ogg", "impactPunch_heavy_002.ogg",
+			"impactPunch_heavy_003.ogg", "impactPunch_heavy_004.ogg"],
+		"vol": -8.0, "pitch": 1.0,   # 暴击：重拳爆裂感（比普通命中更响更沉）
 	},
 	"elite": {
-		"paths": ["impactMetal_medium_000.ogg", "impactMetal_medium_001.ogg", "impactMetal_medium_002.ogg",
-			"impactMetal_medium_003.ogg", "impactMetal_medium_004.ogg"],
-		"vol": -10.0, "pitch": 0.98,  # 精英命中：金属中音
+		"paths": ["impactMetal_heavy_000.ogg", "impactMetal_heavy_001.ogg", "impactMetal_heavy_002.ogg",
+			"impactMetal_heavy_003.ogg", "impactMetal_heavy_004.ogg"],
+		"vol": -9.0, "pitch": 0.95,  # 精英命中：重金属低沉（与普通 Punch 明显区分）
 	},
 	"boss": {
 		"paths": ["impactPlate_heavy_000.ogg", "impactPlate_heavy_001.ogg", "impactPlate_heavy_002.ogg",

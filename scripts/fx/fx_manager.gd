@@ -1218,8 +1218,10 @@ func _spawn_ring(pos: Vector2, color: Color, params: Array, scale_mult: float = 
 	ring.modulate = color
 	var line := ring.get_node_or_null("Ring") as Line2D
 	if line != null and params.size() >= 3:
-		line.width = float(params[2])
+		## 用户需求：爆炸圈柔和化——线宽减半
+		line.width = float(params[2]) * 0.55
 	add_child(ring)
+	ring.modulate.a = 0.72  ## 用户需求：起点半透明，更柔和
 	var ring_tween: Tween = ring.create_tween()
 	var scale_target := RING_SCALE
 	var duration := RING_DURATION
@@ -1260,8 +1262,9 @@ func _spawn_poison_diffusion(pos: Vector2, color: Color, scale_mult: float) -> v
 	ring.modulate = color
 	var line := ring.get_node_or_null("Ring") as Line2D
 	if line != null:
-		line.width = 2.4
+		line.width = 1.3  ## 用户需求：毒爆圈柔和化（线宽减半）
 	add_child(ring)
+	ring.modulate.a = 0.7
 	var ring_tween: Tween = ring.create_tween()
 	ring_tween.tween_interval(0.18)
 	ring_tween.tween_property(ring, "scale", Vector2.ONE * (3.4 + float(tiers) * 0.7) * scale_mult, 0.5).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
