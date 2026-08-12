@@ -58,6 +58,110 @@ var _chain_left := 0  # 闪电链剩余跳跃次数
 var _split := 0  # split 外壳：分裂数量
 var _drain := 0.0  # drain 外壳：命中回血比例
 
+## =====================================================================
+## 弹幕对象池（P1 性能优化，docs/design/性能优化方案.md 热点 3）
+## 所有 projectile 实例（含 split 小弹/召唤弹/冰晶/暴击弹）自然结束
+## （命中/到射程/轨道到期/爆炸）时经 _retire → 静态池回收，不销毁节点；
+## 施法入口经 obtain() 复用。回收时出树 + 退出组 + 状态全量重置，
+## 重新 add_child 时 _ready 会重新入组并重设精灵贴图。
+## =====================================================================
+const PROJ_POOL_MAX := 48
+const PROJECTILE_SCENE_PATH := "res://scenes/game/projectile.tscn"
+
+static var _proj_pool: Array = []  # 空闲实例（已出树、已重置）
+static var _proj_created := 0  # 累计实例化数（测试/监控）
+static var _proj_reused := 0   # 累计复用数（测试/监控）
+
+## 从池取弹幕实例并挂入 parent：空池则实例化场景（运行时 load，避免脚本↔场景循环 preload）。
+## defer_add=true 时延迟到帧末 add_child（split 小弹在物理冲刷期回调内创建的既有做法）。
+static func obtain(params: Dictionary, parent: Node, defer_add: bool = false) -> Node:
+	var proj: Node = null
+	while not _proj_pool.is_empty():
+		var cand: Node = _proj_pool.pop_back()
+		if is_instance_valid(cand):
+			proj = cand
+			_proj_reused += 1
+			break
+	if proj == null:
+		proj = load(PROJECTILE_SCENE_PATH).instantiate()
+		_proj_created += 1
+	proj.setup(params)
+	proj._apply_visual()  # 池化：_ready 只触发一次，视觉必须每次借用重设
+	if defer_add:
+		parent.call_deferred("add_child", proj)
+		proj.call_deferred("add_to_group", "player_projectile")
+		proj.call_deferred("_init_runtime_state")
+	else:
+		parent.add_child(proj)
+		proj.add_to_group("player_projectile")
+		proj._init_runtime_state()
+	return proj
+
+## 回收弹幕：出树 + 退出组（防 clear_player_projectiles 误清池中实例）+ 状态重置 + 入池。
+## 池满则真正释放（queue_free）。
+static func recycle(proj: Node) -> void:
+	if proj == null or not is_instance_valid(proj):
+		return
+	if proj.is_inside_tree():
+		proj.get_parent().remove_child(proj)
+	if proj.is_in_group("player_projectile"):
+		proj.remove_from_group("player_projectile")
+	proj._reset_for_pool()
+	if _proj_pool.size() < PROJ_POOL_MAX:
+		_proj_pool.append(proj)
+	else:
+		proj.queue_free()
+
+## 池统计（测试/监控）。
+static func projectile_pool_stats() -> Dictionary:
+	return {"created": _proj_created, "reused": _proj_reused, "idle": _proj_pool.size()}
+
+## 清空池（场景切换/测试收尾调用）：释放池中空闲实例。
+static func clear_pool() -> void:
+	for p in _proj_pool:
+		if is_instance_valid(p):
+			p.free()
+	_proj_pool.clear()
+
+## 弹幕状态全量重置（池回收用）：位置/方向/速度/射程/伤害/元素/AOE/修饰/
+## 命中记录/轨道/状态/分裂/吸血/精灵视觉，杜绝复用残留上一轮参数。
+func _reset_for_pool() -> void:
+	_spawn_pos = Vector2.ZERO
+	_dir = Vector2.RIGHT
+	_speed = 0.0
+	_range = 360.0
+	_damage = 0.0
+	_element = "fire"
+	_aoe = 0.0
+	_mods = {}
+	_travelled = 0.0
+	_pierce_left = 0
+	_bounce_left = 0
+	_delay_left = 0.0
+	_instant = false
+	_orbit_mode = false
+	_orbit_center = Vector2.ZERO
+	_orbit_angle = 0.0
+	_orbit_life = 2.0
+	_player_ref = null
+	_is_whirl = false
+	_hit_enemies.clear()
+	_impacted = false
+	_status = {}
+	_chain_left = 0
+	_split = 0
+	_drain = 0.0
+	position = Vector2.ZERO
+	var spr := $Sprite2D as Sprite2D
+	if spr != null:
+		spr.texture = null
+		spr.scale = Vector2.ONE
+		spr.rotation = 0.0
+
+## 弹幕自然结束统一出口：命中/到射程/爆炸/轨道到期。
+func _retire() -> void:
+	recycle(self)
+
 
 func setup(p: Dictionary) -> void:
 	_spawn_pos = p.get("position", Vector2.ZERO)
@@ -86,10 +190,20 @@ func setup(p: Dictionary) -> void:
 	_instant = _speed <= 0.0
 	_orbit_mode = bool(_mods.get("orbit", false))
 	_orbit_life = maxf(float(_mods.get("orbit", 2.0)), 0.5)
+	# 池化：复用实例必须重置飞行/命中累积状态（新实例默认值）
+	_travelled = 0.0
+	_hit_enemies.clear()
+	_impacted = false
 
 
 func _ready() -> void:
 	add_to_group("player_projectile")
+	_apply_visual()
+	_init_runtime_state()
+
+## 视觉重设（贴图/缩放/旋转）：_ready 只在节点首次进树触发一次，
+## 池化复用实例每次借用都必须由 obtain() 重新调用，保证新元素贴图生效。
+func _apply_visual() -> void:
 	var spr := $Sprite2D as Sprite2D
 	if spr != null:
 		if _is_whirl:
@@ -101,6 +215,9 @@ func _ready() -> void:
 		else:
 			spr.texture = load(STATUS_TEXTURES.get(_element, STATUS_TEXTURES["fire"]))
 			spr.scale = Vector2.ONE * STATUS_TEXTURE_SCALE.get(_element, 1.0)
+
+## 运行时状态重设（玩家引用/轨道参数）：同 _apply_visual，池化复用必须重跑。
+func _init_runtime_state() -> void:
 	_player_ref = get_tree().get_first_node_in_group("player")
 	if _orbit_mode:
 		_orbit_angle = _dir.angle()
@@ -140,7 +257,7 @@ func _move_step(delta: float) -> void:
 	else:
 		position = position.clamp(ARENA_MIN, ARENA_MAX)
 		if _travelled >= _range:
-			queue_free()
+			_retire()  # 池化：到射程回收复用
 			return
 	_scan_contact()
 
@@ -170,7 +287,7 @@ func _scan_contact() -> void:
 		if _pierce_left > 0:
 			_pierce_left -= 1
 		else:
-			queue_free()
+			_retire()  # 池化：命中回收复用
 			return
 
 
@@ -197,7 +314,7 @@ func _explode_at(pos: Vector2, keep_alive: bool = false) -> void:
 	if _chain_left > 0:
 		_try_chain(pos)
 	if not keep_alive:
-		queue_free()
+		_retire()  # 池化：爆炸回收复用
 
 
 func _bounce_at(clamped: Vector2) -> void:
@@ -216,7 +333,7 @@ func _bounce_at(clamped: Vector2) -> void:
 func _orbit_step(delta: float) -> void:
 	_orbit_life -= delta
 	if _orbit_life <= 0.0:
-		queue_free()
+		_retire()  # 池化：轨道到期回收复用
 		return
 	if _player_ref != null and is_instance_valid(_player_ref):
 		_orbit_center = _player_ref.global_position
@@ -364,12 +481,11 @@ func _spawn_split_minis(source: Node) -> void:
 		if n > 1:
 			t = float(i) / float(n - 1) - 0.5
 		var dir := Vector2.from_angle(base_angle + spread * t)
-		# 运行时 load 自身场景，避免脚本↔场景循环 preload（smoke 扫描脚本优先加载会报错）
-		var mini = load("res://scenes/game/projectile.tscn").instantiate()
 		var mini_mods: Dictionary = {}
 		if _drain > 0.0:
 			mini_mods["drain"] = _drain
-		mini.setup({
+		# 池化：经 obtain 复用（defer_add 保留"物理冲刷期回调内 deferred 加树"既有做法）
+		var mini := obtain({
 			"position": global_position + dir * 12.0,
 			"direction": dir,
 			"speed": _speed if _speed >= SPLIT_MINI_SPEED else SPLIT_MINI_SPEED,
@@ -380,11 +496,9 @@ func _spawn_split_minis(source: Node) -> void:
 			"mods": mini_mods,
 			"status": _status.duplicate(),
 			"chain": 0,
-		})
+		}, get_tree().current_scene, true)
 		# 小弹不再重复命中来源敌人（避免贴脸三连击）
 		mini._hit_enemies[source.get_instance_id()] = true
-		# P2-1b：命中链可能处于物理冲刷期回调内（反弹-击杀链），deferred 下一帧加树
-		get_tree().current_scene.call_deferred("add_child", mini)
 
 
 func _try_chain(from: Vector2) -> void:

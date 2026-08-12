@@ -3,7 +3,7 @@ extends Node
 ## 冷却 = core.cooldown × shell.mods.cooldown_mult × 法杖充能系数（item_value 曲线）。
 ## 施放方向 = InputRouter.aim_vector；鼠标与玩家距离 > 20px 时改瞄鼠标。
 
-const PROJECTILE_SCENE := preload("res://scenes/game/projectile.tscn")
+const PROJECTILE_SCRIPT := preload("res://scripts/combat/projectile.gd")
 const SUMMON_SCRIPT := preload("res://scripts/combat/summon.gd")
 const FLASH_BURST_RADIUS := 90.0  # flash 盲爆半径（与 projectile.gd BLIND_BURST_RADIUS 一致，供多弹分散计算）
 const WAND_CHARGE_CURVE := {"curve": {"type": "multiplicative", "base": 0.9, "cap": 0.5}}
@@ -351,13 +351,13 @@ func _drain_heal(mods: Dictionary, dealt: int) -> void:
 
 
 func _spawn_projectile(player: Node2D, dir: Vector2, core: Dictionary, mods: Dictionary, dmg: float, aoe: float, speed: float) -> void:
-	var proj := PROJECTILE_SCENE.instantiate()
 	# 核心状态参数（burn/slow/root/poison/blind）与闪电链跳数透传
 	var status: Dictionary = {}
 	for k in ["burn", "slow", "root", "poison", "blind"]:
 		if core.has(k):
 			status[k] = float(core.get(k, 0.0))
-	proj.setup({
+	# 池化：经 obtain 复用弹幕实例（命中/到射程后自动回收）
+	PROJECTILE_SCRIPT.obtain({
 		"position": player.global_position + dir * 12.0,
 		"direction": dir,
 		"speed": speed,
@@ -368,8 +368,7 @@ func _spawn_projectile(player: Node2D, dir: Vector2, core: Dictionary, mods: Dic
 		"mods": mods,
 		"status": status,
 		"chain": int(core.get("chain", 0)),
-	})
-	get_tree().current_scene.add_child(proj)
+	}, get_tree().current_scene)
 
 
 func _spawn_summon(player: Node2D, core: Dictionary, mods: Dictionary) -> void:

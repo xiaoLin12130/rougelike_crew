@@ -95,7 +95,7 @@ const N2_HASTE_RATE := 0.04           ## 暴击攻速 +4%/层
 const N2_HASTE_CAP := 0.20            ## 攻速上限 20%
 const N2_HASTE_TIME := 2.0            ## 触发持续 2s
 
-const PROJECTILE_SCENE := preload("res://scenes/game/projectile.tscn")
+const PROJECTILE_SCRIPT := preload("res://scripts/combat/projectile.gd")
 
 var _m2_stacks := 0           ## 致命连击当前层数
 var _m4_marks := {}           ## 弱点标记：enemy instance_id → 过期秒数
@@ -402,8 +402,8 @@ func _fire_ricochet(pos: Vector2, source, dmg: int, element: String) -> void:
 		var to := (target as Node2D).global_position - pos
 		if to.length_squared() > 0.01:
 			dir = to.normalized()
-	var proj := PROJECTILE_SCENE.instantiate()
-	proj.setup({
+	# 池化：经 obtain 复用弹幕实例
+	PROJECTILE_SCRIPT.obtain({
 		"position": pos,
 		"direction": dir,
 		"speed": M3_SPEED,
@@ -412,8 +412,7 @@ func _fire_ricochet(pos: Vector2, source, dmg: int, element: String) -> void:
 		"element": element,
 		"aoe": 0.0,
 		"mods": {"homing": true},
-	})
-	tree.current_scene.add_child(proj)
+	}, tree.current_scene)
 
 
 ## ===== 暴M4 弱点标记：暴击后标记目标 3s，被标记者受伤 +15% =====

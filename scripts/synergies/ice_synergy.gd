@@ -19,7 +19,7 @@ extends Node
 ## 防御性约定：SynergyRegistry.trigger 不捕获回调异常（异常会冒泡崩游戏），
 ## 因此所有回调对空值/失效节点/缺失字段一律兜底，不抛异常。
 
-const PROJECTILE_SCENE := preload("res://scenes/game/projectile.tscn")
+const PROJECTILE_SCRIPT := preload("res://scripts/combat/projectile.gd")
 
 # —— 数值常量（与 .tools/build_defs/ice.json 的曲线含义一致）——
 const SHATTER_BASE := 12.0          # 碎冰基础伤害：参考冰锥（ice_shard）base_damage 10-14
@@ -454,8 +454,8 @@ func _spawn_shards(pos: Vector2, source_id: int) -> void:
 	var dmg := maxi(int(SHARD_DMG_BASE * (1.0 + FROZEN_DMG_K * _stacks("ice_4"))), 1)
 	var speed := SHARD_SPEED * (1.0 + ICE_SPD_K * _stacks("ice_5"))
 	for i in SHARD_COUNT:
-		var shard = PROJECTILE_SCENE.instantiate()
-		shard.setup({
+		# 池化：经 obtain 复用弹幕实例
+		var shard = PROJECTILE_SCRIPT.obtain({
 			"position": pos + Vector2(randf_range(-10.0, 10.0), randf_range(-10.0, 10.0)),
 			"direction": Vector2.from_angle(randf() * TAU),
 			"speed": speed,
@@ -466,9 +466,8 @@ func _spawn_shards(pos: Vector2, source_id: int) -> void:
 			"mods": {"homing": true},
 			"status": {},
 			"chain": 0,
-		})
+		}, scene)
 		shard._hit_enemies[source_id] = true  # 不回头命中已死亡来源
-		scene.add_child(shard)
 
 
 ## 冰M7 冰雪风暴：减速区域（手动扫描，不依赖物理碰撞）

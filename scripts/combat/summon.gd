@@ -6,7 +6,7 @@ extends Node2D
 ## 同类型实例数 <= max_count；总数量 <= 1 + summon_book 层数（超限销毁最旧召唤物）。
 ## 攻击目标：group "enemy"；外观为友军蓝（与 gen/summon_bat_1.png 同配色方案）。
 
-const PROJECTILE_SCENE := preload("res://scenes/game/projectile.tscn")
+const PROJECTILE_SCRIPT := preload("res://scripts/combat/projectile.gd")
 const LIFETIME := 30.0
 const FOLLOW_RANGE := 64.0            # 无目标时跟随玩家的距离
 const MELEE_RADIUS := 18.0            # 近战接触判定半径（另加敌人体型）
@@ -451,8 +451,8 @@ func _damage_enemy(enemy: Node, mult: float, is_crit: bool = false) -> void:
 
 
 func _fire_projectile(dir: Vector2, speed: float, range: float, mods: Dictionary) -> void:
-	var proj := PROJECTILE_SCENE.instantiate()
-	proj.setup({
+	# 池化：经 obtain 复用弹幕实例
+	PROJECTILE_SCRIPT.obtain({
 		"position": global_position + dir * 12.0,
 		"direction": dir,
 		"speed": speed,
@@ -461,8 +461,7 @@ func _fire_projectile(dir: Vector2, speed: float, range: float, mods: Dictionary
 		"element": _element,
 		"aoe": 0.0,
 		"mods": mods,
-	})
-	get_tree().current_scene.add_child(proj)
+	}, get_tree().current_scene)
 
 
 func _taunt() -> void:

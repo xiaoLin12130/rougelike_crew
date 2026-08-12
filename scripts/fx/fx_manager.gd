@@ -323,6 +323,100 @@ var _summon_auras: Dictionary = {}  # summon instance_id -> aura Node2D
 var _chain_bolts: Array = []  # 链跳闪电连线池（LightningBolt，上限 CHAIN_BOLT_MAX）
 var _hitstop_cd := 0.0  ## 打击感 P1：顿帧冷却（150ms 防高攻速连发卡手）
 
+## =====================================================================
+## 一次性粒子对象池（P1 性能优化，docs/design/性能优化方案.md 热点 2）
+## 池化范围：_spawn_flash / _spawn_cast_particles / _spawn_tex_layer /
+## _spawn_poison_diffusion / _spawn_ice_shards（one_shot=true + finished 自毁的一次性爆发型）。
+## 不池化：spawn_status_particles / GroundTex.loop_particles（持续 Loop 型，
+## 生命周期跟随宿主节点销毁，池化反而引入重置风险）。
+## 视觉安全：每次借用全量重配所有渲染属性（纹理/颜色/曲线/材质/速度/加速度/方向），
+## 回收时 _reset_particle 全字段清零，杜绝"复用残留旧特效"。
+## =====================================================================
+const PARTICLE_POOL_MAX := 64  # 每类空闲上限（超限直接释放，防常驻膨胀）
+
+var _particle_pools: Dictionary = {}  # pool_key -> Array[CPUParticles2D]（空闲，已出树）
+var _pool_created := 0  # 池新建粒子总数（测试/监控用）
+var _pool_reused := 0   # 池复用次数（测试/监控用）
+
+## 从池取一次性粒子：空闲可用则复用，否则新建并挂 finished 回收。
+## 调用方随后必须全量配置属性并 add_child + restart()。
+func _pool_get(key: String) -> CPUParticles2D:
+	var pool = _particle_pools.get(key)  # Variant：key 未建池时为 null
+	while pool != null and not pool.is_empty():
+		var p: CPUParticles2D = pool.pop_back()
+		if is_instance_valid(p):
+			_pool_reused += 1
+			return p
+	# 无空闲或池中引用已失效：新建
+	var fresh := CPUParticles2D.new()
+	fresh.set_meta("pool_key", key)
+	fresh.finished.connect(_on_pool_particle_finished.bind(fresh))
+	_pool_created += 1
+	return fresh
+
+## finished 信号驱动回收：复用"结束的粒子"节点，出树 + 全量重置 + 入池。
+func _on_pool_particle_finished(p: CPUParticles2D) -> void:
+	if not is_instance_valid(p):
+		return
+	var key: String = str(p.get_meta("pool_key", ""))
+	if key.is_empty():
+		p.queue_free()
+		return
+	_reset_particle(p)
+	if p.is_inside_tree():
+		remove_child(p)
+	var pool = _particle_pools.get(key)  # Variant：key 未建池时为 null
+	if pool == null:
+		pool = []
+		_particle_pools[key] = pool
+	if pool.size() < PARTICLE_POOL_MAX:
+		pool.append(p)
+	else:
+		p.queue_free()
+
+## 池化粒子全量重置：位置/纹理/材质/颜色/曲线/速度/加速度/方向/发射状态，
+## 保证复用时不会残留上一轮的视觉参数。
+func _reset_particle(p: CPUParticles2D) -> void:
+	p.emitting = false
+	p.one_shot = true
+	p.position = Vector2.ZERO
+	p.rotation = 0.0
+	p.scale = Vector2.ONE
+	p.modulate = Color.WHITE
+	p.visible = true
+	p.z_index = 0
+	p.texture = null
+	p.amount = 1
+	p.lifetime = 1.0
+	p.explosiveness = 0.0
+	p.spread = 0.0
+	p.direction = Vector2.RIGHT
+	p.gravity = Vector2.ZERO
+	p.initial_velocity_min = 0.0
+	p.initial_velocity_max = 0.0
+	p.scale_amount_min = 1.0
+	p.scale_amount_max = 1.0
+	p.scale_amount_curve = null
+	p.angular_velocity_min = 0.0
+	p.angular_velocity_max = 0.0
+	p.angle_min = 0.0
+	p.angle_max = 0.0
+	p.radial_accel_min = 0.0
+	p.radial_accel_max = 0.0
+	p.tangential_accel_min = 0.0
+	p.tangential_accel_max = 0.0
+	p.material = null
+	p.color_ramp = null
+	p.color = Color.WHITE
+	# 时间轴（time）由借用侧 restart() 重置，此处无需（且 time 只读）
+
+## 池统计（测试/监控）：created/reused + 每类空闲数。
+func particle_pool_stats() -> Dictionary:
+	var idle: Dictionary = {}
+	for key in _particle_pools:
+		idle[key] = _particle_pools[key].size()
+	return {"created": _pool_created, "reused": _pool_reused, "idle": idle}
+
 func _ready() -> void:
 	EventBus.fx_explosion.connect(_on_fx_explosion)
 	EventBus.fx_explosion_scaled.connect(_on_fx_explosion_scaled)
@@ -338,6 +432,16 @@ func _ready() -> void:
 	EventBus.enemy_died.connect(_on_enemy_died)
 	# 契约：player_hit 的监听方包含特效（受击反馈）
 	EventBus.player_hit.connect(_on_player_hit)
+
+func _exit_tree() -> void:
+	## 场景卸载：释放池中空闲粒子（已出树，树销毁不会自动清理它们）
+	for key in _particle_pools:
+		var pool: Array = _particle_pools[key]
+		for p in pool:
+			if is_instance_valid(p):
+				p.free()
+		pool.clear()
+	_particle_pools.clear()
 
 func _process(delta: float) -> void:
 	_hitstop_cd = maxf(_hitstop_cd - delta, 0.0)
@@ -425,7 +529,7 @@ func _spawn_flash(pos: Vector2, color: Color, tex_name: String, scale_min: float
 	var tex: Texture2D = _get_tex(tex_name)
 	if tex == null:
 		return
-	var p := CPUParticles2D.new()
+	var p := _pool_get("flash")
 	p.position = pos
 	p.texture = tex
 	p.amount = 1
@@ -453,8 +557,18 @@ func _spawn_flash(pos: Vector2, color: Color, tex_name: String, scale_min: float
 	grad.set_color(1, Color(color, 0.0))
 	p.color_ramp = grad
 	p.color = Color.WHITE
-	p.finished.connect(p.queue_free)
+	# 池化：显式清空 layer 可能设置的旋转/加速度字段，防复用残留
+	p.direction = Vector2.RIGHT
+	p.angular_velocity_min = 0.0
+	p.angular_velocity_max = 0.0
+	p.angle_min = 0.0
+	p.angle_max = 0.0
+	p.radial_accel_min = 0.0
+	p.radial_accel_max = 0.0
+	p.tangential_accel_min = 0.0
+	p.tangential_accel_max = 0.0
 	add_child(p)
+	p.restart()
 
 ## 施法飞屑：单贴图 CPUParticles2D，沿 dir 方向喷出（spread 30°），寿命 0.15~0.3s。
 func _spawn_cast_particles(pos: Vector2, dir: Vector2, base_color: Color, tex_name: String, recipe: Dictionary) -> void:
@@ -468,7 +582,7 @@ func _spawn_cast_particles(pos: Vector2, dir: Vector2, base_color: Color, tex_na
 	var vel_range: Array = recipe.get("vel", [120, 260])
 	var scale_range: Array = recipe.get("scale", [0.05, 0.1])
 	var life_range: Array = recipe.get("life", [0.15, 0.3])
-	var p := CPUParticles2D.new()
+	var p := _pool_get("cast")
 	p.position = pos
 	p.texture = tex
 	p.amount = per
@@ -492,13 +606,24 @@ func _spawn_cast_particles(pos: Vector2, dir: Vector2, base_color: Color, tex_na
 		var mat := CanvasItemMaterial.new()
 		mat.blend_mode = CanvasItemMaterial.BLEND_MODE_ADD
 		p.material = mat
+	else:
+		p.material = null  # 池化：非加法配方必须清掉上一轮残留材质
 	var grad := Gradient.new()
 	grad.set_color(0, Color(base_color, 1.0))
 	grad.set_color(1, Color(base_color, 0.0))
 	p.color_ramp = grad
 	p.color = Color.WHITE
-	p.finished.connect(p.queue_free)
+	# 池化：显式清空 layer 可能设置的旋转/加速度字段
+	p.angular_velocity_min = 0.0
+	p.angular_velocity_max = 0.0
+	p.angle_min = 0.0
+	p.angle_max = 0.0
+	p.radial_accel_min = 0.0
+	p.radial_accel_max = 0.0
+	p.tangential_accel_min = 0.0
+	p.tangential_accel_max = 0.0
 	add_child(p)
+	p.restart()
 
 ## 贴图粒子层：按 recipe 逐贴图拆分为独立 CPUParticles2D（同层贴图混合出层次感），
 ## 512 贴图以 scale_amount 0.03~0.35 渲染，one_shot 由 finished 自毁。
@@ -527,7 +652,7 @@ func _spawn_tex_layer(pos: Vector2, base_color: Color, recipe: Dictionary, scale
 		var tex: Texture2D = _get_tex(str(tex_name))
 		if tex == null:
 			continue
-		var p := CPUParticles2D.new()
+		var p := _pool_get("layer")
 		p.position = pos + offset
 		p.texture = tex
 		p.amount = per
@@ -538,18 +663,16 @@ func _spawn_tex_layer(pos: Vector2, base_color: Color, recipe: Dictionary, scale
 		p.gravity = recipe.get("grav", Vector2.ZERO)
 		if emit_dir != Vector2.ZERO:
 			p.direction = emit_dir.normalized()
-		if not spin_range.is_empty():
-			p.angular_velocity_min = float(spin_range[0])
-			p.angular_velocity_max = float(spin_range[1])
-		if not angle_range.is_empty():
-			p.angle_min = float(angle_range[0])
-			p.angle_max = float(angle_range[1])
-		if inward:
-			p.radial_accel_min = -150.0
-			p.radial_accel_max = -70.0
-		if swirl > 0.0:
-			p.tangential_accel_min = swirl * 0.5
-			p.tangential_accel_max = swirl
+		else:
+			p.direction = Vector2.RIGHT  # 池化：无条件设置，防复用残留方向
+		p.angular_velocity_min = float(spin_range[0]) if not spin_range.is_empty() else 0.0
+		p.angular_velocity_max = float(spin_range[1]) if not spin_range.is_empty() else 0.0
+		p.angle_min = float(angle_range[0]) if not angle_range.is_empty() else 0.0
+		p.angle_max = float(angle_range[1]) if not angle_range.is_empty() else 0.0
+		p.radial_accel_min = -150.0 if inward else 0.0
+		p.radial_accel_max = -70.0 if inward else 0.0
+		p.tangential_accel_min = swirl * 0.5 if swirl > 0.0 else 0.0
+		p.tangential_accel_max = swirl if swirl > 0.0 else 0.0
 		p.initial_velocity_min = float(vel_range[0]) * vel_mult
 		p.initial_velocity_max = float(vel_range[1]) * vel_mult
 		p.scale_amount_min = float(scale_range[0])
@@ -568,13 +691,15 @@ func _spawn_tex_layer(pos: Vector2, base_color: Color, recipe: Dictionary, scale
 			var mat := CanvasItemMaterial.new()
 			mat.blend_mode = CanvasItemMaterial.BLEND_MODE_ADD
 			p.material = mat
+		else:
+			p.material = null  # 池化：非加法配方必须清掉上一轮残留材质
 		var grad := Gradient.new()
 		grad.set_color(0, Color(layer_color, 1.0))
 		grad.set_color(1, Color(layer_color, 0.0))
 		p.color_ramp = grad
 		p.color = Color.WHITE
-		p.finished.connect(p.queue_free)
 		add_child(p)
+		p.restart()
 
 ## 扩散环：实例化 scenes/fx/explosion.tscn（程序化 Line2D 圆），tween 缩放 + 淡出。
 ## 形态分发：按 KIND_RECIPES.shape.type 生成程序化组件（每种形态独立形状/运动方向，非"中心向四周爆开"）。
@@ -1050,7 +1175,7 @@ func _spawn_poison_diffusion(pos: Vector2, color: Color, scale_mult: float) -> v
 	var tex: Texture2D = _get_tex("circle_04")
 	if tex == null:
 		return
-	var p := CPUParticles2D.new()
+	var p := _pool_get("poison")
 	p.position = pos
 	p.texture = tex
 	p.amount = 14 + 7 * tiers
@@ -1076,8 +1201,18 @@ func _spawn_poison_diffusion(pos: Vector2, color: Color, scale_mult: float) -> v
 	grad.set_color(1, Color(color, 0.0))
 	p.color_ramp = grad
 	p.color = Color.WHITE
-	p.finished.connect(p.queue_free)
+	# 池化：显式清空 layer 可能设置的旋转/加速度字段，防复用残留
+	p.direction = Vector2.RIGHT
+	p.angular_velocity_min = 0.0
+	p.angular_velocity_max = 0.0
+	p.angle_min = 0.0
+	p.angle_max = 0.0
+	p.radial_accel_min = 0.0
+	p.radial_accel_max = 0.0
+	p.tangential_accel_min = 0.0
+	p.tangential_accel_max = 0.0
 	add_child(p)
+	p.restart()
 
 func _spawn_ice_shards(pos: Vector2, color: Color, scale_mult: float) -> void:
 	## A2 碎冰冰屑：短时多粒子向四周迸射（高初速 + 重力下落），件数越多冰屑越多；
@@ -1086,7 +1221,7 @@ func _spawn_ice_shards(pos: Vector2, color: Color, scale_mult: float) -> void:
 	var tex: Texture2D = _get_tex("spark_04")
 	if tex == null:
 		return
-	var p := CPUParticles2D.new()
+	var p := _pool_get("ice")
 	p.position = pos
 	p.texture = tex
 	p.amount = 16 + 8 * tiers
@@ -1112,8 +1247,18 @@ func _spawn_ice_shards(pos: Vector2, color: Color, scale_mult: float) -> void:
 	grad.set_color(1, Color(color, 0.0))
 	p.color_ramp = grad
 	p.color = Color.WHITE
-	p.finished.connect(p.queue_free)
+	# 池化：显式清空方向/旋转/加速度字段
+	p.direction = Vector2.RIGHT
+	p.angular_velocity_min = 0.0
+	p.angular_velocity_max = 0.0
+	p.angle_min = 0.0
+	p.angle_max = 0.0
+	p.radial_accel_min = 0.0
+	p.radial_accel_max = 0.0
+	p.tangential_accel_min = 0.0
+	p.tangential_accel_max = 0.0
 	add_child(p)
+	p.restart()
 	if tiers >= 2:
 		_spawn_ice_crystal(pos, color, {"clusters": 3, "size": 22.0})
 
