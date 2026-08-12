@@ -87,7 +87,7 @@ func _build_title() -> void:
 	sub.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	add_child(sub)
 	# 构建指纹：确认浏览器加载的是最新版（显示构建时间戳）
-	var build := UiTheme.label("v46 · 2026-08-11 17:20", 8, Color("#6a6080"))
+	var build := UiTheme.label("v47 · 2026-08-12 09:45", 8, Color("#6a6080"))
 	build.set_anchors_preset(Control.PRESET_TOP_RIGHT)
 	build.position = Vector2(-160, 8)
 	build.custom_minimum_size = Vector2(150, 14)

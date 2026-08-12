@@ -94,8 +94,8 @@
    "status": "done"
   },
   "git_push": {
-   "note": "本轮改动未提交",
-   "status": "pending"
+   "status": "pending",
+   "note": "46c8c1d ?????(??v46?17:20)?push ?????GitHub ?? Connection reset/Could not connect(127.0.0.1??443)?????????"
   },
   "gold_economy": {
    "note": "小怪1-3金/Boss 40-300/法杖+40%/强化系统(200起+8%/级)/gold_pouch+10%",
@@ -292,7 +292,12 @@
   "boss_skills_v2": {
    "status": "done",
    "note": "2026-08-10 Boss技能扩展v2：新增8种技能类型(必做5+可选3)——spiral旋转弹幕环(cast期间按tick连发多圈,每圈角度偏移递进)/homing_shot追踪弹(enemy_bullet只增转向标志,弹速135-140/转向率3rad/s/寿命4s)/sweep扇形激光扫(-60°~+60°插值,已扫过扇形持续危险=预告边界线一致)/spike_trail地刺轨迹(沿玩家移动方向连续伤害点预告,延迟0.6s逐点爆刺)/blink闪现(起点淡圈+落点红圈双圈预告,瞬移+落点范围爆炸)/wall弹幕墙(玩家所在行/列一排落点圈,逐点喷发)/enrage狂暴(阶段3自动触发:移速+30%/弹幕CD-30%,幂等)/split分裂(原地弹开出生小史莱姆)。6 Boss按分配表配置:史莱姆王5(+split)/树精6(+spike_trail)/骷髅王5(+sweep)/熔岩魔王7(+spiral+wall)/远古守卫6(+homing_shot+blink)/古神8(+spiral+homing+enrage)(前3≥3后3≥5达标);旧技能参数零改动。测试:test_boss_skills 全绿 BOSS SKILL TESTS OK(23用例+homing标志+enrage冷却×0.7+6Boss技能数断言+真实配置预告几何审计);smoke_test SMOKE OK退出码0。方案文档 docs/design/Boss技能扩展方案.md(参考以撒/吸血鬼幸存者/雨中冒险2/枪火重生/元气骑士)。注意:并行代理Godel留下的临时探测文件 scripts/tests/_probe_engine.gd 有parse error(Engine.get_error_messages不存在),属其中间态,未动;Descartes的小怪bullet_speed改动已保留。"
+  },
+  "round4_test": {
+   "status": "in_progress",
+   "note": "2026-08-11 ?4???(Boss??v2+????+?????)??? DEFEAT@level5 ????? 482s/1701?/783?/HP??(481s 90->43->0)?Boss???????????????????????????????P1??????????????",
+   "updated": "2026-08-11 18:24"
   }
  },
- "updated": "2026-08-10-perf_enemy_cache"
+ "updated": "2026-08-11-1824"
 }
