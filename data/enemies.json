@@ -40,7 +40,7 @@
    "touch": true,
    "xp": 8,
    "gold": 1,
-   "sprite": "res://assets/sprites/kenney/slime_1.png",
+   "sprite": "res://assets/sprites/enemy/slime_1.png",
    "frames": 3,
    "affix_pool": [
     "flame",
@@ -60,7 +60,7 @@
    "touch": true,
    "xp": 6,
    "gold": 1,
-   "sprite": "res://assets/sprites/retro/bat_1.png",
+   "sprite": "res://assets/sprites/enemy/bat_1.png",
    "frames": 2,
    "affix_pool": [
     "lightning"
@@ -82,7 +82,7 @@
    "phase": true,
    "xp": 10,
    "gold": 2,
-   "sprite": "res://assets/sprites/retro/ghost_1.png",
+   "sprite": "res://assets/sprites/enemy/ghost_1.png",
    "frames": 2,
    "affix_pool": [
     "frost"
@@ -101,7 +101,7 @@
    "touch": true,
    "xp": 12,
    "gold": 2,
-   "sprite": "res://assets/sprites/retro/goblin_1.png",
+   "sprite": "res://assets/sprites/enemy/goblin_1.png",
    "frames": 2,
    "affix_pool": [
     "flame",
@@ -166,7 +166,7 @@
    "bullet_speed": 170,
    "xp": 12,
    "gold": 3,
-   "sprite": "res://assets/sprites/retro/imp_1.png",
+   "sprite": "res://assets/sprites/enemy/imp_1.png",
    "frames": 2,
    "affix_pool": [
     "flame"
@@ -206,7 +206,7 @@
    "behavior": "bomb",
    "xp": 12,
    "gold": 3,
-   "sprite": "res://assets/sprites/retro/bomber_1.png",
+   "sprite": "res://assets/sprites/enemy/bomber_1.png",
    "frames": 2,
    "affix_pool": [
     "flame"
@@ -266,7 +266,7 @@
    "bullet_speed": 180,
    "xp": 13,
    "gold": 3,
-   "sprite": "res://assets/sprites/retro/crystal_1.png",
+   "sprite": "res://assets/sprites/enemy/crystal_1.png",
    "frames": 1,
    "affix_pool": [
     "frost",
@@ -285,7 +285,7 @@
    "touch": true,
    "xp": 10,
    "gold": 2,
-   "sprite": "res://assets/sprites/retro/spider_1.png",
+   "sprite": "res://assets/sprites/enemy/spider_1.png",
    "frames": 2,
    "affix_pool": [
     "lightning",
@@ -305,7 +305,7 @@
    "touch": true,
    "xp": 16,
    "gold": 3,
-   "sprite": "res://assets/sprites/retro/mimic_1.png",
+   "sprite": "res://assets/sprites/enemy/mimic_1.png",
    "frames": 4,
    "affix_pool": [
     "stone",
@@ -329,7 +329,7 @@
    "bullet_speed": 175,
    "xp": 14,
    "gold": 3,
-   "sprite": "res://assets/sprites/retro/specter_1.png",
+   "sprite": "res://assets/sprites/enemy/specter_1.png",
    "frames": 2,
    "affix_pool": [
     "frost",
