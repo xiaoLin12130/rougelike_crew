@@ -156,7 +156,7 @@ func _roll_starter_core_pool() -> Array:
 	## 开局可选核心池：只保留至少存在一个有效外壳组合的核心
 	## （frenzy/mana_echo 对所有外壳零消费/冲突，全部过滤，保证开局技能必带外壳）
 	var cores: Array = tables.get("spells", {}).get("cores", [])
-	var shells: Array = tables.get("spells", {}).get("shells", [])
+	var shells: Array = _active_shells(tables.get("spells", {}).get("shells", []))
 	var pool: Array = []
 	for c in cores:
 		for s in shells:
@@ -166,9 +166,18 @@ func _roll_starter_core_pool() -> Array:
 	return pool
 
 
+## 过滤 disabled 外壳（用户需求：移除延时/追踪外壳，数据层标 disabled: true）
+static func _active_shells(all: Array) -> Array:
+	var out: Array = []
+	for s in all:
+		if not bool(s.get("disabled", false)):
+			out.append(s)
+	return out
+
+
 func _roll_valid_shell(core: Dictionary) -> Dictionary:
 	## 从指定核心的有效外壳池随机抽 1 个（无有效组合时返回空字典=原生）
-	var shells: Array = tables.get("spells", {}).get("shells", [])
+	var shells: Array = _active_shells(tables.get("spells", {}).get("shells", []))
 	var valid: Array = []
 	for s in shells:
 		if not _invalid_combo(core, s):
@@ -521,7 +530,7 @@ func _make_spell_choice() -> Dictionary:
 	var cores: Array = spells.get("cores", [])
 	if cores.is_empty():
 		return {}
-	var shells: Array = spells.get("shells", [])
+	var shells: Array = _active_shells(spells.get("shells", []))
 	var holdings := _element_holdings()
 	## 元素门控：核心池 = 无元素核心 + 通用 blade + 已持有元素核心；空池直接返回空（不给选项）
 	var eligible: Array = []

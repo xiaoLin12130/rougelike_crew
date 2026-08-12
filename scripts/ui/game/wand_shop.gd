@@ -220,7 +220,7 @@ func _build_buy_page() -> void:
 	_buy_section.add_child(offer_title)
 	## Brotato：商品卡 2 列网格（PC/手机统一），卡 138x150
 	_box = GridContainer.new()
-	_box.columns = 2
+	_box.columns = 1  ## 用户需求：购买法杖页每个法杖一行
 	_box.add_theme_constant_override("h_separation", 8)
 	_box.add_theme_constant_override("v_separation", 8)
 	_box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -598,47 +598,49 @@ static func _lock_tex(locked: bool) -> ImageTexture:
 
 
 func _make_offer_card(w: Dictionary, idx: int) -> Control:
-	## Brotato 商品卡：2 列网格卡 138x150 = 图标 56 居中 + 名称 + 价格行（材料图标+数）
-	## + 右上角锁钮 20x20（锁定变金色 + 卡边框金色 2px）；点击卡片购买。
+	## 商品卡（用户需求）：每行一个法杖——图标 + 名称/稀有度 + 描述 + 价格购买按钮 + 锁钮
 	var locked: bool = _locked.size() > idx and _locked[idx]
 	var rar: String = str(w.get("rarity", "common"))
 	var border: Color = UiTheme.GOLD if locked else UiTheme.RARITY.get(rar, UiTheme.BORDER)
 	var card := PanelContainer.new()
-	card.custom_minimum_size = Vector2(138, 150)
+	card.custom_minimum_size = Vector2(_card_w, 72)
 	card.add_theme_stylebox_override("panel", UiTheme.style(UiTheme.PANEL_CARD, border, 2 if locked else 1, 5))
-	card.tooltip_text = "%s（%s）\n%s\n价格 %d金 · 形态：%s" % [
-		w.get("name", "?"),
-		rar,
-		w.get("description", ""),
-		int(w.get("price", 0)),
-		w.get("shape", "none"),
-	]
-	var vb := VBoxContainer.new()
-	vb.add_theme_constant_override("separation", 3)
-	card.add_child(vb)
+	var row := HBoxContainer.new()
+	row.add_theme_constant_override("separation", 8)
+	row.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	card.add_child(row)
 	var tex := TextureRect.new()
 	tex.texture = UiTheme.icon_texture(str(w.get("icon", "")))
 	tex.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 	tex.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-	tex.custom_minimum_size = Vector2(_icon_sz, _icon_sz)
-	tex.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	tex.custom_minimum_size = Vector2(48, 48)
+	tex.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	tex.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	vb.add_child(tex)
+	row.add_child(tex)
+	var info := VBoxContainer.new()
+	info.add_theme_constant_override("separation", 2)
+	info.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	info.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	info.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	row.add_child(info)
 	var name_l := UiTheme.label(str(w.get("name", "?")), _name_sz, UiTheme.RARITY.get(rar, UiTheme.WHITE))
-	name_l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	name_l.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	name_l.custom_minimum_size = Vector2(0, 18)
 	name_l.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	vb.add_child(name_l)
-	var price_row := HBoxContainer.new()
-	price_row.add_theme_constant_override("separation", 4)
-	price_row.alignment = BoxContainer.ALIGNMENT_CENTER
-	price_row.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	vb.add_child(price_row)
-	var pm := UiTheme.icon(MAT_ICON_PATH, Vector2(12, 12))
-	price_row.add_child(pm)
-	var price_l := UiTheme.label(str(int(w.get("price", 0))), 11, UiTheme.GOLD, true)
-	price_row.add_child(price_l)
+	info.add_child(name_l)
+	var desc_l := UiTheme.label(str(w.get("description", "")), _desc_sz, Color("#c8c0e0"))
+	desc_l.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	desc_l.custom_minimum_size = Vector2(150, 26)
+	desc_l.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	info.add_child(desc_l)
+	var buy_col := VBoxContainer.new()
+	buy_col.add_theme_constant_override("separation", 4)
+	buy_col.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	buy_col.mouse_filter = Control.MOUSE_FILTER_STOP
+	row.add_child(buy_col)
+	var buy_btn := UiTheme.button("%d金 · 购买" % int(w.get("price", 0)), Vector2(104, BTN_H))
+	buy_btn.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	buy_btn.disabled = GameState.run.get("gold", 0) < int(w.get("price", 0))
+	buy_btn.pressed.connect(_buy_wand.bind(str(w.get("id", ""))))
+	buy_col.add_child(buy_btn)
 	# 右上角锁钮（20x20；子按钮先于卡片收到点击）
 	var lock_btn := Button.new()
 	lock_btn.name = "LockBtn"
@@ -653,19 +655,12 @@ func _make_offer_card(w: Dictionary, idx: int) -> Control:
 	## 渲染覆盖上一行卡片并拦截点击；改为卡片内右上角 20x20（y=4..24，x=-28..-8）
 	lock_btn.offset_left = -30.0
 	lock_btn.offset_right = -8.0
-	lock_btn.offset_top = 4.0
-	lock_btn.offset_bottom = 24.0
+	lock_btn.offset_top = -30.0
+	lock_btn.offset_bottom = -8.0
 	lock_btn.tooltip_text = "解锁" if locked else "锁定（刷新时保留）"
 	lock_btn.pressed.connect(_toggle_lock.bind(idx))
 	card.add_child(lock_btn)
-	# 点击卡片 = 购买（Brotato：整卡即购买入口；锁定卡仍可解锁/点击）
-	card.gui_input.connect(_on_offer_card_input.bind(w))
 	return card
-
-
-func _on_offer_card_input(ev: InputEvent, w: Dictionary) -> void:
-	if ev is InputEventMouseButton and ev.pressed and ev.button_index == MOUSE_BUTTON_LEFT:
-		_buy_wand(str(w.get("id", "")))
 
 
 func _toggle_lock(idx: int) -> void:

@@ -226,7 +226,8 @@
     "damage_mult": 0.9,
     "speed_mult": 0.85
    },
-   "icon": "res://assets/icons/verarc/magic_amplification.png"
+   "icon": "res://assets/icons/verarc/magic_amplification.png",
+   "disabled": true
   },
   {
    "id": "pierce",
@@ -273,7 +274,8 @@
     "delay": 0.8,
     "damage_mult": 1.3
    },
-   "icon": "res://assets/icons/verarc/sleeping.png"
+   "icon": "res://assets/icons/verarc/sleeping.png",
+   "disabled": true
   },
   {
    "id": "split",

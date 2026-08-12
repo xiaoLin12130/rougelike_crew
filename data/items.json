@@ -128,7 +128,7 @@
     "max_stacks": 5,
     "type": "multiplicative"
    },
-   "description": "冷却 ×0.9/层（上限 50% 减免）",
+   "description": "冷却 x0.9/层（上限 50% 减免）",
    "icon": "res://assets/icons/verarc/mana_replenish.png",
    "id": "wand_charge",
    "name": "法杖充能",
@@ -358,7 +358,7 @@
    "description": "记忆：技能冷却 -20%",
    "icon": "res://assets/icons/verarc/swiftness.png",
    "id": "memory_haste",
-   "name": "记忆·疾风",
+   "name": "记忆-疾风",
    "rarity": "rare",
    "slot": null,
    "tags": [
@@ -375,7 +375,7 @@
    "description": "记忆：技能伤害 +30%",
    "icon": "res://assets/icons/verarc/frenzy_spell_(critical_booster).png",
    "id": "memory_power",
-   "name": "记忆·破军",
+   "name": "记忆-破军",
    "rarity": "rare",
    "slot": null,
    "tags": [
@@ -1634,7 +1634,7 @@
     "k": 0.5,
     "type": "linear"
    },
-   "description": "五毒俱全倍率 +0.5（每层，上限 ×4）",
+   "description": "五毒俱全倍率 +0.5（每层，上限 x4）",
    "icon": "res://assets/icons/shikashi/shikashi_r0_c1.png",
    "id": "poison_pentad",
    "name": "五毒符",
@@ -2142,7 +2142,7 @@
     "base": 1.04,
     "type": "multiplicative"
    },
-   "description": "每跳伤害 +4%（叠乘，每层 ×1.04）",
+   "description": "每跳伤害 +4%（叠乘，每层 x1.04）",
    "icon": "res://assets/icons/shikashi/shikashi_r3_c2.png",
    "id": "thunder_9",
    "name": "电荷",
@@ -2976,7 +2976,7 @@
     "threshold": 1,
     "type": "threshold"
    },
-   "description": "减伤 ≥30% 后免疫击退（防1/防4/防10 叠减伤）",
+   "description": "减伤达到30% 后免疫击退（防1/防4/防10 叠减伤）",
    "icon": "res://assets/icons/shikashi/shikashi_r17_c1.png",
    "id": "defense_unbreakable",
    "name": "磐石不破",
@@ -3860,7 +3860,7 @@
     "k": 0.2,
     "type": "linear"
    },
-   "description": "移速→攻速联动系数 +0.2（每层，基础 0.5）",
+   "description": "移速-攻速联动系数 +0.2（每层，基础 0.5）",
    "icon": "res://assets/icons/shikashi/shikashi_r17_c10.png",
    "id": "wind_blessing",
    "name": "风之祝福",
@@ -4235,7 +4235,7 @@
     "threshold": 1,
     "type": "threshold"
    },
-   "description": "毒层叠满时立即爆炸：范围毒伤（4% 最大生命 × 层数上限，受毒伤加成）",
+   "description": "毒层叠满时立即爆炸：范围毒伤（4% 最大生命 x 层数上限，受毒伤加成）",
    "icon": "res://assets/icons/shikashi/shikashi_r10_c12.png",
    "id": "poison_m2",
    "name": "毒爆",
@@ -4254,7 +4254,7 @@
     "threshold": 1,
     "type": "threshold"
    },
-   "description": "毒持续时间 ×2 起步，毒雾扩散加快（构筑每多 1 层 +25%，上限 ×4）",
+   "description": "毒持续时间 x2 起步，毒雾扩散加快（构筑每多 1 层 +25%，上限 x4）",
    "icon": "res://assets/icons/shikashi/shikashi_r11_c15.png",
    "id": "poison_m3",
    "name": "毒雾弥漫",
@@ -4387,7 +4387,7 @@
     "threshold": 1,
     "type": "threshold"
    },
-   "description": "中毒且燃烧时毒伤 ×2（五毒符每层 +0.5 倍率，上限 ×4）",
+   "description": "中毒且燃烧时毒伤 x2（五毒符每层 +0.5 倍率，上限 x4）",
    "icon": "res://assets/icons/shikashi/shikashi_r17_c4.png",
    "id": "poison_m10",
    "name": "五毒俱全",
@@ -4606,7 +4606,7 @@
     "threshold": 1,
     "type": "threshold"
    },
-   "description": "暴击率超过 100% 的部分转为真伤（每层转化 ×1，上限 ×2）",
+   "description": "暴击率超过 100% 的部分转为真伤（每层转化 x1，上限 x2）",
    "icon": "res://assets/icons/shikashi/shikashi_r9_c13.png",
    "id": "crit_m1",
    "name": "暴击溢出",
@@ -4739,7 +4739,7 @@
     "threshold": 1,
     "type": "threshold"
    },
-   "description": "暴击伤害 ≥2.0 时暴击概率翻倍（每层降低阈值 0.15）",
+   "description": "暴击伤害 >=2.0 时暴击概率翻倍（每层降低阈值 0.15）",
    "icon": "res://assets/icons/shikashi/shikashi_r8_c5.png",
    "id": "crit_m8",
    "name": "完美暴击",
@@ -4890,7 +4890,7 @@
     "k": 0.25,
     "type": "linear"
    },
-   "description": "冰系伤害 +25%（每层，tag 聚合进冰系伤害乘区）；冰M1 碎冰联动：碎冰伤害 ×(1+5%×冰系构筑数，基础 12）",
+   "description": "冰系伤害 +25%（每层，tag 聚合进冰系伤害乘区）；冰M1 碎冰联动：碎冰伤害 x(1+5%x冰系构筑数，基础 12）",
    "icon": "res://assets/icons/shikashi/shikashi_r9_c8.png",
    "id": "ice_glacier_heart",
    "name": "冰川之心",
@@ -4927,7 +4927,7 @@
     "k": 0.07,
     "type": "linear"
    },
-   "description": "法术冷却 -7%（每层，tag 聚合，与技能冷却合计上限 80%）；冰M10 绝对零度联动：脉冲间隔 8s÷(1+5%×冰系构筑数)（下限 4s）",
+   "description": "法术冷却 -7%（每层，tag 聚合，与技能冷却合计上限 80%）；冰M10 绝对零度联动：脉冲间隔 8s/(1+5%x冰系构筑数)（下限 4s）",
    "icon": "res://assets/icons/shikashi/shikashi_r9_c5.png",
    "id": "ice_chrono_frost",
    "name": "时之冰",
@@ -4965,7 +4965,7 @@
     "k": 0.1,
     "type": "linear"
    },
-   "description": "攻击力 +10%（每层，tag 聚合）；召唤M1 军团光环联动：机制系数 0.6+0.4×召唤构筑数（上限 2.0，作用于光环/献祭/共生/替身）",
+   "description": "攻击力 +10%（每层，tag 聚合）；召唤M1 军团光环联动：机制系数 0.6+0.4x召唤构筑数（上限 2.0，作用于光环/献祭/共生/替身）",
    "icon": "res://assets/icons/shikashi/shikashi_r11_c8.png",
    "id": "summon_war_banner",
    "name": "军团战旗",
@@ -5002,7 +5002,7 @@
     "k": 0.15,
     "type": "linear"
    },
-   "description": "技能伤害 +15%（每层，tag 聚合）；召唤M8 替身联动：替身回血 30%×机制系数（0.6+0.4×召唤构筑数，上限 2.0）",
+   "description": "技能伤害 +15%（每层，tag 聚合）；召唤M8 替身联动：替身回血 30%x机制系数（0.6+0.4x召唤构筑数，上限 2.0）",
    "icon": "res://assets/icons/shikashi/shikashi_r11_c0.png",
    "id": "summon_graveyard_keep",
    "name": "墓园守望",
@@ -5021,7 +5021,7 @@
     "k": 0.07,
     "type": "linear"
    },
-   "description": "法术冷却 -7%（每层，tag 聚合，与技能冷却合计上限 80%）；召唤M10 军团冲锋联动：献祭伤害倍率 1.5×机制系数（0.6+0.4×召唤构筑数，上限 3.0 倍）",
+   "description": "法术冷却 -7%（每层，tag 聚合，与技能冷却合计上限 80%）；召唤M10 军团冲锋联动：献祭伤害倍率 1.5x机制系数（0.6+0.4x召唤构筑数，上限 3.0 倍）",
    "icon": "res://assets/icons/shikashi/shikashi_r13_c10.png",
    "id": "summon_overlord_edict",
    "name": "军令",
@@ -5440,7 +5440,7 @@
   },
   {
    "id": "wand_expander",
-   "name": "??????",
+   "name": "法杖扩容",
    "type": "trinket",
    "rarity": "legendary",
    "slot": "trinket",
@@ -5455,7 +5455,7 @@
     "threshold": 1
    },
    "icon": "res://assets/icons/scroll.svg",
-   "description": "??????? +1??? 4 ?????????????"
+   "description": "法杖槽位 +1（最多 4 把，重复携带仅 1 件生效）"
   }
  ]
 }

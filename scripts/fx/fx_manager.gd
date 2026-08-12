@@ -33,6 +33,9 @@ const RING_SCALE := 2.6
 const RING_DURATION := 0.3
 const SHAKE_SMALL := 3.0
 const SHAKE_PLAYER_HIT := 2.5
+var _shake_cd := 0.0
+var _shake_pending := 0.0
+const SHAKE_COOLDOWN := 0.25  ## 用户需求：震屏节流，防高频晃动不适
 const FLASH_COLOR := Color(3.0, 3.0, 3.0, 1.0)
 const SLOW_MO_MIN_FACTOR := 0.05
 ## 护盾视觉（2026-08-12，docs/design/藤蔓护盾音效修复报告.md）：
@@ -490,6 +493,7 @@ func _exit_tree() -> void:
 func _process(delta: float) -> void:
 	_fx_frame += 1
 	_hitstop_cd = maxf(_hitstop_cd - delta, 0.0)
+	_process_shake_throttle(delta)
 	_track_shield_state()
 	# 爽感档位（F11）：按 DPS 分档，档位越高特效越足
 	_tier_timer -= delta
@@ -531,7 +535,7 @@ func _track_shield_state() -> void:
 		var player := get_tree().get_first_node_in_group("player")
 		if is_instance_valid(player):
 			spawn_shield_hit_fx((player as Node2D).global_position, false)
-			SfxBus.play("res://assets/audio/sfx_shield_up.ogg", -10.0, 1.05)
+			SfxBus.play("res://assets/audio/sfx_shield_up.ogg", -11.0, 1.05)
 	elif _shield_prev > 0.0 and shield <= 0.0 and not _shield_broke_played:
 		_shield_broke_played = true
 		var player := get_tree().get_first_node_in_group("player")
@@ -1658,7 +1662,12 @@ func _on_enemy_died(enemy_id: String, pos: Vector2, _xp: int, _gold: int, elite:
 	if _kill_times.size() >= 6:
 		_kill_times.clear()
 		EventBus.slow_mo.emit(0.8, 0.15)
-		EventBus.fx_explosion.emit(pos, "lightning")
+		## 连杀反馈落雷门控（2026-08-12 二次修复 P0-4）：2 秒 6 连杀庆祝特效
+		## 不再无条件发 lightning——无雷系构筑改发金色粒子雨（庆祝语义不变，无雷语义泄漏）
+		if _school_holdings_of("lightning") > 0:
+			EventBus.fx_explosion.emit(pos, "lightning")
+		else:
+			EventBus.fx_explosion.emit(pos, "gold")
 
 func _on_fx_heal_text(pos: Vector2, amount: int) -> void:
 	var number: DamageNumber = DamageNumberScene.instantiate()
@@ -1728,9 +1737,25 @@ func _on_fx_hit_slow(target: Node, crit: bool = false) -> void:
 	EventBus.slow_mo.emit(HITSTOP_FACTOR, dur)
 
 func _on_screen_shake(power: float) -> void:
+	## 节流：冷却期内只保留最强的一次震屏（0.25s 合并窗口）
+	if _shake_cd > 0.0:
+		_shake_pending = maxf(_shake_pending, power)
+		return
+	_shake_cd = SHAKE_COOLDOWN
+	_shake_pending = 0.0
 	var camera := get_tree().get_first_node_in_group("camera")
 	if is_instance_valid(camera) and camera.has_method("shake"):
 		camera.shake(power)
+
+
+func _process_shake_throttle(delta: float) -> void:
+	if _shake_cd > 0.0:
+		_shake_cd -= delta
+		if _shake_cd <= 0.0 and _shake_pending > 0.0:
+			var camera := get_tree().get_first_node_in_group("camera")
+			if is_instance_valid(camera) and camera.has_method("shake"):
+				camera.shake(_shake_pending)
+			_shake_pending = 0.0
 
 func _on_player_hit(_dmg: int, _pos: Vector2) -> void:
 	# 护盾在场时受击反馈替换：玻璃/能量叮（护盾受击音），无护盾才播闷响 hurt
