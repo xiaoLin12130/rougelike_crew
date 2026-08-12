@@ -36,6 +36,7 @@ func _ready() -> void:
 	_anim.animation = facing
 	_anim.play(facing)
 	_mount_aura()
+	_mount_shield_aura()
 	_mount_melee()
 
 
@@ -43,6 +44,13 @@ func _ready() -> void:
 func _mount_aura() -> void:
 	var aura: Node = load("res://scripts/fx/player_aura.gd").new()
 	aura.name = "PlayerAura"
+	add_child(aura)
+
+
+## 护盾光环（2026-08-12）：淡蓝半透明环，护盾池 > 0 显示、归零隐藏。
+func _mount_shield_aura() -> void:
+	var aura: Node = load("res://scripts/player/shield_aura.gd").new()
+	aura.name = "ShieldAura"
 	add_child(aura)
 
 

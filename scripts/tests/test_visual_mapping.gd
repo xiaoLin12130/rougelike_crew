@@ -1,7 +1,9 @@
 extends Node2D
 ## 技能视觉 P0 修复测试（docs/design/技能视觉全量审计.md）：
-## ① water_bolt/thorn_vine 弹道贴图不再是 proj_fireball（STATUS_TEXTURES 补 water/nature，
-##    断言 _ready 后 Sprite2D 贴图路径 == verarc 水滴/藤蔓图标）；
+## ① water_bolt 弹道贴图不再是 proj_fireball（STATUS_TEXTURES 补 water，
+##    断言 _ready 后 Sprite2D 贴图路径 == verarc 水滴图标）；
+##    thorn_vine（nature）2026-08-12 起不再飞静态图标：断言 Sprite2D 隐藏 +
+##    VineSeed 程序化种子节点存在（藤蔓弹体视觉修复，docs/design/藤蔓护盾音效修复报告.md）；
 ## ② flash 盲爆 fx_explosion_scaled 半径 == 最终命中半径（_explode_at 先算最终 radius 再 emit，
 ##    EventBus.fx_explosion_scaled 捕获断言：90 × aoe_mult）；
 ## ③ frenzy 施法 fx kind == "buff" + 金色光环挂玩家并 3s 自毁；mana_echo/counterspell kind == "void"（P1）。
@@ -61,20 +63,41 @@ func _sprite_path_of(proj: Node) -> String:
 # ================= ① STATUS_TEXTURES：water/nature 弹体不再是火球 =================
 
 func _test_element_textures() -> void:
-	for entry in [["water", WATER_TEX], ["nature", NATURE_TEX]]:
-		var proj = PROJECTILE_SCENE.instantiate()
-		proj.setup({
-			"position": Vector2(200, 100), "direction": Vector2.RIGHT, "speed": 100.0,
-			"range": 10000.0, "damage": 5.0, "element": str(entry[0]), "aoe": 0.0,
-			"mods": {}, "status": {}, "chain": 0,
-		})
-		add_child(proj)  # _ready 同步执行，贴图立即生效
-		var path := _sprite_path_of(proj)
-		if path != str(entry[1]):
-			_fail("%s 弹体贴图应为 %s，实际 '%s'（STATUS_TEXTURES 缺失/回退火球）" % [str(entry[0]), str(entry[1]), path])
-		if path == FIREBALL_TEX:
-			_fail("%s 弹体仍回退火球贴图 proj_fireball" % str(entry[0]))
-		proj.queue_free()
+	# water：弹体贴图 == verarc 水滴图标（P0-1 保留）
+	var wproj = PROJECTILE_SCENE.instantiate()
+	wproj.setup({
+		"position": Vector2(200, 100), "direction": Vector2.RIGHT, "speed": 100.0,
+		"range": 10000.0, "damage": 5.0, "element": "water", "aoe": 0.0,
+		"mods": {}, "status": {}, "chain": 0,
+	})
+	add_child(wproj)
+	var wpath := _sprite_path_of(wproj)
+	if wpath != WATER_TEX:
+		_fail("water 弹体贴图应为 %s，实际 '%s'（STATUS_TEXTURES 缺失/回退火球）" % [WATER_TEX, wpath])
+	if wpath == FIREBALL_TEX:
+		_fail("water 弹体仍回退火球贴图 proj_fireball")
+	wproj.queue_free()
+	await get_tree().physics_frame
+	# nature（藤蔓）：不飞静态图标 → Sprite2D 隐藏 + VineSeed 程序化种子节点存在
+	var nproj = PROJECTILE_SCENE.instantiate()
+	nproj.setup({
+		"position": Vector2(200, 100), "direction": Vector2.RIGHT, "speed": 100.0,
+		"range": 10000.0, "damage": 5.0, "element": "nature", "aoe": 0.0,
+		"mods": {}, "status": {}, "chain": 0,
+	})
+	add_child(nproj)
+	var nspr := nproj.get_node_or_null("Sprite2D") as Sprite2D
+	if nspr == null:
+		_fail("nature 弹体缺少 Sprite2D 子节点")
+	elif nspr.visible:
+		_fail("nature 弹体 Sprite2D 应隐藏（不再飞静态图标）")
+	if nspr != null and nspr.texture != null and str(nspr.texture.resource_path) == NATURE_TEX:
+		_fail("nature 弹体仍在飞 thorn_vine 图标")
+	if nproj.get_node_or_null("VineSeed") == null:
+		_fail("nature 弹体应挂程序化 VineSeed 种子视觉节点")
+	else:
+		print("[TEST] nature 弹体 = VineSeed 程序化种子（非图标）→ PASS")
+	nproj.queue_free()
 	await get_tree().physics_frame
 	# 对照组：fire 弹体保持火球贴图（映射未被误改）
 	var fb = PROJECTILE_SCENE.instantiate()

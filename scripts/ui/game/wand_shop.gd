@@ -162,18 +162,14 @@ func _build_menu_page() -> void:
 	build.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	build.pressed.connect(_goto_build)
 	_menu_box.add_child(build)
-	## 2026-08-12：按钮顺序改为 强化→购买→构筑→回血→关闭→下一波（回血挪到关闭前）
+	## 2026-08-12：按钮顺序 = 强化→购买→构筑→回血→下一波（"关闭"按钮已删除，
+	## 离开商店统一由金色"开始下一波"完成，避免两个退出入口）
 	var pot := UiTheme.button("回血（%d金）" % HEAL_POTION_PRICE, Vector2(btn_w, 64))
 	pot.name = "PotionBtn"
 	pot.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	pot.pressed.connect(_buy_potion)
 	_menu_box.add_child(pot)
-	var close := UiTheme.button("关闭", Vector2(btn_w, 64))
-	close.name = "CloseBtn"
-	close.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
-	close.pressed.connect(_close_shop)
-	_menu_box.add_child(close)
-	## Brotato：底部金色大按钮"开始下一波"（与"关闭"并存，点击直接回战斗）
+	## Brotato：底部金色大按钮"开始下一波"（唯一退出入口，点击直接回战斗）
 	var next_wave := UiTheme.button_gold("开始下一波", Vector2(296.0 if not _mobile else 280.0, 48))
 	next_wave.name = "NextWaveBtn"
 	next_wave.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
@@ -398,7 +394,8 @@ func _refresh() -> void:
 		## 强化效果展示：当前等级 + 伤害加成/新数值（落雷修复落地 wand_shop 强化显示）
 		var lv: int = GameState.wand_upgrade_level(str(owned[i]))
 		var pct := int(roundf(GameState.WAND_UPGRADE_BONUS * 100.0))
-		var stat_text := "Lv.%d ｜ 伤害 +%d%%（×%.2f）" % [lv, pct * lv, 1.0 + GameState.WAND_UPGRADE_BONUS * float(lv)]
+		## 2026-08-12：全角竖线 U+FF5C 不在中文字体子集内会显示码点，改用子集覆盖的间隔号 ·
+		var stat_text := "Lv.%d · 伤害 +%d%%（×%.2f）" % [lv, pct * lv, 1.0 + GameState.WAND_UPGRADE_BONUS * float(lv)]
 		var stat_l := UiTheme.label(stat_text, 9, UiTheme.GOLD if lv > 0 else Color("#7a7298"))
 		stat_l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		stat_l.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -508,6 +505,8 @@ func _buy_build_item(def: Dictionary) -> void:
 	_build_bought = true
 	_roll_build_offers()  # 买一件换一件，保持货架 3-4 件
 	_refresh()
+	## 2026-08-12：构筑购买完成 → 0.5s 展示购买成功后自动关闭商店（与购买法杖一致进入下一关）
+	get_tree().create_timer(0.5).timeout.connect(_finish_build_close)
 
 
 func _refresh_build() -> void:
@@ -650,10 +649,12 @@ func _make_offer_card(w: Dictionary, idx: int) -> Control:
 	lock_btn.icon_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	lock_btn.focus_mode = Control.FOCUS_NONE
 	lock_btn.set_anchors_preset(Control.PRESET_TOP_RIGHT)
+	## 2026-08-12：旧偏移 top=-30/bottom=-8 使锁钮整个悬在卡片上方（y=-30..-8），
+	## 渲染覆盖上一行卡片并拦截点击；改为卡片内右上角 20x20（y=4..24，x=-28..-8）
 	lock_btn.offset_left = -30.0
 	lock_btn.offset_right = -8.0
-	lock_btn.offset_top = -30.0
-	lock_btn.offset_bottom = -8.0
+	lock_btn.offset_top = 4.0
+	lock_btn.offset_bottom = 24.0
 	lock_btn.tooltip_text = "解锁" if locked else "锁定（刷新时保留）"
 	lock_btn.pressed.connect(_toggle_lock.bind(idx))
 	card.add_child(lock_btn)
@@ -709,6 +710,11 @@ func _upgrade_wand(idx: int) -> void:
 
 func _finish_enhance_close() -> void:
 	## 强化成功展示延时结束 → 关闭商店（节点释放后信号连接自动失效；已被其他路径关闭则跳过）
+	if _shop_open:
+		_close_shop()
+
+func _finish_build_close() -> void:
+	## 构筑购买成功展示延时结束 → 关闭商店（节点释放后信号连接自动失效；已被其他路径关闭则跳过）
 	if _shop_open:
 		_close_shop()
 

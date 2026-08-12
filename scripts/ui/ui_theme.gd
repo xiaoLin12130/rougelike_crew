@@ -178,8 +178,15 @@ static func icon(icon_path: String, size: Vector2 = Vector2(16, 16)) -> TextureR
 	return t
 
 static func badge(text: String, size: int = 9, color: Color = GOLD) -> Label:
-	## ×N 堆叠角标：金色像素数字 + 重黑描边
-	var l := label(text, size, color, true)
+	## ×N 堆叠角标：金色像素数字 + 重黑描边。
+	## 字体按内容选择：纯 ASCII 用像素数字字体；含 ×/中文等非 ASCII 字形时改用
+	## 中文字体（kenvector 仅覆盖 ASCII，壳名首字等中文会渲染成 "?" 码点）。
+	var use_num := true
+	for ch in text:
+		if ch.unicode_at(0) > 127:
+			use_num = false
+			break
+	var l := label(text, size, color, use_num)
 	l.add_theme_color_override("font_outline_color", Color(0, 0, 0, 1))
 	l.add_theme_constant_override("outline_size", maxi(size / 3, 2))
 	l.mouse_filter = Control.MOUSE_FILTER_IGNORE

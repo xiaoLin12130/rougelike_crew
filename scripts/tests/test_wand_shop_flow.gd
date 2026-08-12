@@ -135,13 +135,16 @@ func _check_menu(shop: CanvasLayer, tag: String) -> void:
 	if shop._enhance_section.visible or shop._buy_section.visible:
 		fail("[%s] 选择页时强化/购买区块不应同时可见" % tag)
 	var vp: Rect2 = (shop._scroll as Control).get_global_rect()
-	# 2026-08-12：选择页 = 强化/购买/回血/购买构筑/关闭 + Brotato 金色"开始下一波"
-	for bname in ["EnhanceBtn", "BuyBtn", "PotionBtn", "CloseBtn", "NextWaveBtn"]:
+	# 2026-08-12：选择页 = 强化/购买/购买构筑/回血 + Brotato 金色"开始下一波"
+	# （"关闭"按钮已删除，退出统一走金色按钮）
+	for bname in ["EnhanceBtn", "BuyBtn", "PotionBtn", "NextWaveBtn"]:
 		var b := _find_button(shop, bname)
 		if b == null:
 			fail("[%s] 选择页缺少按钮 %s" % [tag, bname])
 		elif not vp.encloses(b.get_global_rect()):
 			fail("[%s] 选择页按钮 %s 不在可视区: rect=%s vp=%s" % [tag, bname, str(b.get_global_rect()), str(vp)])
+	if _find_button(shop, "CloseBtn") != null:
+		fail("[%s] 选择页不应存在已删除的关闭按钮 CloseBtn" % tag)
 
 func _check_buy(shop: CanvasLayer, tag: String) -> void:
 	if shop._page != "buy":

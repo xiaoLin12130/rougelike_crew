@@ -3,6 +3,18 @@ extends Node
 ## 打击感 G-1（S 级）：play_hit(kind) 战斗音效入口——
 ##   池化 12 实例轮换 / 随机变调 ±12% / 同 kind 全局节流 0.04s / 同帧预算 3 次。
 ## 音效素材：assets/audio/kenney_*（Kenney Impact/Interface Sounds，CC0，许可见 assets/audio/kenney_*_license.txt）。
+## 2026-08-12 音效重选（docs/design/藤蔓护盾音效修复报告.md）：
+## 按 Brotato 风格规范（短促/清脆/高音调/分级辨识）重映射——
+##   命中=impactGeneric_light（干爽短 tick，pitch 1.18 更脆）
+##   暴击=impactGlass_heavy（玻璃重碎，明亮炸裂）
+##   精英=impactMetal_medium（金属中音）
+##   Boss=impactPlate_heavy（厚板低沉，pitch 0.82）
+##   击杀=impactGlass_light（清脆小碎裂）
+##   受击=impactSoft_heavy（厚重闷响）
+##   升级=maximize（明亮上扬 chirp）
+##   购买=select/pluck（清脆咔哒）
+##   护盾受击=glass 玻璃叮（新增 kind）
+##   护盾破碎=sfx_shield_down（新增 kind，专用素材）
 
 const HIT_POOL_SIZE := 12
 const HIT_SFX_MIN_INTERVAL := 0.04  # 同 kind 全局节流（秒）
@@ -15,36 +27,44 @@ const HIT_SFX_DIR := "res://assets/audio/"
 ## kind -> {paths=候选池（每次随机取一，听感去重复）, vol=基础音量, pitch=基础音调}
 const HIT_SFX := {
 	"hit": {
-		"paths": ["impactPunch_medium_000.ogg", "impactPunch_medium_001.ogg", "impactPunch_medium_002.ogg"],
-		"vol": -10.0, "pitch": 1.0,
+		"paths": ["impactGeneric_light_000.ogg", "impactGeneric_light_001.ogg", "impactGeneric_light_002.ogg"],
+		"vol": -8.0, "pitch": 1.18,  # 普通命中：干爽短 tick，高音调清脆
 	},
 	"crit": {
-		"paths": ["impactPunch_heavy_000.ogg", "impactPunch_heavy_001.ogg", "impactPunch_heavy_002.ogg"],
-		"vol": -6.0, "pitch": 1.12,  # 暴击：更响 + 更高
+		"paths": ["impactGlass_heavy_000.ogg", "impactGlass_heavy_001.ogg", "impactGlass_heavy_002.ogg"],
+		"vol": -5.0, "pitch": 1.0,   # 暴击：玻璃重碎，明亮炸裂（与普通命中音色彻底区分）
 	},
 	"elite": {
-		"paths": ["impactMetal_heavy_000.ogg", "impactMetal_heavy_001.ogg", "impactMetal_heavy_002.ogg"],
-		"vol": -6.0, "pitch": 0.92,  # 精英命中：金属重击 + 降调
+		"paths": ["impactMetal_medium_000.ogg", "impactMetal_medium_001.ogg", "impactMetal_medium_002.ogg"],
+		"vol": -6.0, "pitch": 0.96,  # 精英命中：金属中音
 	},
 	"boss": {
-		"paths": ["impactMetal_heavy_000.ogg", "impactMetal_heavy_001.ogg", "impactMetal_heavy_002.ogg"],
-		"vol": -4.0, "pitch": 0.85,  # Boss 命中：更沉更低
+		"paths": ["impactPlate_heavy_000.ogg", "impactPlate_heavy_001.ogg", "impactPlate_heavy_002.ogg"],
+		"vol": -4.0, "pitch": 0.82,  # Boss 命中：厚板低沉（与精英音色再降一档）
 	},
 	"kill": {
-		"paths": ["impactGlass_medium_000.ogg", "impactGlass_medium_001.ogg", "impactGlass_medium_002.ogg"],
-		"vol": -8.0, "pitch": 1.0,   # 击杀：玻璃碎裂（独特）
+		"paths": ["impactGlass_light_000.ogg", "impactGlass_light_001.ogg", "impactGlass_light_002.ogg"],
+		"vol": -7.0, "pitch": 1.02,  # 击杀：清脆小碎裂
 	},
 	"hurt": {
-		"paths": ["impactSoft_medium_000.ogg", "impactSoft_medium_001.ogg", "impactSoft_medium_002.ogg"],
-		"vol": -8.0, "pitch": 0.95,  # 玩家受击：闷响
+		"paths": ["impactSoft_heavy_000.ogg", "impactSoft_heavy_001.ogg", "impactSoft_heavy_002.ogg"],
+		"vol": -7.0, "pitch": 0.90,  # 玩家受击：厚重闷响
 	},
 	"upgrade": {
-		"paths": ["confirmation_001.ogg", "confirmation_002.ogg", "confirmation_003.ogg"],
-		"vol": -8.0, "pitch": 1.0,   # 升级：确认音
+		"paths": ["maximize_001.ogg", "maximize_002.ogg", "maximize_003.ogg"],
+		"vol": -8.0, "pitch": 1.0,   # 升级：明亮上扬 chirp
 	},
 	"buy": {
-		"paths": ["click_001.ogg", "click_002.ogg", "click_003.ogg"],
-		"vol": -8.0, "pitch": 1.0,   # 购买：点击音
+		"paths": ["select_001.ogg", "select_002.ogg", "pluck_001.ogg", "pluck_002.ogg"],
+		"vol": -8.0, "pitch": 1.05,  # 购买：清脆咔哒
+	},
+	"shield_hit": {
+		"paths": ["glass_001.ogg", "glass_002.ogg", "glass_003.ogg"],
+		"vol": -6.0, "pitch": 1.12,  # 护盾受击：玻璃/能量叮（新增，护盾在场时替代 hurt）
+	},
+	"shield_break": {
+		"paths": ["sfx_shield_down.ogg"],
+		"vol": -5.0, "pitch": 1.0,   # 护盾破碎：专用低沉碎裂（新增）
 	},
 }
 
@@ -128,8 +148,8 @@ static func hit_kind_for(target: Node, crit: bool) -> String:
 	if crit:
 		return "crit"
 	if is_instance_valid(target):
-		if bool(target.get("is_boss")) == true:
+		if target.get("is_boss") == true:
 			return "boss"
-		if bool(target.get("is_elite")) == true:
+		if target.get("is_elite") == true:
 			return "elite"
 	return "hit"

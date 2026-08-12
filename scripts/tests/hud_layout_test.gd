@@ -5,8 +5,9 @@ extends SceneTree
 ##    左下按钮 >=44x44、互不重叠、尊重底部安全区；
 ##    获得提示在屏幕中下、不越界；
 ##  - 全 UI 面板：宽度 <=340、整体在 360x640 视口内、面板内按钮触控区 >=44；
-##    升级三选一卡片纵向堆叠；构筑法术网格 2 列；法杖商店商品卡竖排；
+##    升级三选一卡片纵向堆叠；构筑法术网格 5 列；法杖商店商品卡竖排；
 ##  - 构筑按钮可打开构筑面板且刷新无报错。
+##  - 2026-08-12：移除底部武器/法术栏（用户反馈不要底部格子），相关断言同步删除。
 ##  - expand 阶段（N3 手机全屏适配）：root.size=390x844 → 逻辑视口 360x779，
 ##    全部关键 UI 仍在屏内、锚点正确（底部按钮贴底、顶栏贴顶、面板水平居中）。
 ## Run: godot --headless --path . -s res://scripts/tests/hud_layout_test.gd
@@ -50,7 +51,6 @@ func _process(_delta: float) -> bool:
 			_phase = 3
 		3:
 			_assert_wand_shop_offers()  # 商店卡片 2 列网格断言
-			_assert_weapon_bar()
 			_phase = 4
 		4:
 			root.size = Vector2i(390, 844)  # 模拟手机：expand 下逻辑视口 ≈360x779
@@ -172,7 +172,7 @@ func _assert_hud() -> void:
 		fail("构筑/暂停按钮重叠")
 
 func _corner_buttons() -> Array:
-	## 左下角按钮（构筑/暂停）：x<64 带内；武器栏按钮（x>=64）不计入
+	## 左下角按钮（构筑/暂停）：x<64 带内
 	var out: Array = []
 	for c in _hud.get_children():
 		if c is Control and c is not CanvasLayer:
@@ -180,28 +180,6 @@ func _corner_buttons() -> Array:
 				if ch is Button and ch.get_global_rect().position.y > 250.0 and ch.get_global_rect().position.x < 64.0:
 					out.append(ch)
 	return out
-
-func _assert_weapon_bar() -> void:
-	## Brotato 底部武器/法术栏：PC 5 格单行，x>=64 与左下按钮互斥，视口内
-	var wb: Control = _hud._weapon_bar
-	if wb == null:
-		fail("底部武器栏缺失")
-		return
-	var r := _rect(wb)
-	var screen := Rect2(Vector2.ZERO, Vector2(360, 640))
-	if not screen.encloses(r):
-		fail("武器栏越出视口: " + str(r))
-	if r.position.x < 63.0:
-		fail("武器栏侵入左下按钮带(x<64): " + str(r))
-	for b in _corner_buttons():
-		if r.intersects(_rect(b)):
-			fail("武器栏与左下按钮重叠: weapon=%s btn=%s" % [r, str(_rect(b))])
-	if r.intersects(_rect(_hud._res_box)):
-		fail("武器栏与资源区重叠: weapon=%s res=%s" % [r, str(_rect(_hud._res_box))])
-	if r.intersects(_rect(_hud._pickup_root)):
-		fail("武器栏与获得提示重叠: weapon=%s pick=%s" % [r, str(_rect(_hud._pickup_root))])
-	if _hud._weapon_slots.size() != 5:
-		fail("武器栏槽位数 != 5: " + str(_hud._weapon_slots.size()))
 
 func _assert_panels() -> void:
 	for ui in _panels:
@@ -267,7 +245,7 @@ func _assert_build_grid() -> void:
 	var bp: Node = _panels[0]
 	# 2026-08-10：PC（无触摸）5 列单行；手机 3 列两行（3+2）。
 	# headless 默认无触摸 → 期望 5 列；force_mobile(true) 后期望 3 列。
-	var expect_cols: int = 5  # 2026-08-10 PC/??????
+	var expect_cols: int = 5  # 2026-08-10 起 PC/手机统一 5 列
 	if bp._grid_box.columns != expect_cols:
 		fail("构筑法术网格列数错误: columns=%d 期望=%d" % [bp._grid_box.columns, expect_cols])
 	# 手机模拟：force_mobile 后新建面板实例验证 3 列（3+2 两行）
@@ -359,12 +337,6 @@ func _assert_expand() -> void:
 			fail("expand 下底部按钮越界: " + str(r))
 		if r.end.y < vp.y - 100.0:
 			fail("expand 下底部按钮未贴底: " + str(r))
-	if _hud._weapon_bar != null:
-		var wr := _rect(_hud._weapon_bar)
-		if not screen.encloses(wr):
-			fail("expand 下武器栏越界: " + str(wr))
-		if not approx(wr.end.y, vp.y - 30.0):
-			fail("expand 下武器栏未贴底(vp-30): " + str(wr))
 	# 面板：expand 视口下在屏内且水平居中；主菜单按钮全在屏内
 	for ui in _panels:
 		var tag: String = ui.name

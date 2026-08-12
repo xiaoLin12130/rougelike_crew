@@ -3,6 +3,9 @@ extends Area2D
 ## 命中敌人 → enemy.take_damage(dmg, element, is_crit) + EventBus 事件。
 ## 支持 homing / pierce / bounce / orbit / delay / explode / 毒雾 / 冰锥 / 暴击。
 
+## 地面特效工厂（GroundVine 等）：弹体命中/爆炸点生成藤蔓生长动画用
+const FxManagerScript := preload("res://scripts/fx/fx_manager.gd")
+
 const ARENA_MIN := Vector2(16.0, 16.0)
 const ARENA_MAX := Vector2(1264.0, 704.0)
 const CONTACT_RADIUS := 9.0
@@ -25,6 +28,48 @@ const STATUS_TEXTURES := {
 	"water": "res://assets/icons/verarc/water_spell.png",
 	"nature": "res://assets/icons/verarc/thorn_vine_spell.png",
 }
+## 藤蔓（nature）弹体专用：飞行阶段不用静态图标，改程序化"种子+藤须拖尾"
+## （2026-08-12 用户反馈：图标直接飞出去观感差 → 见 docs/design/藤蔓护盾音效修复报告.md）
+const VINE_SEED := Color(0.32, 0.66, 0.22)
+const VINE_SEED_LIGHT := Color(0.72, 1.0, 0.5)
+const VINE_TENDRIL := Color(0.42, 0.82, 0.28)
+const VINE_GROUND_RADIUS := 40.0  # 命中生成藤蔓半径
+const VINE_GROUND_LIFE := 1.5     # 命中生成藤蔓存活秒数
+## 藤蔓种子视觉节点（程序化 _draw，无静态贴图；飞行时藤须在身后摆动）
+class VineSeedVisual:
+	extends Node2D
+
+	var _phase := 0.0
+
+	func _process(delta: float) -> void:
+		_phase += delta
+		var p := get_parent()
+		if p != null:
+			var d = p.get("_dir")
+			if d is Vector2:
+				rotation = (d as Vector2).angle()  # 种子尖端始终朝飞行方向
+		queue_redraw()
+
+	func _draw() -> void:
+		# 能量光晕（脉动）
+		var halo := 7.0 + 1.8 * sin(_phase * 6.0)
+		draw_circle(Vector2.ZERO, halo, Color(0.5, 0.95, 0.4, 0.16))
+		draw_circle(Vector2.ZERO, halo * 0.55, Color(0.65, 1.0, 0.5, 0.12))
+		# 种子主体（深绿实心 + 高光点）
+		draw_circle(Vector2.ZERO, 3.6, Color(VINE_SEED, 0.95))
+		draw_circle(Vector2(1.1, -1.2), 1.2, Color(VINE_SEED_LIGHT, 0.9))
+		# 身后藤须拖尾（曲线摆动，体现"种子带着藤蔓飞"）
+		var pts := PackedVector2Array()
+		for i in 6:
+			var t := float(i) / 5.0
+			var wob := sin(_phase * 9.0 + t * 5.0) * (2.0 + 3.0 * t)
+			pts.append(Vector2(-3.0 - t * 12.0, wob))
+		draw_polyline(pts, Color(VINE_TENDRIL, 0.75), 1.6, true)
+		draw_polyline(pts, Color(VINE_TENDRIL, 0.28), 3.2, true)
+		# 尖端嫩芽（两片小叶）
+		draw_line(Vector2.ZERO, Vector2(4.5, 0.0), Color(VINE_SEED_LIGHT, 0.85), 1.2)
+		draw_line(Vector2(2.8, 0.0), Vector2(4.2, -2.0), Color(VINE_SEED_LIGHT, 0.7), 1.0)
+		draw_line(Vector2(2.8, 0.0), Vector2(4.2, 2.0), Color(VINE_SEED_LIGHT, 0.7), 1.0)
 ## verarc 法术图标 16x16 > 常规 proj_* 12x12：给这两个元素弹体放大补偿，
 ## 保证"水滴/藤蔓"形态可辨识（参考旋风刃 1.8x 思路，幅度更克制）
 const STATUS_TEXTURE_SCALE := {
@@ -152,11 +197,16 @@ func _reset_for_pool() -> void:
 	_split = 0
 	_drain = 0.0
 	position = Vector2.ZERO
+	# 藤蔓种子视觉：复用实例必须清掉（新元素借用时按需重建）
+	var vseed := get_node_or_null("VineSeed")
+	if vseed != null:
+		vseed.queue_free()
 	var spr := $Sprite2D as Sprite2D
 	if spr != null:
 		spr.texture = null
 		spr.scale = Vector2.ONE
 		spr.rotation = 0.0
+		spr.visible = true
 
 ## 弹幕自然结束统一出口：命中/到射程/爆炸/轨道到期。
 func _retire() -> void:
@@ -212,9 +262,21 @@ func _apply_visual() -> void:
 			spr.texture = load("res://assets/icons/willibab/SWORDS_120.png")
 			spr.scale = Vector2.ONE * 1.8
 			spr.rotation = _dir.angle()
+		elif _element == "nature":
+			# 藤蔓弹体：不飞图标（用户反馈），改程序化种子视觉；Sprite2D 隐藏
+			spr.texture = null
+			spr.scale = Vector2.ONE
+			spr.rotation = 0.0
+			spr.visible = false
+			if get_node_or_null("VineSeed") == null:
+				var seed := VineSeedVisual.new()
+				seed.name = "VineSeed"
+				seed.z_index = 2
+				add_child(seed)
 		else:
 			spr.texture = load(STATUS_TEXTURES.get(_element, STATUS_TEXTURES["fire"]))
 			spr.scale = Vector2.ONE * STATUS_TEXTURE_SCALE.get(_element, 1.0)
+			spr.visible = true
 
 ## 运行时状态重设（玩家引用/轨道参数）：同 _apply_visual，池化复用必须重跑。
 func _init_runtime_state() -> void:
@@ -305,6 +367,9 @@ func _explode_at(pos: Vector2, keep_alive: bool = false) -> void:
 	# 特效范围同步（技能视觉 P0-2）：先算最终命中半径（含盲爆修正）再 emit，
 	# 修复 flash 以 radius≈1 发最小档特效、视觉与实际 90px 盲爆差 90 倍的问题
 	EventBus.fx_explosion_scaled.emit(pos, _element, radius)
+	# 藤蔓（nature）AOE：落点生成藤蔓生长动画（复用 GroundVine 地面工厂）
+	if _element == "nature":
+		FxManagerScript.spawn_ground_fx("vine", pos, maxf(radius * 0.55, 30.0), VINE_GROUND_LIFE)
 	for e in _enemies_in_radius(pos, radius):
 		var id: int = e.get_instance_id()
 		if _hit_enemies.has(id):
@@ -383,6 +448,9 @@ func _hit_enemy(enemy: Node, dmg_mult: float = 1.0, direct_hit: bool = false) ->
 	# 特效分级：普通直击走轻量命中（无扩散环）；aoe/instant 爆炸由 _explode_at 走 fx_explosion
 	if direct_hit:
 		EventBus.fx_hit.emit(enemy.global_position, _element)
+	# 藤蔓（nature）直击：命中点生成缠绕藤蔓生长动画（技能语义"投出种子，命中缠绕"）
+	if _element == "nature":
+		FxManagerScript.spawn_ground_fx("vine", enemy.global_position, VINE_GROUND_RADIUS, VINE_GROUND_LIFE)
 	if _drain > 0.0:
 		var healed := GameState.heal(final_dmg * _drain)
 		# 吸血反馈（Agent C）：治疗飘字 + 绿色粒子飞向玩家

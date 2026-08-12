@@ -35,6 +35,11 @@ const SHAKE_SMALL := 3.0
 const SHAKE_PLAYER_HIT := 2.5
 const FLASH_COLOR := Color(3.0, 3.0, 3.0, 1.0)
 const SLOW_MO_MIN_FACTOR := 0.05
+## 护盾视觉（2026-08-12，docs/design/藤蔓护盾音效修复报告.md）：
+## 护盾池在 defense_synergy._shield（synergy 内部状态），本节点只读查询
+const SHIELD_SCRIPT_PATH := "res://scripts/synergies/defense_synergy.gd"
+const SHIELD_RIPPLE_COLOR := Color(0.55, 0.78, 1.0)
+const SHIELD_RIPPLE_BRIGHT := Color(0.85, 0.95, 1.0)
 
 ## =====================================================================
 ## 打击感强化第二轮（S 级，docs/design/打击感强化方案-第二轮.md G-1~G-4）
@@ -351,6 +356,9 @@ var _chain_bolts: Array = []  # 链跳闪电连线池（LightningBolt，上限 C
 var _hitstop_cd := 0.0  ## 打击感 P1：顿帧冷却（150ms 防高攻速连发卡手）
 var _hitstop_last_target := 0  ## G-4：顿帧去重——同一帧同一目标只触发一次
 var _hitstop_last_frame := -1
+var _shield_source: Node = null       # defense_synergy 节点缓存（只读查询 _shield）
+var _shield_prev := -1.0              # 上一帧护盾值（-1 = 未初始化基线）
+var _shield_broke_played := false     # 本段"破碎→归零"已播过破碎反馈（防多帧重复）
 var _dmg_numbers: Array = []  ## G-3：存活伤害数字（上限淘汰）
 var _fx_frame := 0            ## 自维护 process 帧计数（headless 下 get_frame() 不可靠）
 var _dmg_frame := -1          ## G-3：当前聚合帧（_fx_frame）
@@ -482,6 +490,7 @@ func _exit_tree() -> void:
 func _process(delta: float) -> void:
 	_fx_frame += 1
 	_hitstop_cd = maxf(_hitstop_cd - delta, 0.0)
+	_track_shield_state()
 	# 爽感档位（F11）：按 DPS 分档，档位越高特效越足
 	_tier_timer -= delta
 	if _tier_timer <= 0.0:
@@ -509,6 +518,51 @@ func _process(delta: float) -> void:
 	if _aura_timer <= 0.0:
 		_aura_timer = 0.5
 		_refresh_summon_auras()
+
+## 护盾状态跟踪（每帧）：值 0→>0 播放"护盾升起"涟漪；>0→0 播放"护盾破碎"
+## 涟漪 + 破碎音效（护盾在 _on_player_hit 同步回调时尚未结算，必须帧末判定）。
+func _track_shield_state() -> void:
+	var shield := _shield_value()
+	if is_equal_approx(_shield_prev, -1.0):
+		_shield_prev = shield  # 基线：首帧只记录
+		return
+	if _shield_prev <= 0.0 and shield > 0.0:
+		_shield_broke_played = false
+		var player := get_tree().get_first_node_in_group("player")
+		if is_instance_valid(player):
+			spawn_shield_hit_fx((player as Node2D).global_position, false)
+			SfxBus.play("res://assets/audio/sfx_shield_up.ogg", -10.0, 1.05)
+	elif _shield_prev > 0.0 and shield <= 0.0 and not _shield_broke_played:
+		_shield_broke_played = true
+		var player := get_tree().get_first_node_in_group("player")
+		if is_instance_valid(player):
+			spawn_shield_hit_fx((player as Node2D).global_position, true)
+			SfxBus.play_hit("shield_break")
+	_shield_prev = shield
+
+## 只读查询防御流护盾池（与 hud.gd 同款路径定位，未挂载返回 0）。
+func _shield_value() -> float:
+	var src := _shield_source_node()
+	if src == null:
+		return 0.0
+	var v = src.get("_shield")
+	return 0.0 if v == null else float(v)
+
+func _shield_source_node() -> Node:
+	if _shield_source != null and is_instance_valid(_shield_source):
+		return _shield_source
+	_shield_source = _find_synergy_node(get_tree().root)
+	return _shield_source
+
+func _find_synergy_node(node: Node) -> Node:
+	var script: Script = node.get_script()
+	if script != null and script.resource_path == SHIELD_SCRIPT_PATH:
+		return node
+	for child in node.get_children():
+		var hit := _find_synergy_node(child)
+		if hit != null:
+			return hit
+	return null
 
 ## 施法瞬间（fx_cast）：1 个小型 muzzle 闪光 + 2~4 粒元素小粒子沿施法方向喷出；
 ## 无扩散环无烟雾，寿命 0.15~0.3s。
@@ -1679,10 +1733,14 @@ func _on_screen_shake(power: float) -> void:
 		camera.shake(power)
 
 func _on_player_hit(_dmg: int, _pos: Vector2) -> void:
-	SfxBus.play_hit("hurt")
+	# 护盾在场时受击反馈替换：玻璃/能量叮（护盾受击音），无护盾才播闷响 hurt
+	var shielded := _shield_value() > 0.0
+	SfxBus.play_hit("shield_hit" if shielded else "hurt")
 	var player := get_tree().get_first_node_in_group("player")
 	if is_instance_valid(player):
 		_on_fx_hit_flash(player)
+		if shielded:
+			spawn_shield_hit_fx((player as Node2D).global_position, false)
 	EventBus.screen_shake.emit(SHAKE_PLAYER_HIT)
 
 static func _get_white_texture() -> Texture2D:
@@ -1752,6 +1810,21 @@ static func _ground_cap(parent: Node) -> void:
 		var oldest: Node = live.pop_front()
 		if is_instance_valid(oldest):
 			oldest.queue_free()
+
+## 护盾受击涟漪工厂：浅蓝扩散环 + 白光闪（broken=true 时双环+全白闪）。
+## 纯程序化 _draw，自计时销毁；返回节点（测试按名字断言 "ShieldRipple"）。
+static func spawn_shield_hit_fx(pos: Vector2, broken: bool) -> Node2D:
+	var ripple := ShieldRipple.new()
+	ripple.setup(pos, broken)
+	ripple.name = "ShieldRipple"
+	var tree := Engine.get_main_loop() as SceneTree
+	var parent: Node = null
+	if tree != null:
+		parent = tree.current_scene if tree.current_scene != null else tree.root
+	if parent == null:
+		return null
+	parent.add_child(ripple)
+	return ripple
 
 ## 地面视觉共享工具：贴图缓存 + 循环粒子构造（内嵌类作用域隔离，自包含）。
 class GroundTex:
@@ -1984,12 +2057,18 @@ class GroundVine:
 	const VINE_LIGHT := Color(0.42, 0.78, 0.28)
 	const LEAF := Color(0.5, 0.9, 0.32)
 
+	var _grow := 0.0  # 生长进度 0→1（前 30% 寿命内卷须从中心长出）
+
 	func setup(pos: Vector2, r: float, l: float) -> void:
 		super.setup(pos, r, l)
+		_grow = 0.0
 		GroundTex.loop_particles(self, "circle_04", Vector2.ZERO, Vector2(0, -10),
 			Vector2.ZERO, 0.9, 0.03, 0.05, Color(0.5, 0.9, 0.35), false, 6, 60.0)
 
 	func _draw() -> void:
+		# 生长动画（2026-08-12）：前 30% 寿命卷须从中心伸展到全长，命中点"藤蔓长出来"
+		_grow = clampf(_age / maxf(life * 0.3, 0.12), 0.0, 1.0)
+		var grow_r := 0.2 + 0.8 * _grow
 		for k in 6:
 			var a0 := TAU * float(k) / 6.0 + _phase * 0.3
 			var curl := 2.4 if k % 2 == 0 else -2.4
@@ -1998,9 +2077,53 @@ class GroundVine:
 			for i in steps + 1:
 				var t := float(i) / float(steps)
 				var a := a0 + curl * t + sin(_phase * 2.0 + float(k) + t * 4.0) * 0.35
-				pts.append(Vector2.from_angle(a) * radius * (0.25 + 0.75 * t))
-			draw_polyline(pts, Color(VINE, 0.9), 2.4, true)
-			draw_polyline(pts, Color(VINE_LIGHT, 0.35), 5.0, true)
+				pts.append(Vector2.from_angle(a) * radius * (0.25 + 0.75 * t) * grow_r)
+			var vine_a := 0.45 + 0.5 * _grow
+			draw_polyline(pts, Color(VINE, vine_a), 2.4, true)
+			draw_polyline(pts, Color(VINE_LIGHT, 0.18 + 0.2 * _grow), 5.0, true)
 			var tip := pts[pts.size() - 1]
-			draw_circle(tip, 2.4, Color(LEAF, 0.9))
-			draw_circle(tip + Vector2.from_angle(a0 + curl + 0.9) * 4.0, 1.8, Color(LEAF, 0.7))
+			draw_circle(tip, 2.4, Color(LEAF, 0.95 * _grow))
+			draw_circle(tip + Vector2.from_angle(a0 + curl + 0.9) * 4.0, 1.8, Color(LEAF, 0.75 * _grow))
+
+## 护盾受击涟漪：浅蓝扩散环（加法感淡蓝）＋中心白闪；broken 时双环 + 全白闪更强烈。
+## 自计时 0.45s 销毁，无粒子对象池依赖（低频事件型特效）。
+class ShieldRipple:
+	extends Node2D
+
+	const LIFE := 0.45
+
+	var broken := false
+	var _age := 0.0
+
+	func setup(pos: Vector2, is_broken: bool) -> void:
+		global_position = pos
+		broken = is_broken
+		z_index = 3
+
+	func _process(delta: float) -> void:
+		_age += delta
+		if _age >= LIFE:
+			queue_free()
+			return
+		queue_redraw()
+
+	func _draw() -> void:
+		var t := _age / LIFE
+		var ease := 1.0 - pow(1.0 - t, 2.0)
+		var alpha := 0.75 * (1.0 - t)
+		# 主环（半径 12 → 34/46，浅蓝）
+		draw_arc(Vector2.ZERO, 12.0 + ease * (34.0 if not broken else 46.0),
+			0.0, TAU, 28, Color(SHIELD_RIPPLE_COLOR, alpha), 2.2)
+		# 内亮环（更细更快）
+		draw_arc(Vector2.ZERO, 8.0 + ease * (26.0 if not broken else 34.0),
+			0.0, TAU, 24, Color(SHIELD_RIPPLE_BRIGHT, alpha * 0.8), 1.2)
+		# 中心白闪（前 30% 强烈）
+		var flash_a := (1.0 - t / 0.3) if t < 0.3 else 0.0
+		draw_circle(Vector2.ZERO, 10.0 * (1.0 - t * 0.5), Color(1.0, 1.0, 1.0, flash_a * 0.55))
+		if broken and t > 0.35:
+			# 破碎：外圈碎点（4 个短线沿环散布）
+			for i in 6:
+				var a := TAU * float(i) / 6.0 + 0.3
+				var r := 30.0 + ease * 30.0
+				draw_line(Vector2.from_angle(a) * r * 0.9, Vector2.from_angle(a + 0.18) * r,
+					Color(SHIELD_RIPPLE_BRIGHT, alpha * 0.9), 1.6)

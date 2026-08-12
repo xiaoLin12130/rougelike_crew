@@ -1,7 +1,9 @@
 extends CanvasLayer
 ## 构筑面板（竖版 360x640，雨中冒险样式）：面板 320x540 居中（<=340 宽），
-## 法杖 3 槽横排；法术网格 5 格改 2 列排布（GridContainer，格 46x46）；
+## 法杖 3 槽横排；法术网格 5 列单行（GridContainer，PC 54x54 / 手机 46x46）；
 ## 装备/饰品用 FlowContainer（宽 296，多行自动换行），整体 ScrollContainer 兜底。
+## 2026-08-12 修复错位：法术网格直接挂 VBox（此前包在一层零尺寸裸 Control 里，
+## GridContainer 溢出并与下方"装备"区重叠，后绘制的装备区会盖住法术序列）。
 ## 触屏适配：格子点击已有行为（法术交换）；法杖/装备/饰品格点击弹出详情
 ## （_detail 弹窗，名称+描述+关闭），触屏不依赖 hover tooltip（tooltip 仅桌面附加）。
 const UiLayout := preload("res://scripts/ui/ui_layout.gd")
@@ -27,7 +29,6 @@ var _detail: PanelContainer
 var _detail_title: Label
 var _detail_body: Label
 var _scroll: ScrollContainer
-var _grid_section: Control
 var _stats_grid: GridContainer
 
 func _slot_size() -> Vector2:
@@ -62,17 +63,15 @@ func _ready() -> void:
 	_wand_box.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	main.add_child(_wand_box)
 	_section(main, "法术序列（点击两格交换）")
-	_grid_section = Control.new()
-	_grid_section.custom_minimum_size = Vector2(0, 0)
-	main.add_child(_grid_section)
 	_grid_box = GridContainer.new()
-	# 法术序列：PC 5 格单行展示（1 行）；手机 3 列排布（3+2 两行，2026-08-10 修复：
-	# 不能用 is_portrait 判定——桌面窗口版 720x1280 竖窗口会被误判为手机）
-	_grid_box.columns = 5  # 2026-08-10?PC/???????5 ? 46px = 254 ? ?? 320?
+	# 法术序列：固定 5 列单行（5×54px + 4×6px 间距 = 294px，适配 320px 面板）。
+	# 2026-08-10 起 PC/手机统一 5 列（手机 3+2 两行方案未启用；不用 is_portrait 判定，
+	# 桌面窗口版 720x1280 竖窗口会被误判为手机）。
+	_grid_box.columns = 5
 	_grid_box.add_theme_constant_override("h_separation", 6)
 	_grid_box.add_theme_constant_override("v_separation", 6)
 	_grid_box.size_flags_horizontal = Control.SIZE_SHRINK_CENTER  # 法术格整体居中
-	_grid_section.add_child(_grid_box)
+	main.add_child(_grid_box)
 	_section(main, "装备（点击查看详情）")
 	_items_box = FlowContainer.new()
 	_items_box.add_theme_constant_override("h_separation", 5)
@@ -444,7 +443,7 @@ func _on_slot_clicked(i: int) -> void:
 
 
 func focus_grid() -> void:
-	## HUD 底部武器栏点击入口：滚动定位到法术序列区
-	if _grid_section == null or _scroll == null:
+	## 构筑入口（左下按钮/TAB）：滚动定位到法术序列区
+	if _grid_box == null or _scroll == null:
 		return
-	_scroll.scroll_vertical = int(_grid_section.get_global_rect().position.y - _scroll.get_global_rect().position.y)
+	_scroll.scroll_vertical = int(_grid_box.get_global_rect().position.y - _scroll.get_global_rect().position.y)

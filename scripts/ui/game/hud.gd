@@ -1,24 +1,21 @@
 extends CanvasLayer
 ## HUD（竖版 360x640，土豆兄弟化 2026-08-12）：
 ## 依据 docs/design/土豆兄弟UI适配方案.md §5.2 + ui-rag（道具格=图标+数量角标、
-## 底部常驻构筑栏、获得 XX ×N 提示）：
+## 获得 XX ×N 提示）：
 ##  - 左上资源区（y24，右缘<=185）：① HP 数字+血条（护盾灰蓝叠层+数值小字）
 ##    ② 材料图标+金币数 ③ Lv 徽章+XP 条同排 ④ 第N关·DPS·攻速小字；
 ##  - 波次横幅：顶部中右（x186..356，y24..52）「第 N 波 + 倒计时 + 金色计时条」，
 ##    与 Boss 血条带（y4..20）和资源区（x<186）互斥；Boss 在场自动隐藏；
 ##  - Boss 血条：顶部居中（总宽<=260，y4..20），灰蓝边框+暗红填充，不隐藏经验条；
-##  - 底部武器/法术栏：PC 5 格单行 / 手机 3+2 两行，图标+×N 角标+外壳小角标，
-##    与左下角按钮（x<=60）互斥；点击格打开构筑面板；
 ##  - 获得提示（拾取/流派）：屏幕中下，图标+名称+×N；
 ##  - TAB 键（PC）开关构筑面板，等价于左下构筑按钮。
+## 2026-08-12 移除底部武器/法术栏（用户反馈：不需要底部格子），构筑入口仅保留
+## 左下按钮与 TAB。
 const UiLayout := preload("res://scripts/ui/ui_layout.gd")
 
 const TOUCH_BTN := Vector2(UiLayout.TOUCH_MIN + 8, UiLayout.TOUCH_MIN + 8)  # 52x52
 const SHIELD_SCRIPT_PATH := "res://scripts/synergies/defense_synergy.gd"  # 护盾池所在脚本（只读查询）
 const MAT_ICON_PATH := "res://assets/icons/shikashi/shikashi_r12_c10.png"  # 材料金币堆（Brotato 材料位）
-const WEAPON_BAND_LEFT := 64.0   # 武器栏安全带左缘（左下按钮 x6..58 之外）
-const WEAPON_BAND_RIGHT := 356.0 # 武器栏安全带右缘
-const WEAPON_BOTTOM_GAP := 30.0  # 武器栏底缘距视口底（含底部安全区）
 
 var _hp_bar: ProgressBar
 var _shield_bar: ProgressBar  # 护盾灰色层（叠加在 HP 条上，宽度 = 护盾/最大生命）
@@ -49,9 +46,6 @@ var _pickup_icon: TextureRect
 var _pickup_label: Label
 var _build_btn: Button
 var _pause_btn: Button
-var _weapon_bar: Container  # 底部武器/法术栏（PC HBox / 手机 Grid 3+2）
-var _weapon_slots: Array = []
-var _grid_sig := ""
 var _form_label: Label
 var _formed_tiers: Dictionary = {}  # 已触发过的成型档位（key: "school:tier"），每档只触发一次
 var _form_banner_count := 0         # 横幅累计触发次数（供 headless 测试断言）
@@ -67,7 +61,6 @@ func _ready() -> void:
 	_build_form_banner(root)
 	_build_corner_buttons(root)
 	_build_boss_bar(root)
-	_build_weapon_bar(root)
 	EventBus.player_stats_changed.connect(_refresh)
 	EventBus.spell_arranged.connect(func(_g: Array) -> void: _refresh())
 	EventBus.wave_state_changed.connect(_on_wave)
@@ -331,160 +324,6 @@ func _build_corner_buttons(root: Control) -> void:
 	root.add_child(_pause_btn)
 
 
-func _build_weapon_bar(root: Control) -> void:
-	## 底部武器/法术栏（Brotato 核心表达）：PC 5 格单行 / 手机 3+2 两行，
-	## 居中于安全带 x64..356（不与左下按钮 x<=60 重叠），底缘距视口底 30px。
-	var mobile: bool = UiLayout.is_mobile()
-	var slot_sz := 44.0 if mobile else 46.0
-	var sep := 6.0
-	var slots: int = GameState.tables.get("balance", {}).get("max_grid_slots", 5)
-	var bar: Container
-	if mobile:
-		bar = GridContainer.new()
-		(bar as GridContainer).columns = 3  # 3+2 两行
-		bar.add_theme_constant_override("h_separation", int(sep))
-		bar.add_theme_constant_override("v_separation", int(sep))
-	else:
-		bar = HBoxContainer.new()
-		bar.add_theme_constant_override("separation", int(sep))
-	bar.set_anchors_preset(Control.PRESET_CENTER_BOTTOM)
-	bar.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	root.add_child(bar)
-	_weapon_bar = bar
-	# 安全带内水平居中（CENTER_BOTTOM 锚点 = 视口底中）
-	var rows := 2.0 if mobile else 1.0
-	var bar_w: float = (3.0 * slot_sz + 2.0 * sep) if mobile else (float(slots) * slot_sz + float(slots - 1) * sep)
-	var bar_h: float = rows * slot_sz + (sep if mobile else 0.0)
-	var band_w: float = WEAPON_BAND_RIGHT - WEAPON_BAND_LEFT
-	var left: float = WEAPON_BAND_LEFT + (band_w - bar_w) / 2.0
-	bar.offset_left = left - UiLayout.DESIGN_W / 2.0
-	bar.offset_right = left + bar_w - UiLayout.DESIGN_W / 2.0
-	bar.offset_top = -(WEAPON_BOTTOM_GAP + bar_h)
-	bar.offset_bottom = -WEAPON_BOTTOM_GAP
-	_weapon_slots.clear()
-	_refresh_weapon_bar()
-
-
-func _grid_signature() -> String:
-	var parts: Array = []
-	for g in GameState.run.get("grid", []):
-		parts.append("%s:%s" % [str(g.get("core", "")), str(g.get("shell", ""))])
-	return ",".join(parts)
-
-
-func _refresh_weapon_bar_if_changed() -> void:
-	if _weapon_bar == null:
-		return
-	var sig := _grid_signature()
-	if sig == _grid_sig:
-		return
-	_grid_sig = sig
-	_refresh_weapon_bar()
-
-
-func _refresh_weapon_bar() -> void:
-	## 按 GameState.run.grid 重建槽位（图标 + ×N 堆叠角标 + 外壳首字角标）
-	if _weapon_bar == null:
-		return
-	for c in _weapon_bar.get_children():
-		c.queue_free()
-	_weapon_slots.clear()
-	var mobile: bool = UiLayout.is_mobile()
-	var slot_sz := 44.0 if mobile else 46.0
-	var grid: Array = GameState.run.get("grid", [])
-	var slots: int = GameState.tables.get("balance", {}).get("max_grid_slots", 5)
-	var counts := {}
-	for g in grid:
-		var cid: String = str(g.get("core", ""))
-		if not cid.is_empty():
-			counts[cid] = int(counts.get(cid, 0)) + 1
-	for i in slots:
-		var core_id := ""
-		var shell_id := ""
-		if i < grid.size():
-			core_id = str(grid[i].get("core", ""))
-			shell_id = str(grid[i].get("shell", ""))
-		var slot := _make_weapon_slot(core_id, shell_id, i, slot_sz, int(counts.get(core_id, 0)), mobile)
-		_weapon_bar.add_child(slot)
-		_weapon_slots.append(slot)
-
-
-func _find_core(id: String) -> Dictionary:
-	for c in GameState.tables.get("spells", {}).get("cores", []):
-		if str(c.get("id", "")) == id:
-			return c
-	return {}
-
-
-func _find_shell(id: String) -> Dictionary:
-	for s in GameState.tables.get("spells", {}).get("shells", []):
-		if str(s.get("id", "")) == id:
-			return s
-	return {}
-
-
-func _make_weapon_slot(core_id: String, shell_id: String, idx: int, sz: float, count: int, mobile: bool) -> Button:
-	var b := Button.new()
-	var shell: Dictionary = {}
-	UiTheme.apply_font(b, 12)
-	b.custom_minimum_size = Vector2(sz, sz)
-	b.add_theme_stylebox_override("normal", UiTheme.style_slot(UiTheme.PANEL_SLOT, UiTheme.BORDER_DIM, 1, 3))
-	b.add_theme_stylebox_override("hover", UiTheme.style_slot(UiTheme.PANEL_SLOT, UiTheme.BORDER_LIGHT, 1, 3))
-	b.add_theme_stylebox_override("pressed", UiTheme.style_slot(UiTheme.PANEL_SLOT, UiTheme.GOLD, 1, 3))
-	b.add_theme_stylebox_override("focus", StyleBoxEmpty.new())
-	b.set_meta("core_id", core_id)
-	b.set_meta("slot_index", idx)
-	b.pressed.connect(_toggle_build)
-	if core_id.is_empty():
-		var plus := UiTheme.label("+", 14, Color("#5a5278"))
-		plus.set_anchors_preset(Control.PRESET_FULL_RECT)
-		plus.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-		plus.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-		plus.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		b.add_child(plus)
-		b.tooltip_text = "空法术位（打开构筑面板查看）"
-		return b
-	var core := _find_core(core_id)
-	var icon_sz := 28.0 if mobile else 32.0
-	var tex := TextureRect.new()
-	tex.texture = UiTheme.icon_texture(str(core.get("icon", "")))
-	tex.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-	tex.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-	tex.custom_minimum_size = Vector2(icon_sz, icon_sz)
-	tex.set_anchors_preset(Control.PRESET_CENTER)
-	tex.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	b.add_child(tex)
-	if count > 1:
-		var badge := UiTheme.badge("×%d" % count, 9, UiTheme.GOLD)
-		badge.set_anchors_preset(Control.PRESET_BOTTOM_RIGHT)
-		badge.position = Vector2(-2, -2)
-		b.add_child(badge)
-	if not shell_id.is_empty():
-		shell = _find_shell(shell_id)
-		var sb := UiTheme.badge(str(shell.get("name", "原")).substr(0, 1), 8, Color("#9fb8d8"))
-		sb.set_anchors_preset(Control.PRESET_TOP_RIGHT)
-		sb.position = Vector2(-2, 0)
-		b.add_child(sb)
-	b.tooltip_text = "%s · %s\n冷却 %.1fs · 伤害 %.0f\n%s" % [
-		core.get("name", core_id),
-		shell.get("name", "原生形态") if not shell_id.is_empty() else "原生形态",
-		float(core.get("cooldown", 1.0)),
-		float(core.get("base_damage", 0.0)),
-		str(core.get("description", "")),
-	]
-	return b
-
-
-func _pulse_weapon_slot(core_id: String) -> void:
-	## 新获得法术：对应格脉冲高亮（item_picked 信号，spell_part 直配）
-	for s in _weapon_slots:
-		if is_instance_valid(s) and str(s.get_meta("core_id", "")) == core_id:
-			var tw := create_tween()
-			tw.tween_property(s, "scale", Vector2(1.25, 1.25), 0.12).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
-			tw.tween_property(s, "scale", Vector2.ONE, 0.2)
-			break
-
-
 func _on_boss_spawned(boss_name: String, max_hp: int) -> void:
 	_boss_name.text = boss_name
 	_boss_bar.max_value = max_hp
@@ -519,7 +358,7 @@ func _on_synergy(name: String) -> void:
 
 
 func _on_item_picked(item_id: String, stacks: int) -> void:
-	## 获得反馈：屏幕中下浮动提示（图标+名称+×N）+ 新法术格脉冲
+	## 获得反馈：屏幕中下浮动提示（图标+名称+×N）
 	var def: Dictionary = GameState.item_def(item_id)
 	_pickup_icon.texture = UiTheme.icon_texture(str(def.get("icon", "")))
 	_pickup_icon.visible = _pickup_icon.texture != null
@@ -530,10 +369,6 @@ func _on_item_picked(item_id: String, stacks: int) -> void:
 	tw.tween_interval(1.8)
 	tw.tween_property(_pickup_root, "modulate:a", 0.0, 0.5)
 	tw.tween_callback(func(): _pickup_root.visible = false)
-	if str(item_id).begins_with("spell_part:"):
-		var parts: PackedStringArray = str(item_id).split(":")
-		if parts.size() > 1:
-			_pulse_weapon_slot(parts[1])
 
 
 func _toggle_build() -> void:
@@ -593,7 +428,6 @@ func _refresh() -> void:
 	if _level_label != null:
 		var lvl: int = GameState.run.get("level", 1)
 		_level_label.text = "第 %d 关" % lvl
-	_refresh_weapon_bar_if_changed()
 	_check_form_tiers()
 
 
@@ -642,7 +476,7 @@ func _dump_layout() -> void:
 	## F8 布局自检（供 CDP 像素断言）：输出关键控件 rect
 	for pair in [["HP", _hp_bar], ["LV", _lv_label], ["DPS", _dps_label], ["BOSS", _boss_root],
 			["WAVE", _wave_root], ["XP", _xp_bar], ["PICKUP", _pickup_root],
-			["BUILD_BTN", _build_btn], ["PAUSE_BTN", _pause_btn], ["WEAPON", _weapon_bar]]:
+			["BUILD_BTN", _build_btn], ["PAUSE_BTN", _pause_btn]]:
 		var node = pair[1]
 		if node:
 			print("[LAYOUT] %s=%s" % [pair[0], str(node.get_global_rect())])
