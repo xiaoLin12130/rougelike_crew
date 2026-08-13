@@ -3,6 +3,17 @@ extends Node
 ## 打击感 G-1（S 级）：play_hit(kind) 战斗音效入口——
 ##   池化 12 实例轮换 / 随机变调 ±5% / 同 kind 全局节流 0.05s / 同帧预算 3 次。
 ## 音效素材：assets/audio/kenney_*（Kenney Impact/Interface Sounds，CC0，许可见 assets/audio/kenney_*_license.txt）。
+## 2026-08-13 音效换池（docs/design/攻击音效重新选型方案.md §5.1，零下载方案）：
+##   1) hit 池 5 个 impactPunch_medium（0.4s+ 过闷过长）-> impactGeneric_light_000~004 +
+##      impactMetal_light_000/001（0.12s 短促中性撞击 + 1/7 金属点缀），基音 1.02；
+##   2) crit 池 5 个 impactPunch_heavy -> impactMetal_light_002/003/004 + impactGlass_heavy_000/002
+##      （金属破击 + 玻璃脆，与 hit 双重区分），vol -8 / 基音 0.95；
+##   3) kill 池 impactGlass_light -> impactGlass_heavy_001/004 + impactGlass_light_000/001/002
+##      （重碎裂提升爽感）；
+##   4) elite/boss/hurt/shield_* 保持（已验证合适）；
+##   5) 新增元素 kind elem_fire/ice/lightning/poison/water（Kenney 包内最优近似，
+##      fire=金属闷击降调、ice=玻璃碎裂、lightning=锡罐叮当、poison=软击+木击、
+##      water=软击+中性短击），hit_kind_for 支持 element 参数（待 projectile/melee/summon 接线）。
 ## 2026-08-12 二次调音（docs/design/落雷与音效二次修复报告.md §3）：
 ## 用户反馈"太响/太尖/太碎"后的修正——
 ##   1) 整体音量降档：所有 kind 落到 -12 ~ -8 dB（原 -8 ~ -4），
@@ -25,14 +36,15 @@ const HIT_SFX_DIR := "res://assets/audio/"
 ## kind -> {paths=候选池（每次随机取一，听感去重复）, vol=基础音量, pitch=基础音调}
 const HIT_SFX := {
 	"hit": {
-		"paths": ["impactPunch_medium_000.ogg", "impactPunch_medium_001.ogg", "impactPunch_medium_002.ogg",
-			"impactPunch_medium_003.ogg", "impactPunch_medium_004.ogg"],
-		"vol": -11.0, "pitch": 1.0,  # 普通命中：短促打击肉感（拳头中击），有反馈不刺耳
+		"paths": ["impactGeneric_light_000.ogg", "impactGeneric_light_001.ogg", "impactGeneric_light_002.ogg",
+			"impactGeneric_light_003.ogg", "impactGeneric_light_004.ogg",
+			"impactMetal_light_000.ogg", "impactMetal_light_001.ogg"],
+		"vol": -11.0, "pitch": 1.02,  # 普通命中：0.12s 短促中性撞击（高频不糊），金属轻击 1/7 点缀
 	},
 	"crit": {
-		"paths": ["impactPunch_heavy_000.ogg", "impactPunch_heavy_001.ogg", "impactPunch_heavy_002.ogg",
-			"impactPunch_heavy_003.ogg", "impactPunch_heavy_004.ogg"],
-		"vol": -8.0, "pitch": 1.0,   # 暴击：重拳爆裂感（比普通命中更响更沉）
+		"paths": ["impactMetal_light_002.ogg", "impactMetal_light_003.ogg", "impactMetal_light_004.ogg",
+			"impactGlass_heavy_000.ogg", "impactGlass_heavy_002.ogg"],
+		"vol": -8.0, "pitch": 0.95,  # 暴击：金属破击（上调音量+降调）+ 玻璃碎片脆感，与 hit 双重区分
 	},
 	"elite": {
 		"paths": ["impactMetal_heavy_000.ogg", "impactMetal_heavy_001.ogg", "impactMetal_heavy_002.ogg",
@@ -45,9 +57,9 @@ const HIT_SFX := {
 		"vol": -8.0, "pitch": 0.86,  # Boss 命中：厚板低沉（全场最响但低频不刺耳）
 	},
 	"kill": {
-		"paths": ["impactGlass_light_000.ogg", "impactGlass_light_001.ogg", "impactGlass_light_002.ogg",
-			"impactGlass_light_003.ogg", "impactGlass_light_004.ogg"],
-		"vol": -11.0, "pitch": 1.0,  # 击杀：清脆小碎裂
+		"paths": ["impactGlass_heavy_001.ogg", "impactGlass_heavy_004.ogg",
+			"impactGlass_light_000.ogg", "impactGlass_light_001.ogg", "impactGlass_light_002.ogg"],
+		"vol": -11.0, "pitch": 1.0,  # 击杀：中/重碎裂（0.40-0.43s 爆裂感强于 light 0.21s）
 	},
 	"hurt": {
 		"paths": ["impactSoft_heavy_000.ogg", "impactSoft_heavy_001.ogg", "impactSoft_heavy_002.ogg",
@@ -69,6 +81,32 @@ const HIT_SFX := {
 	"shield_break": {
 		"paths": ["sfx_shield_down.ogg"],
 		"vol": -9.0, "pitch": 1.0,   # 护盾破碎：专用低沉碎裂
+	},
+	# --- 元素命中（2026-08-13 新增，Kenney 包内最优近似，待 projectile/melee/summon 接线）---
+	"elem_fire": {
+		"paths": ["impactMetal_light_000.ogg", "impactMetal_light_001.ogg", "impactGeneric_light_000.ogg"],
+		"vol": -11.0, "pitch": 0.9,  # 火：金属闷击降调（闷爆感）
+	},
+	"elem_ice": {
+		"paths": ["impactGlass_heavy_000.ogg", "impactGlass_heavy_002.ogg",
+			"impactGlass_light_000.ogg", "impactGlass_light_001.ogg"],
+		"vol": -11.0, "pitch": 1.05,  # 冰：玻璃碎裂微升调显"脆"
+	},
+	"elem_lightning": {
+		"paths": ["impactTin_medium_000.ogg", "impactTin_medium_001.ogg", "impactTin_medium_002.ogg",
+			"impactTin_medium_003.ogg", "impactTin_medium_004.ogg"],
+		"vol": -11.0, "pitch": 1.1,  # 雷：锡罐叮当升调变"尖锐"（近似放电噼啪）
+	},
+	"elem_poison": {
+		"paths": ["impactSoft_medium_000.ogg", "impactSoft_medium_001.ogg", "impactSoft_medium_002.ogg",
+			"impactSoft_medium_003.ogg", "impactSoft_medium_004.ogg",
+			"impactWood_light_000.ogg", "impactWood_light_001.ogg"],
+		"vol": -11.0, "pitch": 0.95,  # 毒：软击+木击（腐蚀湿软）
+	},
+	"elem_water": {
+		"paths": ["impactSoft_medium_002.ogg", "impactSoft_medium_003.ogg", "impactSoft_medium_004.ogg",
+			"impactGeneric_light_002.ogg", "impactGeneric_light_003.ogg"],
+		"vol": -11.0, "pitch": 1.0,  # 水：软击湿润+中性短击（水花感近似）
 	},
 }
 
@@ -148,7 +186,9 @@ func pool_size() -> int:
 	return _pool.size()
 
 ## 命中音效分级助手（调用方通用）：暴击 > Boss > 精英 > 普通。
-static func hit_kind_for(target: Node, crit: bool) -> String:
+## element（可选）：fire/ice/lightning/poison/water 等，命中带元素时返回对应 elem_* kind
+## （元素音替换普通 hit 音；crit/boss/elite 档位优先，保持打击层次）。
+static func hit_kind_for(target: Node, crit: bool, element: String = "") -> String:
 	if crit:
 		return "crit"
 	if is_instance_valid(target):
@@ -156,4 +196,6 @@ static func hit_kind_for(target: Node, crit: bool) -> String:
 			return "boss"
 		if target.get("is_elite") == true:
 			return "elite"
+	if element != "" and HIT_SFX.has("elem_" + element):
+		return "elem_" + element
 	return "hit"

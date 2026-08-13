@@ -17,6 +17,7 @@ const SHAPE_TEXTURES := {
 }
 ## 尖形弹：贴图尖头朝右绘制，随飞行方向旋转 sprite.rotation = dir.angle()
 const ROTATING_SHAPES := ["eb_diamond_purple", "eb_shard_red", "eb_bolt_bone", "eb_blade_shadow"]
+const ARENA := Rect2(24, 16, 1232, 688)  # 与 enemy.gd 一致（bounce 撞墙反弹边界）
 
 var _dir := Vector2.RIGHT
 var _speed := 180.0
@@ -31,10 +32,14 @@ var _sprite: Sprite2D
 var _shape := "eb_diamond_purple"
 var _rotating := false
 var _enemy_id := ""
+var _bounce_left := 0            ## P2：撞墙反弹次数（scarab bounce_dart）
+var _status := ""                ## P2：命中施加状态（slow/poison，mummy bandage_toss）
+var _status_duration := 1.2
 
 func setup(pos: Vector2, dir: Vector2, speed: float, damage: int, range: float,
 		homing: bool = false, turn_rate: float = 3.0, lifetime: float = 4.0,
-		enemy_id: String = "") -> void:
+		enemy_id: String = "", status: String = "", status_duration: float = 1.2,
+		bounce: int = 0) -> void:
 	global_position = pos
 	_dir = dir.normalized()
 	_speed = speed
@@ -44,6 +49,9 @@ func setup(pos: Vector2, dir: Vector2, speed: float, damage: int, range: float,
 	_turn_rate = turn_rate
 	_lifetime = lifetime
 	_enemy_id = enemy_id
+	_status = status
+	_status_duration = status_duration
+	_bounce_left = maxi(bounce, 0)
 
 func _ready() -> void:
 	_sprite = get_node("Sprite2D")
@@ -70,6 +78,35 @@ func _physics_process(delta: float) -> void:
 	_travelled += _speed * delta
 	if _travelled >= _range:
 		queue_free()
+		return
+	_bounce_if_needed()
+
+func _bounce_if_needed() -> void:
+	## P2 弹跳（scarab bounce_dart）：撞竞技场边界反弹一次（参考 Boss wall 边界处理）
+	if _bounce_left <= 0:
+		return
+	var p := global_position
+	var bounced := false
+	if p.x < ARENA.position.x:
+		p.x = ARENA.position.x
+		_dir.x = absf(_dir.x)
+		bounced = true
+	elif p.x > ARENA.end.x:
+		p.x = ARENA.end.x
+		_dir.x = -absf(_dir.x)
+		bounced = true
+	if p.y < ARENA.position.y:
+		p.y = ARENA.position.y
+		_dir.y = absf(_dir.y)
+		bounced = true
+	elif p.y > ARENA.end.y:
+		p.y = ARENA.end.y
+		_dir.y = -absf(_dir.y)
+		bounced = true
+	if bounced:
+		global_position = p
+		_bounce_left -= 1
+		EventBus.fx_explosion.emit(p, "blade")
 
 func set_by_enemy(enemy_id: String) -> void:
 	## 按敌人 id 查 enemies.json 的 bullet_visual 配置并应用弹体贴图/色调/旋转。
@@ -113,4 +150,9 @@ func _on_body(body: Node) -> void:
 	if body.is_in_group("player"):
 		EventBus.player_hit.emit(_damage, global_position)
 		EventBus.fx_explosion.emit(global_position, "fire")
+		if _status != "":
+			# P2 状态通道：复用现有 apply_slow / EventBus.apply_status（玩家无接收器时静默）
+			if _status == "slow" and body.has_method("apply_slow"):
+				body.apply_slow(0.45, _status_duration)
+			EventBus.apply_status.emit(body, _status, 1)
 		queue_free()

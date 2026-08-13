@@ -48,6 +48,29 @@
     "lightning"
    ],
    "behavior": "split",
+   "skills": [
+    {
+     "id": "slime_split",
+     "name": "\u6280\u80fd1\u00b7split",
+     "type": "split",
+     "form": "split",
+     "cooldown": 7.0,
+     "windup": 0.0
+    },
+    {
+     "id": "slime_spit",
+     "name": "\u7c98\u6db2\u55b7\u5c04",
+     "type": "fan",
+     "form": "fan",
+     "shots": 3,
+     "spread": 40.0,
+     "bullet_speed": 160.0,
+     "cooldown": 8.0,
+     "windup": 0.4,
+     "telegraph": "dot",
+     "tier": "P1"
+    }
+   ],
    "atk_cd": 0.85,
    "skill_cd": 7.0
   },
@@ -68,6 +91,27 @@
     "lightning"
    ],
    "behavior": "scream",
+   "skills": [
+    {
+     "id": "bat_scream",
+     "name": "\u6280\u80fd1\u00b7scream",
+     "type": "scream",
+     "form": "fan",
+     "cooldown": 5.0,
+     "windup": 0.0
+    },
+    {
+     "id": "bat_dive",
+     "name": "\u4fef\u51b2",
+     "type": "dive",
+     "form": "charge",
+     "speed_mult": 2.6,
+     "dive_time": 0.8,
+     "cooldown": 6.0,
+     "windup": 0.2,
+     "tier": "P0"
+    }
+   ],
    "atk_cd": 0.8,
    "dive_cd": 2.4,
    "skill_cd": 5.0,
@@ -98,6 +142,31 @@
     "frost"
    ],
    "behavior": "phase",
+   "skills": [
+    {
+     "id": "ghost_phase",
+     "name": "\u6280\u80fd1\u00b7phase",
+     "type": "phase",
+     "form": "stealth",
+     "cooldown": 3.5,
+     "windup": 0.0
+    },
+    {
+     "id": "haunt_bolt",
+     "name": "\u9634\u9b42\u5f39",
+     "type": "homing",
+     "form": "homing",
+     "count": 2,
+     "bullet_speed": 140.0,
+     "turn_rate": 3.0,
+     "lifetime": 4.0,
+     "spread": 14.0,
+     "cooldown": 7.0,
+     "windup": 0.4,
+     "telegraph": "dot",
+     "tier": "P1"
+    }
+   ],
    "atk_cd": 0.85,
    "skill_cd": 3.5,
    "anims": {
@@ -126,6 +195,28 @@
     "stone"
    ],
    "behavior": "rock",
+   "skills": [
+    {
+     "id": "goblin_rock",
+     "name": "\u6280\u80fd1\u00b7rock",
+     "type": "rock",
+     "form": "erupt",
+     "cooldown": 4.5,
+     "windup": 0.0
+    },
+    {
+     "id": "goblin_rage",
+     "name": "\u4f4e\u8840\u72c2\u66b4",
+     "type": "rage",
+     "form": "enrage",
+     "duration": 6.0,
+     "speed_mult": 1.6,
+     "cd_mult": 0.66,
+     "cooldown": 9.0,
+     "windup": 0.3,
+     "tier": "P0"
+    }
+   ],
    "atk_cd": 0.85,
    "skill_cd": 4.5,
    "anims": {
@@ -161,6 +252,28 @@
     "lightning"
    ],
    "behavior": "multi",
+   "skills": [
+    {
+     "id": "goblin_archer_multi",
+     "name": "\u6280\u80fd1\u00b7multi",
+     "type": "multi",
+     "form": "fan",
+     "cooldown": 5.0,
+     "windup": 0.0
+    },
+    {
+     "id": "snipe_shot",
+     "name": "\u84c4\u529b\u72d9\u51fb",
+     "type": "sniper",
+     "form": "line",
+     "bullet_speed": 300.0,
+     "damage_mult": 2.2,
+     "cooldown": 7.0,
+     "windup": 0.9,
+     "telegraph": "line",
+     "tier": "P0"
+    }
+   ],
    "sniper_speed": 340,
    "skill_cd": 5.0
   },
@@ -182,6 +295,26 @@
     "frost"
    ],
    "behavior": "shield",
+   "skills": [
+    {
+     "id": "skeleton_shield",
+     "name": "\u6280\u80fd1\u00b7shield",
+     "type": "shield",
+     "form": "shield",
+     "cooldown": 6.0,
+     "windup": 0.0
+    },
+    {
+     "id": "leech_strike",
+     "name": "\u5438\u8840\u6325\u780d",
+     "type": "leech",
+     "form": "melee",
+     "duration": 5.0,
+     "cooldown": 8.0,
+     "windup": 0.3,
+     "tier": "P0"
+    }
+   ],
    "atk_cd": 0.85,
    "skill_cd": 6.0
   },
@@ -205,6 +338,28 @@
     "flame"
    ],
    "behavior": "triple",
+   "skills": [
+    {
+     "id": "imp_triple",
+     "name": "\u6280\u80fd1\u00b7triple",
+     "type": "triple",
+     "form": "fan",
+     "cooldown": 4.5,
+     "windup": 0.0
+    },
+    {
+     "id": "flame_blink",
+     "name": "\u706b\u7130\u95ea\u73b0",
+     "type": "blink",
+     "form": "blink",
+     "radius": 60.0,
+     "damage_mult": 1.5,
+     "cooldown": 8.0,
+     "windup": 0.6,
+     "telegraph": "circle",
+     "tier": "P1"
+    }
+   ],
    "skill_cd": 4.5,
    "anims": {
     "idle": {
@@ -227,6 +382,29 @@
    "fire_interval": 3.2,
    "bullet_speed": 165,
    "behavior": "cast",
+   "skills": [
+    {
+     "id": "wizard_cast",
+     "name": "\u6280\u80fd1\u00b7cast",
+     "type": "cast",
+     "form": "line",
+     "cooldown": 4.0,
+     "windup": 0.0
+    },
+    {
+     "id": "arcane_ring",
+     "name": "\u5965\u672f\u5f39\u73af",
+     "type": "ring",
+     "form": "ring",
+     "shots": 6,
+     "bullet_speed": 155.0,
+     "waves": 1,
+     "cooldown": 7.0,
+     "windup": 0.5,
+     "telegraph": "dot",
+     "tier": "P1"
+    }
+   ],
    "xp": 15,
    "gold": 3,
    "sprite": "res://assets/sprites/retro/wizard_1.png",
@@ -246,6 +424,28 @@
    "size": 1.0,
    "touch": true,
    "behavior": "bomb",
+   "skills": [
+    {
+     "id": "bomber_bomb",
+     "name": "\u6280\u80fd1\u00b7bomb",
+     "type": "bomb",
+     "form": "destruct",
+     "cooldown": 5.0,
+     "windup": 0.0
+    },
+    {
+     "id": "fire_charge",
+     "name": "\u70c8\u7130\u51b2\u950b",
+     "type": "charge_trail",
+     "form": "charge",
+     "speed_mult": 4.0,
+     "trail": "fire",
+     "cooldown": 9.0,
+     "windup": 0.6,
+     "telegraph": "line",
+     "tier": "P2"
+    }
+   ],
    "xp": 12,
    "gold": 3,
    "sprite": "res://assets/sprites/enemy/bomber_1.png",
@@ -273,6 +473,27 @@
    "size": 1.1,
    "touch": true,
    "behavior": "stomp",
+   "skills": [
+    {
+     "id": "charger_stomp",
+     "name": "\u6280\u80fd1\u00b7stomp",
+     "type": "stomp",
+     "form": "zone",
+     "cooldown": 6.0,
+     "windup": 0.0
+    },
+    {
+     "id": "straight_charge",
+     "name": "\u76f4\u7ebf\u51b2\u950b",
+     "type": "charge",
+     "form": "charge",
+     "speed_mult": 4.0,
+     "cooldown": 7.0,
+     "windup": 0.5,
+     "telegraph": "line",
+     "tier": "P0"
+    }
+   ],
    "xp": 14,
    "gold": 3,
    "sprite": "res://assets/sprites/retro/charger_1.png",
@@ -301,6 +522,25 @@
    "size": 1.0,
    "touch": true,
    "behavior": "curse",
+   "skills": [
+    {
+     "id": "healer_curse",
+     "name": "\u6280\u80fd1\u00b7curse",
+     "type": "curse",
+     "form": "homing",
+     "cooldown": 6.0,
+     "windup": 0.0
+    },
+    {
+     "id": "heal_totem",
+     "name": "\u6cbb\u7597\u56fe\u817e",
+     "type": "totem",
+     "form": "summon",
+     "cooldown": 9.0,
+     "windup": 0.4,
+     "tier": "P0"
+    }
+   ],
    "xp": 16,
    "gold": 3,
    "sprite": "res://assets/sprites/retro/healer_1.png",
@@ -332,6 +572,27 @@
     "lightning"
    ],
    "behavior": "sniper",
+   "skills": [
+    {
+     "id": "crystal_sentry_sniper",
+     "name": "\u6280\u80fd1\u00b7sniper",
+     "type": "sniper",
+     "form": "line",
+     "cooldown": 5.0,
+     "windup": 0.0
+    },
+    {
+     "id": "prism_beam",
+     "name": "\u68f1\u955c\u6fc0\u5149",
+     "type": "beam",
+     "form": "laser",
+     "duration": 1.1,
+     "cooldown": 8.0,
+     "windup": 0.9,
+     "telegraph": "line",
+     "tier": "P1"
+    }
+   ],
    "skill_cd": 5.0
   },
   {
@@ -352,6 +613,25 @@
     "flame"
    ],
    "behavior": "web",
+   "skills": [
+    {
+     "id": "spider_web",
+     "name": "\u6280\u80fd1\u00b7web",
+     "type": "web",
+     "form": "zone",
+     "cooldown": 6.0,
+     "windup": 0.0
+    },
+    {
+     "id": "burrow_ambush",
+     "name": "\u94bb\u5730\u4f0f\u51fb",
+     "type": "burrow",
+     "form": "stealth",
+     "cooldown": 9.0,
+     "windup": 0.3,
+     "tier": "P0"
+    }
+   ],
    "atk_cd": 0.8,
    "skill_cd": 6.0,
    "anims": {
@@ -380,6 +660,25 @@
     "frost"
    ],
    "behavior": "burst",
+   "skills": [
+    {
+     "id": "mimic_block_burst",
+     "name": "\u6280\u80fd1\u00b7burst",
+     "type": "burst",
+     "form": "ring",
+     "cooldown": 6.0,
+     "windup": 0.0
+    },
+    {
+     "id": "camouflage_charge",
+     "name": "\u4f2a\u88c5\u7a81\u8fdb",
+     "type": "camouflage",
+     "form": "stealth",
+     "cooldown": 9.0,
+     "windup": 0.3,
+     "tier": "P0"
+    }
+   ],
    "atk_cd": 0.85,
    "skill_cd": 6.0,
    "bullet_speed": 120
@@ -405,6 +704,29 @@
     "flame"
    ],
    "behavior": "vanish",
+   "skills": [
+    {
+     "id": "specter_vanish",
+     "name": "\u6280\u80fd1\u00b7vanish",
+     "type": "vanish",
+     "form": "stealth",
+     "cooldown": 4.5,
+     "windup": 0.0
+    },
+    {
+     "id": "shadow_fan",
+     "name": "\u6697\u5f71\u5f39\u5e55",
+     "type": "fan",
+     "form": "fan",
+     "shots": 3,
+     "spread": 30.0,
+     "bullet_speed": 160.0,
+     "cooldown": 7.0,
+     "windup": 0.4,
+     "telegraph": "dot",
+     "tier": "P1"
+    }
+   ],
    "skill_cd": 4.5,
    "anims": {
     "idle": {
@@ -436,6 +758,26 @@
     "flame"
    ],
    "behavior": "charge",
+   "skills": [
+    {
+     "id": "rat_charge",
+     "name": "\u6280\u80fd1\u00b7charge",
+     "type": "charge",
+     "form": "charge",
+     "cooldown": 5.0,
+     "windup": 0.0
+    },
+    {
+     "id": "gnaw_bleed",
+     "name": "\u5543\u54ac\u6d41\u8840",
+     "type": "bleed",
+     "form": "melee",
+     "duration": 2.0,
+     "cooldown": 8.0,
+     "windup": 0.3,
+     "tier": "P2"
+    }
+   ],
    "atk_cd": 0.7,
    "skill_cd": 5.0,
    "anims": {
@@ -463,6 +805,28 @@
     "poison"
    ],
    "behavior": "rock",
+   "skills": [
+    {
+     "id": "mushroom_rock",
+     "name": "\u6280\u80fd1\u00b7rock",
+     "type": "rock",
+     "form": "erupt",
+     "cooldown": 5.5,
+     "windup": 0.0
+    },
+    {
+     "id": "spore_zone",
+     "name": "\u6bd2\u74e3\u4e91",
+     "type": "zone",
+     "form": "zone",
+     "radius": 70.0,
+     "duration": 3.0,
+     "cooldown": 9.0,
+     "windup": 0.5,
+     "telegraph": "circle",
+     "tier": "P2"
+    }
+   ],
    "atk_cd": 0.9,
    "skill_cd": 5.5,
    "anims": {
@@ -490,6 +854,27 @@
     "flame"
    ],
    "behavior": "charge",
+   "skills": [
+    {
+     "id": "wolf_charge",
+     "name": "\u6280\u80fd1\u00b7charge",
+     "type": "charge",
+     "form": "charge",
+     "cooldown": 6.0,
+     "windup": 0.0
+    },
+    {
+     "id": "pack_call",
+     "name": "\u53ec\u5524\u72fc\u5d3d",
+     "type": "summon",
+     "form": "summon",
+     "count": 1,
+     "summon_id": "wolf",
+     "cooldown": 10.0,
+     "windup": 0.5,
+     "tier": "P1"
+    }
+   ],
    "atk_cd": 0.7,
    "skill_cd": 6.0,
    "anims": {
@@ -522,6 +907,31 @@
     "stone"
    ],
    "behavior": "rock",
+   "skills": [
+    {
+     "id": "treant_sapling_rock",
+     "name": "\u6280\u80fd1\u00b7rock",
+     "type": "rock",
+     "form": "erupt",
+     "cooldown": 6.5,
+     "windup": 0.0
+    },
+    {
+     "id": "root_spikes",
+     "name": "\u6839\u987b\u5730\u523a",
+     "type": "spike_trail",
+     "form": "spike",
+     "count": 6,
+     "spacing": 64.0,
+     "radius": 34.0,
+     "delay": 0.6,
+     "interval": 0.12,
+     "cooldown": 10.0,
+     "windup": 0.8,
+     "telegraph": "dot",
+     "tier": "P2"
+    }
+   ],
    "atk_cd": 1.0,
    "skill_cd": 6.5,
    "anims": {
@@ -549,6 +959,29 @@
     "curse"
    ],
    "behavior": "triple",
+   "skills": [
+    {
+     "id": "cultist_triple",
+     "name": "\u6280\u80fd1\u00b7triple",
+     "type": "triple",
+     "form": "fan",
+     "cooldown": 5.5,
+     "windup": 0.0
+    },
+    {
+     "id": "sacrifice_ring",
+     "name": "\u732e\u796d\u73af",
+     "type": "ring",
+     "form": "ring",
+     "shots": 8,
+     "bullet_speed": 170.0,
+     "waves": 1,
+     "cooldown": 7.0,
+     "windup": 0.5,
+     "telegraph": "dot",
+     "tier": "P1"
+    }
+   ],
    "atk_cd": 0.9,
    "skill_cd": 5.5,
    "anims": {
@@ -581,6 +1014,30 @@
     "stone"
    ],
    "behavior": "sniper",
+   "skills": [
+    {
+     "id": "bone_arbalest_sniper",
+     "name": "\u6280\u80fd1\u00b7sniper",
+     "type": "sniper",
+     "form": "line",
+     "cooldown": 4.5,
+     "windup": 0.0
+    },
+    {
+     "id": "bone_wall",
+     "name": "\u9aa8\u523a\u5899",
+     "type": "wall",
+     "form": "wall",
+     "count": 8,
+     "radius": 46.0,
+     "delay": 0.4,
+     "interval": 0.12,
+     "cooldown": 10.0,
+     "windup": 0.9,
+     "telegraph": "circle",
+     "tier": "P2"
+    }
+   ],
    "atk_cd": 1.2,
    "skill_cd": 4.5,
    "anims": {
@@ -608,6 +1065,27 @@
     "curse"
    ],
    "behavior": "heal",
+   "skills": [
+    {
+     "id": "gravedigger_heal",
+     "name": "\u6280\u80fd1\u00b7heal",
+     "type": "heal",
+     "form": "support",
+     "cooldown": 6.0,
+     "windup": 0.0
+    },
+    {
+     "id": "raise_dead",
+     "name": "\u62db\u9b42",
+     "type": "summon",
+     "form": "summon",
+     "count": 2,
+     "summon_id": "skeleton",
+     "cooldown": 10.0,
+     "windup": 0.6,
+     "tier": "P1"
+    }
+   ],
    "atk_cd": 0.9,
    "skill_cd": 6.0,
    "anims": {
@@ -640,6 +1118,29 @@
     "flame"
    ],
    "behavior": "charge",
+   "skills": [
+    {
+     "id": "lava_lizard_charge",
+     "name": "\u6280\u80fd1\u00b7charge",
+     "type": "charge",
+     "form": "charge",
+     "cooldown": 5.5,
+     "windup": 0.0
+    },
+    {
+     "id": "fire_tongue",
+     "name": "\u706b\u820c\u55b7\u5410",
+     "type": "fan",
+     "form": "fan",
+     "shots": 3,
+     "spread": 30.0,
+     "bullet_speed": 175.0,
+     "cooldown": 7.0,
+     "windup": 0.4,
+     "telegraph": "dot",
+     "tier": "P1"
+    }
+   ],
    "atk_cd": 0.7,
    "skill_cd": 5.5,
    "anims": {
@@ -667,6 +1168,28 @@
     "flame"
    ],
    "behavior": "scream",
+   "skills": [
+    {
+     "id": "fire_wisp_scream",
+     "name": "\u6280\u80fd1\u00b7scream",
+     "type": "scream",
+     "form": "fan",
+     "cooldown": 6.0,
+     "windup": 0.0
+    },
+    {
+     "id": "self_detonate",
+     "name": "\u81ea\u711a",
+     "type": "self_destruct",
+     "form": "destruct",
+     "radius": 70.0,
+     "delay": 1.0,
+     "cooldown": 12.0,
+     "windup": 1.0,
+     "telegraph": "circle",
+     "tier": "P2"
+    }
+   ],
    "atk_cd": 0.8,
    "skill_cd": 6.0,
    "anims": {
@@ -694,6 +1217,29 @@
     "stone"
    ],
    "behavior": "shield",
+   "skills": [
+    {
+     "id": "obsidian_golem_shield",
+     "name": "\u6280\u80fd1\u00b7shield",
+     "type": "shield",
+     "form": "shield",
+     "cooldown": 7.0,
+     "windup": 0.0
+    },
+    {
+     "id": "rock_burst",
+     "name": "\u5ca9\u5d29",
+     "type": "ring",
+     "form": "ring",
+     "shots": 8,
+     "bullet_speed": 150.0,
+     "waves": 1,
+     "cooldown": 8.0,
+     "windup": 0.6,
+     "telegraph": "dot",
+     "tier": "P1"
+    }
+   ],
    "atk_cd": 1.0,
    "skill_cd": 7.0
   },
@@ -714,6 +1260,31 @@
     "stone"
    ],
    "behavior": "shield",
+   "skills": [
+    {
+     "id": "temple_guardian_shield",
+     "name": "\u6280\u80fd1\u00b7shield",
+     "type": "shield",
+     "form": "shield",
+     "cooldown": 6.0,
+     "windup": 0.0
+    },
+    {
+     "id": "seeker_light",
+     "name": "\u5723\u5149\u5f39",
+     "type": "homing",
+     "form": "homing",
+     "count": 2,
+     "bullet_speed": 135.0,
+     "turn_rate": 3.0,
+     "lifetime": 4.0,
+     "spread": 14.0,
+     "cooldown": 8.0,
+     "windup": 0.5,
+     "telegraph": "dot",
+     "tier": "P1"
+    }
+   ],
    "atk_cd": 0.9,
    "skill_cd": 6.0,
    "anims": {
@@ -746,6 +1317,29 @@
     "curse"
    ],
    "behavior": "curse",
+   "skills": [
+    {
+     "id": "mummy_curse",
+     "name": "\u6280\u80fd1\u00b7curse",
+     "type": "curse",
+     "form": "homing",
+     "cooldown": 6.0,
+     "windup": 0.0
+    },
+    {
+     "id": "bandage_toss",
+     "name": "\u7f1a\u5e03\u63b7",
+     "type": "line",
+     "form": "line",
+     "bullet_speed": 240.0,
+     "status": "slow",
+     "status_duration": 1.2,
+     "cooldown": 7.0,
+     "windup": 0.5,
+     "telegraph": "dot",
+     "tier": "P2"
+    }
+   ],
    "atk_cd": 0.9,
    "skill_cd": 6.0,
    "anims": {
@@ -773,6 +1367,28 @@
     "stone"
    ],
    "behavior": "charge",
+   "skills": [
+    {
+     "id": "scarab_charge",
+     "name": "\u6280\u80fd1\u00b7charge",
+     "type": "charge",
+     "form": "charge",
+     "cooldown": 4.5,
+     "windup": 0.0
+    },
+    {
+     "id": "bounce_dart",
+     "name": "\u5723\u7532\u5f39",
+     "type": "line",
+     "form": "line",
+     "bullet_speed": 220.0,
+     "bounce": 1,
+     "cooldown": 7.0,
+     "windup": 0.4,
+     "telegraph": "dot",
+     "tier": "P2"
+    }
+   ],
    "atk_cd": 0.6,
    "skill_cd": 4.5,
    "anims": {
@@ -800,6 +1416,28 @@
     "curse"
    ],
    "behavior": "split",
+   "skills": [
+    {
+     "id": "void_slime_split",
+     "name": "\u6280\u80fd1\u00b7split",
+     "type": "split",
+     "form": "split",
+     "cooldown": 6.0,
+     "windup": 0.0
+    },
+    {
+     "id": "void_blink",
+     "name": "\u76f8\u4f4d\u77ac\u79fb",
+     "type": "blink",
+     "form": "blink",
+     "radius": 50.0,
+     "damage_mult": 1.2,
+     "cooldown": 8.0,
+     "windup": 0.5,
+     "telegraph": "circle",
+     "tier": "P1"
+    }
+   ],
    "atk_cd": 0.85,
    "skill_cd": 6.0
   },
@@ -820,6 +1458,29 @@
     "curse"
    ],
    "behavior": "vanish",
+   "skills": [
+    {
+     "id": "shadow_stalker_vanish",
+     "name": "\u6280\u80fd1\u00b7vanish",
+     "type": "vanish",
+     "form": "stealth",
+     "cooldown": 6.5,
+     "windup": 0.0
+    },
+    {
+     "id": "decoy_swap",
+     "name": "\u5f71\u5206\u8eab",
+     "type": "blink",
+     "form": "blink",
+     "radius": 40.0,
+     "damage_mult": 1.0,
+     "decoy": true,
+     "cooldown": 9.0,
+     "windup": 0.5,
+     "telegraph": "circle",
+     "tier": "P1"
+    }
+   ],
    "atk_cd": 0.7,
    "skill_cd": 6.5,
    "anims": {
@@ -853,6 +1514,28 @@
     "stone"
    ],
    "behavior": "charge",
+   "skills": [
+    {
+     "id": "boar_charge",
+     "name": "\u6280\u80fd1\u00b7charge",
+     "type": "charge",
+     "form": "charge",
+     "cooldown": 6.0,
+     "windup": 0.0
+    },
+    {
+     "id": "trample_stomp",
+     "name": "\u8df5\u8e0f\u9707\u51fb",
+     "type": "stomp",
+     "form": "zone",
+     "radius": 80.0,
+     "duration": 2.5,
+     "cooldown": 8.0,
+     "windup": 0.4,
+     "telegraph": "circle",
+     "tier": "P0"
+    }
+   ],
    "atk_cd": 0.7,
    "charge_cd": 2.6,
    "skill_cd": 6.0,

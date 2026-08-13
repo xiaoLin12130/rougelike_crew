@@ -450,7 +450,9 @@ func _damage_enemy(enemy: Node, mult: float, is_crit: bool = false) -> void:
 	EventBus.damage_dealt.emit(dmg, enemy.global_position, is_crit)
 	EventBus.fx_hit_flash.emit(enemy)
 	# 打击感 G-1/G-4：召唤物命中音效 + 顿帧（暴击 60ms/普通 30ms/Boss 80ms）
-	SfxBus.play_hit(SfxBus.hit_kind_for(enemy, is_crit))
+	# 元素音效接线（2026-08-13）：召唤物元素（施放核心注入，默认 summon）传入 hit_kind_for；
+	# summon 无对应 elem_* 池时回退 hit，crit/boss/elite 档位优先
+	SfxBus.play_hit(SfxBus.hit_kind_for(enemy, is_crit, _element))
 	EventBus.fx_hit_slow.emit(enemy, is_crit)
 
 

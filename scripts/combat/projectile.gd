@@ -454,7 +454,9 @@ func _hit_enemy(enemy: Node, dmg_mult: float = 1.0, direct_hit: bool = false) ->
 	EventBus.damage_dealt.emit(final_dmg, enemy.global_position, crit)
 	EventBus.fx_hit_flash.emit(enemy)
 	# 打击感 G-1/G-4：命中音效（暴击/精英/Boss 分级更响）+ 顿帧（暴击 60ms/普通 30ms/Boss 80ms）
-	SfxBus.play_hit(SfxBus.hit_kind_for(enemy, crit))
+	# 元素音效接线（2026-08-13）：弹幕元素传入 hit_kind_for，命中走 elem_* 池；
+	# crit/boss/elite 档位在 hit_kind_for 内部优先，未知元素回退 hit
+	SfxBus.play_hit(SfxBus.hit_kind_for(enemy, crit, _element))
 	EventBus.fx_hit_slow.emit(enemy, crit)
 	# 特效分级：普通直击走轻量命中（无扩散环）；aoe/instant 爆炸由 _explode_at 走 fx_explosion
 	if direct_hit:

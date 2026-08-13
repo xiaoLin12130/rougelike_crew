@@ -222,6 +222,8 @@ func _test_projectile_integration() -> void:
 	await _wait(0.25)  # 等上一测试遗留的顿帧 CD 结束
 	var e := _spawn_enemy(Vector2(760, 360))
 	var hit_before := int(SfxBus.hit_stats().get("hit", 0))
+	# 元素音效接线（2026-08-13）：fire 弹幕命中 → elem_fire 池，"hit" 旧统计不再增长
+	var elem_before := int(SfxBus.hit_stats().get("elem_fire", 0))
 	_slow_mo_events.clear()
 	var proj = PROJECTILE_SCENE.instantiate()
 	proj.setup({
@@ -244,7 +246,10 @@ func _test_projectile_integration() -> void:
 	await get_tree().process_frame
 	if not hit:
 		_fail("弹幕未命中敌人")
-	if int(SfxBus.hit_stats().get("hit", 0)) <= hit_before:
+	if int(SfxBus.hit_stats().get("elem_fire", 0)) <= elem_before:
+		_fail("projectile 元素命中未播放元素音效（elem_fire）")
+	if int(SfxBus.hit_stats().get("elem_fire", 0)) <= elem_before \
+			and int(SfxBus.hit_stats().get("hit", 0)) <= hit_before:
 		_fail("projectile 命中未播放命中音效")
 	if _damage_numbers().is_empty():
 		_fail("projectile 命中未生成伤害数字")

@@ -79,6 +79,22 @@ var _vanish_left := 0.0
 var _vanish_cd := 0.0
 var _totem_cd := 0.0
 var _camouflage_awake := false
+# ---- P0/P1/P2 普通怪双技能调度器状态（技能1=behavior 既有分派，技能2=skills[1] 新技能）----
+var _skill2_cd := 0.0              ## 技能2 施放冷却（skills[1].cooldown，精英 ×0.8）
+var _leech_buff_left := 0.0        ## 骷髅吸血挥砍 buff（技能2 leech）
+var _rage_buff_left := 0.0         ## 哥布林低血狂暴 buff（技能2 rage）
+var _bleed_buff_left := 0.0        ## 巨鼠啃咬流血 buff（技能2 bleed）
+var _detonate_timer := 0.0         ## 火灵自焚蓄力剩余（技能2 self_destruct）
+var _detonate_radius := 70.0
+var _trail_kind := "fire"          ## 烈焰冲锋火带（技能2 charge_trail）
+var _trail_left := 0.0
+var _trail_fx_cd := 0.0
+var _spike_queue: Array = []       ## 地刺/弹幕墙落点队列（技能2 spike_trail/wall）
+var _spike_timer := 0.0
+var _spike_interval := 0.12
+var _spike_radius := 34.0
+var skill2_cast_count := 0         ## 观测/测试：技能2 累计施放次数
+var last_skill2_id := ""           ## 观测/测试：最近施放的技能2 id
 var _anim: AnimatedSprite2D  # 动画节点缓存（多动画怪）
 var _has_anims := false      # 是否配置了 anims 多动画（旧怪无 anims 走原逻辑）
 
@@ -267,6 +283,7 @@ func _physics_process(delta: float) -> void:
 	_update_status_attachments(delta)
 	_tick_skills(delta)
 	_tick_ai_skills(delta)
+	_tick_skill_scheduler(delta)
 	_tick_separation(delta)
 	# 状态效果：灼烧 DOT / 致盲（不攻击）
 	if _burn_left > 0.0:
@@ -320,6 +337,9 @@ func _tick(delta: float) -> void:
 	_invuln_left = maxf(_invuln_left - delta, 0.0)
 	_poison_fx_cd = maxf(_poison_fx_cd - delta, 0.0)
 	_burn_fx_cd = maxf(_burn_fx_cd - delta, 0.0)
+	_leech_buff_left = maxf(_leech_buff_left - delta, 0.0)
+	_rage_buff_left = maxf(_rage_buff_left - delta, 0.0)
+	_bleed_buff_left = maxf(_bleed_buff_left - delta, 0.0)
 	if _poison_left > 0.0:
 		_poison_left -= delta
 		_take_raw(int(_poison_dps * delta))
@@ -460,7 +480,8 @@ func _tick_ai_skills(delta: float) -> void:
 				var target: Vector2 = _player.global_position
 				EventBus.fx_explosion.emit(target, "fire")
 				EventBus.player_hit.emit(int(attack * 0.8), target)
-				_ai_skill_cd = cd
+				# P0 狂暴：rage buff 期间投石频率 ×1.5（方案 3.1 goblin_rage）
+				_ai_skill_cd = cd * (0.66 if _rage_buff_left > 0.0 else 1.0)
 		"web":
 			# 毒蛛毒网：减速 45% 地面圈（Popper 方案）
 			var zone := _make_slow_zone(_player.global_position, 70.0, 3.0)
@@ -496,10 +517,359 @@ func _tick_ai_skills(delta: float) -> void:
 			EventBus.fx_explosion.emit(global_position, "blade")
 			_ai_skill_cd = cd
 		"curse":
-			# 巫医死亡诅咒：追踪弹让治疗者不可无视（Popper 方案）
+			# 巫医死亡诅咒：追踪弹让治疗者不可无视（Popper 方案；P0 补 homing 参数）
 			var dir3 := (_player.global_position - global_position).normalized()
-			_fire_bullet(dir3, float(conf.get("bullet_speed", 160.0)))
+			_fire_bullet_ex(dir3, float(conf.get("bullet_speed", 160.0)), true, 3.0, 4.0, enemy_id)
 			_ai_skill_cd = cd
+
+
+## ===== P0 普通怪双技能调度器（技能1=behavior 既有分派，技能2=skills[1] 新技能）=====
+func _tick_skill_scheduler(delta: float) -> void:
+	## 轻量调度（仿 boss._pick_skill，不做状态机）：技能2 按 skills[1].cooldown 独立施放，
+	## 与技能1（behavior 自身 CD）自然交替；精英冷却 ×0.8。
+	if _dead or not is_instance_valid(_player):
+		return
+	# 非 charge-behavior 怪的通用冲刺驱动（技能2 charge/camouflage 复用 _charge_state）
+	if _charge_state == 1 and behavior != "charge":
+		_charge_timer -= delta
+		if _charge_timer <= 0.0:
+			_charge_state = 2
+			_charge_dir = (_player.global_position - global_position).normalized()
+	elif _charge_state == 2 and behavior != "charge":
+		_charge_timer -= delta
+		if _charge_timer <= 0.0:
+			_charge_state = 0
+	# 烈焰冲锋火带（P2 bomber）
+	if _charge_state == 2 and _trail_left > 0.0:
+		_trail_left -= delta
+		_trail_fx_cd -= delta
+		if _trail_fx_cd <= 0.0:
+			_trail_fx_cd = 0.08
+			EventBus.fx_explosion.emit(global_position, _trail_kind)
+	# 自焚蓄力（P2 fire_wisp）
+	if _detonate_timer > 0.0:
+		_detonate_timer -= delta
+		modulate = Color(1, 0.6, 0.4) if int(_detonate_timer * 10) % 2 == 0 else Color.WHITE
+		if _detonate_timer <= 0.0:
+			modulate = Color.WHITE
+			_detonate_now()
+		return
+	# 地刺/弹幕墙逐点喷发（P2 treant/bone_arbalest）
+	if not _spike_queue.is_empty():
+		_spike_timer -= delta
+		if _spike_timer <= 0.0:
+			_spike_timer = _spike_interval
+			_erupt_at(_spike_queue.pop_front())
+	# 技能2 冷却
+	_skill2_cd = maxf(_skill2_cd - delta, 0.0)
+	if _skill2_cd > 0.0 or _charge_state == 2 or _burrow_state == 1 or _vanish_left > 0.0:
+		return
+	var skills: Array = conf.get("skills", [])
+	if skills.size() < 2:
+		return
+	var s2: Dictionary = skills[1]
+	if not _skill2_ready(s2):
+		_skill2_cd = 0.6  # 条件未满足（距离/血线），短间隔重试
+		return
+	_cast_skill2(s2)
+	skill2_cast_count += 1
+	last_skill2_id = str(s2.get("id", ""))
+	_skill2_cd = float(s2.get("cooldown", 8.0)) * (0.8 if is_elite else 1.0)
+
+func _skill2_ready(s2: Dictionary) -> bool:
+	## 技能2 距离/血线条件（按方案表：冲锋/近战需贴脸，远程/召唤类无距离限制）
+	var type := str(s2.get("type", ""))
+	var dist := global_position.distance_to(_player.global_position)
+	match type:
+		"dive", "charge", "camouflage", "bleed", "charge_trail", "leech", "stomp":
+			return dist < 280.0
+		"blink", "self_destruct", "zone":
+			return dist < 360.0
+		"rage":
+			return hp < max_hp * 0.6  # 低血触发狂暴
+		_:
+			return true
+
+func debug_cast_skill2(idx: int = 1) -> void:
+	## 强制施放 skills[idx]（跳过冷却/条件），测试与调试用（仿 boss.debug_cast）
+	var skills: Array = conf.get("skills", [])
+	if _dead or idx < 0 or idx >= skills.size():
+		return
+	_cast_skill2(skills[idx])
+	skill2_cast_count += 1
+	last_skill2_id = str(skills[idx].get("id", ""))
+
+func _cast_skill2(s2: Dictionary) -> void:
+	var type := str(s2.get("type", ""))
+	match type:
+		# ---- P0：复用现有 behavior 逻辑分支 ----
+		"dive":
+			_dive_dir = (_player.global_position - global_position).normalized()
+			_dive_time = float(s2.get("dive_time", 0.8))
+			_skill_cd = maxf(_skill_cd, 2.5)
+		"charge":
+			if _charge_state == 0:
+				_charge_state = 1
+				_charge_timer = 0.5
+				_skill_cd = maxf(_skill_cd, 2.5)
+		"sniper":
+			_cast_snipe(s2)
+		"leech":
+			_leech_buff_left = float(s2.get("duration", 5.0))
+			EventBus.fx_explosion.emit(global_position, "blade")
+		"totem":
+			_spawn_totem()
+		"burrow":
+			if _burrow_state == 0:
+				_burrow_state = 1
+				_burrow_timer = 1.2
+				_invuln_left = 1.2
+				modulate.a = 0.15
+		"camouflage":
+			_camouflage_awake = true
+			if _charge_state == 0:
+				_charge_state = 1
+				_charge_timer = 0.3
+			var spr := get_node_or_null("AnimatedSprite2D") as AnimatedSprite2D
+			if spr != null:
+				spr.modulate.a = 1.0
+		"stomp":
+			var zone2 := _make_slow_zone(global_position, float(s2.get("radius", 80.0)),
+				float(s2.get("duration", 2.5)))
+			if zone2 != null:
+				get_parent().add_child(zone2)
+			EventBus.fx_explosion.emit(global_position, "blade")
+		"rage":
+			_rage_buff_left = float(s2.get("duration", 6.0))
+			EventBus.fx_explosion.emit(global_position, "fire")
+		# ---- P1：参数化 cast（复用 Boss 技能类型思路）----
+		"fan":
+			_cast_fan(s2)
+		"ring":
+			_cast_ring(s2)
+		"homing":
+			_cast_homing(s2)
+		"blink":
+			_cast_blink(s2)
+		"beam":
+			_cast_beam(s2)
+		"summon":
+			_cast_summon(s2)
+		# ---- P2：新参数/新机制（自包含实现）----
+		"charge_trail":
+			if _charge_state == 0:
+				_charge_state = 1
+				_charge_timer = 0.5
+				_trail_kind = str(s2.get("trail", "fire"))
+				_trail_left = 2.0
+				_skill_cd = maxf(_skill_cd, 2.5)
+		"zone":
+			var zone := _make_slow_zone(global_position, float(s2.get("radius", 70.0)),
+				float(s2.get("duration", 3.0)))
+			if zone != null:
+				get_parent().add_child(zone)
+			EventBus.fx_explosion.emit(global_position, "poison")
+		"self_destruct":
+			_detonate_timer = float(s2.get("delay", 1.0))
+			_detonate_radius = float(s2.get("radius", 70.0))
+		"spike_trail":
+			_cast_spike_trail(s2)
+		"wall":
+			_cast_wall(s2)
+		"bleed":
+			_bleed_buff_left = float(s2.get("duration", 2.0))
+			EventBus.fx_explosion.emit(global_position, "blade")
+		"line":
+			_cast_line(s2)
+
+func _cast_snipe(s2: Dictionary) -> void:
+	## 蓄力狙击（goblin_archer 技能2）：0.9s 前摇 → 高伤穿透弹
+	var dir := (_player.global_position - global_position).normalized()
+	EventBus.fx_explosion.emit(global_position + dir * 10.0, "fire")  # 蓄力红光
+	var bspeed := float(s2.get("bullet_speed", 300.0))
+	var dmg_mult := float(s2.get("damage_mult", 2.2))
+	var windup := float(s2.get("windup", 0.9))
+	var t := get_tree().create_timer(windup)
+	t.timeout.connect(func():
+		if is_instance_valid(self) and not _dead and is_instance_valid(_player):
+			var b := BULLET_SCENE.instantiate()
+			var d2 := (_player.global_position - global_position).normalized()
+			b.setup(global_position + d2 * 14.0, d2, bspeed,
+				int(attack * dmg_mult * _atk_mult()), 620.0, false, 3.0, 4.0, enemy_id)
+			b.scale = Vector2.ONE * 1.4
+			get_tree().current_scene.add_child(b))
+
+func _cast_fan(s2: Dictionary) -> void:
+	## 扇形弹（slime/specter/lava_lizard 技能2）
+	var shots := maxi(int(s2.get("shots", 3)), 1)
+	var spread := float(s2.get("spread", 40.0))
+	var bspeed := float(s2.get("bullet_speed", 160.0))
+	var base := (_player.global_position - global_position).angle()
+	for i in shots:
+		var off := 0.0 if shots <= 1 else (i - (shots - 1) / 2.0) * (spread / (shots - 1))
+		_fire_bullet_ex(Vector2.from_angle(base + deg_to_rad(off)), bspeed, false, 3.0, 4.0, enemy_id)
+
+func _cast_ring(s2: Dictionary) -> void:
+	## 环形弹（wizard/cultist/obsidian_golem 技能2）：360° 多圈错相
+	var shots := clampi(int(s2.get("shots", 8)), 4, 48)
+	var waves := clampi(int(s2.get("waves", 1)), 1, 3)
+	var bspeed := float(s2.get("bullet_speed", 155.0))
+	for w in waves:
+		var offset := TAU * float(w % 2) / float(shots * 2)
+		for i in shots:
+			_fire_bullet_ex(Vector2.from_angle(offset + TAU * float(i) / float(shots)), bspeed,
+				false, 3.0, 4.0, enemy_id)
+
+func _cast_homing(s2: Dictionary) -> void:
+	## 追踪弹（ghost/temple_guardian 技能2）：小角度扇形 homing
+	var count := clampi(int(s2.get("count", 2)), 1, 12)
+	var spread := float(s2.get("spread", 14.0))
+	var bspeed := float(s2.get("bullet_speed", 140.0))
+	var trate := float(s2.get("turn_rate", 3.0))
+	var life := float(s2.get("lifetime", 4.0))
+	var base := (_player.global_position - global_position).angle()
+	for i in count:
+		var off := 0.0 if count <= 1 else (i - (count - 1) / 2.0) * (spread / float(count - 1))
+		_fire_bullet_ex(Vector2.from_angle(base + deg_to_rad(off)), bspeed, true, trate, life, enemy_id)
+
+func _cast_blink(s2: Dictionary) -> void:
+	## 闪现突袭（imp/void_slime/shadow_stalker 技能2）：瞬移到玩家侧翼 + 落点爆炸
+	var radius := float(s2.get("radius", 60.0))
+	var dmg_mult := float(s2.get("damage_mult", 1.5))
+	var old := global_position
+	EventBus.fx_explosion.emit(old, "fire")
+	var to_p := (_player.global_position - global_position).normalized()
+	var side := Vector2(-to_p.y, to_p.x) * (70.0 if _rng.randf() < 0.5 else -70.0)
+	var target := (_player.global_position + side).clamp(ARENA.position, ARENA.end)
+	global_position = target
+	if bool(s2.get("decoy", false)):
+		_spawn_decoy(old)
+	EventBus.fx_explosion.emit(target, "fire")
+	EventBus.screen_shake.emit(4.0)
+	if is_instance_valid(_player) and _player.global_position.distance_to(target) <= radius:
+		EventBus.player_hit.emit(int(attack * dmg_mult), target)
+
+func _spawn_decoy(pos: Vector2) -> void:
+	## 影分身（shadow_stalker decoy_swap）：旧位置留渐隐幻影，2s 后消失
+	var decoy := Node2D.new()
+	decoy.name = "ShadowDecoy"
+	var spr := Sprite2D.new()
+	var base := str(conf.get("sprite", ""))
+	if ResourceLoader.exists(base):
+		spr.texture = load(base)
+	spr.modulate = Color(0.6, 0.5, 1.0, 0.45)
+	spr.scale = Vector2.ONE * 0.9
+	decoy.add_child(spr)
+	decoy.global_position = pos
+	get_tree().current_scene.add_child(decoy)
+	var tw := decoy.create_tween()
+	tw.tween_property(spr, "modulate:a", 0.0, 2.0)
+	tw.tween_callback(decoy.queue_free)
+
+func _cast_beam(s2: Dictionary) -> void:
+	## 棱镜激光（crystal_sentry 技能2）：红线预告（windup 走 scheduler）→ 持续光束逐 tick 判定
+	var duration := float(s2.get("duration", 1.1))
+	var dir := (_player.global_position - global_position).normalized()
+	EventBus.fx_explosion.emit(global_position + dir * 10.0, "fire")
+	var ticks := clampi(int(duration / 0.3), 2, 6)
+	for k in ticks:
+		var delay := 0.3 * float(k + 1)
+		var t := get_tree().create_timer(delay)
+		t.timeout.connect(func():
+			if is_instance_valid(self) and not _dead and is_instance_valid(_player):
+				var d2 := (_player.global_position - global_position).normalized()
+				EventBus.fx_explosion.emit(global_position + d2 * 60.0, "fire")
+				if _player_in_ray(global_position, d2, 300.0, 18.0):
+					EventBus.player_hit.emit(int(attack * 1.2), global_position))
+
+func _player_in_ray(origin: Vector2, dir: Vector2, length: float, half_width: float) -> bool:
+	## 射线命中判定（与 boss.gd 同几何）
+	if not is_instance_valid(_player):
+		return false
+	var to_p := _player.global_position - origin
+	var proj := to_p.dot(dir)
+	if proj < 0.0 or proj > length:
+		return false
+	return to_p.distance_to(dir * proj) <= half_width
+
+func _cast_summon(s2: Dictionary) -> void:
+	## 召唤（wolf pack_call / gravedigger raise_dead 技能2）：弱化同类（可指定类型）
+	var count := clampi(int(s2.get("count", 1)), 1, 4)
+	var sid := str(s2.get("summon_id", ""))
+	if sid == "":
+		sid = "skeleton" if enemy_id == "gravedigger" else enemy_id
+	EventBus.fx_explosion.emit(global_position, "poison")
+	for i in count:
+		_spawn_elite_minion(sid)
+
+func _cast_spike_trail(s2: Dictionary) -> void:
+	## 根须地刺（treant_sapling 技能2）：沿玩家移动方向 6 点逐点爆刺
+	_spike_queue.clear()
+	var count := clampi(int(s2.get("count", 6)), 2, 12)
+	var spacing := float(s2.get("spacing", 64.0))
+	_spike_radius = float(s2.get("radius", 34.0))
+	var pdir: Vector2 = _player.velocity
+	if pdir.length() < 20.0:
+		pdir = (_player.global_position - global_position).normalized()
+	else:
+		pdir = pdir.normalized()
+	for i in count:
+		var p := _player.global_position + pdir * (spacing * 0.5 + spacing * float(i))
+		p = p.clamp(ARENA.position + Vector2(24, 24), ARENA.end - Vector2(24, 24))
+		_spike_queue.append(p)
+	_spike_timer = float(s2.get("delay", 0.6))
+	_spike_interval = float(s2.get("interval", 0.12))
+
+func _cast_wall(s2: Dictionary) -> void:
+	## 骨刺墙（bone_arbalest 技能2）：玩家所在行/列一排 8 点逐点喷发
+	_spike_queue.clear()
+	var count := clampi(int(s2.get("count", 8)), 3, 14)
+	_spike_radius = float(s2.get("radius", 46.0))
+	var horizontal := _rng.randf() < 0.5
+	var lane: float
+	var start: float
+	var span: float
+	if horizontal:
+		lane = clampf(_player.global_position.y, ARENA.position.y + 50.0, ARENA.end.y - 50.0)
+		start = ARENA.position.x + 60.0
+		span = ARENA.size.x - 120.0
+	else:
+		lane = clampf(_player.global_position.x, ARENA.position.x + 50.0, ARENA.end.x - 50.0)
+		start = ARENA.position.y + 60.0
+		span = ARENA.size.y - 120.0
+	for i in count:
+		var t := span * float(i) / float(count - 1)
+		var p := Vector2(start + t, lane) if horizontal else Vector2(lane, start + t)
+		_spike_queue.append(p)
+	_spike_timer = float(s2.get("delay", 0.4))
+	_spike_interval = float(s2.get("interval", 0.12))
+
+func _erupt_at(pos: Vector2) -> void:
+	## 地刺/弹幕墙单点喷发（P2）：红圈预告语义由 fx 呈现
+	EventBus.fx_explosion.emit(pos, "fire")
+	EventBus.screen_shake.emit(3.0)
+	if is_instance_valid(_player) and _player.global_position.distance_to(pos) <= _spike_radius:
+		EventBus.player_hit.emit(int(attack * 0.9), pos)
+
+func _detonate_now() -> void:
+	## 自焚爆炸（P2 fire_wisp）：半径爆炸 + 自毁
+	EventBus.fx_explosion.emit(global_position, "fire")
+	EventBus.screen_shake.emit(6.0)
+	if is_instance_valid(_player) and _player.global_position.distance_to(global_position) <= _detonate_radius:
+		EventBus.player_hit.emit(int(attack * 2.2), global_position)
+	_die()
+
+func _cast_line(s2: Dictionary) -> void:
+	## 直线弹（mummy bandage_toss 减速 / scarab bounce_dart 弹跳）：带 status/bounce 参数
+	var bspeed := float(s2.get("bullet_speed", 240.0))
+	var status := str(s2.get("status", ""))
+	var sdur := float(s2.get("status_duration", 1.2))
+	var bounce := int(s2.get("bounce", 0))
+	var dir := (_player.global_position - global_position).normalized()
+	var b := BULLET_SCENE.instantiate()
+	b.setup(global_position + dir * 14.0, dir, bspeed, int(attack * _atk_mult()), 520.0,
+		false, 3.0, 4.0, enemy_id, status, sdur, bounce)
+	get_tree().current_scene.add_child(b)
 
 
 func _make_slow_zone(center: Vector2, radius: float, duration: float) -> Node2D:
@@ -609,11 +979,11 @@ func _draw() -> void:
 	var col := Color(0.35, 0.85, 0.4) if ratio > 0.5 else (Color(0.9, 0.75, 0.3) if ratio > 0.25 else Color(0.95, 0.3, 0.25))
 	draw_rect(Rect2(-HP_BAR_W / 2.0 + 0.5, -19.5, (HP_BAR_W - 1.0) * ratio, HP_BAR_H - 1.0), col)
 
-func _spawn_elite_minion() -> void:
-	## 召唤 1 只同类弱化小怪（50% 属性，10s 自毁）
+func _spawn_elite_minion(summon_id: String = "") -> void:
+	## 召唤 1 只弱化小怪（50% 属性，10s 自毁）；summon_id 缺省=同类（P1 summon 复用）
 	var scene := preload("res://scenes/game/enemy.tscn")
 	var e := scene.instantiate()
-	e.setup(enemy_id, GameState.run.level, GameState.run.loop)
+	e.setup(summon_id if summon_id != "" else enemy_id, GameState.run.level, GameState.run.loop)
 	e.hp = maxf(max_hp * 0.2, 5.0)
 	e.max_hp = e.hp
 	e.attack = maxi(int(attack * 0.5), 2)
@@ -891,6 +1261,8 @@ func _tick_separation(delta: float) -> void:
 
 func _ai_melee(dist: float, to_player: Vector2, delta: float) -> void:
 	var spd := speed * (0.5 if _freeze_left > 0.0 else 1.0) * (1.6 if _elite_frenzy_left > 0.0 else 1.0)
+	if _rage_buff_left > 0.0:
+		spd *= 1.6  # P0 哥布林狂暴：移速 +60%
 	if behavior == "camouflage":
 		# 魔像伪装：玩家接近才现身（现身瞬间突进）
 		var near := is_instance_valid(_player) and global_position.distance_to(_player.global_position) < 120.0
@@ -907,14 +1279,26 @@ func _ai_melee(dist: float, to_player: Vector2, delta: float) -> void:
 		_atk_cd = float(conf.get("atk_cd", 1.0))
 		var dealt := int(attack * _atk_mult())
 		EventBus.player_hit.emit(dealt, global_position)
-		if behavior == "leech":
+		if behavior == "leech" or _leech_buff_left > 0.0:
 			heal_ally(int(dealt * 0.5))  # 骷髅吸血：命中回复 50% 伤害
+		if _bleed_buff_left > 0.0 and is_instance_valid(_player):
+			# P2 巨鼠流血：buff 期间命中追加 0.6s 后 30% 伤害（模拟 DOT 二次结算）
+			var bleed_pos: Vector2 = _player.global_position
+			var bonus := int(dealt * 0.3)
+			var t := get_tree().create_timer(0.6)
+			t.timeout.connect(func():
+				if is_instance_valid(_player) and _player.global_position.distance_to(bleed_pos) < 60.0:
+					EventBus.player_hit.emit(bonus, bleed_pos)
+					EventBus.fx_hit.emit(bleed_pos, "blade"))
+			_bleed_buff_left -= 1.0
 
 func _ai_ranged(dist: float, to_player: Vector2, delta: float) -> void:
 	var keep: float = float(conf.get("range", 200)) * 0.6
 	var spd := speed * (0.5 if _freeze_left > 0.0 else 1.0) * (1.6 if _elite_frenzy_left > 0.0 else 1.0)
 	if behavior == "rage" and hp < max_hp * 0.3:
 		spd *= 1.5
+	elif _rage_buff_left > 0.0:
+		spd *= 1.6  # P0 哥布林狂暴：移速 +60%（技能2 施放版）
 	if dist > keep:
 		velocity = to_player.normalized() * spd
 	elif dist < keep * 0.5:
@@ -953,8 +1337,20 @@ func _ai_ranged(dist: float, to_player: Vector2, delta: float) -> void:
 			_fire_bullet(dir, float(conf.get("bullet_speed", 180.0)))
 
 func _fire_bullet(dir: Vector2, speed: float) -> void:
+	## 通用敌方弹幕（保持原签名，boss.gd 覆盖兼容）
 	var bullet := BULLET_SCENE.instantiate()
 	bullet.setup(global_position + dir * 12.0, dir, speed, int(attack * _atk_mult()), 420.0)
+	get_tree().current_scene.add_child(bullet)
+
+func _fire_bullet_ex(dir: Vector2, speed: float, homing: bool = false,
+		turn_rate: float = 3.0, lifetime: float = 4.0, enemy_id_: String = "",
+		status: String = "", status_duration: float = 1.2, bounce: int = 0) -> void:
+	## 技能2 扩展发射（P0/P2）：传 enemy_id 自动应用 enemies.json bullet_visual；
+	## homing/status/bounce 为扩展参数（见 enemy_bullet.gd setup）。
+	var bullet := BULLET_SCENE.instantiate()
+	bullet.setup(global_position + dir * 12.0, dir, speed, int(attack * _atk_mult()), 420.0,
+		homing, turn_rate, lifetime, enemy_id_ if enemy_id_ != "" else enemy_id,
+		status, status_duration, bounce)
 	get_tree().current_scene.add_child(bullet)
 
 func take_damage(dmg: int, _element: String, is_crit: bool) -> void:

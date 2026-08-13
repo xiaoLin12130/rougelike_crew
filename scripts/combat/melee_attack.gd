@@ -119,7 +119,8 @@ func _swing(player: Node2D, enemy: Node) -> void:
 	EventBus.fx_hit_flash.emit(enemy)
 	EventBus.fx_hit.emit(hit_pos, "blade")
 	# 打击感 G-1/G-4：近战命中音效 + 顿帧（暴击 60ms/普通 30ms/Boss 80ms）
-	SfxBus.play_hit(SfxBus.hit_kind_for(enemy, crit))
+	# 近战固定物理元素 blade（HIT_SFX 无 elem_blade，回退 hit；crit/boss/elite 档位优先）
+	SfxBus.play_hit(SfxBus.hit_kind_for(enemy, crit, "blade"))
 	EventBus.fx_hit_slow.emit(enemy, crit)
 
 
