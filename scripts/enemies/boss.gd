@@ -4,6 +4,7 @@ extends EnemyBase
 
 const BEAM_RANGE := 300.0
 const BEAM_HALF_WIDTH := 18.0
+const DEFAULT_AOE_RADIUS := 40.0  # 落点/爆炸类技能统一默认伤害半径（telegraph 与 _erupt_at 共用）
 const WHIRL_SPEED := 2.6          # 旋转激光角速度（弧度/秒）
 const CHARGE_HIT_DIST := 34.0
 const CHARGE_CAST_TIME := 0.9     # 冲撞持续施法时间（_begin_cast 与 charge 预告线长共用）
@@ -301,7 +302,7 @@ func _setup_telegraph(skill: Dictionary) -> void:
 		_locked_target = _player.global_position
 		_telegraphs.append({"kind": "circle", "pos": _locked_target, "radius": radius})
 	elif type == "lava_eruption" or type == "meteor":
-		var radius := float(skill.get("radius", 40.0))  # 与 _erupt_at 默认一致
+		var radius := float(skill.get("radius", DEFAULT_AOE_RADIUS))  # 与 _erupt_at 默认一致
 		var count := int(skill.get("count", 4))
 		for i in count:
 			var p := _random_arena_point()
@@ -352,7 +353,7 @@ func _setup_telegraph(skill: Dictionary) -> void:
 		# 地刺轨迹：沿玩家移动方向连续伤害点（dot 半径=伤害半径），延迟后逐点爆炸
 		var count := clampi(int(skill.get("count", 6)), 2, 14)
 		var spacing := float(skill.get("spacing", 64.0))
-		var radius := float(skill.get("radius", 34.0))
+		var radius := float(skill.get("radius", DEFAULT_AOE_RADIUS))
 		_locked_target = _player.global_position
 		var pdir: Vector2 = _player.velocity
 		if pdir.length() < 20.0:
@@ -372,7 +373,7 @@ func _setup_telegraph(skill: Dictionary) -> void:
 		_telegraphs.append({"kind": "circle", "pos": _locked_target, "radius": radius, "alpha": 0.34})
 	elif type == "wall":
 		# 弹幕墙：玩家所在行/列生成一排落点圈（==爆炸伤害区），逐点喷发
-		var radius := float(skill.get("radius", 46.0))
+		var radius := float(skill.get("radius", DEFAULT_AOE_RADIUS))
 		var count := clampi(int(skill.get("count", 8)), 3, 16)
 		var horizontal := randf() < 0.5
 		var lane: float
@@ -754,7 +755,7 @@ func _update_eruption(delta: float) -> void:
 
 func _erupt_at(pos: Vector2) -> void:
 	var type: String = str(_current_skill.get("type", "lava_eruption"))
-	var radius := float(_current_skill.get("radius", 40.0))
+	var radius := float(_current_skill.get("radius", DEFAULT_AOE_RADIUS))
 	var dmg := int(attack * float(_current_skill.get("damage_mult", 2.0 if type == "meteor" else 1.2)))
 	# 喷发后移除对应预告圈（世界坐标匹配），保持"圈还在=危险还在"
 	for i in range(_telegraphs.size() - 1, -1, -1):

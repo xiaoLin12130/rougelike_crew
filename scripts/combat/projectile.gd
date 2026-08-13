@@ -122,8 +122,13 @@ static var _proj_reused := 0   # 累计复用数（测试/监控）
 static func obtain(params: Dictionary, parent: Node, defer_add: bool = false) -> Node:
 	var proj: Node = null
 	while not _proj_pool.is_empty():
-		var cand: Node = _proj_pool.pop_back()
-		if is_instance_valid(cand):
+		# 池竞态修复（2026-08-13）：池内可能残留"已被 queue_free 排队销毁的弹体
+		# 帧末释放后"的死引用（瞬发弹被 clear_player_projectiles 清场后，帧末销毁前
+		# 仍跑物理帧爆炸入池，帧末被 pending 的 queue_free 销毁）。非类型化取值 +
+		# is_instance_valid 判活：弹到死引用直接丢弃继续取下一个，避免类型化赋值
+		# 在 Variant→Node 转换时对已释放实例报硬错误、中断 obtain() 返回 null。
+		var cand = _proj_pool.pop_back()
+		if cand is Node and is_instance_valid(cand):
 			proj = cand
 			_proj_reused += 1
 			break
@@ -209,7 +214,13 @@ func _reset_for_pool() -> void:
 		spr.visible = true
 
 ## 弹幕自然结束统一出口：命中/到射程/爆炸/轨道到期。
+## 池竞态修复（2026-08-13）：若本帧已被 queue_free 排队销毁（换法术
+## clear_player_projectiles 清场、测试 _clear_projectiles），不再回收入池——
+## 待销毁弹体帧末销毁后池内会残留死引用，obtain() 弹到即硬错误中断。
+## 直接跳过回收，交由 pending 的 queue_free 在帧末销毁。
 func _retire() -> void:
+	if is_queued_for_deletion():
+		return
 	recycle(self)
 
 

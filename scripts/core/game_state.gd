@@ -166,6 +166,48 @@ func _roll_starter_core_pool() -> Array:
 	return pool
 
 
+## ===== 自动测试流派钩子（--school / AUTOPLAY_SCHOOL，仅测试路径生效）=====
+## 元素门控（未持有元素的核心不进池）是游戏机制，正常游玩保持不变；
+## 此处只读与 auto_play.gd 相同的命令行/环境变量，供自动通关脚本开局/升级偏向流派。
+const AUTOPLAY_SCHOOL_ALIASES := {
+	"thunder": "lightning", "blade": "melee", "light": "holy",
+	"void": "teleport", "nature": "wind",
+}
+const AUTOPLAY_SCHOOL_ELEMENTS := {
+	"fire": ["fire"],
+	"ice": ["ice"],
+	"lightning": ["lightning"],
+	"poison": ["poison"],
+	"summon": ["summon"],
+	"water": ["water"],
+	"melee": ["blade"],
+	"holy": ["light"],
+	"teleport": ["void"],
+}
+
+
+func _autoplay_school() -> String:
+	## 与 auto_play.gd 同一套流派参数：命令行 --school <name> 优先，其次 AUTOPLAY_SCHOOL 环境变量
+	var school := ""
+	var args := OS.get_cmdline_user_args()
+	for i in args.size():
+		if args[i] == "--school" and i + 1 < args.size():
+			school = str(args[i + 1]).to_lower()
+	if school == "" and OS.get_environment("AUTOPLAY_SCHOOL") != "":
+		school = OS.get_environment("AUTOPLAY_SCHOOL").to_lower()
+	if AUTOPLAY_SCHOOL_ALIASES.has(school):
+		school = AUTOPLAY_SCHOOL_ALIASES[school]
+	return school
+
+
+func _autoplay_school_elements() -> Array:
+	## 流派 → 法术核心元素列表；未指定流派或该流派无元素映射时返回空（= 不干预）
+	var school := _autoplay_school()
+	if school == "" or not AUTOPLAY_SCHOOL_ELEMENTS.has(school):
+		return []
+	return AUTOPLAY_SCHOOL_ELEMENTS[school]
+
+
 ## 过滤 disabled 外壳（用户需求：移除延时/追踪外壳，数据层标 disabled: true）
 static func _active_shells(all: Array) -> Array:
 	var out: Array = []
@@ -189,11 +231,25 @@ func _roll_valid_shell(core: Dictionary) -> Dictionary:
 
 func _roll_starter_grid() -> Array:
 	## 开局技能：核心1（流派A）→ 核心2（流派B != A），各配有效随机外壳
+	## 自动测试钩子：--school / AUTOPLAY_SCHOOL 指定流派时，核心1偏向该流派元素（若有该元素核心）
 	var pool: Array = _roll_starter_core_pool()
 	if pool.is_empty():
 		return []
-	var core_a: Dictionary = pool[randi() % pool.size()]
-	var el_a: String = str(core_a.get("element", ""))
+	var core_a: Dictionary
+	var el_a: String
+	var school_els := _autoplay_school_elements()
+	if not school_els.is_empty():
+		var school_pool: Array = []
+		for c in pool:
+			if str(c.get("element", "")) in school_els:
+				school_pool.append(c)
+		if school_pool.is_empty():
+			core_a = pool[randi() % pool.size()]
+		else:
+			core_a = school_pool[randi() % school_pool.size()]
+	else:
+		core_a = pool[randi() % pool.size()]
+	el_a = str(core_a.get("element", ""))
 	var pool_b: Array = []
 	for c in pool:
 		if str(c.get("element", "")) != el_a:
@@ -328,6 +384,15 @@ func roll_item_choices(count: int = 3) -> Array:
 	## 非主流元素保底：若存在非主流元素池，至少 1 个选项来自其中
 	var choices: Array = []
 	var pool: Array = tables.get("items", {}).get("items", []).duplicate()
+	# 批次A（2026-08-13）：排除 disabled 道具（无效/未接线，防御性过滤防未来数据回归）
+	# 与 type=trinket 饰品（饰品走独立掉落/商店渠道；升级三选一选中会 add_item 进
+	# run.items，而效果读取 run.trinkets → 空抽，见 docs/design/批次A审计中间态.md）。
+	var playable: Array = []
+	for it in pool:
+		if bool(it.get("disabled", false)) or str(it.get("type", "item")) == "trinket":
+			continue
+		playable.append(it)
+	pool = playable
 	var weights: Dictionary = tables.get("drops", {}).get("item_rarity_weights", {})
 	var lv_factor := 1.0 + 0.25 * maxf(float(run.get("level", 1)) - 1.0, 0.0)
 	var holdings := _element_holdings()
@@ -401,12 +466,21 @@ func _element_key(def: Dictionary) -> String:
 	return ""
 
 func _element_holdings() -> Dictionary:
-	## 当前构筑的元素持有件数：道具堆叠数 + 法术网格核心数
+	## 当前构筑的流派持有件数：道具堆叠数 + 法术网格核心数。
+	## _element_key 只认元素 tag（fire/ice/.../blade）；wind/holy/curse/defense 为
+	## 纯 tag 流派，在此按 tags 补计（供 detect_synergies 12 流派检测；不影响
+	## roll_item_choices 的 _element_key 过滤/权重路径）。
 	var counts := {}
 	for item_id in run.items:
-		var el := _element_key(item_def(item_id))
+		var def: Dictionary = item_def(item_id)
+		var el := _element_key(def)
 		if el != "":
 			counts[el] = counts.get(el, 0) + int(run.items[item_id])
+			continue
+		for tag in def.get("tags", []):
+			var key: String = str(tag)
+			if key == "wind" or key == "holy" or key == "curse" or key == "defense":
+				counts[key] = counts.get(key, 0) + int(run.items[item_id])
 	for slot in run.grid:
 		var cid: String = str(slot.get("core", ""))
 		for c in tables.get("spells", {}).get("cores", []):
@@ -540,10 +614,21 @@ func _make_spell_choice() -> Dictionary:
 			eligible.append(c)
 	if eligible.is_empty():
 		return {}
+	## 自动测试钩子：--school / AUTOPLAY_SCHOOL 指定流派时，本流派元素核心权重 ×3
+	## （门控池规则不变——流派元素由开局偏向保证已持有；正常游玩无参数时行为与原来完全一致）
+	var school_els := _autoplay_school_elements()
+	var weighted: Array = eligible
+	if not school_els.is_empty():
+		weighted = []
+		for c in eligible:
+			weighted.append(c)
+			if str(c.get("element", "")) in school_els:
+				weighted.append(c)
+				weighted.append(c)
 	var core: Dictionary = {}
 	var shell: Dictionary = {}
 	for _attempt in 8:
-		core = eligible[randi() % eligible.size()]
+		core = weighted[randi() % weighted.size()]
 		if shells.is_empty():
 			shell = {}
 			break
@@ -638,6 +723,17 @@ func swap_grid(a: int, b: int) -> void:
 func total_stacks(item_id: String) -> int:
 	return run.items.get(item_id, 0)
 
+
+func _tag_stacks(tag: String) -> int:
+	## 按 tag 统计持有堆叠数（去硬编码辅助：detect_synergies 数值路线读持有数用）
+	var total := 0
+	for item_id in run.items:
+		var def: Dictionary = item_def(str(item_id))
+		if not def.is_empty() and tag in def.get("tags", []):
+			total += int(run.items[item_id])
+	return total
+
+
 func aggregate_bonus(tag: String) -> float:
 	## 聚合某个 tag 下所有道具的曲线值（如 "attack_speed" 返回总攻速加成）
 	var sum := 0.0
@@ -694,19 +790,30 @@ func attack_speed_summary() -> String:
 ## ===== 流派成型检测（F10）=====
 
 func detect_synergies() -> void:
-	## 检测 11 条流派路线的成型条件，成型的写入 synergy_bonus 并广播提示
+	## 检测 12 流派路线（fire/ice/lightning/poison/summon/water/wind/holy/curse/
+	## melee/defense/teleport）的成型条件，成型的写入 synergy_bonus 并广播提示。
+	## 持有数统一从 _element_holdings() 读取（元素 tag + 纯 tag 流派 + 核心元素），
+	## 不写死任何道具 id；攻速/暴击/吸血/移速/冷却五条数值路线按 tag 统计。
 	var holdings := _element_holdings()
+	# 元素别名 → 流派规范键（nature=荆棘藤蔓等风系核心；light=圣光核心；void=传送核心）
+	var wind: int = int(holdings.get("wind", 0)) + int(holdings.get("nature", 0))
+	var holy: int = int(holdings.get("holy", 0)) + int(holdings.get("light", 0))
+	var melee: int = int(holdings.get("blade", 0))
+	var teleport: int = int(holdings.get("void", 0))
 	var fire: int = int(holdings.get("fire", 0))
 	var ice: int = int(holdings.get("ice", 0))
 	var lightn: int = int(holdings.get("lightning", 0))
 	var poison: int = int(holdings.get("poison", 0))
 	var summon: int = int(holdings.get("summon", 0))
-	var atk_spd: int = total_stacks("attack_speed_potion")
-	var crit: int = total_stacks("crit_glasses")
-	var defense: int = total_stacks("stone_armor") + total_stacks("thorn_armor") + total_stacks("thorn_reflect")
-	var life: int = total_stacks("vampire_fang") + total_stacks("blood_thorn")
-	var speed: int = total_stacks("speed_boots")
-	var cd: int = total_stacks("wand_charge") + total_stacks("memory_haste")
+	var water: int = int(holdings.get("water", 0))
+	var curse: int = int(holdings.get("curse", 0))
+	var defense: int = int(holdings.get("defense", 0))
+	# 数值路线：按 tag 统计（原硬编码 id 读取点去硬编码，阈值/bonus 语义不变）
+	var atk_spd: int = _tag_stacks("attack_speed")
+	var crit: int = _tag_stacks("crit")
+	var life: int = _tag_stacks("lifesteal")
+	var speed: int = _tag_stacks("speed")
+	var cd: int = _tag_stacks("cooldown") + _tag_stacks("skill_cd")
 	var bonus: Dictionary = run.get("synergy_bonus", {})
 	var formed: Array = []
 	if fire >= 2 and bonus.get("fire", 0.0) < 0.15:
@@ -724,26 +831,44 @@ func detect_synergies() -> void:
 	if summon >= 2 and bonus.get("summon", 0.0) < 0.25:
 		bonus["summon"] = 0.25
 		formed.append("召唤军团")
-	if atk_spd >= 3 and bonus.get("attack_speed", 0.0) < 0.20:
-		bonus["attack_speed"] = 0.20
-		formed.append("狂暴攻速流")
-	if crit >= 2 and bonus.get("crit_dmg", 0.0) < 0.30:
-		bonus["crit_dmg"] = 0.30
-		formed.append("暴击流")
+	if water >= 2 and bonus.get("water", 0.0) < 0.15:
+		bonus["water"] = 0.15
+		formed.append("水控流")
+	if wind >= 2 and bonus.get("wind", 0.0) < 0.10:
+		bonus["wind"] = 0.10
+		formed.append("追风流")
+	if holy >= 2 and bonus.get("holy", 0.0) < 0.15:
+		bonus["holy"] = 0.15
+		formed.append("圣光流")
+	if curse >= 2 and bonus.get("curse", 0.0) < 0.15:
+		bonus["curse"] = 0.15
+		formed.append("诅咒流")
+	if melee >= 2 and bonus.get("melee", 0.0) < 0.20:
+		bonus["melee"] = 0.20
+		formed.append("近战流")
 	if defense >= 2 and bonus.get("defense", 0.0) < 0.05:
 		bonus["defense"] = 0.05
 		formed.append("磐石防御流")
+	if teleport >= 2 and bonus.get("teleport", 0.0) < 0.15:
+		bonus["teleport"] = 0.15
+		formed.append("传送流")
+	if atk_spd >= 3 and bonus.get("attack_speed", 0.0) < 0.20:
+		bonus["attack_speed"] = 0.20
+		formed.append("狂暴攻速流")
 	if life >= 2 and bonus.get("max_hp", 0.0) < 20.0:
 		# 吸血流：不叠加吸血（克制原则），改为生命上限 +20 增强站撸容错
 		bonus["max_hp"] = 20.0
 		formed.append("吸血流")
 	if speed >= 2 and bonus.get("attack_speed", 0.0) < 0.10:
-		# 疾风流：移速联动攻速（已有 speed_boots 加成基础上再 +10% 攻速）
+		# 疾风流：移速联动攻速（已有 speed 加成基础上再 +10% 攻速）
 		bonus["attack_speed"] = maxf(bonus.get("attack_speed", 0.0), 0.10)
 		formed.append("疾风流")
 	if cd >= 2 and bonus.get("cooldown", 0.0) < 0.10:
 		bonus["cooldown"] = 0.10
 		formed.append("冷却流")
+	if crit >= 2 and bonus.get("crit_dmg", 0.0) < 0.30:
+		bonus["crit_dmg"] = 0.30
+		formed.append("暴击流")
 	if not formed.is_empty():
 		run["synergy_bonus"] = bonus
 		for name in formed:
@@ -824,59 +949,179 @@ func heal(amount: float) -> int:
 	return healed
 
 func estimate_dps() -> float:
-	## 估算 DPS：与 spell_caster 公式对齐——每把法杖 damage_mult/cd_mult 乘法累积，
-	## shape_mods 按装备顺序覆盖 shell mods（后装优先），至少计入 shots；
-	## spread_angle/orbit/aoe 等形变保持保守估算（不放大 DPS）。
+	## 估算 DPS：与 spell_caster._spell_damage / _cooldown_of / _cast 及
+	## projectile._hit_enemy 的实际伤害公式对齐（2026-08-13 修复"理论 100 vs 实际 1 万"）：
+	## ① 伤害乘数补齐：atk / skill_dmg / 元素加成 / 法杖 damage_mult×升级×元素加成；
+	## ② 冷却乘数补齐：攻速 1/(1+as)、cooldown+skill_cd 减冷却、法杖 cd_mult、充能曲线、
+	##    风系 wind_cd_mult（与 _cooldown_of 逐项一致，去掉旧"每槽乘一次再整体除"的错误）；
+	## ③ shots 用 shell+法杖合并后的值并计入 wind_m4_shots；
+	## ④ 暴击期望 = 1 + crit_chance×(crit_dmg-1)（与 apply_item_effects_to_stats 同公式）；
+	## ⑤ 群战放大（保守封顶 ×3.5）：AOE 半径 / 闪电链 / 穿透 / 分裂 / 弹射；
+	## ⑥ 召唤物按 data/summons.json 的类型 max_count / skill_cd / damage_mult 折算。
+	## 估算目标：与实际输出同一数量级（晚局实际 1 万+，理论数千），不追求逐帧精确。
 	var spells: Dictionary = tables.get("spells", {})
-	var atk_bonus := 1.0 + aggregate_bonus("atk")
-	var speed_bonus := 1.0 + aggregate_bonus("attack_speed")
-	var cd_bonus := 1.0
 	var total := 0.0
-	var summon_cores := 0
-	# 法杖聚合：damage_mult / cd_mult 全乘法累积（与 _spell_damage / _cooldown_of 一致）
+	## ---- 全局乘数（与 spell_caster 同口径）----
+	var atk_mult := 1.0 + aggregate_bonus("atk")
+	var skill_mult := 1.0 + aggregate_bonus("skill_dmg")
+	var as_total := total_attack_speed_bonus()  # 含 synergy 攻速读点（与 _total_attack_speed 一致）
+	var as_cd_mult := 1.0 / (1.0 + as_total)
+	var cd_reduce := clampf(aggregate_bonus("cooldown") + aggregate_bonus("skill_cd"), 0.0, 0.8)
+	var wind_cd_mult := maxf(float(run.get("wind_cd_mult", 1.0)), 0.0)
+	var wand_charge_mult := item_value({"curve": {"type": "multiplicative", "base": 0.9, "cap": 0.5}},
+		total_stacks("wand_charge"))
+	# 暴击期望（apply_item_effects_to_stats 同公式；lucky/风系/元素系附加暴击保守不计）
+	var crit_chance := clampf(0.03 + 0.02 * float(total_stacks("crit_glasses")), 0.0, 0.85)
+	var crit_dmg := 1.5 * (1.0 + 0.10 * float(total_stacks("crit_gem"))) \
+		+ float(run.get("synergy_bonus", {}).get("crit_dmg", 0.0))
+	var crit_mult := 1.0 + crit_chance * (crit_dmg - 1.0)
+	## ---- 法杖聚合（与 _spell_damage / _cooldown_of 的逐杖循环一致）----
 	var wand_dmg_mult := 1.0
 	var wand_cd_mult := 1.0
+	var wand_element_bonus: Dictionary = {}  # element -> Π(1+eb_i)
 	var wand_shape: Dictionary = {}
 	for wid in current_wands():
 		var wdef := wand_def(str(wid))
 		if wdef.is_empty():
 			continue
 		wand_dmg_mult *= float(wdef.get("damage_mult", 1.0))
-		wand_dmg_mult *= 1.0 + WAND_UPGRADE_BONUS * float(wand_upgrade_level(str(wid)))
 		wand_cd_mult *= float(wdef.get("cd_mult", 1.0))
+		var eb: Dictionary = wdef.get("element_bonus", {})
+		for el in eb:
+			wand_element_bonus[el] = float(wand_element_bonus.get(el, 1.0)) * (1.0 + float(eb[el]))
 		for k in wdef.get("shape_mods", {}):
 			wand_shape[k] = wdef["shape_mods"][k]  # 后装法杖覆盖先装（与 _cast 合并顺序一致）
+	var wand_upgrade_mult := 1.0
+	for wid in current_wands():
+		wand_upgrade_mult *= 1.0 + WAND_UPGRADE_BONUS * float(wand_upgrade_level(str(wid)))
+	## ---- 索引：core_id / shell_id / summon_id -> 定义（网格循环 O(1)）----
+	var core_by_id := {}
+	for c in spells.get("cores", []):
+		var cid := str(c.get("id", ""))
+		if not core_by_id.has(cid):
+			core_by_id[cid] = c
+	var shell_by_id := {}
+	for s in spells.get("shells", []):
+		var sid := str(s.get("id", ""))
+		if not shell_by_id.has(sid):
+			shell_by_id[sid] = s
+	var summon_defs := {}
+	for s in tables.get("summons", {}).get("summons", []):
+		var sid := str(s.get("id", ""))
+		if not summon_defs.has(sid):
+			summon_defs[sid] = s
+	var frenzy := false
+	var summon_slots: Array = []
 	for slot in run.grid:
-		var core: Dictionary = {}
-		for c in spells.get("cores", []):
-			if c.get("id", "") == slot.get("core", ""):
-				core = c
-				break
+		var core: Dictionary = core_by_id.get(str(slot.get("core", "")), {})
 		if core.is_empty():
 			continue
-		if str(core.get("element", "")) == "summon":
-			summon_cores += 1
+		if core.get("frenzy", false):
+			frenzy = true
 			continue
-		var shell: Dictionary = {}
-		for s in spells.get("shells", []):
-			if s.get("id", "") == slot.get("shell", ""):
-				shell = s
-				break
+		if core.get("mana_echo", false):
+			continue  # 纯功能核（重置冷却），无直接输出
+		var tid := str(core.get("summon", ""))
+		if str(core.get("element", "")) == "summon" or (tid != "" and tid != "true"):
+			if tid == "" or tid == "true":
+				tid = str(core.get("id", "")).trim_prefix("summon_")
+			summon_slots.append({"tid": tid, "core": core,
+				"shell": shell_by_id.get(str(slot.get("shell", "")), {})})
+			continue
+		var shell: Dictionary = shell_by_id.get(str(slot.get("shell", "")), {})
 		var mods: Dictionary = shell.get("mods", {})
 		var merged: Dictionary = mods.duplicate()
 		for k in wand_shape:
 			merged[k] = wand_shape[k]
-		var dmg: float = core.get("base_damage", 0.0) * merged.get("damage_mult", 1.0) * wand_dmg_mult
-		var shots: int = maxi(int(merged.get("shots", 1)), 1)
-		# 冷却用 shell 原始 mods（与 _cooldown_of 传入一致），法杖 cd_mult 乘法累积
-		var cd: float = core.get("cooldown", 1.0) * mods.get("cooldown_mult", 1.0) * wand_cd_mult
-		cd_bonus *= item_value({"curve": {"type": "multiplicative", "base": 0.9, "cap": 0.5}}, total_stacks("wand_charge"))
-		total += dmg * shots / maxf(cd, 0.1)
-	# 召唤物 DPS 估算：每个召唤核心 ≈ 2 只召唤物 × 30 基础伤害 × 攻速（可被召唤书加成）
-	var summon_dps := float(summon_cores) * 2.0 * 30.0 * (1.0 + total_stacks("summon_book"))
-	total += summon_dps
-	run.dps_estimate = total * atk_bonus * speed_bonus / cd_bonus
+		var element: String = str(core.get("element", "fire"))
+		## 单发伤害 = base × damage_mult × (1+atk) × (1+skill_dmg) × (1+元素) × 法杖聚合
+		var dmg: float = float(core.get("base_damage", 0.0)) \
+			* float(merged.get("damage_mult", 1.0)) \
+			* atk_mult * skill_mult \
+			* (1.0 + aggregate_bonus(element)) \
+			* float(wand_element_bonus.get(element, 1.0)) \
+			* wand_dmg_mult * wand_upgrade_mult
+		var shots: int = maxi(int(merged.get("shots", 1)), 1) \
+			+ maxi(int(run.get("wind_m4_shots", 0)), 0)
+		## 有效冷却 = core.cd × shell.cd_mult × 法杖 cd_mult × 充能 × 攻速 × 风系 × (1-减cd)
+		var cd: float = float(core.get("cooldown", 1.0)) \
+			* float(mods.get("cooldown_mult", 1.0)) \
+			* wand_cd_mult * wand_charge_mult \
+			* as_cd_mult * wind_cd_mult * (1.0 - cd_reduce)
+		cd = maxf(cd, 0.05)
+		## 群战放大（保守）：AOE 半径 / 闪电链 / 穿透 / 分裂 / 弹射，封顶 ×3.5
+		var multihit := 1.0
+		var chain := int(core.get("chain", 0))
+		if chain > 0:
+			multihit *= 1.0 + float(chain) * 0.7
+		var pierce := int(merged.get("pierce", 0))
+		if pierce > 0:
+			multihit *= 1.0 + float(pierce) * 0.6
+		var split := int(merged.get("split", 0))
+		if split > 0:
+			multihit *= 1.0 + float(split) * 0.6
+		var bounce := int(merged.get("bounce", 0))
+		if bounce > 0:
+			multihit *= 1.0 + float(bounce) * 0.35
+		var aoe_r := float(core.get("aoe", 0.0)) * float(merged.get("aoe_mult", 1.0)) \
+			* (1.0 + aggregate_bonus("area"))
+		if aoe_r <= 0.0 and float(core.get("blind", 0.0)) > 0.0:
+			aoe_r = 90.0 * float(merged.get("aoe_mult", 1.0))
+		if aoe_r > 0.0:
+			multihit *= 1.0 + minf(aoe_r / 35.0, 1.0)
+		multihit = minf(multihit, 3.5)
+		total += dmg * float(shots) / cd * crit_mult * multihit
+	## 召唤物：到场总数 = min(总上限 1+summon_1, Σ各类型 max_count)；
+	## 单次命中 = 核心 base_damage × 外壳 damage_mult × 类型 damage_mult × 面板乘数
+	if not summon_slots.is_empty():
+		var summon_cap := 1 + total_stacks("summon_1")
+		var max_sum := 0
+		var per_hit_w := 0.0
+		var cd_w := 0.0
+		for entry in summon_slots:
+			var sdef: Dictionary = summon_defs.get(str(entry.get("tid", "")), {})
+			if sdef.is_empty():
+				continue
+			var mc := int(sdef.get("max_count", 1))
+			max_sum += mc
+			var per_hit: float = float(entry.get("core", {}).get("base_damage", 30.0)) \
+				* float(entry.get("shell", {}).get("mods", {}).get("damage_mult", 1.0)) \
+				* float(sdef.get("damage_mult", 1.0)) \
+				* atk_mult * skill_mult \
+				* (1.0 + aggregate_bonus("summon")) \
+				* float(wand_element_bonus.get("summon", 1.0)) \
+				* wand_dmg_mult * wand_upgrade_mult
+			per_hit_w += per_hit * float(mc)
+			cd_w += maxf(float(sdef.get("skill_cd", 1.0)), 0.5) * float(mc)
+		if cd_w > 0.0:
+			var alive := mini(max_sum, summon_cap)
+			total += float(alive) * per_hit_w / cd_w * crit_mult
+	## 狂暴核：3s/6s ≈ 50% 覆盖 × 1.3 伤害 × 冷却减半 → 净约 ×1.7（保守常数）
+	if frenzy:
+		total *= 1.7
+	run.dps_estimate = total
 	return run.dps_estimate
+
+## 性能优化（批次B）：items_by_tag 索引缓存（tag → 道具列表）。
+## apply_item_effects_to_stats 每次刷新只遍历命中 tag 的道具，不再全表线性扫描查 tag；
+## items 表仅在 _ready 加载一次，缓存以源数组引用做失效（源被替换时自动重建），
+## 语义与旧行为一致（双 tag 道具在累计处按 id 去重只加一次）。
+var _items_by_tag: Dictionary = {}   # tag -> Array[Dictionary]
+var _items_by_tag_src: Array = []    # 索引对应的 items 源数组引用（失效哨兵）
+
+func _items_with_tag(tag: String) -> Array:
+	## 惰性构建 items_by_tag；源数组引用变化（tables 重载）时自动重建。
+	var src: Array = tables.get("items", {}).get("items", [])
+	if _items_by_tag_src != src:
+		_items_by_tag = {}
+		for it in src:
+			for t in it.get("tags", []):
+				var key := str(t)
+				if not _items_by_tag.has(key):
+					_items_by_tag[key] = []
+				(_items_by_tag[key] as Array).append(it)
+		_items_by_tag_src = src
+	return _items_by_tag.get(tag, [])
 
 func apply_item_effects_to_stats() -> void:
 	## 把道具聚合到面板属性（HUD 读取）
@@ -885,10 +1130,16 @@ func apply_item_effects_to_stats() -> void:
 		+ int(run.get("synergy_bonus", {}).get("max_hp", 0.0))
 	# N2 无效道具修复：生命上限聚合所有 hp/max_hp tag 构筑（life_crystal +
 	# defense_crystal 等），此前只读 life_crystal 单 id 导致同名道具无效
-	for it in tables.get("items", {}).get("items", []):
-		var tags: Array = it.get("tags", [])
-		if "hp" in tags or "max_hp" in tags:
-			run.max_hp += int(item_value(it, total_stacks(str(it.get("id", "")))))
+	# 批次B优化：经 items_by_tag 索引取命中道具（双 tag 道具按 id 去重，累计一次）
+	var hp_items: Array = _items_with_tag("hp")
+	var maxhp_items: Array = _items_with_tag("max_hp")
+	var seen := {}
+	for it in hp_items + maxhp_items:
+		var key := str(it.get("id", ""))
+		if seen.has(key):
+			continue
+		seen[key] = true
+		run.max_hp += int(item_value(it, total_stacks(key)))
 	# 兜底：任何原因导致 hp 超过上限时回落（防"突破上限"类状态破坏战斗）
 	if run.hp > run.max_hp:
 		run.hp = run.max_hp

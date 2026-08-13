@@ -39,7 +39,7 @@ const SCHOOLS := {
 }
 const SCHOOL_ALIASES := {"thunder": "lightning", "blade": "melee", "light": "holy", "void": "teleport", "nature": "wind"}
 const SCHOOL_ITEM_BONUS := 150  # 流派道具加权
-const SCHOOL_SPELL_BONUS := 120  # 流派法术核心加权
+const SCHOOL_SPELL_BONUS := 150  # 流派法术核心加权（与道具同权重；配合 game_state 流派钩子开局偏向/升级加权）
 
 
 func _log_line(msg: String) -> void:

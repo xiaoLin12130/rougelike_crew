@@ -1,4 +1,4 @@
-extends Node
+extends SynergyBase
 ## 雷系连锁流 · 机制脚本（雷M1 麻痹 ~ 雷M10 高压电网）
 ## 用法：本节点加入场景树后自动向 SynergyRegistry 注册钩子回调
 ##      （建议主线程挂到 game_root 等持久节点，存活期 = 一局流程）。
@@ -57,8 +57,6 @@ const CHAIN_FALLOFF_PER := 0.05   # 高压：每层递减再降 5%（保留 +5%�
 const CHAIN_FALLOFF_CAP := 0.80   # 递减下限 20%（每跳保留 80%）
 const CHARGE_MULT_PER := 1.04     # 电荷：每跳伤害 ×1.04 叠乘
 
-var _reg: Node = null
-var _registered := {}  # kind -> Callable（注销用）
 var _static_charge := 0.0
 var _conduit_timer := 0.0
 var _storm_timer := 0.0
@@ -68,17 +66,11 @@ var _crit_guard := {}     # enemy instance_id -> true（雷M4 防递归）
 
 
 func _ready() -> void:
-	if not is_inside_tree():
-		return
-	_reg = get_node_or_null("/root/SynergyRegistry")
+	super._ready()
 	_register("enemy_died", _on_enemy_died)
 	_register("enemy_hit", _on_enemy_hit)
 	_register("projectile_hit", _on_projectile_hit)
 	_register("player_move", _on_player_move)
-
-
-func _exit_tree() -> void:
-	_unregister_all()
 
 
 func _process(delta: float) -> void:
@@ -87,62 +79,7 @@ func _process(delta: float) -> void:
 	_tick_storm_cloud(delta)
 
 
-## ===================== 注册 / 注销 =====================
-
-func _register(kind: String, cb: Callable) -> void:
-	if _reg == null or not _reg.has_method("register"):
-		return
-	_reg.register(kind, cb)
-	_registered[kind] = cb
-
-
-func _unregister_all() -> void:
-	if _reg == null:
-		return
-	var hooks = _reg.get("_hooks")
-	if hooks == null:
-		return
-	for kind in _registered:
-		var arr = hooks.get(kind)
-		if arr is Array:
-			arr.erase(_registered[kind])
-	_registered.clear()
-
-
-## ===================== 通用读取（防御式） =====================
-
-func _enabled() -> bool:
-	return is_inside_tree() and _reg != null
-
-
-func _game_state() -> Node:
-	return get_node_or_null("/root/GameState")
-
-
-func _event_bus() -> Node:
-	return get_node_or_null("/root/EventBus")
-
-
-func _run_items() -> Dictionary:
-	var gs := _game_state()
-	if gs == null:
-		return {}
-	var run = gs.get("run")
-	if run == null or not (run is Dictionary):
-		return {}
-	var items = run.get("items")
-	if items == null or not (items is Dictionary):
-		return {}
-	return items
-
-
-## 指定构筑（含 thunder_ 前缀机制/数值）的堆叠数
-func _stacks(item_id: String) -> int:
-	var n = _run_items().get(item_id, 0)
-	return maxi(int(n), 0)
-
-
-## 持有 thunder_ 前缀构筑的总堆叠数（机制强度主驱动）
+## ?? thunder_ ??????????????????
 func _thunder_stacks() -> int:
 	var total := 0
 	var items := _run_items()

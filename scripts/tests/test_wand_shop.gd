@@ -1,8 +1,8 @@
 extends SceneTree
 ## 法杖商店加权抽取单测：模拟 1000 次 _roll_offers（每次 3 把）
 ## 验证：
-##  a) lucky=0 时 普通 > 稀有 > 传说 出现概率递减
-##  b) lucky=10（crit_lucky tag=lucky）时传说概率明显高于 lucky=0
+##  a) lucky=0 时 白 > 绿 > 蓝 > 金 > 红 出现概率递减
+##  b) lucky=10（crit_lucky tag=lucky）时红概率明显高于 lucky=0
 ## 运行：godot --headless --path . -s res://scripts/tests/test_wand_shop.gd
 
 var failures: Array[String] = []
@@ -29,7 +29,7 @@ func fail(msg: String) -> void:
 	failures.append(msg)
 
 func _simulate(shop: CanvasLayer, trials: int) -> Dictionary:
-	var counts := {"common": 0, "rare": 0, "legendary": 0}
+	var counts := {"common": 0, "uncommon": 0, "rare": 0, "epic": 0, "legendary": 0}
 	for i in trials:
 		shop._roll_offers()
 		for w in shop._offers:
@@ -37,7 +37,11 @@ func _simulate(shop: CanvasLayer, trials: int) -> Dictionary:
 			counts[r] = int(counts[r]) + 1
 	return counts
 
+
+const RARITY_ORDER: Array = ["common", "uncommon", "rare", "epic", "legendary"]
+
 func _run() -> void:
+	seed(20260813)  # 固定种子：抽取模拟可复现（新池 54 把，排除 basic_wand）
 	var gs: Node = root.get_node_or_null("GameState")
 	if gs == null:
 		fail("GameState autoload missing")
@@ -52,38 +56,59 @@ func _run() -> void:
 	gs.run.wands = ["basic_wand"]  # 商店池排除已装备（与正式逻辑一致）
 	# lucky=0
 	gs.run.items = {}
-	var c0: Dictionary = _simulate(shop, 1000)
+	var c0: Dictionary = _simulate(shop, 3000)
 	# lucky=10：crit_lucky（tag=lucky）10 层
 	gs.run.items = {"crit_lucky": 10}
-	var c10: Dictionary = _simulate(shop, 1000)
+	var c10: Dictionary = _simulate(shop, 3000)
 	gs.run.items = saved_items
 	gs.run.wands = saved_wands
 	shop.free()
 
 	var s0 := _shares(c0)
 	var s10 := _shares(c10)
-	print("lucky=0 : common %.1f%% rare %.1f%% legendary %.1f%%"
-		% [s0["common"] * 100.0, s0["rare"] * 100.0, s0["legendary"] * 100.0])
-	print("lucky=10: common %.1f%% rare %.1f%% legendary %.1f%%"
-		% [s10["common"] * 100.0, s10["rare"] * 100.0, s10["legendary"] * 100.0])
-	if s0["common"] <= s0["rare"] or s0["rare"] <= s0["legendary"]:
-		fail("lucky=0 概率未递减：%.3f/%.3f/%.3f"
-			% [s0["common"], s0["rare"], s0["legendary"]])
-	if s10["common"] <= s10["rare"] or s10["rare"] <= s10["legendary"]:
-		fail("lucky=10 概率未递减：%.3f/%.3f/%.3f"
-			% [s10["common"], s10["rare"], s10["legendary"]])
-	if s10["legendary"] <= s0["legendary"] + 0.05:
-		fail("lucky=10 传说占比 %.3f 未明显高于 lucky=0 的 %.3f（需 +5pp 以上）"
+	var order_line0 := ""
+	var order_line10 := ""
+	for r in RARITY_ORDER:
+		order_line0 += "%s %.1f%% " % [r, s0[r] * 100.0]
+		order_line10 += "%s %.1f%% " % [r, s10[r] * 100.0]
+	print("lucky=0 : " + order_line0)
+	print("lucky=10: " + order_line10)
+	for r in RARITY_ORDER:
+		if s0[r] <= 0.0:
+			fail("lucky=0 %s 占比为 0（池缺失该档）" % r)
+	for i in RARITY_ORDER.size() - 1:
+		if s0[RARITY_ORDER[i]] <= s0[RARITY_ORDER[i + 1]]:
+			fail("lucky=0 概率未递减：%s=%.3f <= %s=%.3f"
+				% [RARITY_ORDER[i], s0[RARITY_ORDER[i]],
+					RARITY_ORDER[i + 1], s0[RARITY_ORDER[i + 1]]])
+		if s10[RARITY_ORDER[i]] <= s10[RARITY_ORDER[i + 1]]:
+			fail("lucky=10 概率未递减：%s=%.3f <= %s=%.3f"
+				% [RARITY_ORDER[i], s10[RARITY_ORDER[i]],
+					RARITY_ORDER[i + 1], s10[RARITY_ORDER[i + 1]]])
+	if s10["legendary"] <= s0["legendary"] + 0.04:
+		fail("lucky=10 红占比 %.3f 未明显高于 lucky=0 的 %.3f（需 +4pp 以上）"
 			% [s10["legendary"], s0["legendary"]])
-	if int(c0["common"]) + int(c0["rare"]) + int(c0["legendary"]) != 3000:
+	## 商店修复2（2026-08-13）：越稀有越难出 —— lucky=0 时传说占比显著低于普通
+	if s0["legendary"] > 0.15:
+		fail("lucky=0 红占比 %.3f 过高（应 <15%%，越稀有越难出）" % s0["legendary"])
+	if s0["common"] < 0.30:
+		fail("lucky=0 白占比 %.3f 过低（应 >30%%）" % s0["common"])
+	var sample_total := 0
+	for r in RARITY_ORDER:
+		sample_total += int(c0[r])
+	if sample_total != 9000:
 		fail("lucky=0 样本数异常：%s" % str(c0))
-	if int(c10["common"]) + int(c10["rare"]) + int(c10["legendary"]) != 3000:
+	sample_total = 0
+	for r in RARITY_ORDER:
+		sample_total += int(c10[r])
+	if sample_total != 9000:
 		fail("lucky=10 样本数异常：%s" % str(c10))
 
 func _shares(counts: Dictionary) -> Dictionary:
-	var total: float = float(int(counts["common"]) + int(counts["rare"]) + int(counts["legendary"]))
-	return {
-		"common": float(counts["common"]) / total,
-		"rare": float(counts["rare"]) / total,
-		"legendary": float(counts["legendary"]) / total,
-	}
+	var total := 0
+	for r in RARITY_ORDER:
+		total += int(counts[r])
+	var out := {}
+	for r in RARITY_ORDER:
+		out[r] = float(counts[r]) / float(total)
+	return out

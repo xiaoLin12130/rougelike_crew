@@ -1,0 +1,257 @@
+Godot Engine v4.7.1.stable.official.a13da4feb - https://godotengine.org
+
+ERROR: Failed to read the root certificate store.
+   at: get_system_ca_certificates (platform/windows/os_windows.cpp:2582)
+[SYNERGY] crit_synergy registered
+[SYNERGY] loaded: crit_synergy.gd
+[SYNERGY] curse_synergy registered
+[SYNERGY] loaded: curse_synergy.gd
+[SYNERGY] defense_synergy registered
+[SYNERGY] loaded: defense_synergy.gd
+[SYNERGY] fire_synergy registered
+[SYNERGY] loaded: fire_synergy.gd
+[SYNERGY] holy registered
+[SYNERGY] loaded: holy_synergy.gd
+[SYNERGY] ice_synergy registered
+[SYNERGY] loaded: ice_synergy.gd
+[SYNERGY] mech_items registered
+[SYNERGY] loaded: mech_items.gd
+[SYNERGY] melee_synergy registered
+[SYNERGY] loaded: melee_synergy.gd
+[SYNERGY] loaded: poison_synergy.gd
+[SYNERGY] loaded: summon_synergy.gd
+[SYNERGY] loaded: thunder_synergy.gd
+[SYNERGY] water_synergy registered
+[SYNERGY] loaded: water_synergy.gd
+[SYNERGY] wind_synergy registered
+[SYNERGY] loaded: wind_synergy.gd
+[AUTOPLAY] school=curse tags=["curse"] elements=[]
+[AUTOPLAY] started
+[AUTOPLAY] started instances=1
+[FONT] cn loaded=true path=res://assets/fonts/LXGWWenKai_subset.ttf
+[SPAWNER] setup at run.time=0.0 waves=3
+[SPAWNER] wave 1 active rel=0.0 abs=0.0 level_start=0.0
+[HB] t=1.0 paused=false frames=60 fps_now=60 hp=105 kills=0
+[HB] t=2.0 paused=false frames=121 fps_now=61 hp=105 kills=0
+[HB] t=3.0 paused=false frames=182 fps_now=61 hp=105 kills=0
+[HB] t=4.0 paused=false frames=243 fps_now=61 hp=105 kills=0
+[AUTOPLAY] t=5 hp=105 lv=1 kills=0 enemies=8 dps=17 grid=2 items=0 wave=1 dist=245 player=(588.795, 377.265) enemy=(468.3174, 164.1208) mv=(-0.87561, 0.483018) aim=(-0.503774, -0.863836)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "slime": 6, "bat": 2 }
+[HB] t=5.1 paused=false frames=304 fps_now=61 hp=105 kills=0
+[HB] t=6.1 paused=false frames=365 fps_now=61 hp=105 kills=0
+[AUTOPLAY] choices: 齐射·闪电=483, 顺风=103, 记忆-疾风=100
+[SYNERGY] formed: 连锁雷流
+[AUTOPLAY] levelup -> 齐射·闪电 score=483
+[AUTOPLAY] levelup -> 齐射·闪电 score=483
+[HB] t=7.1 paused=false frames=427 fps_now=62 hp=105 kills=10
+[HB] t=8.1 paused=false frames=489 fps_now=62 hp=105 kills=12
+[HB] t=9.1 paused=false frames=550 fps_now=61 hp=105 kills=15
+[AUTOPLAY] t=10 hp=105 lv=2 kills=19 enemies=15 dps=57 grid=3 items=0 wave=1 dist=185 player=(1217.758, 443.4852) enemy=(1072.441, 328.9294) mv=(0.336944, -0.941525) aim=(-0.774696, -0.632334)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "slime": 13, "bat": 2 }
+[HB] t=10.1 paused=false frames=611 fps_now=61 hp=105 kills=19
+[HB] t=11.1 paused=false frames=672 fps_now=61 hp=105 kills=19
+[AUTOPLAY] choices: 齐射·冰锥=420, 先祖图腾=50, 记忆-疾风=100
+[SYNERGY] formed: 冰霜流
+[AUTOPLAY] levelup -> 齐射·冰锥 score=420
+[AUTOPLAY] levelup -> 齐射·冰锥 score=420
+[HB] t=12.1 paused=false frames=735 fps_now=63 hp=115 kills=30
+[HB] t=13.1 paused=false frames=797 fps_now=62 hp=115 kills=37
+[HB] t=14.1 paused=false frames=859 fps_now=62 hp=115 kills=38
+[AUTOPLAY] t=15 hp=102 lv=3 kills=41 enemies=26 dps=92 grid=4 items=0 wave=1 dist=11 player=(798.3738, 634.1898) enemy=(807.5156, 628.0001) mv=(0.634029, 0.77331) aim=(0.952717, -0.30386)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "slime": 25, "bat": 1 }
+[HB] t=15.1 paused=false frames=922 fps_now=63 hp=102 kills=41
+[AUTOPLAY] choices: 破风=110, 圣光术架=109, 爆发·冰锥=212
+[AUTOPLAY] levelup -> 爆发·冰锥 score=212
+[AUTOPLAY] levelup -> 爆发·冰锥 score=212
+[HB] t=16.2 paused=false frames=984 fps_now=62 hp=125 kills=47
+[HB] t=17.2 paused=false frames=1045 fps_now=61 hp=125 kills=49
+[HB] t=18.2 paused=false frames=1107 fps_now=62 hp=116 kills=52
+[HB] t=19.2 paused=false frames=1169 fps_now=62 hp=116 kills=61
+[AUTOPLAY] t=20 hp=116 lv=4 kills=64 enemies=23 dps=101 grid=5 items=0 wave=1 dist=107 player=(1010.824, 207.6893) enemy=(951.2676, 296.0704) mv=(-1.0, 0.0) aim=(-0.579579, 0.814916)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "slime": 21, "bat": 2 }
+[HB] t=20.2 paused=false frames=1230 fps_now=61 hp=116 kills=64
+[SPAWNER] wave 2 active rel=21.0 abs=21.0 level_start=0.0
+[AUTOPLAY] choices: 分裂·冰锥=114, 轻身=50, 共鸣水晶=50
+[AUTOPLAY] levelup -> 分裂·冰锥 score=114
+[AUTOPLAY] levelup -> 分裂·冰锥 score=114
+[AUTOPLAY] self-heal unpause
+[AUTOPLAY] spell replace -> slot 1 score=217
+[AUTOPLAY] spell replace -> slot 0 (fallback)
+[HB] t=21.2 paused=false frames=1295 fps_now=65 hp=135 kills=76
+[HB] t=22.2 paused=false frames=1357 fps_now=62 hp=131 kills=78
+[HB] t=23.2 paused=false frames=1419 fps_now=62 hp=131 kills=89
+[HB] t=24.2 paused=false frames=1482 fps_now=63 hp=131 kills=91
+[AUTOPLAY] t=25 hp=125 lv=5 kills=98 enemies=30 dps=100 grid=5 items=0 wave=2 dist=119 player=(350.3726, 588.3523) enemy=(256.1991, 516.2094) mv=(0.26551, 0.964108) aim=(-0.804602, -0.593815)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "slime": 25, "bat": 5 }
+[HB] t=25.3 paused=false frames=1544 fps_now=62 hp=125 kills=98
+[HB] t=26.3 paused=false frames=1607 fps_now=63 hp=125 kills=102
+[HB] t=27.3 paused=false frames=1669 fps_now=62 hp=125 kills=107
+[HB] t=28.3 paused=false frames=1731 fps_now=62 hp=125 kills=113
+[AUTOPLAY] choices: 连发·旋风刃=-44, 迅捷=50, 霜之心=160
+[AUTOPLAY] levelup -> 霜之心 score=160
+[AUTOPLAY] levelup -> 霜之心 score=160
+[HB] t=29.3 paused=false frames=1794 fps_now=63 hp=145 kills=124
+[AUTOPLAY] t=30 hp=145 lv=6 kills=128 enemies=32 dps=100 grid=5 items=1 wave=2 dist=122 player=(1233.688, 655.787) enemy=(1133.039, 587.4751) mv=(0.0, -1.0) aim=(-0.814783, -0.579766)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "slime": 28, "bat": 4 }
+[HB] t=30.3 paused=false frames=1856 fps_now=62 hp=145 kills=130
+[HB] t=31.3 paused=false frames=1919 fps_now=63 hp=145 kills=136
+[HB] t=32.3 paused=false frames=1982 fps_now=63 hp=145 kills=140
+[HB] t=33.4 paused=false frames=2045 fps_now=63 hp=145 kills=148
+[HB] t=34.4 paused=false frames=2109 fps_now=64 hp=145 kills=162
+[AUTOPLAY] t=35 hp=145 lv=6 kills=163 enemies=38 dps=100 grid=5 items=1 wave=2 dist=26 player=(644.324, 212.2706) enemy=(627.5999, 232.7274) mv=(-0.986378, 0.164494) aim=(-0.687775, 0.725924)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "slime": 37, "bat": 1 }
+[HB] t=35.4 paused=false frames=2171 fps_now=62 hp=145 kills=163
+[HB] t=36.4 paused=false frames=2235 fps_now=64 hp=145 kills=174
+[AUTOPLAY] choices: 军团冲锋=110, 闪电核心=106, 穿透·冰锥=92
+[AUTOPLAY] levelup -> 军团冲锋 score=110
+[AUTOPLAY] levelup -> 军团冲锋 score=110
+[HB] t=37.4 paused=false frames=2297 fps_now=62 hp=155 kills=185
+[HB] t=38.4 paused=false frames=2358 fps_now=61 hp=155 kills=187
+[HB] t=39.4 paused=false frames=2420 fps_now=62 hp=155 kills=197
+[AUTOPLAY] t=40 hp=155 lv=7 kills=201 enemies=37 dps=100 grid=5 items=2 wave=2 dist=100 player=(972.4095, 673.5985) enemy=(898.8887, 605.3683) mv=(0.98739, -0.158307) aim=(-0.689441, -0.724342)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "slime": 37 }
+[HB] t=40.4 paused=false frames=2483 fps_now=63 hp=155 kills=205
+[HB] t=41.4 paused=false frames=2546 fps_now=63 hp=155 kills=219
+[HB] t=42.4 paused=false frames=2610 fps_now=64 hp=155 kills=247
+[HB] t=43.4 paused=false frames=2672 fps_now=62 hp=155 kills=255
+[AUTOPLAY] choices: 集火=110, 爆发·闪电=-32, 冰霜迅捷=300
+[AUTOPLAY] levelup -> 冰霜迅捷 score=300
+[AUTOPLAY] levelup -> 冰霜迅捷 score=300
+[HB] t=44.4 paused=false frames=2735 fps_now=63 hp=165 kills=275
+[SPAWNER] wave 3 active rel=45.0 abs=45.0 level_start=0.0
+[AUTOPLAY] t=45 hp=165 lv=8 kills=284 enemies=12 dps=110 grid=5 items=3 wave=3 dist=190 player=(683.6068, 250.8724) enemy=(837.6327, 362.7289) mv=(-0.539507, 0.841981) aim=(0.799959, 0.600055)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "slime": 12 }
+[HB] t=45.4 paused=false frames=2798 fps_now=63 hp=165 kills=296
+[HB] t=46.4 paused=false frames=2859 fps_now=61 hp=165 kills=303
+[HB] t=47.4 paused=false frames=2920 fps_now=61 hp=165 kills=305
+[HB] t=48.4 paused=false frames=2983 fps_now=63 hp=159 kills=308
+[HB] t=49.4 paused=false frames=3044 fps_now=61 hp=147 kills=309
+[AUTOPLAY] t=50 hp=147 lv=8 kills=317 enemies=31 dps=110 grid=5 items=3 wave=3 dist=125 player=(948.6219, 551.5694) enemy=(1014.385, 444.8934) mv=(0.714495, 0.699641) aim=(0.414235, -0.91017)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "slime": 18, "bat": 6, "goblin": 6, "wizard": 1 }
+[HB] t=50.5 paused=false frames=3106 fps_now=62 hp=147 kills=317
+[HB] t=51.5 paused=false frames=3169 fps_now=63 hp=147 kills=321
+[HB] t=52.5 paused=false frames=3231 fps_now=62 hp=147 kills=322
+[HB] t=53.5 paused=false frames=3294 fps_now=63 hp=147 kills=333
+[HB] t=54.5 paused=false frames=3357 fps_now=63 hp=126 kills=344
+[AUTOPLAY] t=55 hp=126 lv=8 kills=344 enemies=32 dps=110 grid=5 items=3 wave=3 dist=20 player=(1086.721, 141.8342) enemy=(1090.322, 161.0543) mv=(-1.0, 0.0) aim=(0.392272, 0.91985)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "slime": 22, "bat": 3, "goblin": 6, "wizard": 1 }
+[HB] t=55.5 paused=false frames=3419 fps_now=62 hp=126 kills=348
+[HB] t=56.5 paused=false frames=3481 fps_now=62 hp=116 kills=352
+[AUTOPLAY] choices: 折磨循环=210, 硬化=60, 环绕·冰锥=10
+[AUTOPLAY] levelup -> 折磨循环 score=210
+[AUTOPLAY] levelup -> 折磨循环 score=210
+[HB] t=57.5 paused=false frames=3545 fps_now=64 hp=175 kills=364
+[HB] t=58.5 paused=false frames=3607 fps_now=62 hp=171 kills=369
+[HB] t=59.5 paused=false frames=3669 fps_now=62 hp=171 kills=377
+[AUTOPLAY] t=60 hp=171 lv=9 kills=378 enemies=31 dps=110 grid=5 items=4 wave=3 dist=140 player=(233.2297, 353.2666) enemy=(250.9443, 492.3985) mv=(0.990141, -0.140075) aim=(0.990141, -0.140075)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "slime": 22, "bat": 2, "goblin": 6, "wizard": 1 }
+[HB] t=60.5 paused=false frames=3730 fps_now=61 hp=161 kills=380
+[HB] t=61.5 paused=false frames=3792 fps_now=62 hp=161 kills=383
+[HB] t=62.5 paused=false frames=3855 fps_now=63 hp=151 kills=395
+[HB] t=63.6 paused=false frames=3916 fps_now=61 hp=151 kills=400
+[HB] t=64.6 paused=false frames=3978 fps_now=62 hp=151 kills=404
+[AUTOPLAY] t=65 hp=141 lv=9 kills=412 enemies=26 dps=110 grid=5 items=4 wave=3 dist=120 player=(854.6492, 389.6394) enemy=(734.7432, 382.7011) mv=(-0.053514, -0.998567) aim=(-0.989564, 0.144096)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "slime": 19, "goblin": 6, "wizard": 1 }
+[HB] t=65.6 paused=false frames=4041 fps_now=63 hp=141 kills=415
+[HB] t=66.6 paused=false frames=4104 fps_now=63 hp=129 kills=421
+[HB] t=67.6 paused=false frames=4168 fps_now=64 hp=129 kills=436
+[HB] t=68.6 paused=false frames=4230 fps_now=62 hp=129 kills=441
+[HB] t=69.6 paused=false frames=4292 fps_now=62 hp=129 kills=445
+[AUTOPLAY] t=70 hp=129 lv=9 kills=448 enemies=28 dps=110 grid=5 items=4 wave=3 dist=180 player=(346.612, 503.0723) enemy=(458.0583, 361.2604) mv=(0.785556, 0.61879) aim=(0.632243, -0.77477)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "goblin": 1, "slime": 26, "bat": 1 }
+[AUTOPLAY] choices: 爆发·冰锥=57, 静电积累=60, 迅捷护符=50
+[AUTOPLAY] levelup -> 静电积累 score=60
+[AUTOPLAY] levelup -> 静电积累 score=60
+[HB] t=70.6 paused=false frames=4355 fps_now=63 hp=185 kills=468
+[HB] t=71.6 paused=false frames=4417 fps_now=62 hp=185 kills=472
+[HB] t=72.6 paused=false frames=4481 fps_now=64 hp=185 kills=482
+[HB] t=73.6 paused=false frames=4545 fps_now=64 hp=176 kills=493
+[HB] t=74.6 paused=false frames=4607 fps_now=62 hp=176 kills=494
+[AUTOPLAY] t=75 hp=176 lv=10 kills=497 enemies=4 dps=110 grid=5 items=5 wave=3 dist=149 player=(1110.607, 512.8386) enemy=(1010.431, 403.0934) mv=(0.68156, -0.731762) aim=(-0.657636, -0.753336)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "slime": 4 }
+[HB] t=75.7 paused=false frames=4669 fps_now=62 hp=176 kills=498
+[HB] t=76.7 paused=false frames=4730 fps_now=61 hp=176 kills=501
+[HB] t=77.7 paused=false frames=4791 fps_now=61 hp=176 kills=501
+[HB] t=78.7 paused=false frames=4853 fps_now=62 hp=176 kills=506
+[HB] t=79.7 paused=false frames=4917 fps_now=64 hp=167 kills=514
+[AUTOPLAY] t=80 hp=167 lv=10 kills=514 enemies=2 dps=110 grid=5 items=5 wave=3 dist=131 player=(757.7784, 327.9868) enemy=(631.3495, 363.5639) mv=(0.966398, 0.257051) aim=(-0.04325, 0.999064)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "slime_king": 1, "slime_king_hp": "361/600", "slime": 1 }
+[HB] t=80.7 paused=false frames=4978 fps_now=61 hp=167 kills=516
+[HB] t=81.7 paused=false frames=5041 fps_now=63 hp=167 kills=527
+[HB] t=82.7 paused=false frames=5104 fps_now=63 hp=167 kills=537
+[HB] t=83.7 paused=false frames=5166 fps_now=62 hp=167 kills=541
+[HB] t=84.7 paused=false frames=5228 fps_now=62 hp=167 kills=550
+[AUTOPLAY] t=85 hp=167 lv=10 kills=551 enemies=1 dps=110 grid=5 items=5 wave=3 dist=160 player=(853.8809, 375.1441) enemy=(743.5292, 490.4883) mv=(0.572965, 0.81958) aim=(-0.676356, 0.736575)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "slime_king": 1, "slime_king_hp": "54/600" }
+[AUTOPLAY] self-heal unpause
+[AUTOPLAY] wand shop handled
+[AUTOPLAY] wand shop handled
+[SPAWNER] setup at run.time=85.3 waves=3
+[AUTOPLAY] wand shop handled
+[SPAWNER] wave 1 active rel=0.0 abs=85.3 level_start=85.3
+[HB] t=85.7 paused=false frames=5291 fps_now=63 hp=195 kills=552
+[HB] t=86.8 paused=false frames=5352 fps_now=61 hp=195 kills=553
+[HB] t=87.8 paused=false frames=5413 fps_now=61 hp=183 kills=553
+[HB] t=88.8 paused=false frames=5474 fps_now=61 hp=159 kills=554
+[HB] t=89.8 paused=false frames=5537 fps_now=63 hp=159 kills=556
+[AUTOPLAY] t=90 hp=159 lv=10 kills=556 enemies=24 dps=118 grid=5 items=5 wave=0 dist=252 player=(691.3832, 244.2832) enemy=(523.7172, 432.7691) mv=(-0.954177, -0.299244) aim=(-0.673467, 0.739217)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "goblin": 17, "bat": 7 }
+[HB] t=90.8 paused=false frames=5598 fps_now=61 hp=147 kills=556
+[HB] t=91.8 paused=false frames=5660 fps_now=62 hp=135 kills=561
+[HB] t=92.8 paused=false frames=5724 fps_now=64 hp=123 kills=565
+[HB] t=93.8 paused=false frames=5786 fps_now=62 hp=111 kills=567
+[AUTOPLAY] choices: 硬化=60, 齐射·旋风刃=65, 霜晶=110
+[AUTOPLAY] levelup -> 霜晶 score=110
+[AUTOPLAY] levelup -> 霜晶 score=110
+[HB] t=94.8 paused=false frames=5849 fps_now=63 hp=183 kills=571
+[AUTOPLAY] t=95 hp=183 lv=11 kills=572 enemies=31 dps=118 grid=5 items=6 wave=0 dist=37 player=(8.068238, 324.6023) enemy=(42.11041, 340.2598) mv=(0.0, 1.0) aim=(0.875627, 0.482988)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "goblin": 26, "bat": 5 }
+[HB] t=95.8 paused=false frames=5911 fps_now=62 hp=183 kills=575
+[HB] t=96.8 paused=false frames=5972 fps_now=61 hp=171 kills=575
+[HB] t=97.8 paused=false frames=6034 fps_now=62 hp=159 kills=579
+[HB] t=98.8 paused=false frames=6096 fps_now=62 hp=132 kills=583
+[HB] t=99.8 paused=false frames=6157 fps_now=61 hp=119 kills=584
+[AUTOPLAY] t=100 hp=119 lv=11 kills=586 enemies=30 dps=118 grid=5 items=6 wave=0 dist=166 player=(830.1786, 639.7883) enemy=(992.538, 673.1543) mv=(0.516882, -0.856057) aim=(0.9831, 0.183072)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "goblin": 27, "bat": 3 }
+[HB] t=100.8 paused=false frames=6219 fps_now=62 hp=102 kills=586
+[HB] t=101.9 paused=false frames=6282 fps_now=63 hp=90 kills=588
+[HB] t=102.9 paused=false frames=6344 fps_now=62 hp=90 kills=589
+[HB] t=103.9 paused=false frames=6405 fps_now=61 hp=66 kills=592
+[HB] t=104.9 paused=false frames=6468 fps_now=63 hp=54 kills=599
+[AUTOPLAY] t=105 hp=54 lv=11 kills=599 enemies=31 dps=118 grid=5 items=6 wave=0 dist=79 player=(1142.289, 578.9866) enemy=(1159.318, 501.95) mv=(-0.707107, 0.707107) aim=(-0.289311, 0.957235)
+[HUD] item_slots=-1 grid_slots=-1
+[KINDS] { "goblin": 28, "bat": 3 }
+[HB] t=105.9 paused=false frames=6530 fps_now=62 hp=35 kills=599
+[HB] t=106.9 paused=false frames=6593 fps_now=63 hp=20 kills=603
+[HB] t=107.9 paused=false frames=6655 fps_now=62 hp=8 kills=609
+[AUTOPLAY] RESULT=DEFEAT kills=609 time=108 loop=1 level=2 hp=0 gold=77
+[AUTOPLAY] RESULT=DEFEAT kills=609 time=108 loop=1 level=2 plv=11 hp=0 maxhp=205 gold=77 wave=3
+[BUILD] school=curse grid=[ice_shard+orbit, ice_shard+split, lightning+spread, ice_shard+spread, ice_shard+burst] items=[trinket_frostx1, summon_m10x1, ice_glacial_hastex1, curse_agony_loopx1, thunder_m3x1, ice_1x1] wands=["basic_wand"]
+ERROR: 10 RID allocations of type 'P11GodotArea2D' were leaked at exit.
+ERROR: 1 RID allocations of type 'P12GodotShape2D' were leaked at exit.
+WARNING: 30 RIDs of type "CanvasItem" were leaked.
+   at: _free_rids (servers/rendering/renderer_canvas_cull.cpp:2735)
+WARNING: 75 ObjectDB instances were leaked at exit (run with `--verbose` for details).
+   at: cleanup (core/object/object.cpp:2536)
+ERROR: 22 resources still in use at exit (run with --verbose for details).
+   at: clear (core/io/resource.cpp:822)

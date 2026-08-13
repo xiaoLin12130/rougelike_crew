@@ -1,4 +1,4 @@
-extends Node
+extends SynergyBase
 ## 诅咒弱化流 · 机制脚本（咒M1 传染诅咒 / 咒M2 痛苦加深 / 咒M3 虚弱打击 / 咒M4 恐惧 /
 ## 咒M5 折磨循环 / 咒M6 失衡 / 咒M7 禁疗领域 / 咒M8 厄运 / 咒M9 反噬 / 咒M10 万咒归一），
 ## 并承载咒1-咒10 数值构筑在战斗中的实际结算。
@@ -95,14 +95,12 @@ var _player: Node2D
 
 
 func _ready() -> void:
-	if SynergyRegistry == null or EventBus == null:
-		push_warning("[CurseSynergy] SynergyRegistry/EventBus 不可用，诅咒系机制未注册")
-		return
-	SynergyRegistry.register("enemy_status", _on_enemy_status)      ## 状态结算（恐惧/失衡补判）
-	SynergyRegistry.register("enemy_hit", _on_enemy_hit)            ## 咒M2 痛苦加深
-	SynergyRegistry.register("enemy_died", _on_enemy_died)          ## 咒M8 厄运 / 咒M10 万咒归一 + 清理
-	SynergyRegistry.register("projectile_hit", _on_projectile_hit)  ## 咒M3 虚弱打击 / 咒10 厄运预感
-	SynergyRegistry.register("player_hit", _on_player_hit)          ## 咒M9 反噬（主线程接线点）
+	super._ready()
+	_register("enemy_status", _on_enemy_status)      ## 状态结算（恐惧/失衡补判）
+	_register("enemy_hit", _on_enemy_hit)            ## 咒M2 痛苦加深
+	_register("enemy_died", _on_enemy_died)          ## 咒M8 厄运 / 咒M10 万咒归一 + 清理
+	_register("projectile_hit", _on_projectile_hit)  ## 咒M3 虚弱打击 / 咒10 厄运预感
+	_register("player_hit", _on_player_hit)          ## 咒M9 反噬（主线程接线点）
 	EventBus.apply_status.connect(_on_apply_status)                 ## debuff 跟踪中枢（传染/折磨循环等）
 	EventBus.player_hit.connect(_on_player_hit_event)               ## 咒M9 兜底（当前主代码只发 EventBus）
 	print("[SYNERGY] curse_synergy registered")
@@ -545,14 +543,6 @@ func _curse_power() -> int:
 		if str(id).begins_with("curse_"):
 			n += int(GameState.run["items"][id])
 	return n
-
-
-func _stacks(id: String) -> int:
-	if GameState == null or not GameState.has_method("total_stacks"):
-		return 0
-	return maxi(int(GameState.total_stacks(id)), 0)
-
-
 func _curve_value(id: String) -> float:
 	if GameState == null:
 		return 0.0

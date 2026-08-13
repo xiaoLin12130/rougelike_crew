@@ -65,11 +65,15 @@ func _build_scene_background(theme: String) -> void:
 	var src_img := (load(path) as Texture2D).get_image()
 	var square_tex: Texture2D = load(path)
 	if src_img != null:
+		## blit_rect 要求源/目标图格式一致：PNG 解码格式可能与 RGBA8 不同，先统一再拷贝
+		src_img.convert(Image.FORMAT_RGBA8)
 		var square := Image.create(1280, 1280, false, Image.FORMAT_RGBA8)
+		## 性能优化（批次B）：草地段 y 201..720（519 行）纵向无缝拼接成 1280x1280。
+		## 每行一次 blit_rect 批量拷贝（共 1280 次），替代原 1280x1280 次 set_pixel
+		## （约 164 万次逐像素 GDScript 调用），避免每次切关的背景生成卡顿。
 		for y in 1280:
 			var src_y := 201 + (y % 519)
-			for x in 1280:
-				square.set_pixel(x, y, src_img.get_pixel(x, src_y))
+			square.blit_rect(src_img, Rect2i(0, src_y, 1280, 1), Vector2i(0, y))
 		square_tex = ImageTexture.create_from_image(square)
 	# 世界空间背景：覆盖整个地图（0,0 起 1280x1280），跟随世界滚动
 	var bg := Sprite2D.new()

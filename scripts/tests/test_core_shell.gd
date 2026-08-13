@@ -162,6 +162,10 @@ func _test_pool_filter() -> void:
 		_fail("invalid combos in pool: %d" % invalid)
 	# 确定性验证：全部外壳被过滤的核心（狂暴/回响）只能以"原生"出现
 	var saved_cores: Array = GameState.tables["spells"]["cores"]
+	var saved_grid: Array = GameState.run.get("grid", [])
+	# 元素门控（08-12）：_make_spell_choice 仅生成已持有元素的核心——
+	# 狂暴（buff）/回响（void）需先放入法术网格，否则被门控成空选项（测试断言漂移修复）
+	GameState.run.grid = [{"core": "frenzy", "shell": ""}, {"core": "mana_echo", "shell": ""}]
 	var frenzy_core := _core("frenzy")
 	var echo_core := _core("mana_echo")
 	for entry in [["frenzy", frenzy_core], ["mana_echo", echo_core]]:
@@ -170,6 +174,7 @@ func _test_pool_filter() -> void:
 		if not str(c2.get("id", "")).ends_with(str(entry[0]) + ":"):
 			_fail("%s must fall back to native (no shell), got %s" % [str(entry[0]), str(c2.get("id"))])
 	GameState.tables["spells"]["cores"] = saved_cores
+	GameState.run.grid = saved_grid
 	# 矩阵抽查（确定性断言）
 	var matrix := {
 		"whirl_blade:orbit": true, "whirl_blade:split": true, "whirl_blade:homing": true,
@@ -194,7 +199,12 @@ func _test_pool_filter() -> void:
 
 func _test_summon_rapid() -> void:
 	var saved_items: Dictionary = GameState.run.items
-	GameState.run.items = {"summon_book": 3}  # 总上限 = 1 + 3 + 1 = 5，容纳 3 只
+	GameState.run.items = {"summon_1": 3}  # 总上限 = 1 + 3 = 4，容纳 3 只（批次A去重：summon_book → summon_1）
+	# 临时清空法术网格：caster 是活节点，其 _physics_process 会按 run.grid 自动施放
+	# 随机开局技能（偶发抽到 summon_bat×rapid → 多召 3 只，bat max_count=1 存活 1 只 →
+	# "expect 3, got 4" 偶发）。本用例只验证 _spawn_summon 直调语义，不需要自动施法。
+	var saved_grid: Array = GameState.run.get("grid", [])
+	GameState.run.grid = []
 	await _clear_summons()
 	var caster := SPELL_CASTER_SCRIPT.new()
 	add_child(caster)
@@ -219,6 +229,7 @@ func _test_summon_rapid() -> void:
 	await _clear_summons()
 	caster.queue_free()
 	GameState.run.items = saved_items
+	GameState.run.grid = saved_grid
 	await get_tree().process_frame
 
 

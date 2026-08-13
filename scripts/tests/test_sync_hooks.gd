@@ -154,7 +154,8 @@ func _test_crit_g3() -> void:
 	GameState.run.crit_chance = 0.0
 	e = _spawn_enemy(Vector2(500, 300))
 	_trigger("projectile_hit", {"enemy": e, "dmg": 100, "element": "fire", "crit": true, "pos": e.global_position})
-	await get_tree().process_frame
+	# 弹射弹在敌人位置生成（obtain 同步入组），下一物理帧即命中源敌人并回收——
+	# 若先 await 再查组，偶发撞上"已回收"判定为未生成（断言时机竞态修复）
 	if get_tree().get_nodes_in_group("player_projectile").is_empty():
 		_fail("crit_crit_bounce ricochet not spawned")
 	await _clear_entities()
@@ -367,9 +368,9 @@ func _test_ice_1() -> void:
 # ================= ⑥ 召1 召唤之书：召唤总上限 +1 =================
 
 func _test_summon_1() -> void:
-	# summon_1=1 → 总上限 = 1 + 0 + 1 = 2
+	# summon_1=1 → 总上限 = 1 + 1 = 2
 	_items({"summon_1": 1})
-	var cap: int = GameState.total_stacks("summon_1") + GameState.total_stacks("summon_book") + 1
+	var cap: int = GameState.total_stacks("summon_1") + 1
 	for i in 5:
 		var s := SUMMON_SCRIPT.new()
 		s.setup(_player, 10.0, "summon", "")
@@ -381,9 +382,9 @@ func _test_summon_1() -> void:
 	if alive > cap:
 		_fail("summon_1 cap not enforced (%d > %d)" % [alive, cap])
 	await _clear_entities()
-	# summon_1 + summon_book 叠加 → 上限 3
-	_items({"summon_1": 1, "summon_book": 1})
-	cap = GameState.total_stacks("summon_1") + GameState.total_stacks("summon_book") + 1
+	# summon_1 两件 → 上限 3（批次A去重：summon_book → summon_1）
+	_items({"summon_1": 2})
+	cap = GameState.total_stacks("summon_1") + 1
 	for i in 5:
 		var s2 := SUMMON_SCRIPT.new()
 		s2.setup(_player, 10.0, "summon", "")
@@ -423,29 +424,31 @@ func _test_trinket_ember() -> void:
 func _test_player_speed() -> void:
 	var p = load("res://scenes/game/player.tscn").instantiate()
 	add_child(p)
-	# 追风 + 疾风靴 + 水M7 洋流：220 × (1+0.1+0.2) × 1.2 = 343.2
+	# 基准移速从 balance.json 读取（不再硬编码 220——balance 现为 200，与 player.gd 同源）
+	var base_speed: float = float(GameState.balance().get("player", {}).get("speed", 220.0))
+	# 追风 + 疾风靴 + 水M7 洋流：base × (1+0.1+0.2) × 1.2
 	_items({"wind_boots": 1})
 	GameState.run.wind_kill_speed_bonus = 0.2
 	GameState.run.wind_m6_speed_bonus = 0.0
 	GameState.run.wind_speed_cap_bonus = 0.0
 	GameState.run.water_m7_speed = 1.2
 	var v0: float = p._move_speed()
-	if absf(v0 - 343.2) > 0.01:
+	if absf(v0 - base_speed * 1.3 * 1.2) > 0.01:
 		_fail("player speed agg wrong (%.2f)" % v0)
-	# 移速上限：加成 1.6 被默认 cap 1.0 截断 → 220×2.0 = 440
+	# 移速上限：加成 1.6 被默认 cap 1.0 截断 → base×2.0
 	_items({})
 	GameState.run.wind_kill_speed_bonus = 0.8
 	GameState.run.wind_m6_speed_bonus = 0.8
 	GameState.run.wind_speed_cap_bonus = 0.0
 	GameState.run.water_m7_speed = 1.0
 	var v1: float = p._move_speed()
-	if absf(v1 - 440.0) > 0.01:
+	if absf(v1 - base_speed * 2.0) > 0.01:
 		_fail("speed cap not applied (%.2f)" % v1)
-	# 移10 风行者提升上限：cap 1.5 → 220×2.5 = 550
+	# 移10 风行者提升上限：cap 1.5 → base×2.5
 	GameState.run.wind_speed_cap_bonus = 0.5
 	GameState.run.water_m7_speed = 1.0
 	var v2: float = p._move_speed()
-	if absf(v2 - 550.0) > 0.01:
+	if absf(v2 - base_speed * 2.5) > 0.01:
 		_fail("wind_speed_cap_bonus not raising cap (%.2f)" % v2)
 	GameState.run.wind_kill_speed_bonus = 0.0
 	GameState.run.wind_m6_speed_bonus = 0.0

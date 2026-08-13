@@ -15,11 +15,11 @@
   4. 元素归属：element_bonus 与 school 对应（fire 法杖只给 fire 加成等）
   5. desc 一致性铁律：description 必须覆盖每个 shape_mods / cd_mult /
      damage_mult / element_bonus 的实际效果（关键词断言）
-  6. 稀有度重分类（2026-08-12）：连发类（shape=rapid 或 shots>=3）必须 legendary；
-     每流派至少 1 把 legendary；price 与 rarity 区间严格正相关不重叠；
+  6. 稀有度五档（2026-08-13）：连发类（shape=rapid 或 shots>=3）必须 legendary（红）；
+     每流派至少 1 把 legendary；price 与 rarity 五档区间严格正相关不重叠；
      同流派内传说用途指纹两两互异
   7. 抽取模拟：1000 次 3 连抽（镜像 wand_shop.gd 公式）——
-     lucky=0 时 普通>稀有>传说 递减；lucky=10 时传说占比明显高于 lucky=0
+     lucky=0 时 白>绿>蓝>金>红 递减；lucky=10 时红占比明显高于 lucky=0（+5pp 以上）
 """
 
 import json
@@ -31,16 +31,17 @@ import sys
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
 FAILS = []
 
-# 与 wand_shop.gd 保持一致的加权公式常量
-# （2026-08-12：稀有度重分类后传说池 21 把，common 60→70 / legendary 15→13
-#  保持 lucky=0/lucky=10 下 common > rare > legendary 分层递减语义）
-RARITY_WEIGHT = {"common": 70.0, "rare": 25.0, "legendary": 13.0}
-LUCKY_RARITY_BOOST = {"common": 1.0, "rare": 2.0, "legendary": 4.0}
+# 与 wand_shop.gd 保持一致的加权公式常量（2026-08-13 五档实施：
+# 池 7/6/11/10/21 下 lucky=0/lucky=10 均保持 白>绿>蓝>金>红 严格递减）
+RARITY_WEIGHT = {"common": 100.0, "uncommon": 70.0, "rare": 30.0, "epic": 20.0, "legendary": 6.0}
+LUCKY_RARITY_BOOST = {"common": 1.0, "uncommon": 1.5, "rare": 2.0, "epic": 2.5, "legendary": 4.0}
 LUCKY_PER_STACK = 0.06
 
 PRICE_BANDS = {
-    "common": (120, 260),
-    "rare": (300, 600),
+    "common": (120, 250),
+    "uncommon": (260, 360),
+    "rare": (370, 550),
+    "epic": (560, 690),
     "legendary": (700, 1200),
 }
 VALID_SHAPES = {
@@ -186,17 +187,17 @@ def main():
         n_leg = sum(1 for w in wands if w.get("school") == s and w.get("rarity") == "legendary")
         check(n_leg >= 1, "流派 %s 没有 legendary 法杖" % s)
 
-    # 6c. price 与 rarity 正相关：三档价格区间严格不重叠
+    # 6c. price 与 rarity 正相关：五档价格区间严格不重叠
     price_by_rarity = {}
     for w in wands:
         price_by_rarity.setdefault(w["rarity"], []).append(w["price"])
-    p_c = price_by_rarity.get("common", [])
-    p_r = price_by_rarity.get("rare", [])
-    p_l = price_by_rarity.get("legendary", [])
-    check(max(p_c) < min(p_r), "common 最高价 %d 应低于 rare 最低价 %d（正相关）"
-          % (max(p_c), min(p_r)))
-    check(max(p_r) < min(p_l), "rare 最高价 %d 应低于 legendary 最低价 %d（正相关）"
-          % (max(p_r), min(p_l)))
+    order = ("common", "uncommon", "rare", "epic", "legendary")
+    for lo_key, hi_key in zip(order, order[1:]):
+        p_lo = price_by_rarity.get(lo_key, [])
+        p_hi = price_by_rarity.get(hi_key, [])
+        check(max(p_lo) < min(p_hi),
+              "%s 最高价 %d 应低于 %s 最低价 %d（正相关）"
+              % (lo_key, max(p_lo), hi_key, min(p_hi)))
 
     # 6d. 同流派内传说法杖用途两两互异（跨流派 rapid 连发共享指纹属预期）
     leg_fps = {}
@@ -213,7 +214,7 @@ def main():
         wid = w.get("id", "?")
         for k in REQUIRED_KEYS:
             check(k in w, "[%s] 缺少字段 %s" % (wid, k))
-        check(w.get("rarity") in ("common", "rare", "legendary"),
+        check(w.get("rarity") in ("common", "uncommon", "rare", "epic", "legendary"),
               "[%s] rarity 非法：%s" % (wid, w.get("rarity")))
         icon = str(w.get("icon", ""))
         check(icon.startswith("res://"), "[%s] icon 应使用 res:// 路径" % wid)
@@ -282,7 +283,7 @@ def main():
     trials = 1000
 
     def simulate(lucky):
-        counts = {"common": 0, "rare": 0, "legendary": 0}
+        counts = {"common": 0, "uncommon": 0, "rare": 0, "epic": 0, "legendary": 0}
         for _ in range(trials):
             for w in weighted_pick(wands, lucky, 3):
                 counts[w["rarity"]] += 1
@@ -291,14 +292,19 @@ def main():
 
     s0 = simulate(0)
     s10 = simulate(10)
-    check(s0["common"] > s0["rare"] > s0["legendary"],
-          "lucky=0 应 普通>稀有>传说，实际 %.3f/%.3f/%.3f"
-          % (s0["common"], s0["rare"], s0["legendary"]))
-    check(s10["common"] > s10["rare"] > s10["legendary"],
-          "lucky=10 应仍 普通>稀有>传说，实际 %.3f/%.3f/%.3f"
-          % (s10["common"], s10["rare"], s10["legendary"]))
+    def strictly_decreasing(shares):
+        for a, b in zip(order, order[1:]):
+            if shares[a] <= shares[b]:
+                return False
+        return True
+    check(strictly_decreasing(s0),
+          "lucky=0 应 白>绿>蓝>金>红，实际 %s"
+          % ", ".join("%s=%.3f" % (k, s0[k]) for k in order))
+    check(strictly_decreasing(s10),
+          "lucky=10 应仍 白>绿>蓝>金>红，实际 %s"
+          % ", ".join("%s=%.3f" % (k, s10[k]) for k in order))
     check(s10["legendary"] > s0["legendary"] + 0.05,
-          "lucky=10 传说占比 %.3f 应明显高于 lucky=0 的 %.3f（+5pp 以上）"
+          "lucky=10 红占比 %.3f 应明显高于 lucky=0 的 %.3f（+5pp 以上）"
           % (s10["legendary"], s0["legendary"]))
 
     # 8. 汇总输出
@@ -308,13 +314,13 @@ def main():
         len(wands), len(schools), len(aoe_wands),
         100.0 * len(aoe_wands) / len(wands),
         {r: sum(1 for w in wands if w["rarity"] == r)
-         for r in ("common", "rare", "legendary")}))
+         for r in ("common", "uncommon", "rare", "epic", "legendary")}))
     print("distinct uses per school: %s" % per_school)
     print("aoe wands: %s" % ", ".join(w["id"] for w in aoe_wands))
-    print("sim lucky=0 : common %.1f%% rare %.1f%% legendary %.1f%%"
-          % (s0["common"] * 100, s0["rare"] * 100, s0["legendary"] * 100))
-    print("sim lucky=10: common %.1f%% rare %.1f%% legendary %.1f%%"
-          % (s10["common"] * 100, s10["rare"] * 100, s10["legendary"] * 100))
+    print("sim lucky=0 : %s"
+          % " ".join("%s %.1f%%" % (k, s0[k] * 100) for k in order))
+    print("sim lucky=10: %s"
+          % " ".join("%s %.1f%%" % (k, s10[k] * 100) for k in order))
 
     if FAILS:
         print("FAILED (%d):" % len(FAILS))

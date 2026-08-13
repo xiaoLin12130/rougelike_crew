@@ -1,4 +1,4 @@
-extends Node
+extends SynergyBase
 ## 水控场流机制脚本（水M1 水泽 ~ 水M10 水龙卷，SynergyRegistry 钩子实现）
 ## ============================================================
 ## 挂载方式：由 SynergyRegistry.load_synergy_scripts() 自动扫描
@@ -74,8 +74,6 @@ const TORNADO_PUSH_BASE := 26.0    ## 击退 px/s（水7 激流加成）
 const PRUNE_LIMIT := 256           ## 跟踪字典防泄漏阈值
 
 ## ===== 运行状态 =====
-var _reg: Node = null
-var _registered := {}              ## kind -> Callable（注销用）
 var _zones: Array = []             ## 存活区域节点（上限 ZONE_MAX）
 var _root_acc := {}                ## 水M5 潮汐锁定：enemy instance_id -> 累计秒
 var _storm_left := STORM_INTERVAL
@@ -85,10 +83,7 @@ var _curtained := {}               ## 水M6 已减速弹幕标记（enemy_bullet
 
 
 func _ready() -> void:
-	_reg = get_node_or_null("/root/SynergyRegistry")
-	if _reg == null or not _reg.has_method("register"):
-		push_warning("[WaterSynergy] SynergyRegistry 不可用，水系机制未注册")
-		return
+	super._ready()
 	_register("enemy_died", _on_enemy_died)        ## 水M3 藤蔓缠绕 / 水M10 水龙卷
 	_register("enemy_hit", _on_enemy_hit)          ## 水M4 湿润导电 / 水M9 沸腾 / 水9 沼泽
 	_register("projectile_hit", _on_projectile_hit) ## 水M1 水泽
@@ -96,7 +91,7 @@ func _ready() -> void:
 
 
 func _exit_tree() -> void:
-	_unregister_all()
+	super._exit_tree()
 	_prune_zones(true)
 
 
@@ -108,28 +103,6 @@ func _process(delta: float) -> void:
 	_tick_player_current()          ## 水M7 洋流
 	_prune_zones(false)
 	_prune_trackers()
-
-
-## ===== 注册 / 注销（防御式）=====
-
-func _register(kind: String, cb: Callable) -> void:
-	if _reg == null or not _reg.has_method("register"):
-		return
-	_reg.register(kind, cb)
-	_registered[kind] = cb
-
-
-func _unregister_all() -> void:
-	if _reg == null:
-		return
-	var hooks = _reg.get("_hooks")
-	if hooks == null or not (hooks is Dictionary):
-		return
-	for kind in _registered:
-		var arr = hooks.get(kind)
-		if arr is Array:
-			arr.erase(_registered[kind])
-	_registered.clear()
 
 
 ## ===== 水M1 水泽：水弹命中留下 1.5-2s 减速区域（重叠可叠加）=====
@@ -400,17 +373,6 @@ func _apply_root(enemy: Node) -> void:
 	if cur == null:
 		return
 	enemy.set("_root_left", maxf(float(cur), ROOT_DURATION))
-
-
-## ===== 工具函数（全部防御式）=====
-
-func _stacks(id: String) -> int:
-	if GameState == null:
-		return 0
-	var items: Dictionary = GameState.run.get("items", {})
-	return maxi(int(items.get(id, 0)), 0)
-
-
 ## 持有 water_ 前缀构筑总堆叠数（机制强度主驱动）
 func _water_stacks() -> int:
 	if GameState == null:

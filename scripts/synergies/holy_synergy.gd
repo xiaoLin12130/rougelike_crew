@@ -1,4 +1,4 @@
-extends Node
+extends SynergyBase
 ## 圣光庇护流 · 机制脚本（光M1 圣盾护佑 / 光M2 致盲扩散 / 光M3 圣光净化 /
 ## 光M4 治疗光环 / 光M5 光矛穿透 / 光M6 圣印 / 光M7 圣光爆发 / 光M8 审判 /
 ## 光M9 圣光复活 / 光M10 圣光领域），并承载光1-光10 数值构筑的战斗结算。
@@ -77,14 +77,15 @@ var _aura_timer := 0.0
 
 
 func _ready() -> void:
-	SynergyRegistry.register("enemy_status", _on_enemy_status)
-	SynergyRegistry.register("enemy_died", _on_enemy_died)
-	SynergyRegistry.register("enemy_hit", _on_enemy_hit)
-	SynergyRegistry.register("player_hit", _on_player_hit)
-	SynergyRegistry.register("damage_dealt", _on_damage_dealt)
-	SynergyRegistry.register("cast", _on_cast)
-	SynergyRegistry.register("projectile_hit", _on_projectile_hit)
-	SynergyRegistry.register("player_move", _on_player_move)
+	super._ready()
+	_register("enemy_status", _on_enemy_status)
+	_register("enemy_died", _on_enemy_died)
+	_register("enemy_hit", _on_enemy_hit)
+	_register("player_hit", _on_player_hit)
+	_register("damage_dealt", _on_damage_dealt)
+	_register("cast", _on_cast)
+	_register("projectile_hit", _on_projectile_hit)
+	_register("player_move", _on_player_move)
 	print("[SYNERGY] holy registered")
 
 
@@ -103,13 +104,6 @@ func _process(delta: float) -> void:
 
 
 # ================= 防御性取值 =================
-
-func _stacks(item_id: String) -> int:
-	if GameState == null or not (GameState.run is Dictionary):
-		return 0
-	return maxi(int(GameState.total_stacks(item_id)), 0)
-
-
 func _has(item_id: String) -> bool:
 	return _stacks(item_id) > 0
 

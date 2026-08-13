@@ -10,7 +10,7 @@
    "icon": "res://assets/icons/verarc/attack_speed_boost.png",
    "id": "attack_speed_potion",
    "name": "攻速药水",
-   "rarity": "common",
+   "rarity": "uncommon",
    "slot": null,
    "tags": [
     "attack_speed"
@@ -27,7 +27,7 @@
    "icon": "res://assets/icons/verarc/attack_boost.png",
    "id": "strength_badge",
    "name": "力量徽章",
-   "rarity": "common",
+   "rarity": "uncommon",
    "slot": null,
    "tags": [
     "atk"
@@ -96,7 +96,7 @@
    "icon": "res://assets/icons/verarc/magic_amplification.png",
    "id": "area_crystal",
    "name": "范围水晶",
-   "rarity": "common",
+   "rarity": "uncommon",
    "slot": null,
    "tags": [
     "area"
@@ -149,7 +149,7 @@
    "icon": "res://assets/icons/shikashi/shikashi_r12_c10.png",
    "id": "gold_pouch",
    "name": "金币袋",
-   "rarity": "common",
+   "rarity": "uncommon",
    "slot": null,
    "tags": [
     "gold"
@@ -166,7 +166,7 @@
    "icon": "res://assets/icons/verarc/exp_boost.png",
    "id": "xp_book",
    "name": "经验书",
-   "rarity": "common",
+   "rarity": "uncommon",
    "slot": null,
    "tags": [
     "xp"
@@ -201,7 +201,7 @@
    "icon": "res://assets/icons/verarc/critical_boost.png",
    "id": "crit_gem",
    "name": "暴伤宝石",
-   "rarity": "rare",
+   "rarity": "epic",
    "slot": null,
    "tags": [
     "crit_dmg"
@@ -236,7 +236,7 @@
    "icon": "res://assets/icons/verarc/poisoned.png",
    "id": "venom_flask",
    "name": "毒液瓶",
-   "rarity": "common",
+   "rarity": "uncommon",
    "slot": null,
    "tags": [
     "poison"
@@ -263,24 +263,6 @@
   },
   {
    "curve": {
-    "base": 1,
-    "step": 1,
-    "threshold": 2,
-    "type": "threshold"
-   },
-   "description": "召唤物上限 +1（每 2 层 +1）",
-   "icon": "res://assets/icons/verarc/summoning_spell.png",
-   "id": "summon_book",
-   "name": "召唤之书",
-   "rarity": "rare",
-   "slot": null,
-   "tags": [
-    "summon"
-   ],
-   "type": "item"
-  },
-  {
-   "curve": {
     "base": 0.3,
     "k": 0.3,
     "type": "linear"
@@ -289,7 +271,7 @@
    "icon": "res://assets/icons/verarc/knockback_resistance.png",
    "id": "magnet",
    "name": "磁铁",
-   "rarity": "common",
+   "rarity": "uncommon",
    "slot": null,
    "tags": [
     "pickup"
@@ -306,7 +288,7 @@
    "icon": "res://assets/icons/verarc/swiftness.png",
    "id": "speed_boots",
    "name": "移速靴",
-   "rarity": "common",
+   "rarity": "uncommon",
    "slot": null,
    "tags": [
     "speed"
@@ -341,7 +323,7 @@
    "icon": "res://assets/icons/verarc/cursed_(disarmed+silenced).png",
    "id": "curse_ring",
    "name": "诅咒戒指",
-   "rarity": "rare",
+   "rarity": "epic",
    "slot": null,
    "tags": [
     "atk",
@@ -359,7 +341,7 @@
    "icon": "res://assets/icons/verarc/swiftness.png",
    "id": "memory_haste",
    "name": "记忆-疾风",
-   "rarity": "rare",
+   "rarity": "epic",
    "slot": null,
    "tags": [
     "skill_cd"
@@ -376,7 +358,7 @@
    "icon": "res://assets/icons/verarc/frenzy_spell_(critical_booster).png",
    "id": "memory_power",
    "name": "记忆-破军",
-   "rarity": "rare",
+   "rarity": "epic",
    "slot": null,
    "tags": [
     "skill_dmg"
@@ -393,7 +375,7 @@
    "icon": "res://assets/icons/verarc/on_fire_(burning).png",
    "id": "trinket_ember",
    "name": "余烬坠饰",
-   "rarity": "rare",
+   "rarity": "epic",
    "slot": null,
    "tags": [
     "fire"
@@ -410,7 +392,7 @@
    "icon": "res://assets/icons/shikashi/shikashi_r9_c9.png",
    "id": "trinket_frost",
    "name": "霜之心",
-   "rarity": "rare",
+   "rarity": "epic",
    "slot": null,
    "tags": [
     "ice"
@@ -436,61 +418,6 @@
   },
   {
    "curve": {
-    "base": 0.06,
-    "cap": 0.35,
-    "k": 0.06,
-    "type": "linear"
-   },
-   "description": "受到伤害 -6%（每层 +6%，上限 35%）",
-   "icon": "res://assets/icons/verarc/defense_boost.png",
-   "id": "stone_armor",
-   "name": "磐石护甲",
-   "rarity": "rare",
-   "slot": null,
-   "tags": [
-    "defense"
-   ],
-   "type": "item"
-  },
-  {
-   "curve": {
-    "base": 0.3,
-    "cap": 0.65,
-    "k": 0.2,
-    "type": "linear"
-   },
-   "description": "受击时反弹所受伤害 30% 给攻击者（每层约 +6%）",
-   "icon": "res://assets/icons/verarc/fortify_spell.png",
-   "id": "thorn_reflect",
-   "name": "荆棘甲改造",
-   "rarity": "rare",
-   "slot": null,
-   "tags": [
-    "defense",
-    "reflect"
-   ],
-   "type": "item"
-  },
-  {
-   "curve": {
-    "base": 0.02,
-    "k": 0.0,
-    "type": "linear"
-   },
-   "description": "反弹伤害的 2% 回复生命（防御流专属，不占攻击吸血上限）",
-   "icon": "res://assets/icons/verarc/bleeding.png",
-   "id": "blood_thorn",
-   "name": "血棘甲",
-   "rarity": "legendary",
-   "slot": null,
-   "tags": [
-    "defense",
-    "lifesteal"
-   ],
-   "type": "item"
-  },
-  {
-   "curve": {
     "base": 25,
     "cap": 300,
     "k": 25,
@@ -500,7 +427,7 @@
    "icon": "res://assets/icons/verarc/defense_boost.png",
    "id": "life_crystal",
    "name": "生命结晶",
-   "rarity": "rare",
+   "rarity": "epic",
    "slot": null,
    "tags": [
     "defense",
@@ -587,7 +514,7 @@
    "icon": "res://assets/icons/verarc/fire_spell.png",
    "id": "fire_ember",
    "name": "燃烧符",
-   "rarity": "common",
+   "rarity": "uncommon",
    "slot": null,
    "tags": [
     "fire",
@@ -605,7 +532,7 @@
    "icon": "res://assets/icons/verarc/fire_spell_2.png",
    "id": "fire_source_crystal",
    "name": "火源晶石",
-   "rarity": "common",
+   "rarity": "uncommon",
    "slot": null,
    "tags": [
     "fire"
@@ -641,7 +568,7 @@
    "icon": "res://assets/icons/shikashi/shikashi_r8_c4.png",
    "id": "fire_ember_ring",
    "name": "余烬指环",
-   "rarity": "common",
+   "rarity": "uncommon",
    "slot": null,
    "tags": [
     "fire",
@@ -659,7 +586,7 @@
    "icon": "res://assets/icons/shikashi/shikashi_r18_c0.png",
    "id": "fire_heat_core",
    "name": "灼热核心",
-   "rarity": "rare",
+   "rarity": "epic",
    "slot": null,
    "tags": [
     "fire",
@@ -769,7 +696,7 @@
    "icon": "res://assets/icons/shikashi/shikashi_r10_c12.png",
    "id": "fire_ash_blast",
    "name": "灰烬爆炸",
-   "rarity": "rare",
+   "rarity": "epic",
    "slot": null,
    "tags": [
     "fire",
@@ -788,7 +715,7 @@
    "icon": "res://assets/icons/shikashi/shikashi_r10_c10.png",
    "id": "fire_passing_flame",
    "name": "薪火相传",
-   "rarity": "rare",
+   "rarity": "epic",
    "slot": null,
    "tags": [
     "fire",
@@ -808,7 +735,7 @@
    "icon": "res://assets/icons/shikashi/shikashi_r0_c9.png",
    "id": "fire_pyromaniac",
    "name": "纵火狂",
-   "rarity": "common",
+   "rarity": "uncommon",
    "slot": null,
    "tags": [
     "fire",
@@ -846,7 +773,7 @@
    "icon": "res://assets/icons/verarc/fire_spell.png",
    "id": "fire_rain",
    "name": "火雨",
-   "rarity": "rare",
+   "rarity": "epic",
    "slot": null,
    "tags": [
     "fire",
@@ -865,7 +792,7 @@
    "icon": "res://assets/icons/verarc/negative_status_resistance.png",
    "id": "fire_sulfur",
    "name": "硫磺",
-   "rarity": "common",
+   "rarity": "uncommon",
    "slot": null,
    "tags": [
     "fire",
@@ -884,7 +811,7 @@
    "icon": "res://assets/icons/shikashi/shikashi_r3_c10.png",
    "id": "fire_ash_bringer",
    "name": "灰烬使者",
-   "rarity": "rare",
+   "rarity": "epic",
    "slot": null,
    "tags": [
     "fire",
@@ -904,7 +831,7 @@
    "icon": "res://assets/icons/shikashi/shikashi_r4_c4.png",
    "id": "fire_forge_heart",
    "name": "熔炉之心",
-   "rarity": "common",
+   "rarity": "uncommon",
    "slot": null,
    "tags": [
     "fire",
@@ -961,7 +888,7 @@
    "icon": "res://assets/icons/verarc/ice_spell.png",
    "id": "ice_1",
    "name": "霜晶",
-   "rarity": "common",
+   "rarity": "uncommon",
    "slot": null,
    "tags": [
     "ice"
@@ -993,7 +920,7 @@
    "icon": "res://assets/icons/shikashi/shikashi_r18_c1.png",
    "id": "ice_3",
    "name": "极寒之心",
-   "rarity": "common",
+   "rarity": "uncommon",
    "slot": null,
    "tags": [],
    "type": "item"
@@ -1100,7 +1027,7 @@
    "icon": "res://assets/icons/verarc/slowed.png",
    "id": "ice_10",
    "name": "深寒",
-   "rarity": "common",
+   "rarity": "uncommon",
    "slot": null,
    "tags": [],
    "type": "item"
@@ -1134,7 +1061,7 @@
    "icon": "res://assets/icons/shikashi/shikashi_r18_c0.png",
    "id": "ice_m2",
    "name": "极寒扩散",
-   "rarity": "rare",
+   "rarity": "epic",
    "slot": null,
    "tags": [
     "mechanic:ice_m2"
@@ -1170,7 +1097,7 @@
    "icon": "res://assets/icons/shikashi/shikashi_r12_c7.png",
    "id": "ice_m4",
    "name": "冰封王座",
-   "rarity": "rare",
+   "rarity": "epic",
    "slot": null,
    "tags": [
     "mechanic:ice_m4"
@@ -1188,7 +1115,7 @@
    "icon": "res://assets/icons/shikashi/shikashi_r5_c3.png",
    "id": "ice_m5",
    "name": "冰刃",
-   "rarity": "rare",
+   "rarity": "epic",
    "slot": null,
    "tags": [
     "mechanic:ice_m5"
@@ -1242,7 +1169,7 @@
    "icon": "res://assets/icons/verarc/negative_status_resistance.png",
    "id": "ice_m8",
    "name": "永冻",
-   "rarity": "rare",
+   "rarity": "epic",
    "slot": null,
    "tags": [
     "mechanic:ice_m8"
@@ -1278,7 +1205,7 @@
    "icon": "res://assets/icons/shikashi/shikashi_r10_c15.png",
    "id": "ice_m10",
    "name": "绝对零度",
-   "rarity": "rare",
+   "rarity": "epic",
    "slot": null,
    "tags": [
     "mechanic:ice_m10"
@@ -1295,7 +1222,7 @@
    "icon": "res://assets/icons/verarc/poison_dagger.png",
    "id": "poison_essence",
    "name": "剧毒精华",
-   "rarity": "common",
+   "rarity": "uncommon",
    "slot": null,
    "tags": [
     "poison",
@@ -1313,7 +1240,7 @@
    "icon": "res://assets/icons/verarc/poisoned.png",
    "id": "poison_cap",
    "name": "毒性扩散",
-   "rarity": "rare",
+   "rarity": "epic",
    "slot": null,
    "tags": [
     "poison",
@@ -1331,7 +1258,7 @@
    "icon": "res://assets/icons/shikashi/shikashi_r9_c14.png",
    "id": "poison_duration",
    "name": "腐蚀液",
-   "rarity": "common",
+   "rarity": "uncommon",
    "slot": null,
    "tags": [
     "poison",
@@ -1385,7 +1312,7 @@
    "icon": "res://assets/icons/shikashi/shikashi_r0_c1.png",
    "id": "poison_area",
    "name": "毒囊",
-   "rarity": "common",
+   "rarity": "uncommon",
    "slot": null,
    "tags": [
     "poison",
@@ -1493,7 +1420,7 @@
    "icon": "res://assets/icons/shikashi/shikashi_r12_c0.png",
    "id": "poison_amp",
    "name": "剧毒增幅",
-   "rarity": "rare",
+   "rarity": "epic",
    "slot": null,
    "tags": [
     "poison",
@@ -1565,7 +1492,7 @@
    "icon": "res://assets/icons/shikashi/shikashi_r9_c6.png",
    "id": "poison_cloud_vial",
    "name": "毒雾药瓶",
-   "rarity": "common",
+   "rarity": "uncommon",
    "slot": null,
    "tags": [
     "poison",
@@ -1602,7 +1529,7 @@
    "icon": "res://assets/icons/verarc/poison_dagger.png",
    "id": "poison_blade_oil",
    "name": "淬毒刃油",
-   "rarity": "common",
+   "rarity": "uncommon",
    "slot": null,
    "tags": [
     "poison",
@@ -1657,7 +1584,7 @@
    "icon": "res://assets/icons/shikashi/shikashi_r4_c7.png",
    "id": "summon_1",
    "name": "召唤之书",
-   "rarity": "common",
+   "rarity": "uncommon",
    "slot": null,
    "tags": [
     "summon"
@@ -1674,7 +1601,7 @@
    "icon": "res://assets/icons/verarc/attack_boost.png",
    "id": "summon_2",
    "name": "军团号角",
-   "rarity": "common",
+   "rarity": "uncommon",
    "slot": null,
    "tags": [
     "summon"
@@ -1691,7 +1618,7 @@
    "icon": "res://assets/icons/verarc/defense_boost.png",
    "id": "summon_3",
    "name": "先祖图腾",
-   "rarity": "common",
+   "rarity": "uncommon",
    "slot": null,
    "tags": [],
    "type": "item"
@@ -1706,7 +1633,7 @@
    "icon": "res://assets/icons/shikashi/shikashi_r8_c8.png",
    "id": "summon_4",
    "name": "御兽鞭",
-   "rarity": "common",
+   "rarity": "uncommon",
    "slot": null,
    "tags": [],
    "type": "item"
@@ -1736,7 +1663,7 @@
    "icon": "res://assets/icons/shikashi/shikashi_r12_c15.png",
    "id": "summon_6",
    "name": "灵魂石",
-   "rarity": "common",
+   "rarity": "uncommon",
    "slot": null,
    "tags": [],
    "type": "item"
@@ -1751,7 +1678,7 @@
    "icon": "res://assets/icons/verarc/lucky_boost.png",
    "id": "summon_7",
    "name": "共鸣水晶",
-   "rarity": "common",
+   "rarity": "uncommon",
    "slot": null,
    "tags": [],
    "type": "item"
@@ -1832,7 +1759,7 @@
    "icon": "res://assets/icons/shikashi/shikashi_r8_c7.png",
    "id": "summon_m2",
    "name": "献祭",
-   "rarity": "rare",
+   "rarity": "epic",
    "slot": null,
    "tags": [
     "mechanic:summon_m2"
@@ -1904,7 +1831,7 @@
    "icon": "res://assets/icons/shikashi/shikashi_r11_c11.png",
    "id": "summon_m6",
    "name": "首领",
-   "rarity": "rare",
+   "rarity": "epic",
    "slot": null,
    "tags": [
     "mechanic:summon_m6"
@@ -1940,7 +1867,7 @@
    "icon": "res://assets/icons/verarc/divine_protection_spell.png",
    "id": "summon_m8",
    "name": "替身",
-   "rarity": "rare",
+   "rarity": "epic",
    "slot": null,
    "tags": [
     "mechanic:summon_m8"
@@ -1976,7 +1903,7 @@
    "icon": "res://assets/icons/shikashi/shikashi_r5_c10.png",
    "id": "summon_m10",
    "name": "军团冲锋",
-   "rarity": "rare",
+   "rarity": "epic",
    "slot": null,
    "tags": [
     "mechanic:summon_m10"
@@ -1993,7 +1920,7 @@
    "icon": "res://assets/icons/verarc/lightning_spell.png",
    "id": "thunder_1",
    "name": "电镀",
-   "rarity": "common",
+   "rarity": "uncommon",
    "slot": null,
    "tags": [
     "lightning",
@@ -2012,7 +1939,7 @@
    "icon": "res://assets/icons/shikashi/shikashi_r3_c2.png",
    "id": "thunder_2",
    "name": "静电力场",
-   "rarity": "rare",
+   "rarity": "epic",
    "slot": null,
    "tags": [
     "chain",
@@ -2031,7 +1958,7 @@
    "icon": "res://assets/icons/shikashi/shikashi_r2_c6.png",
    "id": "thunder_3",
    "name": "导线",
-   "rarity": "common",
+   "rarity": "uncommon",
    "slot": null,
    "tags": [
     "chain",
@@ -2109,7 +2036,7 @@
    "icon": "res://assets/icons/shikashi/shikashi_r5_c8.png",
    "id": "thunder_7",
    "name": "避雷针",
-   "rarity": "rare",
+   "rarity": "epic",
    "slot": null,
    "tags": [
     "chain",
@@ -2146,7 +2073,7 @@
    "icon": "res://assets/icons/shikashi/shikashi_r3_c2.png",
    "id": "thunder_9",
    "name": "电荷",
-   "rarity": "rare",
+   "rarity": "epic",
    "slot": null,
    "tags": [
     "charge",
@@ -2334,7 +2261,7 @@
    "icon": "res://assets/icons/shikashi/shikashi_r13_c9.png",
    "id": "curse_ink",
    "name": "诅咒墨水",
-   "rarity": "common",
+   "rarity": "uncommon",
    "slot": null,
    "tags": [
     "curse",
@@ -2424,7 +2351,7 @@
    "icon": "res://assets/icons/shikashi/shikashi_r9_c15.png",
    "id": "curse_no_heal_word",
    "name": "禁疗咒",
-   "rarity": "rare",
+   "rarity": "epic",
    "slot": null,
    "tags": [
     "curse",
@@ -2518,7 +2445,7 @@
    "icon": "res://assets/icons/shikashi/shikashi_r11_c14.png",
    "id": "curse_plague",
    "name": "传染诅咒",
-   "rarity": "rare",
+   "rarity": "epic",
    "slot": null,
    "tags": [
     "curse",
@@ -2538,7 +2465,7 @@
    "icon": "res://assets/icons/shikashi/shikashi_r1_c3.png",
    "id": "curse_agony",
    "name": "痛苦加深",
-   "rarity": "common",
+   "rarity": "uncommon",
    "slot": null,
    "tags": [
     "curse",
@@ -2598,7 +2525,7 @@
    "icon": "res://assets/icons/shikashi/shikashi_r2_c3.png",
    "id": "curse_agony_loop",
    "name": "折磨循环",
-   "rarity": "common",
+   "rarity": "uncommon",
    "slot": null,
    "tags": [
     "curse",
@@ -2618,7 +2545,7 @@
    "icon": "res://assets/icons/shikashi/shikashi_r0_c5.png",
    "id": "curse_unbalance",
    "name": "失衡",
-   "rarity": "rare",
+   "rarity": "epic",
    "slot": null,
    "tags": [
     "curse",
@@ -2638,7 +2565,7 @@
    "icon": "res://assets/icons/shikashi/shikashi_r9_c15.png",
    "id": "curse_no_heal_zone",
    "name": "禁疗领域",
-   "rarity": "common",
+   "rarity": "uncommon",
    "slot": null,
    "tags": [
     "curse",
@@ -2678,7 +2605,7 @@
    "icon": "res://assets/icons/shikashi/shikashi_r0_c4.png",
    "id": "curse_retribution",
    "name": "反噬",
-   "rarity": "rare",
+   "rarity": "epic",
    "slot": null,
    "tags": [
     "curse",
@@ -2736,7 +2663,7 @@
    "icon": "res://assets/icons/shikashi/shikashi_r5_c13.png",
    "id": "defense_thorn_refit",
    "name": "荆棘甲改造",
-   "rarity": "common",
+   "rarity": "uncommon",
    "slot": null,
    "tags": [
     "defense",
@@ -2791,7 +2718,7 @@
    "icon": "res://assets/icons/verarc/divine_protection_spell.png",
    "id": "defense_crystal",
    "name": "防御结晶",
-   "rarity": "common",
+   "rarity": "uncommon",
    "slot": null,
    "tags": [
     "defense",
@@ -2846,7 +2773,7 @@
    "icon": "res://assets/icons/shikashi/shikashi_r6_c2.png",
    "id": "defense_shield_battery",
    "name": "护盾电池",
-   "rarity": "rare",
+   "rarity": "epic",
    "slot": null,
    "tags": [
     "defense",
@@ -2865,7 +2792,7 @@
    "icon": "res://assets/icons/shikashi/shikashi_r17_c1.png",
    "id": "defense_stone_skin",
    "name": "石肤",
-   "rarity": "common",
+   "rarity": "uncommon",
    "slot": null,
    "tags": [
     "defense"
@@ -2901,7 +2828,7 @@
    "icon": "res://assets/icons/shikashi/shikashi_r5_c13.png",
    "id": "defense_thorn_field",
    "name": "荆棘领域",
-   "rarity": "rare",
+   "rarity": "epic",
    "slot": null,
    "tags": [
     "defense",
@@ -2921,7 +2848,7 @@
    "icon": "res://assets/icons/shikashi/shikashi_r3_c8.png",
    "id": "defense_shield_counter",
    "name": "盾反",
-   "rarity": "common",
+   "rarity": "uncommon",
    "slot": null,
    "tags": [
     "defense",
@@ -2940,7 +2867,7 @@
    "icon": "res://assets/icons/shikashi/shikashi_r3_c8.png",
    "id": "defense_shield_echo",
    "name": "护盾回响",
-   "rarity": "rare",
+   "rarity": "epic",
    "slot": null,
    "tags": [
     "defense",
@@ -2960,7 +2887,7 @@
    "icon": "res://assets/icons/shikashi/shikashi_r7_c5.png",
    "id": "defense_thorn_leech",
    "name": "反甲吸血",
-   "rarity": "common",
+   "rarity": "uncommon",
    "slot": null,
    "tags": [
     "defense",
@@ -2999,7 +2926,7 @@
    "icon": "res://assets/icons/shikashi/shikashi_r12_c12.png",
    "id": "defense_absorb",
    "name": "吸收",
-   "rarity": "rare",
+   "rarity": "epic",
    "slot": null,
    "tags": [
     "defense",
@@ -3019,7 +2946,7 @@
    "icon": "res://assets/icons/shikashi/shikashi_r7_c7.png",
    "id": "defense_harden",
    "name": "硬化",
-   "rarity": "common",
+   "rarity": "uncommon",
    "slot": null,
    "tags": [
     "defense",
@@ -3038,7 +2965,7 @@
    "icon": "res://assets/icons/shikashi/shikashi_r4_c1.png",
    "id": "defense_taunt",
    "name": "嘲讽",
-   "rarity": "rare",
+   "rarity": "epic",
    "slot": null,
    "tags": [
     "defense",
@@ -3095,7 +3022,7 @@
    "icon": "res://assets/icons/willibab/AXES_15.png",
    "id": "melee_1",
    "name": "战斧",
-   "rarity": "common",
+   "rarity": "uncommon",
    "slot": null,
    "tags": [
     "blade"
@@ -3112,7 +3039,7 @@
    "icon": "res://assets/icons/willibab/SWORDS_52.png",
    "id": "melee_2",
    "name": "磨刀石",
-   "rarity": "common",
+   "rarity": "uncommon",
    "slot": null,
    "tags": [
     "blade",
@@ -3165,7 +3092,7 @@
    "icon": "res://assets/icons/shikashi/shikashi_r7_c15.png",
    "id": "melee_5",
    "name": "狂战腰带",
-   "rarity": "rare",
+   "rarity": "epic",
    "slot": null,
    "tags": [
     "blade"
@@ -3182,7 +3109,7 @@
    "icon": "res://assets/icons/willibab/MACES_19.png",
    "id": "melee_6",
    "name": "碎裂锤",
-   "rarity": "common",
+   "rarity": "uncommon",
    "slot": null,
    "tags": [
     "blade"
@@ -3216,7 +3143,7 @@
    "icon": "res://assets/icons/willibab/AXES_22.png",
    "id": "melee_8",
    "name": "巨力",
-   "rarity": "rare",
+   "rarity": "epic",
    "slot": null,
    "tags": [
     "blade"
@@ -3233,7 +3160,7 @@
    "icon": "res://assets/icons/shikashi/shikashi_r7_c5.png",
    "id": "melee_9",
    "name": "钢体",
-   "rarity": "common",
+   "rarity": "uncommon",
    "slot": null,
    "tags": [
     "blade"
@@ -3288,7 +3215,7 @@
    "icon": "res://assets/icons/willibab/DAGGERS_3.png",
    "id": "melee_m2",
    "name": "连环处决",
-   "rarity": "rare",
+   "rarity": "epic",
    "slot": null,
    "tags": [
     "blade",
@@ -3307,7 +3234,7 @@
    "icon": "res://assets/icons/willibab/AXES_32.png",
    "id": "melee_m3",
    "name": "血之狂暴",
-   "rarity": "common",
+   "rarity": "uncommon",
    "slot": null,
    "tags": [
     "blade",
@@ -3345,7 +3272,7 @@
    "icon": "res://assets/icons/shikashi/shikashi_r5_c0.png",
    "id": "melee_m5",
    "name": "弹反",
-   "rarity": "rare",
+   "rarity": "epic",
    "slot": null,
    "tags": [
     "blade",
@@ -3364,7 +3291,7 @@
    "icon": "res://assets/icons/willibab/AXES_33.png",
    "id": "melee_m6",
    "name": "屠戮",
-   "rarity": "rare",
+   "rarity": "epic",
    "slot": null,
    "tags": [
     "blade",
@@ -3383,7 +3310,7 @@
    "icon": "res://assets/icons/willibab/AXES_5.png",
    "id": "melee_m7",
    "name": "破甲斩",
-   "rarity": "common",
+   "rarity": "uncommon",
    "slot": null,
    "tags": [
     "blade",
@@ -3402,7 +3329,7 @@
    "icon": "res://assets/icons/shikashi/shikashi_r9_c3.png",
    "id": "melee_m8",
    "name": "血池",
-   "rarity": "rare",
+   "rarity": "epic",
    "slot": null,
    "tags": [
     "blade",
@@ -3458,7 +3385,7 @@
    "icon": "res://assets/icons/verarc/water_spell.png",
    "id": "water_essence",
    "name": "水元素精粹",
-   "rarity": "common",
+   "rarity": "uncommon",
    "slot": null,
    "tags": [
     "water",
@@ -3495,7 +3422,7 @@
    "icon": "res://assets/icons/shikashi/shikashi_r16_c14.png",
    "id": "water_deep_water",
    "name": "深水",
-   "rarity": "common",
+   "rarity": "uncommon",
    "slot": null,
    "tags": [
     "water",
@@ -3549,7 +3476,7 @@
    "icon": "res://assets/icons/shikashi/shikashi_r0_c10.png",
    "id": "water_moist",
    "name": "潮湿",
-   "rarity": "common",
+   "rarity": "uncommon",
    "slot": null,
    "tags": [
     "water",
@@ -3567,7 +3494,7 @@
    "icon": "res://assets/icons/shikashi/shikashi_r3_c4.png",
    "id": "water_torrent",
    "name": "激流",
-   "rarity": "rare",
+   "rarity": "epic",
    "slot": null,
    "tags": [
     "water",
@@ -3661,7 +3588,7 @@
    "icon": "res://assets/icons/shikashi/shikashi_r16_c3.png",
    "id": "water_vortex",
    "name": "旋涡",
-   "rarity": "rare",
+   "rarity": "epic",
    "slot": null,
    "tags": [
     "water",
@@ -3681,7 +3608,7 @@
    "icon": "res://assets/icons/shikashi/shikashi_r12_c1.png",
    "id": "water_vine_tangle",
    "name": "藤蔓缠绕",
-   "rarity": "rare",
+   "rarity": "epic",
    "slot": null,
    "tags": [
     "water",
@@ -3702,7 +3629,7 @@
    "icon": "res://assets/icons/shikashi/shikashi_r16_c9.png",
    "id": "water_conduct",
    "name": "湿润导电",
-   "rarity": "rare",
+   "rarity": "epic",
    "slot": null,
    "tags": [
     "water",
@@ -3723,7 +3650,7 @@
    "icon": "res://assets/icons/shikashi/shikashi_r16_c12.png",
    "id": "water_tide_lock",
    "name": "潮汐锁定",
-   "rarity": "rare",
+   "rarity": "epic",
    "slot": null,
    "tags": [
     "water",
@@ -3806,7 +3733,7 @@
    "icon": "res://assets/icons/shikashi/shikashi_r4_c2.png",
    "id": "water_boil",
    "name": "沸腾",
-   "rarity": "rare",
+   "rarity": "epic",
    "slot": null,
    "tags": [
     "water",
@@ -3846,7 +3773,7 @@
    "icon": "res://assets/icons/shikashi/shikashi_r8_c2.png",
    "id": "wind_boots",
    "name": "疾风靴",
-   "rarity": "common",
+   "rarity": "uncommon",
    "slot": null,
    "tags": [
     "wind",
@@ -3864,7 +3791,7 @@
    "icon": "res://assets/icons/shikashi/shikashi_r17_c10.png",
    "id": "wind_blessing",
    "name": "风之祝福",
-   "rarity": "rare",
+   "rarity": "epic",
    "slot": null,
    "tags": [
     "wind",
@@ -4066,7 +3993,7 @@
    "icon": "res://assets/icons/verarc/ghost_form_(physical_damage_immunity).png",
    "id": "wind_shadow",
    "name": "影步",
-   "rarity": "rare",
+   "rarity": "epic",
    "slot": null,
    "tags": [
     "wind",
@@ -4123,7 +4050,7 @@
    "icon": "res://assets/icons/shikashi/shikashi_r4_c6.png",
    "id": "wind_break",
    "name": "破风",
-   "rarity": "rare",
+   "rarity": "epic",
    "slot": null,
    "tags": [
     "wind",
@@ -4143,7 +4070,7 @@
    "icon": "res://assets/icons/shikashi/shikashi_r6_c5.png",
    "id": "wind_tail_shot",
    "name": "顺风弹",
-   "rarity": "common",
+   "rarity": "uncommon",
    "slot": null,
    "tags": [
     "wind",
@@ -4162,7 +4089,7 @@
    "icon": "res://assets/icons/shikashi/shikashi_r11_c6.png",
    "id": "wind_echo",
    "name": "风之回响",
-   "rarity": "rare",
+   "rarity": "epic",
    "slot": null,
    "tags": [
     "wind",
@@ -4181,7 +4108,7 @@
    "icon": "res://assets/icons/shikashi/shikashi_r3_c12.png",
    "id": "wind_frost",
    "name": "急冻风",
-   "rarity": "common",
+   "rarity": "uncommon",
    "slot": null,
    "tags": [
     "wind",
@@ -4220,7 +4147,7 @@
    "icon": "res://assets/icons/shikashi/shikashi_r16_c2.png",
    "id": "poison_m1",
    "name": "传染",
-   "rarity": "rare",
+   "rarity": "epic",
    "slot": null,
    "tags": [
     "poison",
@@ -4239,7 +4166,7 @@
    "icon": "res://assets/icons/shikashi/shikashi_r10_c12.png",
    "id": "poison_m2",
    "name": "毒爆",
-   "rarity": "rare",
+   "rarity": "epic",
    "slot": null,
    "tags": [
     "poison",
@@ -4258,7 +4185,7 @@
    "icon": "res://assets/icons/shikashi/shikashi_r11_c15.png",
    "id": "poison_m3",
    "name": "毒雾弥漫",
-   "rarity": "common",
+   "rarity": "uncommon",
    "slot": null,
    "tags": [
     "poison",
@@ -4277,7 +4204,7 @@
    "icon": "res://assets/icons/shikashi/shikashi_r11_c12.png",
    "id": "poison_m4",
    "name": "腐蚀",
-   "rarity": "rare",
+   "rarity": "epic",
    "slot": null,
    "tags": [
     "poison",
@@ -4296,7 +4223,7 @@
    "icon": "res://assets/icons/shikashi/shikashi_r5_c7.png",
    "id": "poison_m5",
    "name": "毒刃",
-   "rarity": "common",
+   "rarity": "uncommon",
    "slot": null,
    "tags": [
     "poison",
@@ -4315,7 +4242,7 @@
    "icon": "res://assets/icons/shikashi/shikashi_r2_c3.png",
    "id": "poison_m6",
    "name": "抗性渗透",
-   "rarity": "rare",
+   "rarity": "epic",
    "slot": null,
    "tags": [
     "poison",
@@ -4334,7 +4261,7 @@
    "icon": "res://assets/icons/shikashi/shikashi_r10_c15.png",
    "id": "poison_m7",
    "name": "慢性死亡",
-   "rarity": "rare",
+   "rarity": "epic",
    "slot": null,
    "tags": [
     "poison",
@@ -4353,7 +4280,7 @@
    "icon": "res://assets/icons/shikashi/shikashi_r3_c5.png",
    "id": "poison_m8",
    "name": "解毒反哺",
-   "rarity": "common",
+   "rarity": "uncommon",
    "slot": null,
    "tags": [
     "poison",
@@ -4450,7 +4377,7 @@
    "icon": "res://assets/icons/shikashi/shikashi_r2_c0.png",
    "id": "thunder_m3",
    "name": "静电积累",
-   "rarity": "common",
+   "rarity": "uncommon",
    "slot": null,
    "tags": [
     "lightning",
@@ -4470,7 +4397,7 @@
    "icon": "res://assets/icons/verarc/paralyzed.png",
    "id": "thunder_m4",
    "name": "过载",
-   "rarity": "rare",
+   "rarity": "epic",
    "slot": null,
    "tags": [
     "lightning",
@@ -4490,7 +4417,7 @@
    "icon": "res://assets/icons/shikashi/shikashi_r5_c8.png",
    "id": "thunder_m5",
    "name": "导雷",
-   "rarity": "common",
+   "rarity": "uncommon",
    "slot": null,
    "tags": [
     "lightning",
@@ -4510,7 +4437,7 @@
    "icon": "res://assets/icons/shikashi/shikashi_r11_c5.png",
    "id": "thunder_m6",
    "name": "雷暴回响",
-   "rarity": "common",
+   "rarity": "uncommon",
    "slot": null,
    "tags": [
     "lightning",
@@ -4530,7 +4457,7 @@
    "icon": "res://assets/icons/verarc/blinding_light_spell.png",
    "id": "thunder_m7",
    "name": "电磁脉冲",
-   "rarity": "rare",
+   "rarity": "epic",
    "slot": null,
    "tags": [
     "lightning",
@@ -4550,7 +4477,7 @@
    "icon": "res://assets/icons/shikashi/shikashi_r17_c6.png",
    "id": "thunder_m8",
    "name": "超载线圈",
-   "rarity": "rare",
+   "rarity": "epic",
    "slot": null,
    "tags": [
     "lightning",
@@ -4648,7 +4575,7 @@
    "icon": "res://assets/icons/shikashi/shikashi_r2_c0.png",
    "id": "crit_m3",
    "name": "暴击连击",
-   "rarity": "rare",
+   "rarity": "epic",
    "slot": null,
    "tags": [
     "crit",
@@ -4667,7 +4594,7 @@
    "icon": "res://assets/icons/shikashi/shikashi_r2_c3.png",
    "id": "crit_m4",
    "name": "暴击减速",
-   "rarity": "common",
+   "rarity": "uncommon",
    "slot": null,
    "tags": [
     "crit",
@@ -4686,7 +4613,7 @@
    "icon": "res://assets/icons/shikashi/shikashi_r10_c12.png",
    "id": "crit_m5",
    "name": "暴击爆炸",
-   "rarity": "rare",
+   "rarity": "epic",
    "slot": null,
    "tags": [
     "crit",
@@ -4705,7 +4632,7 @@
    "icon": "res://assets/icons/willibab/SPEARS_1.png",
    "id": "crit_m6",
    "name": "暴击穿透",
-   "rarity": "rare",
+   "rarity": "epic",
    "slot": null,
    "tags": [
     "crit",
@@ -4724,7 +4651,7 @@
    "icon": "res://assets/icons/shikashi/shikashi_r18_c4.png",
    "id": "crit_m7",
    "name": "暴击回能",
-   "rarity": "common",
+   "rarity": "uncommon",
    "slot": null,
    "tags": [
     "crit",
@@ -4781,7 +4708,7 @@
    "icon": "res://assets/icons/shikashi/shikashi_r6_c6.png",
    "id": "crit_crit_bounce",
    "name": "暴击弹射",
-   "rarity": "rare",
+   "rarity": "epic",
    "slot": null,
    "tags": [
     "crit",
@@ -5044,7 +4971,7 @@
    "icon": "res://assets/icons/shikashi/shikashi_r0_c3.png",
    "id": "holy_1",
    "name": "圣光符",
-   "rarity": "common",
+   "rarity": "uncommon",
    "slot": null,
    "tags": [
     "light",
@@ -5062,7 +4989,7 @@
    "icon": "res://assets/icons/shikashi/shikashi_r0_c6.png",
    "id": "holy_2",
    "name": "圣辉石",
-   "rarity": "common",
+   "rarity": "uncommon",
    "slot": null,
    "tags": [
     "holy"
@@ -5096,7 +5023,7 @@
    "icon": "res://assets/icons/shikashi/shikashi_r10_c1.png",
    "id": "holy_4",
    "name": "圣盾刻印",
-   "rarity": "common",
+   "rarity": "uncommon",
    "slot": null,
    "tags": [
     "holy"
@@ -5113,7 +5040,7 @@
    "icon": "res://assets/icons/shikashi/shikashi_r10_c11.png",
    "id": "holy_5",
    "name": "祝福挂坠",
-   "rarity": "common",
+   "rarity": "uncommon",
    "slot": null,
    "tags": [
     "holy"
@@ -5148,7 +5075,7 @@
    "icon": "res://assets/icons/shikashi/shikashi_r10_c14.png",
    "id": "holy_7",
    "name": "光棱镜",
-   "rarity": "common",
+   "rarity": "uncommon",
    "slot": null,
    "tags": [
     "area",
@@ -5259,7 +5186,7 @@
    "icon": "res://assets/icons/shikashi/shikashi_r10_c9.png",
    "id": "holy_m3",
    "name": "圣光净化",
-   "rarity": "rare",
+   "rarity": "epic",
    "slot": null,
    "tags": [
     "holy",
@@ -5278,7 +5205,7 @@
    "icon": "res://assets/icons/shikashi/shikashi_r11_c1.png",
    "id": "holy_m4",
    "name": "治疗光环",
-   "rarity": "rare",
+   "rarity": "epic",
    "slot": null,
    "tags": [
     "holy",
@@ -5297,7 +5224,7 @@
    "icon": "res://assets/icons/shikashi/shikashi_r11_c10.png",
    "id": "holy_m5",
    "name": "光矛穿透",
-   "rarity": "rare",
+   "rarity": "epic",
    "slot": null,
    "tags": [
     "holy",
@@ -5316,7 +5243,7 @@
    "icon": "res://assets/icons/shikashi/shikashi_r11_c4.png",
    "id": "holy_m6",
    "name": "圣印",
-   "rarity": "rare",
+   "rarity": "epic",
    "slot": null,
    "tags": [
     "holy",

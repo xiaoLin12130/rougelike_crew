@@ -874,7 +874,7 @@
   {
    "id": "slime_king",
    "name": "\u53f2\u83b1\u59c6\u738b",
-   "hp": 600,
+   "hp": 1200,
    "attack": 15,
    "speed": 50,
    "size": 1.65,
@@ -944,7 +944,7 @@
   {
    "id": "tree_golem",
    "name": "\u6811\u7cbe\u5b88\u536b",
-   "hp": 800,
+   "hp": 1600,
    "attack": 17,
    "speed": 40,
    "size": 1.8,
@@ -1032,7 +1032,7 @@
   {
    "id": "skeleton_king",
    "name": "\u9ab7\u9ac5\u738b",
-   "hp": 1000,
+   "hp": 2000,
    "attack": 20,
    "speed": 60,
    "size": 1.8,
@@ -1106,7 +1106,7 @@
   {
    "id": "imp_king",
    "name": "\u7194\u5ca9\u9b54\u738b",
-   "hp": 1200,
+   "hp": 2300,
    "attack": 24,
    "speed": 70,
    "size": 1.95,
@@ -1209,7 +1209,7 @@
   {
    "id": "ancient_guardian",
    "name": "\u8fdc\u53e4\u5b88\u536b",
-   "hp": 1500,
+   "hp": 2900,
    "attack": 27,
    "speed": 66,
    "size": 1.95,
@@ -1293,7 +1293,7 @@
   {
    "id": "final_god",
    "name": "\u53e4\u795e",
-   "hp": 5000,
+   "hp": 10000,
    "attack": 52,
    "speed": 70,
    "size": 2.4,

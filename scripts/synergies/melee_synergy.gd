@@ -1,4 +1,4 @@
-extends Node
+extends SynergyBase
 ## 近战狂暴流机制脚本（10 机制，SynergyRegistry 钩子实现）
 ## ============================================================
 ## 挂载方式：由 SynergyRegistry.load_synergy_scripts() 自动扫描
@@ -114,13 +114,11 @@ var _shield_written := -1.0  ## 上次写入 run.melee_shield 的值（去重发
 
 
 func _ready() -> void:
-	if SynergyRegistry == null:
-		push_warning("[MeleeSynergy] SynergyRegistry 不可用，近战机制未注册")
-		return
-	SynergyRegistry.register("projectile_hit", _on_projectile_hit) ## 近M1/近M4/近M7/近M10
-	SynergyRegistry.register("enemy_died", _on_enemy_died)         ## 近M2/近M6
-	SynergyRegistry.register("player_hit", _on_player_hit)         ## 近M3/近M5
-	SynergyRegistry.register("damage_dealt", _on_damage_dealt)     ## 近M8
+	super._ready()
+	_register("projectile_hit", _on_projectile_hit) ## 近M1/近M4/近M7/近M10
+	_register("enemy_died", _on_enemy_died)         ## 近M2/近M6
+	_register("player_hit", _on_player_hit)         ## 近M3/近M5
+	_register("damage_dealt", _on_damage_dealt)     ## 近M8
 	print("[SYNERGY] melee_synergy registered")
 
 
@@ -553,14 +551,6 @@ func _melee_power() -> int:
 		if str(id).begins_with("melee_"):
 			n += maxi(int(items[id]), 0)
 	return n
-
-
-func _stacks(id: String) -> int:
-	if GameState == null or not GameState.has_method("total_stacks"):
-		return 0
-	return maxi(int(GameState.total_stacks(id)), 0)
-
-
 func _low_hp(pct: float) -> bool:
 	if GameState == null or not (GameState.run is Dictionary):
 		return false

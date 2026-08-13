@@ -1,4 +1,4 @@
-extends Node
+extends SynergyBase
 ## 暴击暴伤流机制脚本（10 机制，SynergyRegistry 钩子实现）
 ## ============================================================
 ## 挂载方式：由 SynergyRegistry.load_synergy_scripts() 自动扫描
@@ -114,30 +114,28 @@ var _n2_haste_rate := 0.0     ## N2 当前触发式攻速加成
 
 
 func _ready() -> void:
-	if SynergyRegistry == null:
-		push_warning("[CritSynergy] SynergyRegistry 不可用，暴击机制未注册")
-		return
+	super._ready()
 	## 注册顺序即触发顺序：链起始快照最先，猎头斩杀判定最后（需读取 M6/M9 标记）
-	SynergyRegistry.register("projectile_hit", _on_chain_begin) ## 链起始快照
-	SynergyRegistry.register("projectile_hit", _on_m2)          ## 致命连击
-	SynergyRegistry.register("projectile_hit", _on_m3)          ## 暴击弹射
-	SynergyRegistry.register("projectile_hit", _on_m4)          ## 弱点标记
-	SynergyRegistry.register("projectile_hit", _on_m5)          ## 暴风扩散
-	SynergyRegistry.register("projectile_hit", _on_m6)          ## 终结
-	SynergyRegistry.register("projectile_hit", _on_m7)          ## 暴击回响
-	SynergyRegistry.register("projectile_hit", _on_m9)          ## 致命一击
-	SynergyRegistry.register("projectile_hit", _on_m10)         ## 暴击风暴
-	SynergyRegistry.register("projectile_hit", _on_m8)          ## 猎头（斩杀判定）
+	_register("projectile_hit", _on_chain_begin) ## 链起始快照
+	_register("projectile_hit", _on_m2)          ## 致命连击
+	_register("projectile_hit", _on_m3)          ## 暴击弹射
+	_register("projectile_hit", _on_m4)          ## 弱点标记
+	_register("projectile_hit", _on_m5)          ## 暴风扩散
+	_register("projectile_hit", _on_m6)          ## 终结
+	_register("projectile_hit", _on_m7)          ## 暴击回响
+	_register("projectile_hit", _on_m9)          ## 致命一击
+	_register("projectile_hit", _on_m10)         ## 暴击风暴
+	_register("projectile_hit", _on_m8)          ## 猎头（斩杀判定）
 	## N2 新增机制（crit_m1..m9 / 致命节奏触发式）
-	SynergyRegistry.register("projectile_hit", _on_n2_m1)       ## 暴M1 溢出转真伤
-	SynergyRegistry.register("projectile_hit", _on_n2_m2)       ## 暴M2 暴击吸血
-	SynergyRegistry.register("projectile_hit", _on_n2_m3)       ## 暴M3 暴击连击
-	SynergyRegistry.register("projectile_hit", _on_n2_m4)       ## 暴M4 暴击减速
-	SynergyRegistry.register("projectile_hit", _on_n2_m5)       ## 暴M5 暴击爆炸
-	SynergyRegistry.register("projectile_hit", _on_n2_m6)       ## 暴M6 暴击穿透
-	SynergyRegistry.register("projectile_hit", _on_n2_m7)       ## 暴M7 暴击回能
-	SynergyRegistry.register("projectile_hit", _on_n2_m8)       ## 暴M8 完美暴击
-	SynergyRegistry.register("projectile_hit", _on_n2_m9)       ## 暴M9 暴击攻速
+	_register("projectile_hit", _on_n2_m1)       ## 暴M1 溢出转真伤
+	_register("projectile_hit", _on_n2_m2)       ## 暴M2 暴击吸血
+	_register("projectile_hit", _on_n2_m3)       ## 暴M3 暴击连击
+	_register("projectile_hit", _on_n2_m4)       ## 暴M4 暴击减速
+	_register("projectile_hit", _on_n2_m5)       ## 暴M5 暴击爆炸
+	_register("projectile_hit", _on_n2_m6)       ## 暴M6 暴击穿透
+	_register("projectile_hit", _on_n2_m7)       ## 暴M7 暴击回能
+	_register("projectile_hit", _on_n2_m8)       ## 暴M8 完美暴击
+	_register("projectile_hit", _on_n2_m9)       ## 暴M9 暴击攻速
 	## 暴M1 溢出转伤为被动属性转换，无独立回调：_sync_stats() 常驻刷新
 	_sync_stats(true)
 	print("[SYNERGY] crit_synergy registered")
@@ -604,16 +602,6 @@ func _theoretical_crit_chance() -> float:
 	v += _curve_value(N6)  ## 条件暴击（低血）计入理论值（近似）
 	v += _curve_penalty(N10)
 	return maxf(v, 0.0)
-
-
-## ===== 工具函数（全部防御性）=====
-
-func _stacks(id: String) -> int:
-	if GameState == null or not GameState.has_method("total_stacks"):
-		return 0
-	return maxi(int(GameState.total_stacks(id)), 0)
-
-
 func _curve_value(id: String) -> float:
 	if GameState == null:
 		return 0.0

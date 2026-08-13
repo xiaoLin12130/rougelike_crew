@@ -17,8 +17,10 @@
   "_note": "gold_mult 已移除（2026-08-10）：Boss 金币按 enemies.json 的 gold 发放，无倍率"
  },
  "item_rarity_weights": {
-  "common": 0.7,
-  "rare": 0.24,
-  "legendary": 0.06
+  "common": 0.42,
+  "uncommon": 0.26,
+  "rare": 0.19,
+  "epic": 0.1,
+  "legendary": 0.03
  }
 }

@@ -155,33 +155,29 @@ func _check_buy(shop: CanvasLayer, tag: String) -> void:
 	if cards.size() != 3:
 		fail("[%s] 购买页应显示 3 把法杖，实际 %d" % [tag, cards.size()])
 		return
-	# Brotato：商品卡 2 列网格（PC/手机统一）
-	if shop._box.columns != 2:
-		fail("[%s] 商品卡网格列数 != 2: %d" % [tag, shop._box.columns])
+	# v50 用户需求：购买法杖页每根法杖一行（columns=1）
+	if shop._box.columns != 1:
+		fail("[%s] 商品卡网格列数 != 1: %d" % [tag, shop._box.columns])
 	var vp: Rect2 = (shop._scroll as Control).get_global_rect()
-	var rects: Array = []
+	var prev_bottom := -INF
 	for c in cards:
 		var r: Rect2 = (c as Control).get_global_rect()
-		rects.append(r)
-		if r.size.x > 150.0:
-			fail("[%s] 卡片过宽(>150): %s rect=%s" % [tag, c.name, str(r)])
+		if r.size.x > 360.0:
+			fail("[%s] 卡片过宽(>360): %s rect=%s" % [tag, c.name, str(r)])
 		if not vp.encloses(r):
 			fail("[%s] 卡片超出滚动可视区: rect=%s vp=%s" % [tag, str(r), str(vp)])
-	if absf((rects[0] as Rect2).position.y - (rects[1] as Rect2).position.y) > 2.0:
-		fail("[%s] 2 列网格首行两卡未同排: %s / %s" % [tag, str(rects[0]), str(rects[1])])
-	if (rects[0] as Rect2).intersects(rects[1]):
-		fail("[%s] 2 列网格首行卡片重叠" % tag)
-	if (rects[2] as Rect2).position.y <= (rects[0] as Rect2).end.y - 2.0:
-		fail("[%s] 第 2 行卡片未低于首行: %s / %s" % [tag, str(rects[2]), str(rects[0])])
-	# 每卡右上角锁钮存在（20x20）
+		if r.position.y < prev_bottom - 2.0:
+			fail("[%s] 卡片纵向重叠: %s rect=%s" % [tag, c.name, str(r)])
+		prev_bottom = r.end.y
+	# v51：法杖卡去锁图标（LockBtn 已移除）
 	var locks := 0
 	for c in shop._box.get_children():
 		if c is PanelContainer:
 			for ch in c.get_children():
 				if ch is Button and ch.name == "LockBtn":
 					locks += 1
-	if locks != 3:
-		fail("[%s] 商品卡锁钮数量 != 3: %d" % [tag, locks])
+	if locks != 0:
+		fail("[%s] 商品卡不应再有 LockBtn（v51 去锁图标）: %d" % [tag, locks])
 	var back := _find_button(shop, "BackBtnBuy")
 	if back == null:
 		fail("[%s] 购买页缺少返回按钮" % tag)

@@ -1,4 +1,4 @@
-extends Node
+extends SynergyBase
 ## 毒系瘟疫流 · 机制脚本（毒M1 传染 / 毒M2 毒爆 / 毒M3 毒雾弥漫 / 毒M4 腐蚀 /
 ## 毒M5 毒刃 / 毒M6 抗性渗透 / 毒M7 慢性死亡 / 毒M8 解毒反哺 / 毒M9 疫病之源 /
 ## 毒M10 五毒俱全），并承载毒1-毒10 数值构筑在战斗中的实际结算。
@@ -7,7 +7,7 @@ extends Node
 ## - 机制解锁：持有对应机制道具（poison_m1..m10）才解锁该机制，无道具时机制不生效；
 ## - 强度乘区：机制生效后，强度由持有的 poison_ 前缀构筑总层数驱动
 ##   （GameState.run.items 中 id 以 poison_ 开头的堆叠数之和，即
-##   GameState.total_stacks 的聚合），放大器（poison_spore 等）继续做乘区。
+##   GameState.total_poison_layers 的聚合），放大器（poison_spore 等）继续做乘区。
 ## 钩子：enemy_status / enemy_died / projectile_hit / cast（SynergyRegistry），
 ## 另监听 EventBus.apply_status 做毒层跟踪（先于敌人自身 _on_status 触发）。
 ## 回调全部防御性编写：空对象 / 缺字段 / 无效实例一律静默返回。
@@ -33,7 +33,7 @@ const PENTAD_MAX_MULT := 4.0        # 五毒俱全倍率上限
 const ENEMY_SCENE := preload("res://scenes/game/enemy.tscn")
 
 # 按敌人实例 id 维护的毒状态（敌人本体只存 _poison_left / _poison_dps）
-var _stacks := {}             # id -> int   当前毒层（受毒2 上限钳制）
+var _poison_layers := {}             # id -> int   当前毒层（受毒2 上限钳制）
 var _poison_time := {}        # id -> float 本次中毒累计时长（毒M7）
 var _pending_duration := {}   # id -> float 待写入持续时间（毒3 / 毒M3）
 var _spread_timer := {}       # id -> float 毒雾扩散倒计时（毒M3）
@@ -46,10 +46,11 @@ var _orig_speed := {}         # id -> float 减速前移速
 
 
 func _ready() -> void:
-	SynergyRegistry.register("enemy_status", _on_enemy_status)
-	SynergyRegistry.register("enemy_died", _on_enemy_died)
-	SynergyRegistry.register("projectile_hit", _on_projectile_hit)
-	SynergyRegistry.register("cast", _on_cast)
+	super._ready()
+	_register("enemy_status", _on_enemy_status)
+	_register("enemy_died", _on_enemy_died)
+	_register("projectile_hit", _on_projectile_hit)
+	_register("cast", _on_cast)
 	EventBus.apply_status.connect(_on_apply_status)
 
 
@@ -82,7 +83,7 @@ func _poison_power() -> int:
 func _stacks_of(item_id: String) -> int:
 	if GameState == null or not (GameState.run is Dictionary):
 		return 0
-	return GameState.total_stacks(item_id)
+	return GameState.total_poison_layers(item_id)
 
 
 func _poison_cap() -> int:
@@ -156,7 +157,7 @@ func _is_burning(enemy: Node2D) -> bool:
 
 
 func _is_poisoned(enemy: Node2D, id: int) -> bool:
-	return _num(enemy, "_poison_left", 0.0) > 0.0 or _stacks.get(id, 0) > 0
+	return _num(enemy, "_poison_left", 0.0) > 0.0 or _poison_layers.get(id, 0) > 0
 
 
 ## 毒M6 抗性渗透：默认不作用于免疫目标；机制生效后无视免疫。
@@ -186,7 +187,7 @@ func _on_apply_status(target: Node, kind: String, stacks: int) -> void:
 		return  # 只处理带毒槽的敌人
 	var id := target.get_instance_id()
 	var cap := _poison_cap()
-	_stacks[id] = mini(int(_stacks.get(id, 0)) + maxi(int(stacks), 1), cap)
+	_poison_layers[id] = mini(int(_poison_layers.get(id, 0)) + maxi(int(stacks), 1), cap)
 	# 毒3 腐蚀液：持续时间 +0.8s/层（下一帧 tick 时写入，避开敌人 _on_status 的 3.0 重置）
 	_pending_duration[id] = POISON_DURATION_BASE + 0.8 * float(_stacks_of("poison_duration"))
 	# 毒M4 腐蚀 / 毒5 疫病之触 / 毒7 缓蚀：进入中毒时一次性生效
@@ -234,7 +235,7 @@ func _slow_enemy(enemy: Node2D, id: int) -> void:
 ## 重算毒 DPS：基础 ×（毒1 毒伤加成）×（毒M7 慢性死亡）×（毒M10 五毒俱全）
 ## ×（毒M6 噬毒针：对 Boss +10%/层）。
 func _refresh_dps(enemy: Node2D, id: int) -> void:
-	var stacks: int = _stacks.get(id, 0)
+	var stacks: int = _poison_layers.get(id, 0)
 	if stacks <= 0 or enemy.get("_poison_dps") == null:
 		return
 	var base: float = _num(enemy, "max_hp", 1.0) * 0.01 * float(stacks)
@@ -273,11 +274,11 @@ func _on_enemy_status(ctx: Dictionary) -> void:
 	# 毒M7 慢性死亡：累计中毒时长
 	_poison_time[id] = _poison_time.get(id, 0.0) + delta
 	# 毒9 感染源：层数超过 5 时，超出部分每层每秒 1% 最大生命真伤
-	var inf_stacks: int = _stacks_of("poison_infection")
-	var st: int = _stacks.get(id, 0)
-	if inf_stacks > 0 and st > 5:
+	var inf_poison_layers: int = _stacks_of("poison_infection")
+	var st: int = _poison_layers.get(id, 0)
+	if inf_poison_layers > 0 and st > 5:
 		var extra := _num(enemy, "max_hp", 1.0) * 0.01 * float(st - 5) * delta
-		extra *= 1.0 + 0.5 * float(inf_stacks - 1)
+		extra *= 1.0 + 0.5 * float(inf_poison_layers - 1)
 		if enemy.has_method("_take_raw"):
 			enemy.call("_take_raw", int(extra))
 	# 毒M8 解毒反哺：毒伤的一部分回复生命（GameState.heal 自带上限钳制）
@@ -308,7 +309,7 @@ func _do_burst(enemy: Node2D, id: int) -> void:
 	if GameState != null:
 		dmg *= 1.0 + GameState.aggregate_bonus("poison_dmg")
 	var pos: Vector2 = enemy.global_position
-	_stacks[id] = 0
+	_poison_layers[id] = 0
 	enemy.set("_poison_dps", 0.0)
 	EventBus.fx_explosion.emit(pos, "poison")
 	# 毒爆地面视觉：爆点留下一团短时毒雾
@@ -455,15 +456,15 @@ func _on_cast(ctx: Dictionary) -> void:
 	var core: Variant = ctx.get("core")
 	if not (core is Dictionary) or str(core.get("element", "")) != "poison":
 		return
-	var cd_stacks := float(_stacks_of("poison_cd"))
-	var haste_stacks := float(_stacks_of("poison_haste"))
-	if cd_stacks <= 0.0 and haste_stacks <= 0.0:
+	var cd_poison_layers := float(_stacks_of("poison_cd"))
+	var haste_poison_layers := float(_stacks_of("poison_haste"))
+	if cd_poison_layers <= 0.0 and haste_poison_layers <= 0.0:
 		return
 	# shell mods 是共享字典：原值存副键，每次施法从原值重算，避免跨施法叠加
 	if not mods.has("_poison_cd_orig"):
 		mods["_poison_cd_orig"] = float(mods.get("cooldown_mult", 1.0))
 	var orig: float = float(mods["_poison_cd_orig"])
-	var mult := orig * (1.0 - 0.06 * cd_stacks) * (1.0 - 0.08 * haste_stacks)
+	var mult := orig * (1.0 - 0.06 * cd_poison_layers) * (1.0 - 0.08 * haste_poison_layers)
 	mods["cooldown_mult"] = maxf(mult, 0.3)
 
 
@@ -483,7 +484,7 @@ func _cleanup(enemy: Node2D, id: int) -> void:
 	_orig_armor.erase(id)
 	_orig_attack.erase(id)
 	_orig_speed.erase(id)
-	_stacks.erase(id)
+	_poison_layers.erase(id)
 	_poison_time.erase(id)
 	_pending_duration.erase(id)
 	_spread_timer.erase(id)

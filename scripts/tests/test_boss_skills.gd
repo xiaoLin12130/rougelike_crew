@@ -121,8 +121,8 @@ func _test_phases() -> void:
 	minion.global_position = _boss_pos + Vector2(80, 0)
 	add_child(minion)
 	await get_tree().physics_frame
-	# 打到 66% 血线下（600 -> 350）
-	_boss.take_damage(250, "fire", false)
+	# 打到 66% 血线下（按实际 max_hp 计算，兼容 Boss 血量调整）
+	_boss.take_damage(int(_boss.max_hp * 0.66) + 1, "fire", false)
 	await _physics_frames(10)
 	if _boss.phase != 2:
 		_fail("phase_gate: 第一次转阶段未触发 phase=%d" % _boss.phase)
@@ -133,8 +133,8 @@ func _test_phases() -> void:
 	if _boss.state != _boss.State.APPROACH:
 		_fail("phase_gate: 转阶段后卡在状态 %d" % _boss.state)
 	await _physics_frames(55)  # 等 0.8s 无敌结束
-	# 打到 33% 血线下（350 -> 198）
-	_boss.take_damage(152, "fire", false)
+	# 打到 33% 血线下（按当前血量计算，兼容 Boss 血量调整）
+	_boss.take_damage(int(_boss.hp) - int(_boss.max_hp * 0.33) + 1, "fire", false)
 	await _physics_frames(10)
 	if _boss.phase != 3:
 		_fail("phase_gate: 第二次转阶段未触发 phase=%d" % _boss.phase)

@@ -27,12 +27,21 @@ const GOLD := Color("#f5b83d")
 const WHITE := Color("#f2eef8")
 const RED := Color("#e05252")
 const GREEN := Color("#6fce6f")
+## 稀有度五档色（2026-08-13 五档实施，见 docs/design/稀有度五档方案.md §3）：
+## 白/绿/蓝/金/红；所有消费点（图鉴描边/商店卡边框/升级三选一边框）统一从此表读取。
 const RARITY := {
-	"common": Color("#b8b8c8"),
+	"common": Color("#d9d9e2"),
 	"uncommon": Color("#6fce6f"),
 	"rare": Color("#4a9eff"),
-	"epic": Color("#b07cff"),
-	"legendary": Color("#ffa726"),
+	"epic": Color("#ffc84d"),
+	"legendary": Color("#ff5c5c"),
+}
+const RARITY_NAMES := {
+	"common": "白色",
+	"uncommon": "绿色",
+	"rare": "蓝色",
+	"epic": "金色",
+	"legendary": "红色",
 }
 const ELEMENT := {
 	"fire": Color("#ff7b3d"),

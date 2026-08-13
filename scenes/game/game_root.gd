@@ -383,45 +383,46 @@ func _on_player_hit(dmg: int, pos: Vector2) -> void:
 	if randf() < maxf(thorn, guard):
 		return
 	var taken := float(dmg)
-	# 磐石护甲 / 防御护符：减伤（曲线从数据表读取，避免与 items.json 不一致）
+	# 磐石护甲（防1）/ 防御护符：减伤（曲线从数据表读取，避免与 items.json 不一致）
 	var stone := GameState.item_value(
-		GameState.item_def("stone_armor").get("curve", {"type": "linear", "base": 0.06, "k": 0.06, "cap": 0.35}),
-		GameState.total_stacks("stone_armor")
+		GameState.item_def("defense_bedrock").get("curve", {"type": "linear", "base": 0.06, "k": 0.06, "cap": 0.35}),
+		GameState.total_stacks("defense_bedrock")
 	)
 	var amulet := GameState.item_value(
 		GameState.item_def("defense_amulet").get("curve", {"type": "linear", "base": 0.03, "k": 0.03, "cap": 0.20}),
 		GameState.total_stacks("defense_amulet")
 	)
-	# 注意：stone_armor 自带 "defense" tag，aggregate_bonus("defense") 会重复计入其曲线值，
+	# 注意：defense_bedrock 自带 "defense" tag，aggregate_bonus("defense") 会重复计入其曲线值，
 	# 层数高时减伤可能 >100% 导致伤害变负（怪物打玩家=加血）。只按 stone 曲线结算，
 	# 防御流成型奖励（synergy_bonus.defense）单独附加到反弹比例上。
-	# 2026-08-10 平衡调整：防御减伤合计封顶 50%（stone 35% + amulet 15% 已达上限，防御不再叠满免伤）
+	# 2026-08-10 平衡调整：防御减伤合计封顶 50%（bedrock 35% + amulet 15% 已达上限，防御不再叠满免伤）
 	taken *= 1.0 - minf(stone + amulet, 0.50)
 	taken *= 1.0 + 0.15 * GameState.total_stacks("curse_ring")
 	# 移M10 暴走：受击伤害 +20%（run.wind_m10_taken_mult 读取点接线）
 	taken *= maxf(float(GameState.run.get("wind_m10_taken_mult", 1.0)), 0.0)
 	var taken_int := int(taken)
-	# 荆棘甲改造：反弹所受伤害给攻击者（近战敌人直接受伤）
+	# 荆棘甲改造（防2）：反弹所受伤害给攻击者（近战敌人直接受伤）
+	# 批次A去重：thorn_reflect → defense_thorn_refit，曲线从数据表读取（30% +6%/层，上限 65%）
 	var reflect_pct: float = GameState.item_value(
-		{"curve": {"type": "linear", "base": 0.40, "k": 0.35, "cap": 0.95}},
-		GameState.total_stacks("thorn_reflect")
+		{"curve": GameState.item_def("defense_thorn_refit").get("curve", {"type": "linear", "base": 0.30, "k": 0.06, "cap": 0.65})},
+		GameState.total_stacks("defense_thorn_refit")
 	)
 	# 防御流成型奖励：附加到反弹比例（不在减伤上重复叠加）
 	reflect_pct += float(GameState.run.get("synergy_bonus", {}).get("defense", 0.0))
-	# 0 层不生效：item_value(linear) 在 0 层返回 base（40%），不加守卫会白送反弹（P2-1a）
-	if GameState.total_stacks("thorn_reflect") > 0 and reflect_pct > 0.0 and taken_int > 0:
+	# 0 层不生效：item_value(linear) 在 0 层返回 base（30%），不加守卫会白送反弹（P2-1a）
+	if GameState.total_stacks("defense_thorn_refit") > 0 and reflect_pct > 0.0 and taken_int > 0:
 		var reflected := int(taken_int * reflect_pct)
 		var attacker := _nearest_enemy(pos)
 		if attacker != null and is_instance_valid(attacker) and attacker.has_method("take_damage"):
 			attacker.take_damage(reflected, "blade", false)
 			EventBus.damage_dealt.emit(reflected, attacker.global_position, false)
-			# 血棘甲：反弹伤害的 4% 回血（防御流专属吸血）
+			# 血棘甲（防3）：反弹伤害按曲线回血（2% +0.04%/层，上限 4%）
 			var blood: float = GameState.item_value(
-				{"curve": {"type": "linear", "base": 0.04, "k": 0.0}},
-				GameState.total_stacks("blood_thorn")
+				{"curve": GameState.item_def("defense_blood_thorn").get("curve", {"type": "linear", "base": 0.02, "k": 0.02, "cap": 0.04})},
+				GameState.total_stacks("defense_blood_thorn")
 			)
 			# 0 层不生效：血棘甲同款 0 层泄漏（P2-1a）
-			if GameState.total_stacks("blood_thorn") > 0 and blood > 0.0:
+			if GameState.total_stacks("defense_blood_thorn") > 0 and blood > 0.0:
 				GameState.heal(float(reflected) * blood)
 	GameState.run.hp = mini(GameState.run.max_hp, int(maxf(GameState.run.hp - taken, 0)))
 	SynergyRegistry.trigger("player_hit", {"dmg": taken_int, "pos": pos, "taken": taken, "attacker": null})

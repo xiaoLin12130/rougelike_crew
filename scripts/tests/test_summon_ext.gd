@@ -18,7 +18,7 @@ func _ready() -> void:
 	_player.position = Vector2(640, 360)
 	add_child(_player)
 	EventBus.damage_dealt.connect(func(_d: int, _p: Vector2, _c: bool) -> void: _dmg_events += 1)
-	GameState.run.items["summon_book"] = 6  # 总上限 = 7
+	GameState.run.items["summon_1"] = 6  # 总上限 = 7（批次A去重：summon_book → summon_1）
 	await _test_random_caps()
 	await _test_all_types_spawn()
 	await _test_self_destruct_damage()
@@ -69,7 +69,7 @@ func _test_random_caps() -> void:
 	await get_tree().process_frame
 	await get_tree().process_frame
 	var group: Array = get_tree().get_nodes_in_group("summons")
-	var cap: int = GameState.total_stacks("summon_book") + 1
+	var cap: int = GameState.total_stacks("summon_1") + 1
 	if group.size() > cap:
 		_fail("total cap exceeded: %d > %d" % [group.size(), cap])
 	var counts := {}

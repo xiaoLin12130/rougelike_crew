@@ -1,4 +1,4 @@
-extends Node
+extends SynergyBase
 ## 召唤军团流机制脚本（钩子式流派系统）
 ## 由 SynergyRegistry.load_synergy_scripts() 自动扫描 scripts/synergies/*.gd 并实例化注册。
 ## 设计文档：docs/design/流派构筑大全.md 第 5 章「召唤军团流」（核心：召唤 · 10 种召唤物）。
@@ -76,10 +76,11 @@ var _in_hit_bonus := false              # enemy_hit 增伤重入守卫（召M4 /
 
 
 func _ready() -> void:
-	SynergyRegistry.register("cast", _on_cast)
-	SynergyRegistry.register("enemy_hit", _on_enemy_hit)
-	SynergyRegistry.register("enemy_died", _on_enemy_died)
-	SynergyRegistry.register("player_hit", _on_player_hit)
+	super._ready()
+	_register("cast", _on_cast)
+	_register("enemy_hit", _on_enemy_hit)
+	_register("enemy_died", _on_enemy_died)
+	_register("player_hit", _on_player_hit)
 
 
 ## 每物理帧轮询召唤物（注册/属性换算/灵魂石保命）与周期机制
@@ -112,17 +113,6 @@ func _sget(node: Node, prop: String, def: float) -> float:
 func _sget_str(node: Node, prop: String, def: String) -> String:
 	var v: Variant = node.get(prop)
 	return str(v) if v != null else def
-
-
-func _stacks(item_id: String) -> int:
-	if GameState.run.is_empty():
-		return 0
-	var items: Variant = GameState.run.get("items", {})
-	if not (items is Dictionary):
-		return 0
-	return maxi(int(items.get(item_id, 0)), 0)
-
-
 ## 持有 summon_ 前缀构筑总层数（机制强度主控，含数值与机制构筑）
 func _summon_stacks() -> int:
 	if GameState.run.is_empty():

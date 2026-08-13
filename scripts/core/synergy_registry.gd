@@ -32,7 +32,7 @@ func load_synergy_scripts() -> void:
 	dir.list_dir_begin()
 	var name := dir.get_next()
 	while name != "":
-		if name.ends_with(".gd") and not name.begins_with("."):
+		if name.ends_with(".gd") and not name.begins_with(".") and name != "synergy_base.gd":  ## ?????????C?
 			var script: Script = load("res://scripts/synergies/" + name)
 			if script != null:
 				var inst: Node = script.new()

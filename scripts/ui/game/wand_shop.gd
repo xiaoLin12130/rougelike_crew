@@ -17,15 +17,16 @@ const HEAL_PCT := 0.25
 const REFRESH_PRICE := 80
 const REFRESH_PRICE_MAX := 480  # 问题16：刷新费递增上限（80→160→320→480 封顶）
 const BTN_H := 44.0
-## 稀有度加权抽取：基础权重 common 70 / rare 25 / legendary 13
-## （2026-08-12：法杖稀有度重分类后传说池扩至 21 把（原 11），common 60→70、
-##  legendary 15→13，保证 lucky=0/lucky=10 下 common > rare > legendary
-##  总权重递减：商店池 12/21/21 时 lucky=10 总权重 1344 > 1155 > 928）；
-## lucky（tag=lucky 道具总层数，当前仅 crit_lucky「幸运」）按稀有度梯度放大：
-## weight = base × (1 + lucky × 0.06 × boost)，boost：common 1.0 / rare 2.0 / legendary 4.0；
+## 稀有度加权抽取（2026-08-13 五档实施，见 docs/design/稀有度五档方案.md §5.2）：
+## 基础权重 common 100 / uncommon 70 / rare 30 / epic 20 / legendary 6；
+## 池 7/6/11/10/21（白/绿/蓝/金/红）下 lucky=0 实出约 白39%/绿24%/蓝19%/金11%/红7%，
+## lucky=10（crit_lucky「幸运」10 层）实出约 白32%/绿22%/蓝20%/金14%/红12% ——
+## 两档均保持 白>绿>蓝>金>红 严格递减，红 +5pp（越稀有越难出）。
+## lucky 按稀有度梯度放大：weight = base × (1 + lucky × 0.06 × boost)，
+## boost：common 1.0 / uncommon 1.5 / rare 2.0 / epic 2.5 / legendary 4.0。
 ## 归一化后不放回抽取（商店每次 3 把，55 把池）。UI 卡片已按 UiTheme.RARITY 上色，零改动。
-const RARITY_WEIGHT := {"common": 70.0, "rare": 25.0, "legendary": 13.0}
-const LUCKY_RARITY_BOOST := {"common": 1.0, "rare": 2.0, "legendary": 4.0}
+const RARITY_WEIGHT := {"common": 100.0, "uncommon": 70.0, "rare": 30.0, "epic": 20.0, "legendary": 6.0}
+const LUCKY_RARITY_BOOST := {"common": 1.0, "uncommon": 1.5, "rare": 2.0, "epic": 2.5, "legendary": 4.0}
 const LUCKY_PER_STACK := 0.06
 
 const PAGE_MENU := "menu"
@@ -50,6 +51,7 @@ var _build_section: VBoxContainer
 var _box: Container  # 预存类型错误修复：Brotato 改造改赋 GridContainer，基类收敛
 var _owned_box: Container
 var _gold_label: Label
+var _refresh_btn: Button  # 刷新按钮（_refresh 时实时更新价格文字，问题3）
 var _mat_icon: TextureRect  # 顶栏材料图标（Brotato 材料位）
 var _enhance_banner: Label  # 强化成功金色横幅（强化效果即时可见）
 var _pot_bought := false
@@ -209,9 +211,9 @@ func _build_buy_page() -> void:
 	back.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	back.pressed.connect(_goto_menu)
 	_buy_section.add_child(back)
-	var refresh := UiTheme.button("刷新（%d金）" % REFRESH_PRICE, Vector2(_card_w, BTN_H))
+	var refresh := UiTheme.button("刷新（%d金）" % _refresh_price(), Vector2(_card_w, BTN_H))
 	refresh.name = "RefreshBtn"
-	refresh.text = "刷新（%d金）" % _refresh_price()
+	_refresh_btn = refresh
 	refresh.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	refresh.pressed.connect(_refresh_offers)
 	_buy_section.add_child(refresh)
@@ -375,6 +377,8 @@ func _roll_offers() -> void:
 
 func _refresh() -> void:
 	_gold_label.text = str(GameState.run.get("gold", 0))
+	if _refresh_btn != null:
+		_refresh_btn.text = "刷新（%d金）" % _refresh_price()
 	for c in _owned_box.get_children():
 		c.queue_free()
 	var owned := GameState.current_wands()
@@ -474,13 +478,18 @@ func _reroll_build_offers() -> void:
 
 
 func _build_price(def: Dictionary) -> int:
-	## 问题15：构筑价格按稀有度（common 80 / rare 140 / legendary 240），比法杖便宜鼓励消费
+	## 问题15：构筑价格按稀有度五档（common 80 / uncommon 110 / rare 150 /
+	## epic 200 / legendary 260），比法杖便宜鼓励消费（2026-08-13 五档实施）
 	var rarity: String = str(def.get("rarity", "common"))
 	match rarity:
 		"legendary":
-			return 240
+			return 260
+		"epic":
+			return 200
 		"rare":
-			return 140
+			return 150
+		"uncommon":
+			return 110
 	return 80
 
 
@@ -506,7 +515,9 @@ func _buy_build_item(def: Dictionary) -> void:
 	_roll_build_offers()  # 买一件换一件，保持货架 3-4 件
 	_refresh()
 	## 2026-08-12：构筑购买完成 → 0.5s 展示购买成功后自动关闭商店（与购买法杖一致进入下一关）
-	get_tree().create_timer(0.5).timeout.connect(_finish_build_close)
+	## 2026-08-13（修复2）：process_always=true —— 商店打开时 get_tree().paused=true，
+	## 普通 create_timer 在暂停期不触发，这是用户反馈"买完构筑不关商店"的根因
+	get_tree().create_timer(0.5, true).timeout.connect(_finish_build_close)
 
 
 func _refresh_build() -> void:
@@ -682,7 +693,8 @@ func _upgrade_wand(idx: int) -> void:
 			]
 			_enhance_banner.visible = true
 		## 强化完成即关闭商店（与购买法杖一致）：短暂展示强化效果后进入下一关
-		get_tree().create_timer(1.0).timeout.connect(_finish_enhance_close)
+		## 2026-08-13（修复2）：同构筑购买，process_always=true 避免暂停期不触发
+		get_tree().create_timer(1.0, true).timeout.connect(_finish_enhance_close)
 
 
 func _finish_enhance_close() -> void:

@@ -157,10 +157,10 @@ func _refresh_stats() -> void:
 	var run: Dictionary = GameState.run
 	var stone: float = GameState.item_value(
 		{"curve": {"type": "linear", "base": 0.06, "k": 0.06, "cap": 0.35}},
-		GameState.total_stacks("stone_armor"))
+		GameState.total_stacks("defense_bedrock"))
 	var reflect: float = GameState.item_value(
-		{"curve": {"type": "linear", "base": 0.30, "k": 0.20, "cap": 0.65}},
-		GameState.total_stacks("thorn_reflect"))
+		{"curve": {"type": "linear", "base": 0.30, "k": 0.06, "cap": 0.65}},
+		GameState.total_stacks("defense_thorn_refit"))
 	reflect += float(run.get("synergy_bonus", {}).get("defense", 0.0))
 	## Brotato 式属性区：图标+名称+数值 2 列网格（PC）/1 列（手机），负值标红
 	var rows: Array = [

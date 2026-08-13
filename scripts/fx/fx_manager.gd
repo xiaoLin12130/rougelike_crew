@@ -31,8 +31,12 @@ const BURST_AMOUNT_MIN := 16
 const BURST_AMOUNT_MAX := 32
 const RING_SCALE := 2.6
 const RING_DURATION := 0.3
-const SHAKE_SMALL := 3.0
-const SHAKE_PLAYER_HIT := 2.5
+## 特效柔化（2026-08-13，docs/design/特效柔化报告.md）：
+## 震屏幅度整体下调（3.0→1.5 / 2.5→1.2），所有 screen_shake 事件在
+## _on_screen_shake 收口做幂衰减压缩（power 越大衰减越多），
+## 外部硬编码调用点（boss 12/10、enemy 6、summon 4、synergy 3/0.8）无需改动即整体降幅。
+const SHAKE_SMALL := 1.5
+const SHAKE_PLAYER_HIT := 1.2
 var _shake_cd := 0.0
 var _shake_pending := 0.0
 const SHAKE_COOLDOWN := 0.25  ## 用户需求：震屏节流，防高频晃动不适
@@ -58,17 +62,20 @@ const DMG_NUM_MAX_ALIVE := 24      # 伤害数字存活上限（超出挤掉最�
 const DMG_NUM_PER_FRAME := 8       # 单帧新建上限（超出并入最近数字）
 const DMG_NUM_MERGE_DIST := 14.0   # 同帧聚合距离（px）
 const DMG_NUM_DISMISS := 0.15      # 被淘汰数字加速淡出时长（s）
-const DEBRIS_NORMAL_MIN := 4       # 普通怪死亡碎块数
+const DEBRIS_NORMAL_MIN := 4       # 普通怪死亡碎屑数（档位保持：回归 test_hit_feel 硬断言）
 const DEBRIS_NORMAL_MAX := 6
-const DEBRIS_ELITE_MIN := 8        # 精英翻倍
+const DEBRIS_ELITE_MIN := 8        # 精英
 const DEBRIS_ELITE_MAX := 10
-const DEBRIS_BOSS_MIN := 14        # Boss：更多碎块 + 延迟消失
+const DEBRIS_BOSS_MIN := 14        # Boss：更多柔点
 const DEBRIS_BOSS_MAX := 18
-const DEBRIS_LIFE_MIN := 0.3
-const DEBRIS_LIFE_MAX := 0.5
-const DEBRIS_BOSS_LIFE_MIN := 0.55
-const DEBRIS_BOSS_LIFE_MAX := 0.8
-const DEBRIS_GRAV := 620.0
+## 特效柔化（2026-08-13）：尺寸缩小 / 寿命缩短（快速淡出）/ 重力加大（下落更快）
+const DEBRIS_SIZE_MIN := 1.4       # 柔点半径下限（旧硬方块半宽 2.4）
+const DEBRIS_SIZE_MAX := 2.2       # 柔点半径上限（旧 4.8；上限仍低于旧下限 2.4）
+const DEBRIS_LIFE_MIN := 0.26      # 普通寿命（旧 0.3）
+const DEBRIS_LIFE_MAX := 0.38      # 旧 0.5
+const DEBRIS_BOSS_LIFE_MIN := 0.42 # Boss 寿命（旧 0.55）
+const DEBRIS_BOSS_LIFE_MAX := 0.6  # 旧 0.8
+const DEBRIS_GRAV := 1050.0        # 重力（旧 620）
 const DEBRIS_FALLBACK := Color(0.75, 0.28, 0.2)  # 提取贴图主色失败时的暗红
 
 const FX_DIR := "res://assets/fx/kenney/"
@@ -1514,30 +1521,31 @@ func _on_dmg_number_freed(number: DamageNumber) -> void:
 func dmg_number_tracked() -> int:
 	return _dmg_numbers.size()
 
-## 死亡碎块爆散（G-2）：按怪物贴图主色生成像素方块碎块（重力 + 旋转 + 渐隐）。
-## 普通怪 4-6 块 / 精英 8-10 块（掺金）/ Boss 14-18 块且寿命更长（延迟消失）。
+## 死亡碎屑爆散（G-2 柔化版，2026-08-13）：不再生成硬方块——
+## 小圆柔点粒子（抗锯齿圆 + 亮芯），尺寸缩小、下落更快、渐隐更早、
+## 颜色降饱和提亮融入背景；数量档位保持 4-6/8-10/14-18（回归测试约束）。
 func _spawn_death_debris(pos: Vector2, enemy_id: String, elite: bool) -> void:
 	var boss := _is_boss_id(enemy_id)
 	var color: Color = _death_color(enemy_id)
 	if elite:
-		color = color.lerp(CRIT_GOLD, 0.45)
+		color = color.lerp(CRIT_GOLD, 0.25)  # 掺金减半，弱化跳色
 	var n := randi_range(DEBRIS_NORMAL_MIN, DEBRIS_NORMAL_MAX)
 	var life_min := DEBRIS_LIFE_MIN
 	var life_max := DEBRIS_LIFE_MAX
 	var size_mult := 1.0
 	if elite:
 		n = randi_range(DEBRIS_ELITE_MIN, DEBRIS_ELITE_MAX)
-		size_mult = 1.1
+		size_mult = 1.05
 	if boss:
 		n = randi_range(DEBRIS_BOSS_MIN, DEBRIS_BOSS_MAX)
 		life_min = DEBRIS_BOSS_LIFE_MIN
 		life_max = DEBRIS_BOSS_LIFE_MAX
-		size_mult = 1.3
+		size_mult = 1.2
 	for i in n:
 		var d := DeathDebris.new()
 		var ang := randf() * TAU
-		d.setup(pos, color, randf_range(2.4, 4.8) * size_mult,
-			Vector2(cos(ang), sin(ang)) * randf_range(90.0, 270.0),
+		d.setup(pos, color, randf_range(DEBRIS_SIZE_MIN, DEBRIS_SIZE_MAX) * size_mult,
+			Vector2(cos(ang), sin(ang)) * randf_range(80.0, 220.0),
 			randf_range(life_min, life_max))
 		add_child(d)
 
@@ -1590,15 +1598,24 @@ func _death_color(enemy_id: String) -> Color:
 	var col := Color(clampf(r / n * 1.5 + 0.06, 0.0, 1.0),
 		clampf(g / n * 1.5 + 0.06, 0.0, 1.0),
 		clampf(b / n * 1.5 + 0.06, 0.0, 1.0))
+	col = _soften_death_color(col)
 	_death_color_cache[enemy_id] = col
 	return col
 
-## 像素方块碎块（G-2）：Node2D + 简单移动 + 重力 + 旋转 + 渐隐，寿命到自毁。
+## 死亡碎屑颜色柔化：降饱和（×0.55）+ 提亮，让碎屑融入背景而非与场景对比过强。
+static func _soften_death_color(col: Color) -> Color:
+	return Color.from_hsv(col.h, clampf(col.s * 0.55, 0.0, 1.0),
+		clampf(col.v * 1.1 + 0.06, 0.0, 1.0), col.a)
+
+## 柔化死亡碎屑（G-2 柔化版，2026-08-13）：小圆柔点——抗锯齿圆 + 亮芯，
+## 无硬方块（draw_rect 已废弃）；重力大（下落更快）、渐隐窗口更早（70% 寿命）、
+## 起始透明度 90% 更柔和。
 class DeathDebris:
 	extends Node2D
 
 	## 内嵌类作用域隔离：常量需在本类内自包含（不能引用外层 fx_manager 常量）
-	const GRAV := 620.0
+	const GRAV := 1050.0
+	const FADE_WINDOW := 0.7  ## 尾段 70% 寿命内线性渐隐（旧 45%，淡出更早）
 	const FALLBACK := Color(0.75, 0.28, 0.2)
 
 	var _vel := Vector2.ZERO
@@ -1607,31 +1624,31 @@ class DeathDebris:
 	var _age := 0.0
 	var _size := 3.0
 	var _color := FALLBACK
-	var _spin := 0.0
 
 	func setup(pos: Vector2, color: Color, size: float, vel: Vector2, life: float) -> void:
 		position = pos
 		_color = color
 		_size = size
 		_vel = vel
-		_life = maxf(life, 0.15)
-		_spin = randf_range(-7.0, 7.0)
-		rotation = randf() * TAU
+		_life = maxf(life, 0.12)
+		modulate.a = 0.9  # 起始略透明，整体更柔和
 		z_index = 5
 
 	func _process(delta: float) -> void:
 		_age += delta
 		_vel.y += _grav * delta
-		_vel *= maxf(1.0 - 2.4 * delta, 0.0)  # 空气阻力
+		_vel *= maxf(1.0 - 2.2 * delta, 0.0)  # 空气阻力
 		position += _vel * delta
-		rotation += _spin * delta
-		# 尾段 45% 时间渐隐
-		modulate.a = clampf((_life - _age) / maxf(_life * 0.45, 0.01), 0.0, 1.0)
+		# 渐隐窗口更早：尾段 70% 寿命线性淡出
+		modulate.a = 0.9 * clampf((_life - _age) / maxf(_life * FADE_WINDOW, 0.01), 0.0, 1.0)
 		if _age >= _life:
 			queue_free()
 
 	func _draw() -> void:
-		draw_rect(Rect2(-_size, -_size, _size * 2.0, _size * 2.0), _color)
+		# 柔边圆点：外圈抗锯齿柔边 + 内圈亮芯（替代旧 draw_rect 硬方块）
+		var r := maxf(_size, 0.8)
+		draw_circle(Vector2.ZERO, r, _color, true, -1.0, true)
+		draw_circle(Vector2.ZERO, r * 0.55, _color.lightened(0.3), true, -1.0, true)
 
 
 ## 可复用粒子爆散封装：一次性 CPUParticles2D，自毁由 finished 驱动。
@@ -1654,7 +1671,7 @@ func _spawn_burst(pos: Vector2, color: Color, amount_min: int, amount_max: int) 
 	add_child(burst)
 
 func _on_enemy_died(enemy_id: String, pos: Vector2, _xp: int, _gold: int, elite: bool) -> void:
-	# 击杀反馈（G-1/G-2）：独特击杀音 + 像素碎块爆散（普通 4-6 / 精英 8-10 / Boss 14-18）
+	# 击杀反馈（G-1/G-2）：独特击杀音 + 柔化碎屑爆散（柔点，普通 4-6 / 精英 8-10 / Boss 14-18）
 	SfxBus.play_hit("kill")
 	_spawn_death_debris(pos, enemy_id, elite)
 	# 连杀反馈：2 秒内击杀 >= 6 触发小慢动作（0.8x 0.15s）
@@ -1739,25 +1756,35 @@ func _on_fx_hit_slow(target: Node, crit: bool = false) -> void:
 		dur = HITSTOP_DUR_CRIT
 	EventBus.slow_mo.emit(HITSTOP_FACTOR, dur)
 
+## 震屏幅度压缩（特效柔化 2026-08-13）：power 越大衰减越快（双曲线衰减），
+## 收口在唯一入口 _on_screen_shake——等价于 camera_shake 偏移公式加衰减，
+## 但按铁律只改本文件：外部硬编码调用点（boss.gd 12/10、enemy.gd 6、
+## summon.gd 4、synergy 3/0.8 等）无需改动即整体降幅。
+## 数值：12→≈6.1（Boss 死亡 12→6 目标），10→≈5.6，6→≈4.0，3→≈2.4，1.5→≈1.3。
+static func compress_shake_power(power: float) -> float:
+	var p := maxf(power, 0.0)
+	return p / (1.0 + p * 0.08)
+
 func _on_screen_shake(power: float) -> void:
-	## 节流：冷却期内只保留最强的一次震屏（0.25s 合并窗口）
+	## 节流 + 幅度压缩：先压缩再进 0.25s 合并窗口（冷却期内只保留最强一次）
+	var p := compress_shake_power(power)
 	if _shake_cd > 0.0:
-		_shake_pending = maxf(_shake_pending, power)
+		_shake_pending = maxf(_shake_pending, p)
 		return
 	_shake_cd = SHAKE_COOLDOWN
 	_shake_pending = 0.0
+	_apply_camera_shake(p)
+
+func _apply_camera_shake(power: float) -> void:
 	var camera := get_tree().get_first_node_in_group("camera")
 	if is_instance_valid(camera) and camera.has_method("shake"):
 		camera.shake(power)
-
 
 func _process_shake_throttle(delta: float) -> void:
 	if _shake_cd > 0.0:
 		_shake_cd -= delta
 		if _shake_cd <= 0.0 and _shake_pending > 0.0:
-			var camera := get_tree().get_first_node_in_group("camera")
-			if is_instance_valid(camera) and camera.has_method("shake"):
-				camera.shake(_shake_pending)
+			_apply_camera_shake(_shake_pending)
 			_shake_pending = 0.0
 
 func _on_player_hit(_dmg: int, _pos: Vector2) -> void:

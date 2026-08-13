@@ -1,4 +1,4 @@
-extends Node
+extends SynergyBase
 ## 防御流机制脚本（10 机制，SynergyRegistry 钩子实现）
 ## ============================================================
 ## 挂载方式：由 SynergyRegistry.load_synergy_scripts() 自动扫描
@@ -13,9 +13,9 @@ extends Node
 ## - player_hit 钩子在 game_root 扣血后触发（ctx.taken = 结算后伤害），
 ##   减伤/护盾/硬化采用"钩子侧补结"（GameState.heal 退款已扣伤害）；
 ##   金身写玩家 _invuln_left（本回调晚于扣血、早于死亡判定，可挡致死）。
-## - 反弹体系：game_root 只按旧 id（thorn_reflect）结算反弹；本脚本按同款
-##   公式估算总反弹（含新 defense_ 数值构筑），并补发新构筑对应的反弹伤害
-##   与吸血，保证 defense_thorn_refit / defense_blood_thorn 端到端生效。
+## - 反弹体系（批次A去重 2026-08-13）：game_root 按新 id（defense_thorn_refit）
+##   结算反弹与血棘甲吸血；本脚本只做总反弹估算（供 M1 荆棘领域 / M9 复仇 /
+##   M4 反甲吸血消费），不再补发反弹伤害，避免双重结算。
 ## - 所有回调防御性编写（不做可能抛错的裸取字段，异常只影响本流派）。
 
 ## ===== 机制构筑 id（与 .tools/build_defs/defense.json 的 items 一致）=====
@@ -73,10 +73,8 @@ const C3 := {"type": "linear", "base": 0.02, "k": 0.02, "cap": 0.04}
 const C4 := {"type": "linear", "base": 0.03, "k": 0.03, "cap": 0.20}
 const C7 := {"type": "threshold", "base": 0.0, "step": 0.10, "threshold": 2}
 const C10 := {"type": "threshold", "base": 0.0, "step": 0.10, "threshold": 1}
-## 旧 id 曲线（与 game_root._on_player_hit 完全同款）
-const OLD_STONE := {"type": "linear", "base": 0.06, "k": 0.06, "cap": 0.35}
+## 防御护符回退曲线（items.json 落库前防御性取值，与 game_root 同款写法）
 const OLD_AMULET := {"type": "linear", "base": 0.03, "k": 0.03, "cap": 0.20}
-const OLD_REFLECT := {"type": "linear", "base": 0.40, "k": 0.35, "cap": 0.95}
 
 var _m2_left := 0.0        ## 盾反剩余秒数
 var _m2_busy := false      ## 盾反补伤防重入
@@ -91,11 +89,9 @@ var _run_tag := ""         ## run 身份标记（换局重置瞬态状态）
 
 
 func _ready() -> void:
-	if SynergyRegistry == null:
-		push_warning("[DefenseSynergy] SynergyRegistry 不可用，防御流机制未注册")
-		return
-	SynergyRegistry.register("player_hit", _on_player_hit)  ## 防御流主入口
-	SynergyRegistry.register("enemy_hit", _on_m2)           ## 盾反：受击后全伤害加成
+	super._ready()
+	_register("player_hit", _on_player_hit)  ## 防御流主入口
+	_register("enemy_hit", _on_m2)           ## 盾反：受击后全伤害加成
 	print("[SYNERGY] defense_synergy registered")
 
 
@@ -125,10 +121,10 @@ func _on_player_hit(ctx: Dictionary) -> void:
 	## 金身判定用"扣血后、本链退款前"的 hp 快照：
 	## 吸血/护盾退款会先抬高 hp，若晚判会把致死一击后的血量推过 30% 线导致金身失效。
 	var hp_after_hit := int(GameState.run.get("hp", 0))
-	## 反弹估算（旧 id 由 game_root 结算，新构筑由本脚本补发）
+	## 反弹估算（批次A去重：game_root 已按 defense_thorn_refit 结算反弹与吸血，
+	## 本脚本只做估算供 M1 荆棘领域 / M9 复仇 / M4 反甲吸血消费）
 	var reflected := _reflect_total(taken)
-	_supply_reflect(taken, pos)            ## 防2 荆棘甲改造（新 id）补发反弹
-	_supply_leech(reflected)               ## 防3 血棘甲 + 防M4 反甲吸血
+	_supply_leech(reflected)               ## 防M4 反甲吸血
 	_on_m9(reflected)                      ## 防M9 复仇：反弹叠暴击
 	_on_m1(ctx, reflected)                 ## 防M1 荆棘领域：反弹传染
 	var remaining := _on_m7(taken)         ## 防M7 硬化：下一次攻击 -50%
@@ -202,12 +198,12 @@ func _on_m3_echo(absorbed: float, pos: Vector2) -> void:
 	_damage_aoe(pos, radius, dmg)
 
 
-## ===== 防M4 反甲吸血：血棘甲吸血 +1%（每 2 层，上限 4%）=====
+## ===== 防M4 反甲吸血：吸血 +1%（每 2 层，上限 4%）=====
+## 批次A去重：防3 血棘甲吸血由 game_root 在反弹结算时一并处理（原 N3 双份吸血已移除）。
 func _supply_leech(reflected: int) -> void:
 	if reflected <= 0:
 		return
 	var leech := 0.0
-	leech += _curve_value(N3, C3)                       ## 防3 血棘甲：2%/层，上限 4%
 	leech += minf(M4_LEECH * float(int(_stacks(M4) / 2)), M4_CAP)  ## 防M4：每 2 层 +1%
 	leech = minf(leech, 0.08)                           ## 反弹吸血合计封顶 8%（克制：防无敌）
 	if leech <= 0.0:
@@ -354,27 +350,17 @@ func _on_m10(hp_after_hit: int, taken: float, pos: Vector2) -> void:
 	EventBus.fx_explosion.emit(pos, "gold")  # 落雷误触发修复：金身触发改金色（非雷系）
 
 
-## ===== 反弹体系：旧 id 由 game_root 结算，新构筑由本脚本补发 =====
-func _reflect_pct_old() -> float:
-	## 与 game_root._on_player_hit 完全同款（thorn_reflect + 防御成型奖励）
-	if GameState == null:
-		return 0.0
-	# 0 层不生效：item_value(linear) 在 0 层返回 base（40%），不加守卫会白送反弹（P2-1a）
-	if GameState.total_stacks("thorn_reflect") <= 0:
-		return 0.0
-	var pct := GameState.item_value({"curve": OLD_REFLECT}, GameState.total_stacks("thorn_reflect"))
-	pct += float(GameState.run.get("synergy_bonus", {}).get("defense", 0.0))
-	return pct
-
-
+## ===== 反弹体系（批次A去重：只结算 defense_thorn_refit 一套）=====
 func _reflect_pct_new() -> float:
-	## 新构筑：防2 荆棘甲改造（30% +6%/层，上限 65%）；防7 反震提高反弹上限
+	## 防2 荆棘甲改造（30% +6%/层，上限 65%）；防7 反震提高反弹上限；
+	## 防御流成型奖励（synergy_bonus.defense）附加到反弹比例（与 game_root 同口径）。
 	# 0 层不生效：item_value(linear) 在 0 层返回 base（30%），不加守卫会白送反弹（P2-1a）
 	if _stacks(N2) <= 0:
 		return 0.0
 	var pct := _curve_value(N2, C2)
 	if pct <= 0.0:
 		return 0.0
+	pct += float(GameState.run.get("synergy_bonus", {}).get("defense", 0.0))
 	return minf(pct, 0.65 + _curve_value(N7, C7))
 
 
@@ -382,27 +368,10 @@ func _reflect_total(taken: float) -> int:
 	## 总反弹估算（克制：反弹封顶 150% 所受伤害）
 	if GameState == null or taken <= 0.0:
 		return 0
-	var pct := minf(_reflect_pct_old() + _reflect_pct_new(), 1.5)
+	var pct := minf(_reflect_pct_new(), 1.5)
 	if pct <= 0.0:
 		return 0
 	return int(taken * pct)
-
-
-func _supply_reflect(taken: float, pos: Vector2) -> void:
-	## 防2 荆棘甲改造（新 id）补发反弹：game_root 只结算旧 id thorn_reflect，
-	## 这里把新构筑对应的反弹份额按同款"最近敌人"取法补发给攻击者。
-	if GameState == null or taken <= 0.0:
-		return
-	var new_pct := _reflect_pct_new()
-	var budget := maxf(1.5 - _reflect_pct_old(), 0.0)
-	var extra := int(taken * minf(new_pct, budget))
-	if extra <= 0:
-		return
-	var attacker := _nearest_enemy(pos)
-	if attacker == null or not attacker.has_method("take_damage"):
-		return
-	attacker.take_damage(extra, "blade", false)
-	EventBus.damage_dealt.emit(extra, _enemy_pos(attacker), false)
 
 
 ## ===== 减伤聚合（与 game_root 同口径，另加防御流新数值构筑）=====
@@ -410,10 +379,6 @@ func _dr_total() -> float:
 	if GameState == null:
 		return 0.0
 	var dr := 0.0
-	## 旧 id 经 {"curve": ...} 包装求值（item_value 契约），与设计数值一致
-	dr += GameState.item_value(
-		{"curve": GameState.item_def("stone_armor").get("curve", OLD_STONE)},
-		GameState.total_stacks("stone_armor"))
 	dr += GameState.item_value(
 		{"curve": GameState.item_def("defense_amulet").get("curve", OLD_AMULET)},
 		GameState.total_stacks("defense_amulet"))
@@ -423,16 +388,6 @@ func _dr_total() -> float:
 	if _stacks(N10) > 0 and float(GameState.run.get("hp", 0)) < float(GameState.run.get("max_hp", 1)) * 0.40:
 		dr += _curve_value(N10, C10)
 	return dr
-
-
-## ===== 工具函数（全部防御性）=====
-
-func _stacks(id: String) -> int:
-	if GameState == null or not GameState.has_method("total_stacks"):
-		return 0
-	return maxi(int(GameState.total_stacks(id)), 0)
-
-
 func _curve_value(id: String, fallback: Dictionary) -> float:
 	## 曲线从数据表读取，落库前回退到内联曲线（与 game_root 同款防御写法）
 	if GameState == null:

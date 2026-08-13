@@ -1,4 +1,4 @@
-extends Node
+extends SynergyBase
 ## N2 通用道具机制（无效道具修复集中营，只新增不改既有语义）：
 ## - trinket_frost 霜之心：冰霜伤害 +25%/层，冻结时间 +0.3s/层
 ## - trinket_storm 雷核：雷电伤害 +25%/层（落雷翻倍在 thunder_synergy）
@@ -16,11 +16,9 @@ const FREEZE_EXTRA := 0.3      ## 霜之心冻结 +0.3s/件
 
 
 func _ready() -> void:
-	if SynergyRegistry == null:
-		push_warning("[MechItems] SynergyRegistry 不可用，通用道具机制未注册")
-		return
-	SynergyRegistry.register("projectile_hit", _on_projectile_hit)
-	SynergyRegistry.register("player_hit", _on_player_hit)
+	super._ready()
+	_register("projectile_hit", _on_projectile_hit)
+	_register("player_hit", _on_player_hit)
 	EventBus.apply_status.connect(_on_apply_status)
 	print("[SYNERGY] mech_items registered")
 

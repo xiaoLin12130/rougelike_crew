@@ -248,8 +248,16 @@ def main():
     ap.add_argument("--school", default="", help="流派列表，逗号分隔，或 all")
     ap.add_argument("--runs", type=int, default=1, help="每流派局数")
     ap.add_argument("--max-minutes", type=float, default=25.0, help="单局墙钟上限(分钟)")
+    ap.add_argument("--csv", default="", help="CSV 输出路径（默认 tools/tests/school_test_results.csv），多实例并行时用 --csv 隔离")
     ap.add_argument("--report", action="store_true", help="只生成 Markdown 报告")
     args = ap.parse_args()
+
+    global CSV_PATH
+    if args.csv:
+        CSV_PATH = os.path.abspath(args.csv)
+        d = os.path.dirname(CSV_PATH)
+        if d:
+            os.makedirs(d, exist_ok=True)
 
     if args.report:
         from gen_school_report import main as gen

@@ -1,4 +1,4 @@
-extends Node
+extends SynergyBase
 ## 火系燃烧流机制脚本（10 机制，SynergyRegistry 钩子实现）
 ## ============================================================
 ## 挂载方式：由 SynergyRegistry.load_synergy_scripts() 自动扫描
@@ -73,23 +73,22 @@ var _m4_stacks := {}          ## 烈焰新星当前层数（enemy instance_id �
 
 
 func _ready() -> void:
-	if SynergyRegistry == null:
-		push_warning("[FireSynergy] SynergyRegistry 不可用，火系机制未注册")
-		return
-	SynergyRegistry.register("enemy_died", _on_m1)      ## 灰烬爆炸
-	SynergyRegistry.register("enemy_status", _on_m2)    ## 薪火相传
-	SynergyRegistry.register("enemy_status", _on_m3)    ## 纵火狂
-	SynergyRegistry.register("enemy_status", _on_m4)    ## 烈焰新星
-	SynergyRegistry.register("enemy_died", _on_m5)      ## 火雨
-	SynergyRegistry.register("enemy_status", _on_m6)    ## 硫磺
-	SynergyRegistry.register("projectile_hit", _on_m7)  ## 灰烬使者
-	SynergyRegistry.register("enemy_died", _on_m8)      ## 熔炉之心
-	SynergyRegistry.register("player_hit", _on_m9)      ## 不灭之火
-	SynergyRegistry.register("projectile_hit", _on_m10) ## 龙息
+	super._ready()
+	_register("enemy_died", _on_m1)      ## 灰烬爆炸
+	_register("enemy_status", _on_m2)    ## 薪火相传
+	_register("enemy_status", _on_m3)    ## 纵火狂
+	_register("enemy_status", _on_m4)    ## 烈焰新星
+	_register("enemy_died", _on_m5)      ## 火雨
+	_register("enemy_status", _on_m6)    ## 硫磺
+	_register("projectile_hit", _on_m7)  ## 灰烬使者
+	_register("enemy_died", _on_m8)      ## 熔炉之心
+	_register("player_hit", _on_m9)      ## 不灭之火
+	_register("projectile_hit", _on_m10) ## 龙息
 	print("[SYNERGY] fire_synergy registered")
 
 
 func _exit_tree() -> void:
+	super._exit_tree()
 	## 场景退出时把尚存火地视觉节点一并清收，防泄漏
 	for z in _zones:
 		_free_zone_fx(z)
@@ -442,16 +441,6 @@ func _remove_zone(z: Dictionary) -> void:
 		if int(_zones[i].get("id", -1)) == zid:
 			_zones.remove_at(i)
 			return
-
-
-## ===== 工具函数（全部防御性）=====
-
-func _stacks(id: String) -> int:
-	if GameState == null or not GameState.has_method("total_stacks"):
-		return 0
-	return maxi(int(GameState.total_stacks(id)), 0)
-
-
 func _curve_value(id: String) -> float:
 	if GameState == null:
 		return 0.0

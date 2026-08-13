@@ -1,4 +1,4 @@
-extends Node
+extends SynergyBase
 ## 冰系冻结流机制脚本（钩子式流派系统）
 ## 由 SynergyRegistry.load_synergy_scripts() 自动扫描 scripts/synergies/*.gd 并实例化注册。
 ## 设计文档：docs/design/流派构筑大全.md 第 2 章「冰系冻结流」（核心：冰锥 · 状态 freeze）。
@@ -68,12 +68,13 @@ var _az_left := AZ_INTERVAL
 
 
 func _ready() -> void:
-	SynergyRegistry.register("enemy_died", _on_enemy_died)
-	SynergyRegistry.register("enemy_hit", _on_enemy_hit)
-	SynergyRegistry.register("enemy_status", _on_enemy_status)
-	SynergyRegistry.register("projectile_hit", _on_projectile_hit)
-	SynergyRegistry.register("player_hit", _on_player_hit)
-	SynergyRegistry.register("player_move", _on_player_move)
+	super._ready()
+	_register("enemy_died", _on_enemy_died)
+	_register("enemy_hit", _on_enemy_hit)
+	_register("enemy_status", _on_enemy_status)
+	_register("projectile_hit", _on_projectile_hit)
+	_register("player_hit", _on_player_hit)
+	_register("player_move", _on_player_move)
 	print("[SYNERGY] ice_synergy registered")
 
 
@@ -493,13 +494,6 @@ func _extend_freeze(id: int) -> void:
 
 func _freeze_duration() -> float:
 	return 1.0 + FREEZE_TIME_K * _stacks("ice_3")
-
-
-func _stacks(item_id: String) -> int:
-	var items: Dictionary = GameState.run.get("items", {})
-	return int(items.get(item_id, 0))
-
-
 ## 持有 ice_ 前缀构筑总数量（机制强度主控）
 func _ice_stacks() -> int:
 	var items: Dictionary = GameState.run.get("items", {})

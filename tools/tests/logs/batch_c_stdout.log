@@ -1,0 +1,18 @@
+== run melee #1 start
+== run melee #1 start
+== melee #1 -> DEFEAT game=137s wall=30s kills=697 lv=12 hp=0 gold=223 wave=3 dps=52 items=7
+== run melee #2 start
+== melee #2 -> DEFEAT game=156s wall=19s kills=293 lv=8 hp=0 gold=184 wave=3 dps=34 items=3
+== run summon #1 start
+== summon #1 -> DEFEAT game=449s wall=135s kills=2646 lv=25 hp=0 gold=222 wave=3 dps=335 items=18
+== run summon #2 start
+== summon #2 -> DEFEAT game=430s wall=407s kills=2971 lv=27 hp=0 gold=114 wave=3 dps=553 items=17
+== run defense #1 start
+== defense #1 -> DEFEAT game=133s wall=40s kills=647 lv=11 hp=0 gold=62 wave=3 dps=27 items=7
+== run defense #2 start
+== defense #2 -> DEFEAT game=126s wall=14s kills=596 lv=11 hp=0 gold=166 wave=3 dps=107 items=3
+== run teleport #1 start
+== teleport #1 -> DEFEAT game=145s wall=49s kills=802 lv=12 hp=0 gold=134 wave=3 dps=45 items=6
+== run teleport #2 start
+== teleport #2 -> DEFEAT game=166s wall=25s kills=809 lv=12 hp=0 gold=86 wave=3 dps=20 items=7
+batch done: 8 runs, 0 victories

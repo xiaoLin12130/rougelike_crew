@@ -3,7 +3,7 @@ extends Node2D
 ## 若该类型已达 max_count（data/summons.json）则不重复创建（静默销毁）；
 ## 未指定类型时保留按权重随机选择（兼容路径：排除已达 max_count 的类型；全部满员时召唤已存在类型中最弱的一个）。
 ## 10 种类型各有技能（bite/follow_shot/charge/taunt/triple_shot/backstab/pierce/orbit/block/self_destruct）。
-## 同类型实例数 <= max_count；总数量 <= 1 + summon_book 层数（超限销毁最旧召唤物）。
+## 同类型实例数 <= max_count；总数量 <= 1 + summon_1 层数（超限销毁最旧召唤物）。
 ## 攻击目标：group "enemy"；外观为友军蓝（与 gen/summon_bat_1.png 同配色方案）。
 
 const PROJECTILE_SCRIPT := preload("res://scripts/combat/projectile.gd")
@@ -177,9 +177,10 @@ func _build_sprite() -> void:
 	add_child(anim)
 
 
-## 总数量上限 = 召1 召唤之书层数 + 旧召唤之书层数 + 1；超限销毁最旧召唤物。
+## 总数量上限 = 召1 召唤之书层数 + 1；超限销毁最旧召唤物。
+## 批次A去重：summon_book → summon_1（2026-08-13，旧 id 条目已从 items.json 移除）。
 func _enforce_cap() -> void:
-	var cap: int = GameState.total_stacks("summon_1") + GameState.total_stacks("summon_book") + 1
+	var cap: int = GameState.total_stacks("summon_1") + 1
 	var group: Array = get_tree().get_nodes_in_group("summons")
 	if group.size() <= cap:
 		return

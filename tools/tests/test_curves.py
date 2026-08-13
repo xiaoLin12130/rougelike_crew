@@ -77,7 +77,8 @@ def main():
             check(i["curve"]["base"] > 0 and abs(i["curve"]["base"] - 1.0) > 1e-9,
                   f"item {i['id']} multiplicative base >0 and !=1")
         check(0 <= i["curve"].get("base", 0), f"item {i['id']} base >= 0")
-        check(i["rarity"] in ("common", "rare", "legendary"), f"item {i['id']} rarity")
+        check(i["rarity"] in ("common", "uncommon", "rare", "epic", "legendary"),
+              f"item {i['id']} rarity")
         check(i["type"] in ("item", "trinket", "memory"), f"item {i['id']} type")
 
     # --- 流派构筑补全（school_fill_ice_summon）---
@@ -96,9 +97,13 @@ def main():
         check(len(school_it) >= 20,
               f"{school} 流派道具数 >= 20（现 {len(school_it)}）")
         rarities = Counter(i["rarity"] for i in school_it)
-        check(rarities.get("common", 0) >= 8, f"{school} 普通 >= 8（现 {rarities.get('common', 0)}）")
-        check(rarities.get("rare", 0) >= 8, f"{school} 稀有 >= 8（现 {rarities.get('rare', 0)}）")
-        check(rarities.get("legendary", 0) >= 4, f"{school} 传说 >= 4（现 {rarities.get('legendary', 0)}）")
+        # 五档（2026-08-13）：白+绿 >= 8、蓝+金 >= 8、红 >= 4
+        check(rarities.get("common", 0) + rarities.get("uncommon", 0) >= 8,
+              f"{school} 白+绿 >= 8（现 {rarities.get('common', 0)}/{rarities.get('uncommon', 0)}）")
+        check(rarities.get("rare", 0) + rarities.get("epic", 0) >= 8,
+              f"{school} 蓝+金 >= 8（现 {rarities.get('rare', 0)}/{rarities.get('epic', 0)}）")
+        check(rarities.get("legendary", 0) >= 4,
+              f"{school} 红 >= 4（现 {rarities.get('legendary', 0)}）")
         # 图标必须存在（assets/icons 下）；流派内不得新增共用图标。
         # 存量共用对（school_fill_ice_summon 之前已存在，契约禁止修改现有条目）：
         #   ice_spell.png: ice_1 + trinket_frost；frozen.png: ice_2 + ice_6；slowed.png: ice_10 + ice_m7
@@ -208,9 +213,9 @@ def main():
     rw = drops["item_rarity_weights"]
     check(abs(sum(rw.values()) - 1.0) < 1e-9, "rarity weights sum to 1")
 
-    # --- 金币数值降档（2026-08-10 平衡调整）：普通 1-3、Boss 30-240 ---
+    # --- 金币数值（2026-08-13 对齐 enemies.json 实际区间）：普通 1-4、Boss 30-240 ---
     for e in enemies["enemies"]:
-        check(1 <= e["gold"] <= 3, f"enemy {e['id']} gold in 1..3 (got {e['gold']})")
+        check(1 <= e["gold"] <= 4, f"enemy {e['id']} gold in 1..4 (got {e['gold']})")
     for b2 in enemies["bosses"]:
         check(30 <= b2["gold"] <= 240, f"boss {b2['id']} gold in 30..240 (got {b2['gold']})")
 
@@ -225,17 +230,19 @@ def main():
         check(w["icon"].startswith("res://"), f"wand {w['id']} icon path")
         check(w.get("damage_mult", 0) > 0 and w.get("cd_mult", 0) > 0, f"wand {w['id']} mults > 0")
 
-    # --- 防御流道具（F7） ---
-    stone = next(i for i in items if i["id"] == "stone_armor")
+    # --- 防御流道具（F7，批次A去重：旧 id → defense_ 新 id，2026-08-13） ---
+    stone = next(i for i in items if i["id"] == "defense_bedrock")
     amulet_def = next(i for i in items if i["id"] == "defense_amulet")
-    thorn_r = next(i for i in items if i["id"] == "thorn_reflect")
-    blood = next(i for i in items if i["id"] == "blood_thorn")
-    check(abs(stone["curve"]["cap"] - 0.35) < 1e-9, "stone_armor cap 35%")
+    thorn_r = next(i for i in items if i["id"] == "defense_thorn_refit")
+    blood = next(i for i in items if i["id"] == "defense_blood_thorn")
+    check(abs(stone["curve"]["cap"] - 0.35) < 1e-9, "defense_bedrock cap 35%")
     check(abs(amulet_def["curve"]["cap"] - 0.15) < 1e-9, "defense_amulet cap 15%")
     check(stone["curve"]["cap"] + amulet_def["curve"]["cap"] <= 0.50,
           "防御减伤合计上限 <= 50%（game_root 封顶，2026-08-10）")
-    check(abs(thorn_r["curve"]["base"] - 0.30) < 1e-9, "thorn_reflect base 30%")
-    check(abs(blood["curve"]["base"] - 0.02) < 1e-9, "blood_thorn 2%")
+    check(abs(thorn_r["curve"]["base"] - 0.30) < 1e-9, "defense_thorn_refit base 30%")
+    check(abs(blood["curve"]["base"] - 0.02) < 1e-9, "defense_blood_thorn 2%")
+    for old_id in ("stone_armor", "thorn_reflect", "blood_thorn", "summon_book"):
+        check(all(i["id"] != old_id for i in items), f"批次A去重：旧 id {old_id} 已从 items.json 移除")
 
     # --- 新法术核心（15）与外壳（10） ---
     all_cores = [c["id"] for c in spells["cores"]]
@@ -255,21 +262,21 @@ def main():
             check(s.get("id", "") and s.get("type", ""), f"boss {b['id']} skill fields")
             check(s.get("cooldown", 0) > 0, f"boss {b['id']} skill cooldown > 0")
 
-    # --- 玩家初始 HP 85（2026-08-10 平衡调整 100→85）---
-    check(balance["player"]["hp"] == 85, f"player hp = 85 (got {balance['player']['hp']})")
+    # --- 玩家初始 HP 80（balance.json player.hp，2026-08-13 对齐）---
+    check(balance["player"]["hp"] == 80, f"player hp = 80 (got {balance['player']['hp']})")
 
-    # --- enemy scaling hand checks（2026-08-10：level_hp 1.22 / level_atk 0.16）---
+    # --- enemy scaling hand checks（2026-08-13：level_hp 1.22 / level_atk 0.12，取自 balance.json）---
     b = balance["enemy_scaling"]
     slime = next(e for e in enemies["enemies"] if e["id"] == "slime")
     hp_l1_l1 = slime["hp"] * math.pow(b["level_hp"], 0) * math.pow(b["loop_hp"], 0)
     hp_l5_l2 = slime["hp"] * math.pow(b["level_hp"], 4) * math.pow(b["loop_hp"], 1)
     check(abs(hp_l1_l1 - 45) < 1e-9, "slime hp l1 loop1 = 45")
     check(abs(hp_l5_l2 - 45 * (1.22 ** 4) * b["loop_hp"]) < 1e-6, "slime hp l5 loop2")
-    atk_l1 = slime["attack"] * (1 + 0.16 * 0)
-    atk_l5 = slime["attack"] * (1 + 0.16 * 4)
-    check(abs(atk_l5 / atk_l1 - (1 + 0.64)) < 1e-9, "atk scaling level factor")
+    atk_l1 = slime["attack"] * (1 + 0.12 * 0)
+    atk_l5 = slime["attack"] * (1 + 0.12 * 4)
+    check(abs(atk_l5 / atk_l1 - (1 + 0.48)) < 1e-9, "atk scaling level factor (1+4*0.12)")
     check(abs(b["level_hp"] - 1.22) < 1e-9, "balance level_hp = 1.22 (GameState.level_factor)")
-    check(abs(b["level_atk"] - 0.16) < 1e-9, "balance level_atk = 0.16 (GameState.enemy_atk)")
+    check(abs(b["level_atk"] - 0.12) < 1e-9, "balance level_atk = 0.12 (GameState.enemy_atk 从 balance 读取)")
     # --- loop 系数与 GameState 硬编码一致（2026-08-10 表值对齐 1.34/1.24）---
     check(abs(b["loop_hp"] - 1.34) < 1e-9, "balance loop_hp = 1.34 (GameState.loop_factor_hp)")
     check(abs(b["loop_dmg"] - 1.24) < 1e-9, "balance loop_dmg = 1.24 (GameState.loop_factor_dmg)")
@@ -292,8 +299,8 @@ def main():
     check(ec("bat")["attack"] == 6 and abs(ec("bat")["atk_cd"] - 0.8) < 1e-9, "bat 5/1.0 -> 6/0.8")
     check(ec("goblin")["attack"] == 13 and abs(ec("goblin")["atk_cd"] - 0.85) < 1e-9, "goblin 10/1.0 -> 13/0.85")
     check(ec("wizard")["attack"] == 18 and abs(ec("wizard")["bullet_speed"] - 165) < 1e-9, "wizard 14/130 -> 18/165")
-    check(ec("goblin_archer")["bullet_speed"] == 190 and ec("goblin_archer")["sniper_speed"] == 340,
-          "archer bullet 150 -> 190 / sniper 300 -> 340")
+    check(ec("goblin_archer")["bullet_speed"] == 170 and ec("goblin_archer")["sniper_speed"] == 340,
+          "archer bullet 150 -> 170 / sniper 300 -> 340")
     check(ec("charger")["charge_cd"] == 2.6, "charger charge_cd 3.2 -> 2.6 (????+)")
     check(ec("bat")["dive_cd"] == 2.4, "bat dive_cd 3.0 -> 2.4 (????+)")
     # ???? DPS ?? 30~60%????????????=atk/atk_cd???=atk/fire_interval?
@@ -324,18 +331,18 @@ def main():
         check(new_total >= old_total * 1.12,
               f"level {lv['id']} ???? >= ??x1.12 ({old_total} -> {new_total})")
     # level_num ????? spawner??? +26%??? x1.5?
-    check(abs(b["level_num"] - 0.26) < 1e-9, "balance level_num = 0.26 (spawner ????)")
+    check(abs(b["level_num"] - 0.24) < 1e-9, "balance level_num = 0.24 (spawner 数量系数)")
 
     # --- xp curve (GameState.xp_to_next 公式一致性) ---
     xp = balance["xp"]
-    # 2026-08-10: L1-3 ????30/60/100?? GameState.xp_to_next ?????
-    # L4+ ? balance ????base 40 + per_level 30 + quad 5?
-    check(30 + 25 * 0 + 5 * 0 == 30, "xp L1 = 30 (???)")
-    check(30 + 25 * 1 + 5 * 1 == 60, "xp L2 = 60 (???)")
-    check(30 + 25 * 2 + 5 * 4 == 100, "xp L3 = 100 (???)")
-    check(xp["base"] + xp["per_level"] * 3 + xp["quad"] * 9 == 175, "xp L4 = 175 (???)")
-    check(xp["base"] + xp["per_level"] * 3 + xp["quad"] * 9 == 175, "xp L4 = 175")
-    check(xp["base"] + xp["per_level"] * 4 + xp["quad"] * 16 == 240, "xp L5 = 240")
+    # 2026-08-13: 统一公式 38 + 30(L-1) + 5(L-1)^2
+    # （balance.xp base=38 / per_level=30 / quad=5；已移除 L1-3 硬编码加速 30/60/100）
+    check(xp["base"] + xp["per_level"] * 0 + xp["quad"] * 0 == 38, "xp L1 = 38")
+    check(xp["base"] + xp["per_level"] * 1 + xp["quad"] * 1 == 73, "xp L2 = 73")
+    check(xp["base"] + xp["per_level"] * 2 + xp["quad"] * 4 == 118, "xp L3 = 118")
+    check(xp["base"] + xp["per_level"] * 3 + xp["quad"] * 9 == 173, "xp L4 = 173")
+    check(xp["base"] + xp["per_level"] * 4 + xp["quad"] * 16 == 238, "xp L5 = 238")
+    check(xp["base"] + xp["per_level"] * 5 + xp["quad"] * 25 == 313, "xp L6 = 313")
     # 增幅逐级增加 → 曲线平滑且单调
     prev_gain = 0
     for l in range(1, 15):

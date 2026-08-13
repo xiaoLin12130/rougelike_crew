@@ -1,4 +1,4 @@
-extends Node
+extends SynergyBase
 ## 移速疾风流机制脚本（10 机制，SynergyRegistry 钩子实现）
 ## ============================================================
 ## 挂载方式：由 SynergyRegistry.load_synergy_scripts() 自动扫描
@@ -124,14 +124,12 @@ var _blades: Array = []           ## 风之回响风刃：[{pos, dir, dmg, radiu
 
 
 func _ready() -> void:
-	if SynergyRegistry == null:
-		push_warning("[WindSynergy] SynergyRegistry 不可用，移速流机制未注册")
-		return
-	SynergyRegistry.register("player_move", _on_move)     ## 移M1/M3/M5/M6/M8
-	SynergyRegistry.register("cast", _on_cast)            ## 移M4/M7 + 移6 读取点
-	SynergyRegistry.register("player_hit", _on_hit)       ## 移M2/M3
-	SynergyRegistry.register("enemy_died", _on_enemy_died) ## 移4 追风
-	SynergyRegistry.register("projectile_hit", _on_m9)    ## 移M9 急冻风
+	super._ready()
+	_register("player_move", _on_move)     ## 移M1/M3/M5/M6/M8
+	_register("cast", _on_cast)            ## 移M4/M7 + 移6 读取点
+	_register("player_hit", _on_hit)       ## 移M2/M3
+	_register("enemy_died", _on_enemy_died) ## 移4 追风
+	_register("projectile_hit", _on_m9)    ## 移M9 急冻风
 	print("[SYNERGY] wind_synergy registered")
 
 
@@ -618,14 +616,6 @@ func _wind_power() -> int:
 		if str(id).begins_with("wind_"):
 			n += maxi(int(items[id]), 0)
 	return n
-
-
-func _stacks(id: String) -> int:
-	if GameState == null or not GameState.has_method("total_stacks"):
-		return 0
-	return maxi(int(GameState.total_stacks(id)), 0)
-
-
 func _curve_value(id: String) -> float:
 	if GameState == null:
 		return 0.0

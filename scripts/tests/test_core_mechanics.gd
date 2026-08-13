@@ -269,7 +269,7 @@ func _on_dd(_dmg: int, _pos: Vector2, _crit: bool) -> void:
 
 
 func _test_thorn_reflect() -> void:
-	## P2-1a：荆棘甲（thorn_reflect）0 层受击不反弹；1 层按曲线反弹 40%
+	## P2-1a：荆棘甲改造（defense_thorn_refit）0 层受击不反弹；1 层按曲线反弹 30%
 	await _clear_enemies()
 	await _clear_projectiles()
 	var ds_script: Script = load("res://scripts/synergies/defense_synergy.gd")
@@ -310,18 +310,18 @@ func _test_thorn_reflect() -> void:
 		_fail("thorn 0层: attacker 不应掉血（hp=%s）" % str(attacker.hp))
 	if _dd_count != 0:
 		_fail("thorn 0层: 不应产生 damage_dealt（%d 次）" % _dd_count)
-	if ds._reflect_pct_old() != 0.0 or ds._reflect_pct_new() != 0.0:
+	if ds._reflect_pct_new() != 0.0:
 		_fail("thorn 0层: defense_synergy 反弹估算应为 0")
-	# --- 1 层：按曲线反弹（game_root 硬编码 0.40/0.35/0.95，第 1 层 = base 40%）---
-	GameState.run.items["thorn_reflect"] = 1
+	# --- 1 层：按曲线反弹（defense_thorn_refit 数据曲线 0.30/0.06/0.65，第 1 层 = base 30%）---
+	GameState.run.items["defense_thorn_refit"] = 1
 	var stone := float(GameState.item_value(
-		GameState.item_def("stone_armor").get("curve", {"type": "linear", "base": 0.06, "k": 0.06, "cap": 0.35}), 0))
+		GameState.item_def("defense_bedrock").get("curve", {"type": "linear", "base": 0.06, "k": 0.06, "cap": 0.35}), 0))
 	var amulet := float(GameState.item_value(
 		GameState.item_def("defense_amulet").get("curve", {"type": "linear", "base": 0.03, "k": 0.03, "cap": 0.20}), 0))
 	var taken_int := int(10.0 * (1.0 - minf(stone + amulet, 0.50)))
-	var reflected := int(float(taken_int) * 0.40)
-	if not is_equal_approx(float(ds._reflect_pct_old()), 0.40):
-		_fail("thorn 1层: defense_synergy 旧 id 估算应 0.40")
+	var reflected := int(float(taken_int) * 0.30)
+	if not is_equal_approx(float(ds._reflect_pct_new()), 0.30):
+		_fail("thorn 1层: defense_synergy 反弹估算应 0.30")
 	_dd_count = 0
 	gr._hit_protect = 0.0
 	seed(safe_seed)

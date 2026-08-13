@@ -37,8 +37,9 @@ const F_END := TOTAL_FRAMES ## 最终断言 + 退出
 
 func _ready() -> void:
 	## 召唤流派持有 3 件 → _tier_of(3) = 1（光环渲染开启）；召唤之书放大总上限
-	GameState.run.items["summon_1"] = 3
-	GameState.run.items["summon_book"] = 30
+	# 批次A去重：summon_book → summon_1（原 summon_1=3 + summon_book=30 → 合并为 33 层，
+	# 保持 tier=3 与召唤上限放大语义）
+	GameState.run.items["summon_1"] = 33
 	_player = Node2D.new()
 	_player.position = Vector2(640, 360)
 	add_child(_player)
