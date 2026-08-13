@@ -6,7 +6,7 @@ extends Node2D
 ## Run: godot --headless --path . res://scripts/tests/test_thorn_vine_visual.tscn
 
 const PROJECTILE_SCENE := preload("res://scenes/game/projectile.tscn")
-const WATER_TEX := "res://assets/icons/verarc/water_spell.png"
+const WATER_TEX := "res://assets/sprites/gen/proj_water.png"
 const FIREBALL_TEX := "res://assets/sprites/gen/proj_fireball.png"
 
 var _failures: Array[String] = []
@@ -126,14 +126,14 @@ func _wait_gone(name: String, timeout: float) -> void:
 	_fail(name + " 藤蔓节点超时未消失（泄漏）")
 
 
-## ③ 回归：water 水滴图标 / fire 火球贴图不受影响
+## ③ 回归：water 程序化水滴贴图 / fire 火球贴图不受影响
 func _test_element_regression() -> void:
 	var w := _make_proj(Vector2(200, 140), Vector2.RIGHT, "water")
 	var wspr := _sprite_of(w)
 	if wspr == null or not wspr.visible or str(wspr.texture.resource_path) != WATER_TEX:
-		_fail("water 弹体应保持水滴图标可见（回归破坏）")
+		_fail("water 弹体应保持程序化水滴贴图可见（回归破坏）")
 	else:
-		print("[TEST] water 弹体水滴图标回归 → PASS")
+		print("[TEST] water 弹体 proj_water 贴图回归 → PASS")
 	w.queue_free()
 	await get_tree().physics_frame
 	var f := _make_proj(Vector2(200, 180), Vector2.RIGHT, "fire")

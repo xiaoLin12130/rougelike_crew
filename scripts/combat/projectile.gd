@@ -23,9 +23,10 @@ const STATUS_TEXTURES := {
 	"lightning": "res://assets/sprites/gen/proj_lightning.png",
 	"poison": "res://assets/sprites/gen/proj_poison.png",
 	"blade": "res://assets/sprites/gen/proj_blade.png",
-	## 技能视觉 P0-1（2026-08-10）：water_bolt/thorn_vine 弹体此前回退火球贴图，
-	## 补 water/nature 映射（verarc 16x16 水滴/藤蔓图标，路径已核实存在）
-	"water": "res://assets/icons/verarc/water_spell.png",
+	## 技能视觉（2026-08-13）：water 改程序化 12x12 水滴贴图 proj_water.png
+	## （原映射 verarc 16x16 技能图标，弹体直接飞图标观感差，用户反馈已修）；
+	## nature 由下方 VineSeed 程序化种子分支接管，此条目保留兜底（不实际使用）
+	"water": "res://assets/sprites/gen/proj_water.png",
 	"nature": "res://assets/icons/verarc/thorn_vine_spell.png",
 }
 ## 藤蔓（nature）弹体专用：飞行阶段不用静态图标，改程序化"种子+藤须拖尾"
@@ -70,10 +71,10 @@ class VineSeedVisual:
 		draw_line(Vector2.ZERO, Vector2(4.5, 0.0), Color(VINE_SEED_LIGHT, 0.85), 1.2)
 		draw_line(Vector2(2.8, 0.0), Vector2(4.2, -2.0), Color(VINE_SEED_LIGHT, 0.7), 1.0)
 		draw_line(Vector2(2.8, 0.0), Vector2(4.2, 2.0), Color(VINE_SEED_LIGHT, 0.7), 1.0)
-## verarc 法术图标 16x16 > 常规 proj_* 12x12：给这两个元素弹体放大补偿，
-## 保证"水滴/藤蔓"形态可辨识（参考旋风刃 1.8x 思路，幅度更克制）
+## 缩放补偿：water 已改 12x12 程序化贴图（与 fire/ice 同规格，scale 1.0）；
+## nature 走 VineSeed 程序化分支不使用本表，条目保留兜底
 const STATUS_TEXTURE_SCALE := {
-	"water": 1.5,
+	"water": 1.0,
 	"nature": 1.6,
 }
 

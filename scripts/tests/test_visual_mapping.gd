@@ -11,7 +11,7 @@ extends Node2D
 
 const PROJECTILE_SCENE := preload("res://scenes/game/projectile.tscn")
 const SPELL_CASTER_SCRIPT := preload("res://scripts/combat/spell_caster.gd")
-const WATER_TEX := "res://assets/icons/verarc/water_spell.png"
+const WATER_TEX := "res://assets/sprites/gen/proj_water.png"
 const NATURE_TEX := "res://assets/icons/verarc/thorn_vine_spell.png"
 const FIREBALL_TEX := "res://assets/sprites/gen/proj_fireball.png"
 
@@ -63,7 +63,7 @@ func _sprite_path_of(proj: Node) -> String:
 # ================= ① STATUS_TEXTURES：water/nature 弹体不再是火球 =================
 
 func _test_element_textures() -> void:
-	# water：弹体贴图 == verarc 水滴图标（P0-1 保留）
+	# water：弹体贴图 == 程序化 12x12 水滴贴图（2026-08-13 修复：不再飞 verarc 技能图标）
 	var wproj = PROJECTILE_SCENE.instantiate()
 	wproj.setup({
 		"position": Vector2(200, 100), "direction": Vector2.RIGHT, "speed": 100.0,
@@ -73,9 +73,18 @@ func _test_element_textures() -> void:
 	add_child(wproj)
 	var wpath := _sprite_path_of(wproj)
 	if wpath != WATER_TEX:
-		_fail("water 弹体贴图应为 %s，实际 '%s'（STATUS_TEXTURES 缺失/回退火球）" % [WATER_TEX, wpath])
+		_fail("water 弹体贴图应为 %s，实际 '%s'（STATUS_TEXTURES 缺失/仍指向图标）" % [WATER_TEX, wpath])
 	if wpath == FIREBALL_TEX:
 		_fail("water 弹体仍回退火球贴图 proj_fireball")
+	var wspr := wproj.get_node_or_null("Sprite2D") as Sprite2D
+	if wspr != null and wspr.texture != null:
+		if wspr.texture.get_width() != 12 or wspr.texture.get_height() != 12:
+			_fail("water 弹体贴图应 12x12，实际 %dx%d" % [wspr.texture.get_width(), wspr.texture.get_height()])
+		if wspr.scale != Vector2.ONE:
+			_fail("water 弹体 scale 应为 1.0，实际 %s" % str(wspr.scale))
+	else:
+		_fail("water 弹体缺少 Sprite2D 贴图")
+	print("[TEST] water 弹体 = proj_water.png 12x12 scale 1.0 → PASS")
 	wproj.queue_free()
 	await get_tree().physics_frame
 	# nature（藤蔓）：不飞静态图标 → Sprite2D 隐藏 + VineSeed 程序化种子节点存在
